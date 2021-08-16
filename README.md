@@ -1,4 +1,6 @@
-![SONIC LOGO](logo.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
+</p>
 <p align="center">🎉Back end module of sonic client test platform.</p>
 
 English | [简体中文](README_CN.md)
@@ -39,3 +41,6 @@ mvn package -Pprod
 ## Deployment mode
 
 ## Todo List
+
+## LICENSE
+[MIT License](LICENSE)
