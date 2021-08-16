@@ -1,4 +1,4 @@
-package com.sonic.common.Util;
+package com.sonic.common.Tools;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -12,7 +12,7 @@ import java.util.UUID;
  * @des Token加解密工具类
  * @date 2021/8/15 18:26
  */
-public class JWTTokenUtil {
+public class JWTTokenTool {
     //token密钥，生产环境下应该暴露给外部配置文件，例如.env，由有权限的运维同事去管理
     private static final String TOKEN_SECRET = "sonic";
 
