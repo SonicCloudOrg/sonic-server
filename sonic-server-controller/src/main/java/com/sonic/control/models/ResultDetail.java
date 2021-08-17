@@ -30,8 +30,8 @@ public class ResultDetail {
     String type;
     @ApiModelProperty(value = "测试结果详情描述", example = "点击xxx")
     String des;
-    @ApiModelProperty(value = "测试结果详情状态", example = "pass")
-    String status;
+    @ApiModelProperty(value = "测试结果详情状态", example = "1")
+    int status;
     @ApiModelProperty(value = "设备id", example = "1")
     int deviceId;
     @ApiModelProperty(value = "测试结果详情详细日志", example = "点击xpath://*[@text()='xxx']")
@@ -86,11 +86,11 @@ public class ResultDetail {
         this.des = des;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -126,7 +126,7 @@ public class ResultDetail {
                 ", resultId=" + resultId +
                 ", type='" + type + '\'' +
                 ", des='" + des + '\'' +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 ", deviceId=" + deviceId +
                 ", log='" + log + '\'' +
                 ", time=" + time +

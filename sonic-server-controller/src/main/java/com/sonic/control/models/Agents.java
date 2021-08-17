@@ -22,7 +22,7 @@ public class Agents {
     String name;
     @NotNull
     @ApiModelProperty(value = "Agent端系统类型", example = "Windows 10")
-    String system;
+    String systemType;
     @NotNull
     @ApiModelProperty(value = "Agent端版本号", example = "1.0.0")
     String version;
@@ -54,12 +54,12 @@ public class Agents {
         this.name = name;
     }
 
-    public String getSystem() {
-        return system;
+    public String getSystemType() {
+        return systemType;
     }
 
-    public void setSystem(String system) {
-        this.system = system;
+    public void setSystemType(String systemType) {
+        this.systemType = systemType;
     }
 
     public String getVersion() {
@@ -99,7 +99,7 @@ public class Agents {
         return "Agents{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", system='" + system + '\'' +
+                ", systemType='" + systemType + '\'' +
                 ", version='" + version + '\'' +
                 ", ip='" + ip + '\'' +
                 ", port=" + port +

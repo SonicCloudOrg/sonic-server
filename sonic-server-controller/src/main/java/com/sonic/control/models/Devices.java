@@ -3,13 +3,12 @@ package com.sonic.control.models;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @ApiModel("设备模型")
+//添加udId字段索引
+@Table(indexes = {@Index(columnList = "udId")})
 public class Devices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

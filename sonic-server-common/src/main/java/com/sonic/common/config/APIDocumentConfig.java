@@ -29,14 +29,10 @@ public class APIDocumentConfig {
     //从配置文档获取接口文档信息
     @Value("${spring.version}")
     private String version;
-    @Value("${info.swagger.title}")
+    @Value("${knife4j.info.title}")
     private String title;
-    @Value("${info.swagger.description}")
+    @Value("${knife4j.info.description}")
     private String description;
-    @Value("${info.author.name}")
-    private String name;
-    @Value("${info.author.email}")
-    private String email;
     @Value("${knife4j.setting.enableHostText}")
     private String host;
 
@@ -114,9 +110,11 @@ public class APIDocumentConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title(title)
-                .contact(new Contact(name, "", email))
+                .contact(new Contact("ZhouYiXun",
+                        "https://github.com/ZhouYixun/sonic-server", "zyx291028775@qq.com"))
                 .version(version)
                 .description(description)
+                .licenseUrl("https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE")
                 .build();
     }
 }

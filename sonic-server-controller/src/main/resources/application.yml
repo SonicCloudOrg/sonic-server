@@ -1,2 +1,34 @@
 server:
   port: 8092
+
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-history: 3
+
+knife4j:
+  info:
+    title: "Sonic服务端 - 控制中心 Open API"
+    description: "sonic-server-controller 服务开放API，注意不要频繁请求。"
+  enable: true
+  setting:
+    enableHost: true
+    enableHostText: "http://localhost:8092"

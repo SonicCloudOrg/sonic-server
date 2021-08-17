@@ -25,7 +25,7 @@ public class WebAspectConfig {
     /**
      * @return void
      * @author ZhouYiXun
-     * @des 定义切点，注解类weblog
+     * @des 定义切点，注解类webAspect
      * @date 2021/8/15 23:08
      */
     @Pointcut("@annotation(WebAspect)")

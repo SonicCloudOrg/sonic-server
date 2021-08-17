@@ -1,4 +1,4 @@
-package com.sonic.common.tools;
+package com.sonic.common.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
