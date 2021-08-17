@@ -42,11 +42,6 @@ mvn package -Pprod
 
 ## 部署方式
 
-## 待办列表
-+ 基础建设（web）
-+ Agent连接
-+ 分布式支持
-+ 文档编写
 ## 开源许可协议
 
 [MIT License](LICENSE)

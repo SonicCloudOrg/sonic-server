@@ -42,11 +42,6 @@ mvn package -Pprod
 
 ## Deployment mode
 
-## Todo List
-+ Infrastructure construction(web)
-+ Agent connect
-+ Distributed support
-+ Documentation
 ## LICENSE
 
 [MIT License](LICENSE)
