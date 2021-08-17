@@ -13,6 +13,8 @@
     <modules>
         <module>sonic-server-controller</module>
         <module>sonic-server-common</module>
+        <module>sonic-server-handler</module>
+        <module>sonic-server-gateway</module>
     </modules>
 
     <!-- maven打包的java版本   -->
