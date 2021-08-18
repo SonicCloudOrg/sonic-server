@@ -70,7 +70,7 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "批量查询设备", notes = "查找id列表的设备信息，可以传多个id[]")
+    @ApiOperation(value = "批量查询设备", notes = "查找id列表的设备信息，可以传多个ids[]")
     @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
     @GetMapping("/findByIdIn")
     public RespModel<List<Devices>> findByIdIn(@RequestParam(name = "ids[]") List<Integer> ids) {
@@ -79,7 +79,7 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "获取查询条件", notes = "获取现有筛选条件")
+    @ApiOperation(value = "获取查询条件", notes = "获取现有筛选条件（所有设备有的条件）")
     @GetMapping("/getFilterOption")
     public RespModel<JSONObject> getFilterOption() {
         return new RespModel(RespEnum.SEARCH_OK, devicesService.getFilterOption());
