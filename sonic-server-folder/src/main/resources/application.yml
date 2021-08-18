@@ -1,0 +1,28 @@
+server:
+  port: 8093
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+
+client:
+  host: "http://localhost:8094"
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-history: 3
+
+knife4j:
+  info:
+    title: "Sonic服务端 - 文件中心 Open API"
+    description: "sonic-server-folder 服务API暂不开放。"
+  enable: true
+  setting:
+    enableHost: true
+    enableHostText: "http://localhost:8092"
