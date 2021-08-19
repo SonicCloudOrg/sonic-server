@@ -15,6 +15,11 @@
 
     <!-- 依赖列表   -->
     <dependencies>
+        <!--     eureka客户端   -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <!-- undertow服务器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

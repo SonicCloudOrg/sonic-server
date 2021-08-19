@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
     username: root
-    password: 123456
+    password: 61info@#!5858
   jpa:
     open-in-view: true
     hibernate:
@@ -32,3 +32,11 @@ knife4j:
   setting:
     enableHost: true
     enableHostText: "http://localhost:8092"
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}

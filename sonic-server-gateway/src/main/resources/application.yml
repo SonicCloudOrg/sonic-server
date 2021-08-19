@@ -1,0 +1,52 @@
+server:
+  port: 8094
+
+filter:
+  white-list: /swagger-resources,/v2/api-docs,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/
+
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+  cloud:
+    gateway:
+      routes:
+        - id: controller
+          uri: lb://sonic-server-controller
+          predicates: Path=/api/controller/**
+          filters:
+            - StripPrefix=2
+        - id: handler
+          uri: lb://sonic-server-folder
+          predicates: Path=/api/folder/**
+          filters:
+            - StripPrefix=2
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-history: 3
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}
