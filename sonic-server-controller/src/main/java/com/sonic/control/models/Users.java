@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Entity
 @ApiModel("用户模型")
@@ -25,6 +26,9 @@ public class Users {
     @NotNull
     @ApiModelProperty(value = "所属部门", required = true, example = "中后台-测试部")
     String department;
+    @Positive
+    @ApiModelProperty(value = "角色", required = true, example = "1")
+    int role;
 
     public Users(){}
 

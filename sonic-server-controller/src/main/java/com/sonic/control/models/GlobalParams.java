@@ -22,10 +22,10 @@ public class GlobalParams {
     int projectId;
     @NotNull
     @ApiModelProperty(value = "参数名", required = true, example = "account")
-    String key;
+    String paramsKey;
     @NotNull
     @ApiModelProperty(value = "参数值", required = true, example = "123456789")
-    String value;
+    String paramsValue;
 
     public GlobalParams() {
     }
@@ -46,20 +46,20 @@ public class GlobalParams {
         this.projectId = projectId;
     }
 
-    public String getKey() {
-        return key;
+    public String getParamsKey() {
+        return paramsKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setParamsKey(String paramsKey) {
+        this.paramsKey = paramsKey;
     }
 
-    public String getValue() {
-        return value;
+    public String getParamsValue() {
+        return paramsValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setParamsValue(String paramsValue) {
+        this.paramsValue = paramsValue;
     }
 
     @Override
@@ -67,8 +67,8 @@ public class GlobalParams {
         return "GlobalParams{" +
                 "id=" + id +
                 ", projectId=" + projectId +
-                ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
+                ", paramsKey='" + paramsKey + '\'' +
+                ", paramsValue='" + paramsValue + '\'' +
                 '}';
     }
 }
