@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Entity
-@ApiModel("测试账号模型")
-public class TestData {
+@ApiModel("全局参数模型")
+public class GlobalParams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "id", example = "1")
@@ -21,10 +21,13 @@ public class TestData {
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
     @NotNull
-    @ApiModelProperty(value = "测试账号", required = true, example = "1801234567")
-    String account;
+    @ApiModelProperty(value = "参数名", required = true, example = "account")
+    String key;
+    @NotNull
+    @ApiModelProperty(value = "参数值", required = true, example = "123456789")
+    String value;
 
-    public TestData() {
+    public GlobalParams() {
     }
 
     public int getId() {
@@ -43,20 +46,29 @@ public class TestData {
         this.projectId = projectId;
     }
 
-    public String getAccount() {
-        return account;
+    public String getKey() {
+        return key;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return "TestData{" +
+        return "GlobalParams{" +
                 "id=" + id +
                 ", projectId=" + projectId +
-                ", account='" + account + '\'' +
+                ", key='" + key + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

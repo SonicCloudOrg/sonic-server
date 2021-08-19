@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.FileAlreadyExistsException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -27,16 +28,16 @@ public class FileTool {
 
     /**
      * @param folderName 文件夹
-     * @param timeMillis
      * @param file
      * @return java.lang.String
      * @author ZhouYiXun
      * @des 上传
      * @date 2021/8/18 20:41
      */
-    public String upload(String folderName, long timeMillis, MultipartFile file) throws IOException {
+    public String upload(String folderName, MultipartFile file) throws IOException {
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-        File folder = new File(folderName + File.separator + sf.format(timeMillis));
+        File folder = new File(folderName + File.separator
+                + sf.format(Calendar.getInstance().getTimeInMillis()));
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -80,14 +81,15 @@ public class FileTool {
      * @param uuid
      * @param fileName
      * @param totalCount
-     * @param time
      * @return java.io.File
      * @author ZhouYiXun
      * @des
      * @date 2021/8/18 20:14
      */
-    public String merge(String uuid, String fileName, int totalCount, String time) {
-        File files = new File("recordFiles" + File.separator + time);
+    public String merge(String uuid, String fileName, int totalCount) {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        File files = new File("recordFiles" + File.separator
+                + sf.format(Calendar.getInstance().getTimeInMillis()));
         if (!files.exists()) {
             files.mkdirs();
         }
@@ -98,9 +100,9 @@ public class FileTool {
             //获取碎片文件夹
             File uuidFolder = new File("recordFiles" + File.separator + uuid);
             int waitTime = 0;
-            int fileNum = uuidFolder.listFiles().length;
+            int fileCount = uuidFolder.listFiles().length;
             //如果碎片还没齐全，进行等待一段时间
-            while (fileNum < totalCount && waitTime < 20) {
+            while (fileCount < totalCount && waitTime < 20) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -108,7 +110,7 @@ public class FileTool {
                 }
                 waitTime++;
             }
-            for (int i = 0; i < fileNum; i++) {
+            for (int i = 0; i < fileCount; i++) {
                 //开始读取碎片文件
                 String newName = fileName.substring(0, fileName.indexOf(".mp4")) + "-" + i + ".mp4";
                 File patchFile = new File(uuidFolder.getPath() + File.separator + newName);

@@ -3,6 +3,8 @@ package com.sonic.fold.controller;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespModel;
 import com.sonic.fold.tools.FileTool;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class FilesController {
     private FileTool fileTool;
 
     @WebAspect
+    @ApiOperation(value = "删除本地文件", notes = "清除本地文件数据")
+    @ApiImplicitParam(name = "day", value = "保留文件天数", dataTypeClass = Integer.class)
     @DeleteMapping
     public RespModel delete(@RequestParam(name = "day") int day) {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
