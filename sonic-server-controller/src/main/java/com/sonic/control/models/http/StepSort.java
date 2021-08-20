@@ -15,10 +15,10 @@ public class StepSort {
     @ApiModelProperty(value = "拖拽方向", required = true, example = "up | down")
     private String direction;
     @Positive
-    @ApiModelProperty(value = "移动后被影响的第一个步骤序号", required = true, example = "1")
+    @ApiModelProperty(value = "移动后被影响的第一个步骤sort序号", required = true, example = "1")
     private int startId;
     @Positive
-    @ApiModelProperty(value = "移动后被影响的最后一个步骤序号", required = true, example = "9")
+    @ApiModelProperty(value = "移动后被影响的最后一个步骤sort序号", required = true, example = "9")
     private int endId;
 
     public int getCaseId() {

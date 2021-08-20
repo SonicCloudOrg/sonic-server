@@ -2,6 +2,9 @@ server:
   port: 8093
 
 spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
   servlet:
     multipart:
       maxFileSize: -1
@@ -26,3 +29,11 @@ knife4j:
   setting:
     enableHost: true
     enableHostText: "http://localhost:8092"
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}

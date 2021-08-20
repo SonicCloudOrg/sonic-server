@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @ApiModel("测试套件模型")
@@ -25,9 +26,6 @@ public class TestSuites {
     @ApiModelProperty(value = "测试套件类型", required = true, example = "1")
     int type;
     @Positive
-    @ApiModelProperty(value = "指定Agent端id", required = true, example = "1")
-    int agentId;
-    @Positive
     @ApiModelProperty(value = "模块并发线程", required = true, example = "1")
     int moduleThread;
     @Positive
@@ -41,7 +39,10 @@ public class TestSuites {
     int projectId;
     @ApiModelProperty(value = "包含的测试用例")
     @ManyToMany(fetch = FetchType.EAGER)
-    List<TestCases> testCases;
+    Set<TestCases> testCases;
+    @ApiModelProperty(value = "指定设备列表")
+    @ManyToMany(fetch = FetchType.EAGER)
+    Set<Devices> devices;
 
     public TestSuites() {
     }
@@ -78,14 +79,6 @@ public class TestSuites {
         this.type = type;
     }
 
-    public int getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
-    }
-
     public int getModuleThread() {
         return moduleThread;
     }
@@ -118,12 +111,20 @@ public class TestSuites {
         this.projectId = projectId;
     }
 
-    public List<TestCases> getTestCases() {
+    public Set<TestCases> getTestCases() {
         return testCases;
     }
 
-    public void setTestCases(List<TestCases> testCases) {
+    public void setTestCases(Set<TestCases> testCases) {
         this.testCases = testCases;
+    }
+
+    public Set<Devices> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(Set<Devices> devices) {
+        this.devices = devices;
     }
 
     @Override
@@ -133,12 +134,12 @@ public class TestSuites {
                 ", name='" + name + '\'' +
                 ", platform=" + platform +
                 ", type=" + type +
-                ", agentId=" + agentId +
                 ", moduleThread=" + moduleThread +
                 ", caseThread=" + caseThread +
                 ", deviceThread=" + deviceThread +
                 ", projectId=" + projectId +
                 ", testCases=" + testCases +
+                ", devices=" + devices +
                 '}';
     }
 }
