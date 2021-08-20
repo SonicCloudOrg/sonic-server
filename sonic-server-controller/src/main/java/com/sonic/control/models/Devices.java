@@ -1,9 +1,13 @@
 package com.sonic.control.models;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @ApiModel("设备模型")
@@ -36,6 +40,10 @@ public class Devices {
     String manufacturer;
     @ApiModelProperty(value = "安装密码", example = "123456")
     String password;
+    @ManyToMany(mappedBy = "devices")
+    @JsonIgnore
+    @JSONField(serialize = false)
+    Set<TestSuites> testSuites;
 
     public Devices() {
     }
@@ -134,6 +142,14 @@ public class Devices {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<TestSuites> getTestSuites() {
+        return testSuites;
+    }
+
+    public void setTestSuites(Set<TestSuites> testSuites) {
+        this.testSuites = testSuites;
     }
 
     @Override

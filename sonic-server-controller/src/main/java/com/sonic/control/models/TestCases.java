@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @ApiModel("测试用例模型")
@@ -24,7 +25,7 @@ public class TestCases {
     int id;
     @NotNull
     @ApiModelProperty(value = "用例名称", required = true, example = "测试用例")
-    String caseName;
+    String name;
     @Positive
     @ApiModelProperty(value = "所属平台", required = true, example = "1")
     int platform;
@@ -50,11 +51,10 @@ public class TestCases {
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date editTime;
-
     @ManyToMany(mappedBy = "testCases")
     @JsonIgnore
     @JSONField(serialize = false)
-    List<TestSuites> testSuites;
+    Set<TestSuites> testSuites;
 
     public TestCases() {
     }
@@ -67,12 +67,12 @@ public class TestCases {
         this.id = id;
     }
 
-    public String getCaseName() {
-        return caseName;
+    public String getName() {
+        return name;
     }
 
-    public void setCaseName(String caseName) {
-        this.caseName = caseName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getPlatform() {
@@ -139,11 +139,11 @@ public class TestCases {
         this.editTime = editTime;
     }
 
-    public List<TestSuites> getTestSuites() {
+    public Set<TestSuites> getTestSuites() {
         return testSuites;
     }
 
-    public void setTestSuites(List<TestSuites> testSuites) {
+    public void setTestSuites(Set<TestSuites> testSuites) {
         this.testSuites = testSuites;
     }
 
@@ -151,7 +151,7 @@ public class TestCases {
     public String toString() {
         return "TestCases{" +
                 "id=" + id +
-                ", caseName='" + caseName + '\'' +
+                ", name='" + name + '\'' +
                 ", platform=" + platform +
                 ", caseType=" + caseType +
                 ", projectId=" + projectId +
@@ -160,7 +160,6 @@ public class TestCases {
                 ", des='" + des + '\'' +
                 ", designer='" + designer + '\'' +
                 ", editTime=" + editTime +
-                ", testSuites=" + testSuites +
                 '}';
     }
 }
