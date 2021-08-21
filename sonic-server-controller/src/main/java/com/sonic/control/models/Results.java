@@ -27,8 +27,6 @@ public class Results {
     String strike;
     @ApiModelProperty(value = "状态", example = "WARN")
     int status;
-    @ApiModelProperty(value = "测试包id", example = "1")
-    int packageId;
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
     @CreatedDate
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
@@ -84,14 +82,6 @@ public class Results {
         this.status = status;
     }
 
-    public int getPackageId() {
-        return packageId;
-    }
-
-    public void setPackageId(int packageId) {
-        this.packageId = packageId;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -109,7 +99,6 @@ public class Results {
                 ", projectId=" + projectId +
                 ", strike='" + strike + '\'' +
                 ", status=" + status +
-                ", packageId=" + packageId +
                 ", createTime=" + createTime +
                 '}';
     }

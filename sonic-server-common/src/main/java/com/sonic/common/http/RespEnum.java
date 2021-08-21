@@ -12,7 +12,7 @@ public enum RespEnum {
     DELETE_OK(2000, "删除成功！"),
     UPLOAD_OK(2000, "上传成功！"),
     UNAUTHORIZED(1001, "身份验证异常！"),
-    SERVICE_NOT_FOUND(1002, "服务不可用！"),
+    SERVICE_NOT_FOUND(1002, "相关服务不可用！"),
     ID_NOT_FOUND(3001, "id不存在！"),
     DELETE_ERROR(3002, "删除失败！"),
     UPLOAD_ERROR(3003, "上传失败！"),

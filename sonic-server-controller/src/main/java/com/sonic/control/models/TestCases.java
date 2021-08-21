@@ -30,9 +30,6 @@ public class TestCases {
     @ApiModelProperty(value = "所属平台", required = true, example = "1")
     int platform;
     @Positive
-    @ApiModelProperty(value = "用例类型", required = true, example = "1")
-    int caseType;
-    @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
     @NotNull
@@ -81,14 +78,6 @@ public class TestCases {
 
     public void setPlatform(int platform) {
         this.platform = platform;
-    }
-
-    public int getCaseType() {
-        return caseType;
-    }
-
-    public void setCaseType(int caseType) {
-        this.caseType = caseType;
     }
 
     public int getProjectId() {
@@ -153,7 +142,6 @@ public class TestCases {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", platform=" + platform +
-                ", caseType=" + caseType +
                 ", projectId=" + projectId +
                 ", module='" + module + '\'' +
                 ", version='" + version + '\'' +
