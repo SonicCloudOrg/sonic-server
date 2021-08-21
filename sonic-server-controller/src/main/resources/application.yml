@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
     username: root
-    password: 61info@#!5858
+    password: Sonic!@#123
   jpa:
     open-in-view: true
     hibernate:
@@ -28,9 +28,6 @@ logging:
       max-history: 3
 
 knife4j:
-  info:
-    title: "Sonic服务端 - 控制中心 Open API"
-    description: "sonic-server-controller 服务开放API，注意不要频繁请求。"
   enable: true
   setting:
     enableHost: true

@@ -17,6 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author ZhouYiXun
@@ -27,12 +28,10 @@ import java.util.List;
 @EnableSwagger2WebMvc
 public class APIDocumentConfig {
     //从配置文档获取接口文档信息
+    @Value("${spring.application.name}")
+    private String name;
     @Value("${spring.version}")
     private String version;
-    @Value("${knife4j.info.title}")
-    private String title;
-    @Value("${knife4j.info.description}")
-    private String description;
     @Value("${knife4j.setting.enableHostText}")
     private String host;
 
@@ -109,11 +108,11 @@ public class APIDocumentConfig {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title(title)
+                .title(name.toUpperCase(Locale.ROOT) + " Open API")
                 .contact(new Contact("ZhouYiXun",
                         "https://github.com/ZhouYixun/sonic-server", "zyx291028775@qq.com"))
                 .version(version)
-                .description(description)
+                .description(name + " 服务开放API，注意不要频繁请求。")
                 .licenseUrl("https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE")
                 .build();
     }

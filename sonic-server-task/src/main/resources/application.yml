@@ -1,0 +1,27 @@
+server:
+  port: 8095
+
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: root
+    password: Sonic!@#123
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+knife4j:
+  enable: true
+  setting:
+    enableHost: true
+    enableHostText: "http://localhost:8092"
