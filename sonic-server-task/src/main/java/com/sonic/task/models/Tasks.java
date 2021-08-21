@@ -17,12 +17,15 @@ public class Tasks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "id", example = "1")
     int id;
+    @Positive
+    @ApiModelProperty(value = "类型", required = true, example = "1")
+    int type;
     @NotNull
     @ApiModelProperty(value = "定时任务名称", required = true, example = "每周三跑一次")
     String name;
     @Positive
-    @ApiModelProperty(value = "测试套件id", required = true, example = "1")
-    int suiteId;
+    @ApiModelProperty(value = "附带值", required = true, example = "123")
+    String content;
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
@@ -43,6 +46,14 @@ public class Tasks {
         this.id = id;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
@@ -51,12 +62,12 @@ public class Tasks {
         this.name = name;
     }
 
-    public int getSuiteId() {
-        return suiteId;
+    public String getContent() {
+        return content;
     }
 
-    public void setSuiteId(int suiteId) {
-        this.suiteId = suiteId;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public int getProjectId() {
@@ -87,8 +98,9 @@ public class Tasks {
     public String toString() {
         return "Tasks{" +
                 "id=" + id +
+                ", type=" + type +
                 ", name='" + name + '\'' +
-                ", suiteId=" + suiteId +
+                ", content='" + content + '\'' +
                 ", projectId=" + projectId +
                 ", status=" + status +
                 ", cronExpression='" + cronExpression + '\'' +

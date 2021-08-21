@@ -22,9 +22,6 @@ logging:
       max-history: 3
 
 knife4j:
-  info:
-    title: "Sonic服务端 - 文件中心 Open API"
-    description: "sonic-server-folder 服务API暂不开放。"
   enable: true
   setting:
     enableHost: true
