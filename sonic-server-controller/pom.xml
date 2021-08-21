@@ -15,6 +15,11 @@
 
     <!-- 依赖列表   -->
     <dependencies>
+        <!--    服务调用    -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
         <!--     eureka客户端   -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

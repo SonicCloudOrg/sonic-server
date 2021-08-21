@@ -40,7 +40,7 @@ public class TestCasesServiceImpl implements TestCasesService {
     private GlobalParamsRepository globalParamsRepository;
 
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, int caseType, String name, Pageable pageable) {
+    public Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable) {
         Specification<TestCases> spc = (root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();
             if (projectId != 0) {
@@ -48,9 +48,6 @@ public class TestCasesServiceImpl implements TestCasesService {
             }
             if (platform != 0) {
                 predicateList.add(cb.and(cb.equal(root.get("platform"), platform)));
-            }
-            if (caseType != 0) {
-                predicateList.add(cb.and(cb.equal(root.get("caseType"), caseType)));
             }
             if (name != null && name.length() > 0) {
                 predicateList.add(cb.and(cb.like(root.get("name"), "%" + name + "%")));

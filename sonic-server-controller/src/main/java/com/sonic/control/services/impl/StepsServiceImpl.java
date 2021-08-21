@@ -31,12 +31,7 @@ public class StepsServiceImpl implements StepsService {
 
     @Override
     public List<Steps> findByCaseIdOrderBySort(int caseId) {
-        List<Steps> list = stepsRepository.findByCaseIdAndStepTypeNotOrderBySort(caseId, "monkey");
-        Steps monkey = stepsRepository.findTopByCaseIdAndStepType(caseId, "monkey");
-        if (monkey != null) {
-            list.add(monkey);
-        }
-        return list;
+        return stepsRepository.findByCaseIdOrderBySort(caseId);
     }
 
     @Override
@@ -125,7 +120,7 @@ public class StepsServiceImpl implements StepsService {
 
     @Override
     public Page<Steps> findByProjectId(int projectId, Pageable pageable) {
-        return stepsRepository.findByProjectIdAndStepTypeNot(projectId
-                , "monkey", pageable);
+        return stepsRepository.findByProjectId(projectId
+                , pageable);
     }
 }

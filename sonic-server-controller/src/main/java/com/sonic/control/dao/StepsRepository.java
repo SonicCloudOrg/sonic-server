@@ -16,9 +16,7 @@ import java.util.List;
  * @date 2021/8/16 20:29
  */
 public interface StepsRepository extends JpaRepository<Steps, Integer> {
-    List<Steps> findByCaseIdAndStepTypeNotOrderBySort(int caseId, String stepType);
-
-    Steps findTopByCaseIdAndStepType(int caseId, String stepType);
+    List<Steps> findByCaseIdOrderBySort(int caseId);
 
     @Query(value = "select IFNULL(max(sort),0) from steps", nativeQuery = true)
     int findMaxSort();
@@ -31,5 +29,5 @@ public interface StepsRepository extends JpaRepository<Steps, Integer> {
     @Transactional
     void deleteByProjectId(@Param("projectId") int projectId);
 
-    Page<Steps> findByProjectIdAndStepTypeNot(int projectId, String stepType, Pageable pageable);
+    Page<Steps> findByProjectId(int projectId, Pageable pageable);
 }

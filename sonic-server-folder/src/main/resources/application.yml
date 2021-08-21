@@ -10,7 +10,7 @@ spring:
       maxFileSize: -1
       maxRequestSize: -1
 
-client:
+gateway:
   host: "http://localhost:8094"
 
 logging:

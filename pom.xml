@@ -16,6 +16,9 @@
         <module>sonic-server-folder</module>
         <module>sonic-server-gateway</module>
         <module>sonic-server-eureka</module>
+        <module>sonic-server-task</module>
+        <module>sonic-server-bus</module>
+        <module>sonic-server-transport</module>
     </modules>
 
     <!-- maven打包的java版本   -->

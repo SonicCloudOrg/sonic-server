@@ -16,6 +16,9 @@ spring:
       ddl-auto: update
     show-sql: true
 
+client:
+  host: http://localhost:3000
+
 logging:
   file:
     name: logs/${spring.application.name}.log
@@ -32,6 +35,25 @@ knife4j:
   setting:
     enableHost: true
     enableHostText: "http://localhost:8092"
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 12000
 
 eureka:
   instance:

@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
  * @date 2021/8/20 17:51
  */
 public interface TestCasesService {
-    Page<TestCases> findAll(int projectId, int platform, int caseType, String name, Pageable pageable);
+    Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable);
 
     boolean delete(int id);
 

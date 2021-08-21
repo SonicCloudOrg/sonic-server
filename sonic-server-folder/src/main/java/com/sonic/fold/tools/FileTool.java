@@ -23,7 +23,7 @@ import java.util.UUID;
 @Component
 public class FileTool {
     private final Logger logger = LoggerFactory.getLogger(FileTool.class);
-    @Value("${client.host}")
+    @Value("${gateway.host}")
     private String host;
 
     /**
@@ -45,13 +45,12 @@ public class FileTool {
         File local = new File(folder.getPath() + File.separator +
                 UUID.randomUUID().toString().replaceAll("-", "")
                         .substring(0, 6) + "-" + file.getOriginalFilename());
-        String url = host + "/api/folder/" + local.getPath();
         try {
             file.transferTo(local.getAbsoluteFile());
         } catch (FileAlreadyExistsException e) {
             logger.error(e.getMessage());
         }
-        return url;
+        return host + "/api/folder/" + local.getPath();
     }
 
     /**
