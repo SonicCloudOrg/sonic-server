@@ -1,0 +1,20 @@
+server:
+  port: 8092
+
+spring:
+  data:
+    redis:
+      repositories:
+        enabled: false
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+
+dingTalk:
+  client:
+    host: "http://localhost:8080"
+  img:
+    success: ""
+    warning: ""
+    error: ""

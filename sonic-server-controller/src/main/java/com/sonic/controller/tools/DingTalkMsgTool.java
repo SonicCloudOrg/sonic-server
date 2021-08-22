@@ -25,18 +25,20 @@ import java.net.URLEncoder;
 @RefreshScope
 public class DingTalkMsgTool {
     private final Logger logger = LoggerFactory.getLogger(DingTalkMsgTool.class);
-    //从配置文件获取前端部署的host
-    @Value("${client.host}")
-    private String clientHost;
-
     @Autowired
     private RestTemplate restTemplate;
-    //成功时的图片url，请填写可以公网访问的链接
-    private String successUrl = "";
-    //警告时的图片url，请填写可以公网访问的链接
-    private String warningUrl = "";
-    //失败时的图片url，请填写可以公网访问的链接
-    private String errorUrl = "";
+    //从配置文件获取前端部署的host
+    @Value("${dingTalk.client.host}")
+    private String clientHost;
+    //成功时的图片url
+    @Value("${dingTalk.img.success}")
+    private String successUrl;
+    //警告时的图片url
+    @Value("${dingTalk.img.warning}")
+    private String warningUrl;
+    //失败时的图片url
+    @Value("${dingTalk.img.error}")
+    private String errorUrl;
 
     /**
      * @param token      机器人token
