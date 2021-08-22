@@ -20,9 +20,14 @@ spring:
           predicates: Path=/api/controller/**
           filters:
             - StripPrefix=2
-        - id: handler
+        - id: folder
           uri: lb://sonic-server-folder
           predicates: Path=/api/folder/**
+          filters:
+            - StripPrefix=2
+        - id: task
+          uri: lb://sonic-server-task
+          predicates: Path=/api/task/**
           filters:
             - StripPrefix=2
 
