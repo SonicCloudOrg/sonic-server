@@ -1,6 +1,6 @@
 package com.sonic.task.quartz;
 
-import com.sonic.task.models.Tasks;
+import com.sonic.task.models.Jobs;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,21 +17,21 @@ public class QuartzHandler {
 
     /**
      * @param scheduler
-     * @param tasks
+     * @param jobs
      * @return void
      * @author ZhouYiXun
      * @des 创建定时任务
      * @date 2021/8/21 17:40
      */
-    public void createScheduleJob(Scheduler scheduler, Tasks tasks) {
+    public void createScheduleJob(Scheduler scheduler, Jobs jobs) {
         try {
-            Class<? extends Job> jobClass = QuartzTask.class;
-            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(tasks.getId() + "").build();
-            jobDetail.getJobDataMap().put("id", tasks.getId());
+            Class<? extends Job> jobClass = QuartzJob.class;
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobs.getId() + "").build();
+            jobDetail.getJobDataMap().put("id", jobs.getId());
             //withMisfireHandlingInstructionDoNothing不触发立即执行
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(tasks.getCronExpression())
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobs.getCronExpression())
                     .withMisfireHandlingInstructionDoNothing();
-            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(tasks.getId() + "").withSchedule(scheduleBuilder).build();
+            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobs.getId() + "").withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
             logger.info("创建定时任务成功");
         } catch (SchedulerException e) {
@@ -41,14 +41,14 @@ public class QuartzHandler {
 
     /**
      * @param scheduler
-     * @param tasks
+     * @param jobs
      * @return void
      * @author ZhouYiXun
      * @des 暂停定时任务
      * @date 2021/8/21 17:42
      */
-    public void pauseScheduleJob(Scheduler scheduler, Tasks tasks) {
-        JobKey jobKey = JobKey.jobKey(tasks.getId() + "");
+    public void pauseScheduleJob(Scheduler scheduler, Jobs jobs) {
+        JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.pauseJob(jobKey);
             logger.info("暂停定时任务成功");
@@ -59,14 +59,14 @@ public class QuartzHandler {
 
     /**
      * @param scheduler
-     * @param tasks
+     * @param jobs
      * @return void
      * @author ZhouYiXun
      * @des 重启定时任务
      * @date 2021/8/21 17:43
      */
-    public void resumeScheduleJob(Scheduler scheduler, Tasks tasks) {
-        JobKey jobKey = JobKey.jobKey(tasks.getId() + "");
+    public void resumeScheduleJob(Scheduler scheduler, Jobs jobs) {
+        JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.resumeJob(jobKey);
             logger.info("重启定时任务成功");
@@ -77,17 +77,17 @@ public class QuartzHandler {
 
     /**
      * @param scheduler
-     * @param tasks
+     * @param jobs
      * @return void
      * @author ZhouYiXun
      * @des 更新定时任务
      * @date 2021/8/21 17:43
      */
-    public void updateScheduleJob(Scheduler scheduler, Tasks tasks) {
+    public void updateScheduleJob(Scheduler scheduler, Jobs jobs) {
         try {
-            TriggerKey triggerKey = TriggerKey.triggerKey(tasks.getId() + "");
+            TriggerKey triggerKey = TriggerKey.triggerKey(jobs.getId() + "");
             //withMisfireHandlingInstructionDoNothing不触发立即执行
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(tasks.getCronExpression())
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobs.getCronExpression())
                     .withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
@@ -100,15 +100,15 @@ public class QuartzHandler {
 
     /**
      * @param scheduler
-     * @param tasks
+     * @param jobs
      * @return void
      * @author ZhouYiXun
      * @des 删除定时任务
      * @date 2021/8/21 17:44
      */
-    public void deleteScheduleJob(Scheduler scheduler, Tasks tasks) {
-        JobKey jobKey = JobKey.jobKey(tasks.getId() + "");
-        TriggerKey triggerKey = TriggerKey.triggerKey(tasks.getId() + "");
+    public void deleteScheduleJob(Scheduler scheduler, Jobs jobs) {
+        JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobs.getId() + "");
         try {
             scheduler.pauseTrigger(triggerKey);
             scheduler.unscheduleJob(triggerKey);

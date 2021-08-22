@@ -41,7 +41,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
         String username = JWTTokenTool.getUserName(token);
         if (username != null && username.length() > 0) {
-            String redisToken = "";
+            String redisToken;
             Object redisTokenObject = RedisTool.get("sonic:user:" + username);
             if (redisTokenObject == null) {
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
