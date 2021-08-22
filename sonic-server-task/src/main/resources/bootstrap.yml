@@ -2,13 +2,13 @@ spring:
   version: @project.version@
   application:
     name: @project.artifactId@
-    des: "Sonic测试平台 - 控制中心"
+    des: "Sonic测试平台 - 任务中心"
   cloud:
     config:
       discovery:
         enabled: true
         service-id: sonic-server-bus
-      name: @project.artifactId@,rabbitmq,actuator,jdbc,redis,feign,logging,knife4j
+      name: @project.artifactId@,rabbitmq,actuator,jdbc,feign,logging,knife4j
       profile: ${PROFILE:dev}
       fail-fast: true
 

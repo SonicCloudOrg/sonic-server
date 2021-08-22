@@ -4,6 +4,7 @@ import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.folder.tools.FileTool;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 
+@Api(tags = "文件上传")
 @RestController
 @RequestMapping("/upload")
 public class UploadController {

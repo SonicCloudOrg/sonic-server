@@ -1,0 +1,11 @@
+server:
+  port: 8093
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+
+gateway:
+  host: "http://localhost:8094"

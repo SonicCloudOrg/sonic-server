@@ -6,6 +6,7 @@ import com.sonic.common.http.RespModel;
 import com.sonic.common.tools.JWTTokenTool;
 import com.sonic.gateway.tools.RedisTool;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
+@RefreshScope
 public class AuthFilter implements GlobalFilter, Ordered {
     @Value("${filter.white-list}")
     private List<String> whiteList;

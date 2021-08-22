@@ -5,6 +5,7 @@ spring:
   version: @project.version@
   application:
     name: @project.artifactId@
+    des: "Sonic测试平台 - 注册中心"
   security:
     basic:
       enabled: true

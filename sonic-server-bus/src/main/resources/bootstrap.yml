@@ -2,6 +2,7 @@ spring:
   version: @project.version@
   application:
     name: @project.artifactId@
+    des: "Sonic测试平台 - 消息总线"
   profiles:
     active: composite,${PROFILE:dev}
   cloud:

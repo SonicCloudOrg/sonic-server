@@ -3,6 +3,7 @@ package com.sonic.folder.tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
  * @date 2021/8/18 20:36
  */
 @Component
+@RefreshScope
 public class FileTool {
     private final Logger logger = LoggerFactory.getLogger(FileTool.class);
     @Value("${gateway.host}")
