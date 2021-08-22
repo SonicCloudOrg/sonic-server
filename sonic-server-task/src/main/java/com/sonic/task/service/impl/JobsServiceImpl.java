@@ -2,11 +2,11 @@ package com.sonic.task.service.impl;
 
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
-import com.sonic.task.dao.TasksRepository;
-import com.sonic.task.models.Tasks;
-import com.sonic.task.models.interfaces.TaskStatus;
+import com.sonic.task.dao.JobsRepository;
+import com.sonic.task.models.Jobs;
+import com.sonic.task.models.interfaces.JobStatus;
 import com.sonic.task.quartz.QuartzHandler;
-import com.sonic.task.service.TasksService;
+import com.sonic.task.service.JobsService;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,58 +19,58 @@ import java.util.List;
  * @date 2021/8/22 11:22
  */
 @Service
-public class TasksServiceImpl implements TasksService {
+public class JobsServiceImpl implements JobsService {
     @Autowired
     private QuartzHandler quartzHandler;
     @Autowired
     private Scheduler scheduler;
     @Autowired
-    private TasksRepository tasksRepository;
+    private JobsRepository jobsRepository;
 
     @Override
-    public RespModel save(Tasks tasks) {
-        tasks.setStatus(TaskStatus.ENABLE);
-        if (tasksRepository.existsById(tasks.getId())) {
+    public RespModel save(Jobs jobs) {
+        jobs.setStatus(JobStatus.ENABLE);
+        if (jobsRepository.existsById(jobs.getId())) {
             try {
-                quartzHandler.updateScheduleJob(scheduler, tasks);
+                quartzHandler.updateScheduleJob(scheduler, jobs);
             } catch (Exception e) {
                 return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
             }
-            tasksRepository.save(tasks);
+            jobsRepository.save(jobs);
             return new RespModel(RespEnum.UPDATE_OK);
         } else {
             try {
-                quartzHandler.createScheduleJob(scheduler, tasks);
+                quartzHandler.createScheduleJob(scheduler, jobs);
             } catch (Exception e) {
                 return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
             }
-            tasksRepository.save(tasks);
+            jobsRepository.save(jobs);
             return new RespModel(RespEnum.HANDLE_OK);
         }
     }
 
     @Override
-    public RespModel updateJob(int id, String type) {
-        if (tasksRepository.existsById(id)) {
-            Tasks tasks = tasksRepository.findById(id).get();
+    public RespModel updateJob(int id, int type) {
+        if (jobsRepository.existsById(id)) {
+            Jobs jobs = jobsRepository.findById(id).get();
             switch (type) {
-                case "pauseJob":
+                case JobStatus.DISABLE:
                     try {
-                        quartzHandler.pauseScheduleJob(scheduler, tasks);
+                        quartzHandler.pauseScheduleJob(scheduler, jobs);
                     } catch (Exception e) {
                         return new RespModel(3000, "关闭失败！");
                     }
-                    tasks.setStatus(TaskStatus.DISABLE);
-                    tasksRepository.save(tasks);
+                    jobs.setStatus(JobStatus.DISABLE);
+                    jobsRepository.save(jobs);
                     return new RespModel(2000, "关闭成功！");
-                case "resumeJob":
+                case JobStatus.ENABLE:
                     try {
-                        quartzHandler.resumeScheduleJob(scheduler, tasks);
+                        quartzHandler.resumeScheduleJob(scheduler, jobs);
                     } catch (Exception e) {
                         return new RespModel(3000, "开启失败！");
                     }
-                    tasks.setStatus(TaskStatus.ENABLE);
-                    tasksRepository.save(tasks);
+                    jobs.setStatus(JobStatus.ENABLE);
+                    jobsRepository.save(jobs);
                     return new RespModel(2000, "开启成功！");
                 default:
                     return new RespModel(3000, "参数有误！");
@@ -82,14 +82,14 @@ public class TasksServiceImpl implements TasksService {
 
     @Override
     public RespModel delete(int id) {
-        if (tasksRepository.existsById(id)) {
-            Tasks tasks = tasksRepository.findById(id).get();
+        if (jobsRepository.existsById(id)) {
+            Jobs jobs = jobsRepository.findById(id).get();
             try {
-                quartzHandler.deleteScheduleJob(scheduler, tasks);
+                quartzHandler.deleteScheduleJob(scheduler, jobs);
             } catch (Exception e) {
                 return new RespModel(RespEnum.DELETE_ERROR);
             }
-            tasksRepository.deleteById(id);
+            jobsRepository.deleteById(id);
             return new RespModel(RespEnum.DELETE_OK);
         } else {
             return new RespModel(RespEnum.ID_NOT_FOUND);
@@ -97,14 +97,14 @@ public class TasksServiceImpl implements TasksService {
     }
 
     @Override
-    public List<Tasks> findByProjectId(int projectId) {
-        return tasksRepository.findByProjectId(projectId);
+    public List<Jobs> findByProjectId(int projectId) {
+        return jobsRepository.findByProjectId(projectId);
     }
 
     @Override
-    public Tasks findById(int id) {
-        if (tasksRepository.existsById(id)) {
-            return tasksRepository.findById(id).get();
+    public Jobs findById(int id) {
+        if (jobsRepository.existsById(id)) {
+            return jobsRepository.findById(id).get();
         } else {
             return null;
         }

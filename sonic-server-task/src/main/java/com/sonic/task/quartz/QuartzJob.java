@@ -2,9 +2,9 @@ package com.sonic.task.quartz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.task.models.Tasks;
-import com.sonic.task.models.interfaces.TaskType;
-import com.sonic.task.service.TasksService;
+import com.sonic.task.models.Jobs;
+import com.sonic.task.models.interfaces.JobType;
+import com.sonic.task.service.JobsService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -21,19 +21,19 @@ import org.springframework.stereotype.Component;
  * @date 2021/8/21 17:44
  */
 @Component
-public class QuartzTask extends QuartzJobBean implements Job {
-    private final Logger logger = LoggerFactory.getLogger(QuartzTask.class);
+public class QuartzJob extends QuartzJobBean implements Job {
+    private final Logger logger = LoggerFactory.getLogger(QuartzJob.class);
     @Autowired
-    private TasksService tasksService;
+    private JobsService jobsService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-        Tasks tasks = tasksService.findById(dataMap.getInt("id"));
-        if (tasks != null) {
-            JSONObject data = JSON.parseObject(tasks.getContent());
-            switch (tasks.getType()) {
-                case TaskType.TEST_TASK:
+        Jobs jobs = jobsService.findById(dataMap.getInt("id"));
+        if (jobs != null) {
+            JSONObject data = JSON.parseObject(jobs.getContent());
+            switch (jobs.getType()) {
+                case JobType.TEST_JOB:
                     int suiteId = data.getInteger("suiteId");
             }
         }

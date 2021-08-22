@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 
 @Entity
 @ApiModel("定时任务实体")
-public class Tasks {
+public class Jobs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "id", example = "1")
@@ -35,7 +35,7 @@ public class Tasks {
     @ApiModelProperty(value = "cron表达式", required = true, example = "* 30 * * * ?")
     String cronExpression;
 
-    public Tasks() {
+    public Jobs() {
     }
 
     public int getId() {
