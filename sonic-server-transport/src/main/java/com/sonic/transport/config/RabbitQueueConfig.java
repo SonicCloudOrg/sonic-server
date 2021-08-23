@@ -21,6 +21,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitQueueConfig {
     private final Logger logger = LoggerFactory.getLogger(RabbitQueueConfig.class);
+    @Bean("DeviceExchange")
+    public DirectExchange createDeviceExchange() {
+        return new DirectExchange("DeviceExchange", true, false);
+    }
 
     @Bean("MsgDirectExchange")
     public DirectExchange createMsgDirectExchange() {

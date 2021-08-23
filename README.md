@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
 </p>
-<p align="center">🎉Sonic客户端测试平台</p>
+<p align="center">🎉Sonic Client Test Platform</p>
 <p align="center">
   <span>English |</span>
   <a href="https://github.com/ZhouYixun/sonic-server/blob/main/README_CN.md">  
