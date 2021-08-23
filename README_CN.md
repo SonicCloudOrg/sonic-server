@@ -3,7 +3,7 @@
 </p>
 <p align="center">🎉Sonic客户端测试平台</p>
 <p align="center">
-  <a href="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/README.md">  
+  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/README.md">  
     English
   </a>
   <span>| 简体中文</span>

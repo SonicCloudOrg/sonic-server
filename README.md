@@ -4,7 +4,7 @@
 <p align="center">🎉Sonic客户端测试平台</p>
 <p align="center">
   <span>English |</span>
-  <a href="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/README_CN.md">  
+  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/README_CN.md">  
      简体中文
   </a>
 </p>
