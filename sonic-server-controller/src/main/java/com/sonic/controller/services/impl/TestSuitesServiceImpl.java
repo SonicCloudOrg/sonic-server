@@ -100,7 +100,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         testData.put("sonicAssist", sonicData);
         testData.put("suiteData", jsonSuite);
         RespModel testDataResp = transportFeignClient.sendTestData(testData);
-        if (testDataResp.getError() != 0) {
+        if (testDataResp.getCode() != 0) {
             return new RespModel(RespEnum.SERVICE_NOT_FOUND);
         }
         return new RespModel(RespEnum.HANDLE_OK);

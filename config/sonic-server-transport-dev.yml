@@ -1,0 +1,10 @@
+server:
+  port: 0
+
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual
+    publisher-confirm-type: correlated
+    publisher-returns: true

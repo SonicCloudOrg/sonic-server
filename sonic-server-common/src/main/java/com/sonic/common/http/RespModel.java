@@ -11,50 +11,50 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("请求响应模型")
 public class RespModel<T> {
     @ApiModelProperty(value = "状态码", example = "2000")
-    private int error;
+    private int code;
     @ApiModelProperty(value = "状态描述", example = "操作成功！")
-    private String errMsg;
+    private String message;
     @ApiModelProperty(value = "响应详情")
     private T data;
 
     public RespModel() {
     }
 
-    public RespModel(int error, String errMsg) {
-        this(error, errMsg, null);
+    public RespModel(int code, String message) {
+        this(code, message, null);
     }
 
-    public RespModel(int error, String errMsg, T data) {
-        this.error = error;
-        this.errMsg = errMsg;
+    public RespModel(int code, String message, T data) {
+        this.code = code;
+        this.message = message;
         this.data = data;
     }
 
     public RespModel(RespEnum respEnum) {
-        this.error = respEnum.getError();
-        this.errMsg = respEnum.getErrMsg();
+        this.code = respEnum.getCode();
+        this.message = respEnum.getMessage();
     }
 
     public RespModel(RespEnum respEnum, T data) {
-        this.error = respEnum.getError();
-        this.errMsg = respEnum.getErrMsg();
+        this.code = respEnum.getCode();
+        this.message = respEnum.getMessage();
         this.data = data;
     }
 
-    public int getError() {
-        return error;
+    public int getCode() {
+        return code;
     }
 
-    public void setError(int error) {
-        this.error = error;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getErrMsg() {
-        return errMsg;
+    public String getMessage() {
+        return message;
     }
 
-    public RespModel<T> setErrMsg(String msg) {
-        this.errMsg = msg;
+    public RespModel<T> setMessage(String msg) {
+        this.message = msg;
         return this;
     }
 
@@ -70,8 +70,8 @@ public class RespModel<T> {
     @Override
     public String toString() {
         return "RespModel{" +
-                "error=" + error +
-                ", errMsg='" + errMsg + '\'' +
+                "error=" + code +
+                ", errMsg='" + message + '\'' +
                 ", data=" + data +
                 '}';
     }

@@ -22,27 +22,27 @@ public enum RespEnum {
     PARAMS_NOT_VALID(4004, "字段缺失或校验异常！"),
     PARAMS_NOT_READABLE(4005, "解析参数失败！");
 
-    private int error;
-    private String errMsg;
+    private int code;
+    private String message;
 
-    RespEnum(int error, String errMsg) {
-        this.error = error;
-        this.errMsg = errMsg;
+    RespEnum(int code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    public int getError() {
-        return error;
+    public int getCode() {
+        return code;
     }
 
-    public void setError(int error) {
-        this.error = error;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getErrMsg() {
-        return errMsg;
+    public String getMessage() {
+        return message;
     }
 
-    public void setErrMsg(String errMsg) {
-        this.errMsg = errMsg;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
