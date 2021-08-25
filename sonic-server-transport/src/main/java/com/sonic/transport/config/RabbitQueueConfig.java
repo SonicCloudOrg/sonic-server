@@ -19,13 +19,18 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitQueueConfig {
     private final Logger logger = LoggerFactory.getLogger(RabbitQueueConfig.class);
 
+    @Bean("PackageExchange")
+    public FanoutExchange PackageExchange() {
+        return new FanoutExchange("PackageExchange", true, false);
+    }
+
     @Bean("AgentExchange")
-    public FanoutExchange createAgentExchange() {
+    public FanoutExchange AgentExchange() {
         return new FanoutExchange("AgentExchange", true, false);
     }
 
     @Bean("MsgDirectExchange")
-    public DirectExchange createMsgDirectExchange() {
+    public DirectExchange MsgDirectExchange() {
         return new DirectExchange("MsgDirectExchange", true, false);
     }
 
@@ -36,7 +41,7 @@ public class RabbitQueueConfig {
 
     @Bean
     public Binding bindingDirect(@Qualifier("TestDataQueue") Queue queue,
-                                      @Qualifier("MsgDirectExchange") DirectExchange exchange) {
+                                 @Qualifier("MsgDirectExchange") DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with("msg");
     }
 

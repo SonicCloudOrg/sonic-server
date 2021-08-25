@@ -9,6 +9,7 @@ import com.sonic.controller.dao.GlobalParamsRepository;
 import com.sonic.controller.dao.TestSuitesRepository;
 import com.sonic.controller.feign.TransportFeignClient;
 import com.sonic.controller.models.*;
+import com.sonic.controller.models.interfaces.AgentStatus;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.PublicStepsService;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,14 +57,18 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         if (testSuites.getTestCases().size() == 0) {
             return new RespModel(3000, "该测试套件内无测试用例！");
         }
+        int onLineAgent = agentsRepository.findCountByStatus(AgentStatus.ONLINE);
+        if (onLineAgent == 0) {
+            return new RespModel(3000, "暂无Agent在线！");
+        }
         Set<Devices> devicesList = testSuites.getDevices();
         int onLineCount = 0;
-        for (Devices devices :devicesList) {
+        for (Devices devices : devicesList) {
             if (devices.getStatus().equals(DeviceStatus.ONLINE)) {
                 onLineCount++;
             }
         }
-        if(onLineCount==0){
+        if (onLineCount == 0) {
             return new RespModel(3000, "所选设备暂无可用！");
         }
         Results results = new Results();
@@ -70,10 +76,19 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         results.setSuiteId(suiteId);
         results.setSuiteName(testSuites.getName());
         results.setStrike(strike);
+        results.setSendAgentCount(onLineAgent);
+        results.setReceiveAgentCount(0);
         results.setProjectId(testSuites.getProjectId());
         resultsService.save(results);
         JSONObject jsonSuite = new JSONObject();
         JSONArray suiteArray = new JSONArray();
+        //全局参数
+        List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(testSuites.getProjectId());
+        JSONObject gp = new JSONObject();
+        for (GlobalParams g : globalParamsList) {
+            gp.put(g.getParamsKey(), g.getParamsValue());
+        }
+        //组装用例和步骤
         for (TestCases testCases : testSuites.getTestCases()) {
             JSONObject cases = new JSONObject();
             JSONArray arraySuite = new JSONArray();
@@ -85,21 +100,21 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             cases.put("case", testCases);
             suiteArray.add(cases);
         }
+        //线程配置
         jsonSuite.put("mt", testSuites.getModuleThread());
-        jsonSuite.put("dt", testSuites.getDeviceThread());
         jsonSuite.put("ct", testSuites.getCaseThread());
-        jsonSuite.put("gp", globalParamsRepository.findByProjectId(testSuites.getProjectId()));
+        jsonSuite.put("dt", testSuites.getDeviceThread());
+        jsonSuite.put("gp", gp);
         jsonSuite.put("suite", suiteArray);
         jsonSuite.put("sp", testSuites.getPlatform());
         jsonSuite.put("rid", results.getId());
-        JSONObject sonicData = new JSONObject();
+        JSONObject assist = new JSONObject();
         for (Devices devices : devicesList) {
-            sonicData.put(devices.getUdId(), devices.getPassword());
+            assist.put(devices.getUdId(), devices.getPassword());
         }
-        JSONObject testData = new JSONObject();
-        testData.put("sonicAssist", sonicData);
-        testData.put("suiteData", jsonSuite);
-        RespModel testDataResp = transportFeignClient.sendTestData(testData);
+        jsonSuite.put("assist", assist);
+        jsonSuite.put("msg", "suite");
+        RespModel testDataResp = transportFeignClient.sendTestData(jsonSuite);
         if (testDataResp.getCode() != 0) {
             return new RespModel(RespEnum.SERVICE_NOT_FOUND);
         }

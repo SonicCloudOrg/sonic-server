@@ -18,26 +18,26 @@ import java.net.URLEncoder;
 
 /**
  * @author ZhouYiXun
- * @des 钉钉推送相关工具类，可以参考 https://developers.dingtalk.com/document/app/push-robots
+ * @des 机器人推送相关工具类，可以参考 https://developers.dingtalk.com/document/app/push-robots
  * @date 2021/8/15 18:20
  */
 @Component
 @RefreshScope
-public class DingTalkMsgTool {
-    private final Logger logger = LoggerFactory.getLogger(DingTalkMsgTool.class);
+public class RobotMsgTool {
+    private final Logger logger = LoggerFactory.getLogger(RobotMsgTool.class);
     @Autowired
     private RestTemplate restTemplate;
     //从配置文件获取前端部署的host
-    @Value("${dingTalk.client.host}")
+    @Value("${robot.client.host}")
     private String clientHost;
     //成功时的图片url
-    @Value("${dingTalk.img.success}")
+    @Value("${robot.img.success}")
     private String successUrl;
     //警告时的图片url
-    @Value("${dingTalk.img.warning}")
+    @Value("${robot.img.warning}")
     private String warningUrl;
     //失败时的图片url
-    @Value("${dingTalk.img.error}")
+    @Value("${robot.img.error}")
     private String errorUrl;
 
     /**

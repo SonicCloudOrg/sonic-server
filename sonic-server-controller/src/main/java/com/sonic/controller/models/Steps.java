@@ -43,6 +43,9 @@ public class Steps {
     String text;
     @ApiModelProperty(value = "排序号", example = "123")
     int sort;
+    @Positive
+    @ApiModelProperty(value = "异常处理类型", required = true, example = "1")
+    int error;
     @ApiModelProperty(value = "包含元素列表")
     @ManyToMany(fetch = FetchType.EAGER)
     List<Elements> elements;
@@ -118,6 +121,14 @@ public class Steps {
         this.sort = sort;
     }
 
+    public int getError() {
+        return error;
+    }
+
+    public void setError(int error) {
+        this.error = error;
+    }
+
     public List<Elements> getElements() {
         return elements;
     }
@@ -148,10 +159,11 @@ public class Steps {
                 ", caseId=" + caseId +
                 ", platform=" + platform +
                 ", stepType='" + stepType + '\'' +
-                ", elements=" + elements +
                 ", content='" + content + '\'' +
                 ", text='" + text + '\'' +
                 ", sort=" + sort +
+                ", error=" + error +
+                ", elements=" + elements +
                 '}';
     }
 }

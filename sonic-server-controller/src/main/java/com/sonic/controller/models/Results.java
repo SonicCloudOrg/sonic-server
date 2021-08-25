@@ -25,14 +25,19 @@ public class Results {
     int projectId;
     @ApiModelProperty(value = "触发者", example = "ZhouYiXun")
     String strike;
+    @ApiModelProperty(value = "发送的Agent数量", example = "1")
+    int sendAgentCount;
+    @ApiModelProperty(value = "接收的Agent数量", example = "2")
+    int receiveAgentCount;
     @ApiModelProperty(value = "状态", example = "WARN")
     int status;
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
     @CreatedDate
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date createTime;
 
-    public Results(){}
+    public Results() {
+    }
 
     public int getId() {
         return id;
@@ -74,6 +79,22 @@ public class Results {
         this.strike = strike;
     }
 
+    public int getSendAgentCount() {
+        return sendAgentCount;
+    }
+
+    public void setSendAgentCount(int sendAgentCount) {
+        this.sendAgentCount = sendAgentCount;
+    }
+
+    public int getReceiveAgentCount() {
+        return receiveAgentCount;
+    }
+
+    public void setReceiveAgentCount(int receiveAgentCount) {
+        this.receiveAgentCount = receiveAgentCount;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -98,6 +119,8 @@ public class Results {
                 ", suiteName='" + suiteName + '\'' +
                 ", projectId=" + projectId +
                 ", strike='" + strike + '\'' +
+                ", sendAgentCount=" + sendAgentCount +
+                ", receiveAgentCount=" + receiveAgentCount +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 '}';

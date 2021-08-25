@@ -7,7 +7,7 @@ import com.sonic.controller.models.Results;
 import com.sonic.controller.models.interfaces.ResultDetailStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
-import com.sonic.controller.tools.DingTalkMsgTool;
+import com.sonic.controller.tools.RobotMsgTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class ResultsServiceImpl implements ResultsService {
     @Autowired
     private ProjectsService projectsService;
     @Autowired
-    private DingTalkMsgTool dingTalkMsgTool;
+    private RobotMsgTool robotMsgTool;
 
     @Override
     public Page<Results> findByProjectId(int projectId, Pageable pageable) {
@@ -93,6 +93,7 @@ public class ResultsServiceImpl implements ResultsService {
             int failCount = 0;
             int sucCount = 0;
             int warnCount = 0;
+            int status;
             for (ResultDetail resultDetail : resultDetailList) {
                 if (resultDetail.getStatus() == ResultDetailStatus.FAIL) {
                     failCount++;
@@ -103,20 +104,26 @@ public class ResultsServiceImpl implements ResultsService {
                 }
             }
             if (failCount > 0) {
-                results.setStatus(ResultStatus.FAIL);
+                status = ResultStatus.FAIL;
             } else if (warnCount > 0) {
-                results.setStatus(ResultStatus.WARNING);
+                status = ResultStatus.WARNING;
             } else {
-                results.setStatus(ResultStatus.PASS);
+                status = ResultStatus.PASS;
             }
-            if (sucCount == 0 && failCount == 0 && warnCount == 0) {
+            //状态赋予等级最高的
+            results.setStatus(status > results.getStatus() ? status : results.getStatus());
+            if (results.getSendAgentCount() <= 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
                 delete(id);
             } else {
+                results.setReceiveAgentCount(results.getReceiveAgentCount() + 1);
                 save(results);
-                Projects projects = projectsService.findById(results.getProjectId());
-                if (projects != null && projects.getDingTalkToken().length() > 0 && projects.getDingTalkSecret().length() > 0) {
-                    dingTalkMsgTool.sendResultFinishReport(projects.getDingTalkToken(), projects.getDingTalkSecret(),
-                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+                //发收相同的话，表明测试结束了
+                if (results.getReceiveAgentCount() == results.getSendAgentCount()) {
+                    Projects projects = projectsService.findById(results.getProjectId());
+                    if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                        robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
+                                results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+                    }
                 }
             }
         }

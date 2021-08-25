@@ -26,10 +26,10 @@ public class Projects {
     String projectDes;
     @NotNull
     @ApiModelProperty(value = "钉钉机器人token", required = true, example = "http://dingTalk.com?token=*****")
-    String dingTalkToken;
+    String robotToken;
     @NotNull
     @ApiModelProperty(value = "钉钉机器人加签密钥", required = true, example = "qwe***")
-    String dingTalkSecret;
+    String robotSecret;
     @NotNull
     @ApiModelProperty(value = "项目图标", required = true, example = "http://img.jpg")
     String projectImg;
@@ -65,20 +65,20 @@ public class Projects {
         this.projectDes = projectDes;
     }
 
-    public String getDingTalkToken() {
-        return dingTalkToken;
+    public String getRobotToken() {
+        return robotToken;
     }
 
-    public void setDingTalkToken(String dingTalkToken) {
-        this.dingTalkToken = dingTalkToken;
+    public void setRobotToken(String robotToken) {
+        this.robotToken = robotToken;
     }
 
-    public String getDingTalkSecret() {
-        return dingTalkSecret;
+    public String getRobotSecret() {
+        return robotSecret;
     }
 
-    public void setDingTalkSecret(String dingTalkSecret) {
-        this.dingTalkSecret = dingTalkSecret;
+    public void setRobotSecret(String robotSecret) {
+        this.robotSecret = robotSecret;
     }
 
     public String getProjectImg() {
@@ -103,8 +103,8 @@ public class Projects {
                 "id=" + id +
                 ", projectName='" + projectName + '\'' +
                 ", projectDes='" + projectDes + '\'' +
-                ", dingTalkToken='" + dingTalkToken + '\'' +
-                ", dingTalkSecret='" + dingTalkSecret + '\'' +
+                ", robotToken='" + robotToken + '\'' +
+                ", robotSecret='" + robotSecret + '\'' +
                 ", projectImg='" + projectImg + '\'' +
                 ", editTime=" + editTime +
                 '}';

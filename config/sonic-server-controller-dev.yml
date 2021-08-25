@@ -7,7 +7,7 @@ spring:
       repositories:
         enabled: false
 
-dingTalk:
+robot:
   client:
     host: "http://localhost:8080"
   img:
