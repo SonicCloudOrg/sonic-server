@@ -42,6 +42,11 @@ public class DevicesServiceImpl implements DevicesService {
     }
 
     @Override
+    public void save(Devices devices) {
+        devicesRepository.save(devices);
+    }
+
+    @Override
     public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,
                                  List<String> manufacturer, List<String> cpu, List<String> size,
                                  List<Integer> agentId, List<String> status, String deviceInfo,
@@ -153,8 +158,8 @@ public class DevicesServiceImpl implements DevicesService {
     }
 
     @Override
-    public Devices findByUdId(String udId) {
-        return devicesRepository.findByUdId(udId);
+    public Devices findByAgentIdAndUdId(int agentId, String udId) {
+        return devicesRepository.findByAgentIdAndUdId(agentId, udId);
     }
 
     @Override
@@ -173,5 +178,59 @@ public class DevicesServiceImpl implements DevicesService {
         }
         jsonObject.put("size", sizeList);
         return jsonObject;
+    }
+
+    @Override
+    public void deviceStatus(JSONObject jsonMsg) {
+        Devices devices = findByAgentIdAndUdId(jsonMsg.getInteger("agentId")
+                , jsonMsg.getString("udId"));
+        if (devices == null) {
+            Devices newDevices = new Devices();
+            newDevices.setUdId(jsonMsg.getString("udId"));
+            if (jsonMsg.getString("name") != null) {
+                newDevices.setName(jsonMsg.getString("name"));
+            }
+            if (jsonMsg.getString("model") != null) {
+                newDevices.setName(jsonMsg.getString("model"));
+            }
+            newDevices.setPlatform(jsonMsg.getInteger("platform"));
+            newDevices.setVersion(jsonMsg.getString("version"));
+            newDevices.setCpu(jsonMsg.getString("cpu"));
+            newDevices.setSize(jsonMsg.getString("size"));
+            newDevices.setManufacturer(jsonMsg.getString("manufacturer"));
+            newDevices.setAgentId(jsonMsg.getInteger("agentId"));
+            newDevices.setStatus(jsonMsg.getString("status"));
+            newDevices.setPassword("");
+            save(newDevices);
+        } else {
+            devices.setAgentId(jsonMsg.getInteger("agentId"));
+            if (jsonMsg.getString("name") != null) {
+                if (!jsonMsg.getString("name").equals("未知")) {
+                    devices.setName(jsonMsg.getString("name"));
+                }
+            }
+            if (jsonMsg.getString("model") != null) {
+                if (!jsonMsg.getString("model").equals("未知")) {
+                    devices.setModel(jsonMsg.getString("model"));
+                }
+            }
+            if (jsonMsg.getString("version") != null) {
+                devices.setVersion(jsonMsg.getString("version"));
+            }
+            if (jsonMsg.getString("platform") != null) {
+                devices.setPlatform(jsonMsg.getInteger("platform"));
+            }
+            if (jsonMsg.getString("cpu") != null) {
+                devices.setCpu(jsonMsg.getString("cpu"));
+            }
+            if (jsonMsg.getString("size") != null) {
+                devices.setSize(jsonMsg.getString("size"));
+            }
+            if (jsonMsg.getString("manufacturer") != null) {
+                devices.setManufacturer(jsonMsg.getString("manufacturer"));
+            }
+            devices.setStatus(jsonMsg.getString("status"));
+            save(devices);
+        }
     }
 }

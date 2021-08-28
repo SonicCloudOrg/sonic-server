@@ -1,5 +1,6 @@
 package com.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.dao.AgentsRepository;
 import com.sonic.controller.dao.DevicesRepository;
 import com.sonic.controller.models.Agents;
@@ -30,8 +31,18 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
-    public void save(Agents agents) {
-        agentsRepository.save(agents);
+    public void save(JSONObject jsonObject) {
+        if (jsonObject.getInteger("id") != null && jsonObject.getInteger("id") != 0) {
+            if (agentsRepository.existsById(jsonObject.getInteger("id"))) {
+                Agents oldAgent = agentsRepository.findById(jsonObject.getInteger("id")).get();
+                oldAgent.setStatus(AgentStatus.ONLINE);
+                oldAgent.setIp(jsonObject.getString("ip"));
+                oldAgent.setPort(jsonObject.getInteger("port"));
+                oldAgent.setVersion(jsonObject.getString("version"));
+                oldAgent.setSystemType(jsonObject.getString("systemType"));
+                agentsRepository.save(oldAgent);
+            }
+        }
     }
 
     @Override
@@ -40,7 +51,7 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
-    public boolean statusChange(int id) {
+    public boolean offLine(int id) {
         if (agentsRepository.existsById(id)) {
             Agents agentOffLine = agentsRepository.findById(id).get();
             agentOffLine.setStatus(AgentStatus.OFFLINE);

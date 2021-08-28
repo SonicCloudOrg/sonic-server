@@ -85,16 +85,23 @@ public class DevicesController {
         return new RespModel(RespEnum.SEARCH_OK, devicesService.getFilterOption());
     }
 
+//    @WebAspect
+//    @ApiOperation(value = "查询单个设备信息", notes = "获取单个设备的详细信息")
+//    @ApiImplicitParam(name = "udId", value = "设备序列号", dataTypeClass = String.class)
+//    @GetMapping
+//    public RespModel<Devices> findByUdId(@RequestParam(name = "udId") String udId) {
+//        Devices devices = devicesService.findByUdId(udId);
+//        if (devices != null) {
+//            return new RespModel(RespEnum.SEARCH_OK, devices);
+//        } else {
+//            return new RespModel(3000, "设备不存在！");
+//        }
+//    }
+
     @WebAspect
-    @ApiOperation(value = "查询单个设备信息", notes = "获取单个设备的详细信息")
-    @ApiImplicitParam(name = "udId", value = "设备序列号", dataTypeClass = String.class)
-    @GetMapping
-    public RespModel<Devices> findByUdId(@RequestParam(name = "udId") String udId) {
-        Devices devices = devicesService.findByUdId(udId);
-        if (devices != null) {
-            return new RespModel(RespEnum.SEARCH_OK, devices);
-        } else {
-            return new RespModel(3000, "设备不存在！");
-        }
+    @PutMapping("/deviceStatus")
+    public RespModel deviceStatus(@RequestBody JSONObject jsonObject) {
+        devicesService.deviceStatus(jsonObject);
+        return new RespModel(RespEnum.UPDATE_OK);
     }
 }

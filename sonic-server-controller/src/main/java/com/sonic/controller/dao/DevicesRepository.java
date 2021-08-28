@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/8/16 20:29
  */
 public interface DevicesRepository extends JpaRepository<Devices, Integer>, JpaSpecificationExecutor<Devices> {
-    Devices findByUdId(String udId);
+    Devices findByAgentIdAndUdId(int agentId, String udId);
 
     List<Devices> findByAgentId(int agentId);
 

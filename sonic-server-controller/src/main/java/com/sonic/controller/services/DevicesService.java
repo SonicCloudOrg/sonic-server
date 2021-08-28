@@ -16,13 +16,17 @@ import java.util.List;
 public interface DevicesService {
     boolean savePwd(DevicePwdChange devicePwdChange);
 
+    void save(Devices devices);
+
     Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                           String deviceInfo, Pageable pageable);
 
     List<Devices> findByIdIn(List<Integer> ids);
 
-    Devices findByUdId(String udId);
+    Devices findByAgentIdAndUdId(int agentId, String udId);
 
     JSONObject getFilterOption();
+
+    void deviceStatus(JSONObject jsonObject);
 }

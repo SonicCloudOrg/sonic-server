@@ -1,5 +1,6 @@
 package com.sonic.controller.services;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.models.Agents;
 
 import java.util.List;
@@ -14,9 +15,9 @@ public interface AgentsService {
 
     Agents findByIp(String ip);
 
-    void save(Agents agents);
+    void save(JSONObject agents);
 
     Agents findTopByName(String name);
 
-    boolean statusChange(int id);
+    boolean offLine(int id);
 }

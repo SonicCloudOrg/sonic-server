@@ -6,5 +6,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+      retry:
+        enabled: true
+        max-attempts: 5
+        max-interval: 60000
+        initial-interval: 60000
     publisher-confirm-type: correlated
     publisher-returns: true

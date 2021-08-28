@@ -108,11 +108,11 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         jsonSuite.put("suite", suiteArray);
         jsonSuite.put("sp", testSuites.getPlatform());
         jsonSuite.put("rid", results.getId());
-        JSONObject assist = new JSONObject();
+        JSONObject plugin = new JSONObject();
         for (Devices devices : devicesList) {
-            assist.put(devices.getUdId(), devices.getPassword());
+            plugin.put(devices.getUdId(), devices.getPassword());
         }
-        jsonSuite.put("assist", assist);
+        jsonSuite.put("plugin", plugin);
         jsonSuite.put("msg", "suite");
         RespModel testDataResp = transportFeignClient.sendTestData(jsonSuite);
         if (testDataResp.getCode() != 0) {
