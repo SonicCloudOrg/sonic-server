@@ -1,5 +1,6 @@
 package com.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.models.ResultDetail;
 import com.sonic.controller.services.ResultDetailService;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,11 @@ import java.util.List;
  */
 @Service
 public class ResultDetailServiceImpl implements ResultDetailService {
+    @Override
+    public void saveByTransport(JSONObject jsonObject) {
+
+    }
+
     @Override
     public List<ResultDetail> findByResultIdAndType(int resultId, String type) {
         return null;

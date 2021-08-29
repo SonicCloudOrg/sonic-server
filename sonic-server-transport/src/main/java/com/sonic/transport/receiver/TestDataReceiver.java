@@ -35,6 +35,13 @@ public class TestDataReceiver {
             case "deviceDetail":
                 controllerResp = controllerFeignClient.deviceStatus(jsonMsg);
                 break;
+            case "elapsed":
+            case "step":
+            case "perform":
+            case "record":
+            case "status":
+                controllerResp = controllerFeignClient.saveResultDetail(jsonMsg);
+                break;
         }
         if (controllerResp != null && controllerResp.getCode() == 2000) {
             channel.basicAck(deliveryTag, true);

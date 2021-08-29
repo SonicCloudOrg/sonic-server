@@ -17,4 +17,7 @@ public interface ControllerFeignClient {
     @GetMapping("/agents/offLine")
     RespModel offLine(@RequestParam(name = "id") int id);
 
+    @PostMapping("/resultDetail")
+    RespModel saveResultDetail(@RequestBody JSONObject jsonObject);
+
 }

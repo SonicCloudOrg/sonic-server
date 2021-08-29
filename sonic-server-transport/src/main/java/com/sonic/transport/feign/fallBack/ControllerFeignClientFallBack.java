@@ -22,4 +22,9 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     public RespModel offLine(int id) {
         return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }
+
+    @Override
+    public RespModel saveResultDetail(JSONObject jsonObject) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
 }
