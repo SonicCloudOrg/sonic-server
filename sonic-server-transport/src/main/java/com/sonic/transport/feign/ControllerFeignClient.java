@@ -20,4 +20,6 @@ public interface ControllerFeignClient {
     @PostMapping("/resultDetail")
     RespModel saveResultDetail(@RequestBody JSONObject jsonObject);
 
+    @PutMapping("/elapsedTime")
+    RespModel saveElapsed(@RequestBody JSONObject jsonObject);
 }

@@ -27,4 +27,9 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     public RespModel saveResultDetail(JSONObject jsonObject) {
         return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }
+
+    @Override
+    public RespModel saveElapsed(JSONObject jsonObject) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
 }

@@ -11,6 +11,8 @@ import java.util.List;
  * @date 2021/8/21 16:08
  */
 public interface ResultDetailService {
+    void save(ResultDetail resultDetail);
+
     void saveByTransport(JSONObject jsonObject);
 
     List<ResultDetail> findByResultIdAndType(int resultId, String type);
