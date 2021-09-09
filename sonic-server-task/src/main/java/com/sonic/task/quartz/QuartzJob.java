@@ -35,6 +35,9 @@ public class QuartzJob extends QuartzJobBean implements Job {
             switch (jobs.getType()) {
                 case JobType.TEST_JOB:
                     int suiteId = data.getInteger("suiteId");
+                case JobType.CLEAN_FILE_JOB:
+                case JobType.CLEAN_RESULT_JOB:
+                    break;
             }
         }
     }
