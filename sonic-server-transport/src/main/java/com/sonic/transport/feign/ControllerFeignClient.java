@@ -22,4 +22,7 @@ public interface ControllerFeignClient {
 
     @PutMapping("/elapsedTime")
     RespModel saveElapsed(@RequestBody JSONObject jsonObject);
+
+    @GetMapping("/devices")
+    RespModel findDeviceById(@RequestParam(name = "id") int id);
 }

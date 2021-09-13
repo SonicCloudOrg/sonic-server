@@ -233,4 +233,13 @@ public class DevicesServiceImpl implements DevicesService {
             save(devices);
         }
     }
+
+    @Override
+    public Devices findById(int id) {
+        if (devicesRepository.existsById(id)) {
+            return devicesRepository.findById(id).get();
+        } else {
+            return null;
+        }
+    }
 }

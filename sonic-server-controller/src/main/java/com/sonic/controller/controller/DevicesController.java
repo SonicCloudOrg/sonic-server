@@ -104,4 +104,15 @@ public class DevicesController {
         devicesService.deviceStatus(jsonObject);
         return new RespModel(RespEnum.UPDATE_OK);
     }
+
+    @WebAspect
+    @GetMapping
+    public RespModel<Devices> findById(@RequestParam(name = "id") int id) {
+        Devices devices = devicesService.findById(id);
+        if (devices != null) {
+            return new RespModel(RespEnum.SEARCH_OK, devices);
+        } else {
+            return new RespModel(3000, "设备不存在！");
+        }
+    }
 }

@@ -23,3 +23,8 @@ spring:
           predicates: Path=/api/task/**
           filters:
             - StripPrefix=2
+        - id: transport
+          uri: lb://sonic-server-transport
+          predicates: Path=/api/transport/**
+          filters:
+            - StripPrefix=2

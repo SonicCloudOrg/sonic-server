@@ -29,4 +29,6 @@ public interface DevicesService {
     JSONObject getFilterOption();
 
     void deviceStatus(JSONObject jsonObject);
+
+    Devices findById(int id);
 }
