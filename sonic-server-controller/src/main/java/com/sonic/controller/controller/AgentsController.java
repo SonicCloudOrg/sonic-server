@@ -4,10 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
+import com.sonic.controller.models.Agents;
 import com.sonic.controller.services.AgentsService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author ZhouYiXun
@@ -20,6 +24,13 @@ import org.springframework.web.bind.annotation.*;
 public class AgentsController {
     @Autowired
     private AgentsService agentsService;
+
+    @WebAspect
+    @ApiOperation(value = "查询所有代理端", notes = "获取所有代理端以及详细信息")
+    @GetMapping
+    public RespModel<List<Agents>> findAgents() {
+        return new RespModel(RespEnum.SEARCH_OK, agentsService.findAgents());
+    }
 
     @WebAspect
     @PutMapping
