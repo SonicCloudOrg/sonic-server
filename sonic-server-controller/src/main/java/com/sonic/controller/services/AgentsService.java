@@ -13,11 +13,11 @@ import java.util.List;
 public interface AgentsService {
     List<Agents> findAgents();
 
-    Agents findByIp(String ip);
-
     void save(JSONObject agents);
 
-    Agents findTopByName(String name);
-
     boolean offLine(int id);
+
+    int auth(String key);
+
+    String findKeyById(int id);
 }

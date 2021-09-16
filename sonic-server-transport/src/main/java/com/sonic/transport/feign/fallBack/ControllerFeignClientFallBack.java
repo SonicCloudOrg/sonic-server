@@ -37,4 +37,14 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     public RespModel findDeviceById(int id) {
         return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }
+
+    @Override
+    public RespModel auth(String key) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
+
+    @Override
+    public RespModel findKeyById(int id) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
 }

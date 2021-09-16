@@ -26,28 +26,18 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
-    public Agents findByIp(String ip) {
-        return agentsRepository.findByIp(ip);
-    }
-
-    @Override
     public void save(JSONObject jsonObject) {
         if (jsonObject.getInteger("id") != null && jsonObject.getInteger("id") != 0) {
             if (agentsRepository.existsById(jsonObject.getInteger("id"))) {
                 Agents oldAgent = agentsRepository.findById(jsonObject.getInteger("id")).get();
                 oldAgent.setStatus(AgentStatus.ONLINE);
-                oldAgent.setIp(jsonObject.getString("ip"));
+                oldAgent.setHost(jsonObject.getString("host"));
                 oldAgent.setPort(jsonObject.getInteger("port"));
                 oldAgent.setVersion(jsonObject.getString("version"));
                 oldAgent.setSystemType(jsonObject.getString("systemType"));
                 agentsRepository.save(oldAgent);
             }
         }
-    }
-
-    @Override
-    public Agents findTopByName(String name) {
-        return agentsRepository.findTopByName(name);
     }
 
     @Override
@@ -67,6 +57,25 @@ public class AgentsServiceImpl implements AgentsService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public int auth(String key) {
+        Agents agents = agentsRepository.findBySecretKey(key);
+        if (agents == null) {
+            return 0;
+        } else {
+            return agents.getId();
+        }
+    }
+
+    @Override
+    public String findKeyById(int id) {
+        if (agentsRepository.existsById(id)) {
+            return agentsRepository.findById(id).get().getSecretKey();
+        } else {
+            return null;
         }
     }
 }

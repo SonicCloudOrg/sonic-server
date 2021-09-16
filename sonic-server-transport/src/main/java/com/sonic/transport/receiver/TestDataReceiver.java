@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ public class TestDataReceiver {
     private final Logger logger = LoggerFactory.getLogger(TestDataReceiver.class);
     @Autowired
     private ControllerFeignClient controllerFeignClient;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = "TestDataQueue")
     public void process(JSONObject jsonMsg, Channel channel, Message message) throws IOException {
@@ -25,6 +28,15 @@ public class TestDataReceiver {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         RespModel controllerResp = null;
         switch (jsonMsg.getString("msg")) {
+            case "auth":
+                controllerResp = controllerFeignClient.auth(jsonMsg.getString("key"));
+                if ((Integer) controllerResp.getData() != 0) {
+                    JSONObject auth = new JSONObject();
+                    auth.put("msg", "auth");
+                    auth.put("id", controllerResp.getData());
+                    rabbitTemplate.convertAndSend("MsgDirectExchange", jsonMsg.getString("key"), auth);
+                }
+                break;
             case "agentInfo":
                 jsonMsg.remove("msg");
                 controllerResp = controllerFeignClient.saveAgent(jsonMsg);

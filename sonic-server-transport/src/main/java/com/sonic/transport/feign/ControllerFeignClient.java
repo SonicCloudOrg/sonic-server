@@ -25,4 +25,10 @@ public interface ControllerFeignClient {
 
     @GetMapping("/devices")
     RespModel findDeviceById(@RequestParam(name = "id") int id);
+
+    @GetMapping("/agents/auth")
+    RespModel auth(@RequestParam(name = "key") String key);
+
+    @GetMapping("/agents/findKeyById")
+    RespModel findKeyById(@RequestParam(name = "id") int id);
 }

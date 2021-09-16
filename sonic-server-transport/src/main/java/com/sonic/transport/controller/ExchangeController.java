@@ -24,13 +24,17 @@ public class ExchangeController {
         RespModel device = controllerFeignClient.findDeviceById(id);
         if (device.getCode() == 2000) {
             LinkedHashMap d = (LinkedHashMap) device.getData();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "reboot");
-            jsonObject.put("udId", d.get("udId"));
-            jsonObject.put("platform", d.get("platform"));
-            jsonObject.put("agentId", d.get("agentId"));
-            rabbitTemplate.convertAndSend("AgentExchange", "", jsonObject);
-            return new RespModel(2000, "发送成功！");
+            RespModel agent = controllerFeignClient.findKeyById((Integer) d.get("agentId"));
+            if (agent.getCode() == 2000) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("msg", "reboot");
+                jsonObject.put("udId", d.get("udId"));
+                jsonObject.put("platform", d.get("platform"));
+                rabbitTemplate.convertAndSend("MsgDirectExchange", (String) agent.getData(), jsonObject);
+                return new RespModel(2000, "发送成功！");
+            } else {
+                return agent;
+            }
         } else {
             return device;
         }

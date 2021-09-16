@@ -45,4 +45,21 @@ public class AgentsController {
         agentsService.offLine(id);
         return new RespModel(RespEnum.HANDLE_OK);
     }
+
+    @WebAspect
+    @GetMapping("/auth")
+    public RespModel auth(@RequestParam(name = "key") String key) {
+        return new RespModel(RespEnum.SEARCH_OK, agentsService.auth(key));
+    }
+
+    @WebAspect
+    @GetMapping("/findKeyById")
+    public RespModel findKeyById(@RequestParam(name = "id") int id) {
+        String key = agentsService.findKeyById(id);
+        if (key != null) {
+            return new RespModel(RespEnum.SEARCH_OK, key);
+        } else {
+            return new RespModel(RespEnum.ID_NOT_FOUND);
+        }
+    }
 }

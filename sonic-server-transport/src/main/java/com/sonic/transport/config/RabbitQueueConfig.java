@@ -24,14 +24,19 @@ public class RabbitQueueConfig {
         return new FanoutExchange("PackageExchange", true, false);
     }
 
+    @Bean("MsgDirectExchange")
+    public DirectExchange MsgDirectExchange() {
+        return new DirectExchange("MsgDirectExchange", true, false);
+    }
+
     @Bean("AgentExchange")
     public FanoutExchange AgentExchange() {
         return new FanoutExchange("AgentExchange", true, false);
     }
 
-    @Bean("MsgDirectExchange")
-    public DirectExchange MsgDirectExchange() {
-        return new DirectExchange("MsgDirectExchange", true, false);
+    @Bean("DataExchange")
+    public DirectExchange DataExchange() {
+        return new DirectExchange("DataExchange", true, false);
     }
 
     @Bean("TestDataQueue")
@@ -41,8 +46,8 @@ public class RabbitQueueConfig {
 
     @Bean
     public Binding bindingDirect(@Qualifier("TestDataQueue") Queue queue,
-                                 @Qualifier("MsgDirectExchange") DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("msg");
+                                 @Qualifier("DataExchange") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("data");
     }
 
     @Bean

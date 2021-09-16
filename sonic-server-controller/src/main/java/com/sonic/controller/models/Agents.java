@@ -27,13 +27,15 @@ public class Agents {
     @ApiModelProperty(value = "Agent端版本号", example = "1.0.0")
     String version;
     @NotNull
-    @ApiModelProperty(value = "Agent端所在ip", example = "127.0.0.1")
-    String ip;
+    @ApiModelProperty(value = "Agent端所在host", example = "127.0.0.1")
+    String host;
     @Positive
     @ApiModelProperty(value = "Agent端暴露web端口", example = "1234")
     int port;
     @ApiModelProperty(value = "Agent端状态", example = "1")
     int status;
+    @ApiModelProperty(value = "Agent端密钥", example = "qwe")
+    String secretKey;
 
     public Agents() {
     }
@@ -70,12 +72,12 @@ public class Agents {
         this.version = version;
     }
 
-    public String getIp() {
-        return ip;
+    public String getHost() {
+        return host;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public int getPort() {
@@ -94,6 +96,14 @@ public class Agents {
         this.status = status;
     }
 
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
     @Override
     public String toString() {
         return "Agents{" +
@@ -101,9 +111,10 @@ public class Agents {
                 ", name='" + name + '\'' +
                 ", systemType='" + systemType + '\'' +
                 ", version='" + version + '\'' +
-                ", ip='" + ip + '\'' +
+                ", host='" + host + '\'' +
                 ", port=" + port +
                 ", status=" + status +
+                ", secretKey='" + secretKey + '\'' +
                 '}';
     }
 }
