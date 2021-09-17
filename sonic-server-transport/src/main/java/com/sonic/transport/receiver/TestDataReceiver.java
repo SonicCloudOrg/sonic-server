@@ -41,9 +41,6 @@ public class TestDataReceiver {
                 jsonMsg.remove("msg");
                 controllerResp = controllerFeignClient.saveAgent(jsonMsg);
                 break;
-            case "offLine":
-                controllerResp = controllerFeignClient.offLine(jsonMsg.getInteger("id"));
-                break;
             case "deviceDetail":
                 controllerResp = controllerFeignClient.deviceStatus(jsonMsg);
                 break;

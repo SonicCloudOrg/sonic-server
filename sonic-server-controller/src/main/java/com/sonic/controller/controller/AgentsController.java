@@ -26,8 +26,8 @@ public class AgentsController {
     private AgentsService agentsService;
 
     @WebAspect
-    @ApiOperation(value = "查询所有代理端", notes = "获取所有代理端以及详细信息")
-    @GetMapping
+    @ApiOperation(value = "查询所有Agent端", notes = "获取所有Agent端以及详细信息")
+    @GetMapping("/list")
     public RespModel<List<Agents>> findAgents() {
         return new RespModel(RespEnum.SEARCH_OK, agentsService.findAgents());
     }
@@ -62,4 +62,17 @@ public class AgentsController {
             return new RespModel(RespEnum.ID_NOT_FOUND);
         }
     }
+
+    @WebAspect
+    @ApiOperation(value = "查询Agent端信息", notes = "获取对应id的Agent信息")
+    @GetMapping
+    public RespModel<Agents> findOne(@RequestParam(name = "id") int id) {
+        Agents agents = agentsService.findById(id);
+        if (agents != null) {
+            return new RespModel(RespEnum.SEARCH_OK, agents);
+        } else {
+            return new RespModel(RespEnum.ID_NOT_FOUND);
+        }
+    }
+
 }

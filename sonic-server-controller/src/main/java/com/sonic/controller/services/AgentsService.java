@@ -20,4 +20,6 @@ public interface AgentsService {
     int auth(String key);
 
     String findKeyById(int id);
+
+    Agents findById(int id);
 }

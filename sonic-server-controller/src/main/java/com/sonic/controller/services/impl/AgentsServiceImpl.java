@@ -27,9 +27,9 @@ public class AgentsServiceImpl implements AgentsService {
 
     @Override
     public void save(JSONObject jsonObject) {
-        if (jsonObject.getInteger("id") != null && jsonObject.getInteger("id") != 0) {
-            if (agentsRepository.existsById(jsonObject.getInteger("id"))) {
-                Agents oldAgent = agentsRepository.findById(jsonObject.getInteger("id")).get();
+        if (jsonObject.getInteger("agentId") != null && jsonObject.getInteger("agentId") != 0) {
+            if (agentsRepository.existsById(jsonObject.getInteger("agentId"))) {
+                Agents oldAgent = agentsRepository.findById(jsonObject.getInteger("agentId")).get();
                 oldAgent.setStatus(AgentStatus.ONLINE);
                 oldAgent.setHost(jsonObject.getString("host"));
                 oldAgent.setPort(jsonObject.getInteger("port"));
@@ -74,6 +74,15 @@ public class AgentsServiceImpl implements AgentsService {
     public String findKeyById(int id) {
         if (agentsRepository.existsById(id)) {
             return agentsRepository.findById(id).get().getSecretKey();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Agents findById(int id) {
+        if (agentsRepository.existsById(id)) {
+            return agentsRepository.findById(id).get();
         } else {
             return null;
         }
