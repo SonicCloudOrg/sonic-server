@@ -1,0 +1,21 @@
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+    des: "Sonic测试平台 - 文件中心"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: sonic-server-bus
+      name: @project.artifactId@,rabbitmq,actuator,logging,knife4j
+      profile: ${PROFILE:dev}
+      fail-fast: true
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}

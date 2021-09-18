@@ -1,0 +1,10 @@
+*/*.iml
+*.iml
+*/.DS_Store
+.DS_Store
+/.idea/
+*/.idea/
+/logs/
+/log/
+/record/
+*/target

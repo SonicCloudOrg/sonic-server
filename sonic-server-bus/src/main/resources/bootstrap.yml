@@ -1,0 +1,34 @@
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+    des: "Sonic测试平台 - 消息总线"
+  profiles:
+    active: composite,${PROFILE:dev}
+  cloud:
+    config:
+      name: @project.artifactId@,logging,rabbitmq
+      server:
+        composite:
+#         默认取本地的/config目录
+          - type: native
+#         如果需要取git地址，可以开启下面的方式
+#          - type: git
+#            uri: git@xxxxxxxxxxx.git
+#            ignore-local-ssh-settings: true
+#            search-paths: /config
+#            private-key: |
+#              -----BEGIN RSA PRIVATE KEY-----
+#              MIIJKAIBAAKCxxxxxxxxxxxxxYap344ebwVeyRP1FWqTB6XJREZJENEfMPH6TATp
+#              oESNkPqZKn+1xxxxxxxxxxxxxFEwGGBfGhGE5Tb8S+AWRFwQ26SXnw930HfoPFcP
+#              -----END RSA PRIVATE KEY-----
+        bootstrap: true
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}
+
