@@ -2,7 +2,7 @@ server:
   port: 8094
 
 filter:
-  white-list: /swagger-resources,/v2/api-docs,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/
+  white-list: /swagger-resources,/v2/api-docs,/folder/upload,/folder/recordFiles,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/
 
 spring:
   cloud:

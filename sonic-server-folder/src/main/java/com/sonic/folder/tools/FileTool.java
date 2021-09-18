@@ -52,7 +52,7 @@ public class FileTool {
         } catch (FileAlreadyExistsException e) {
             logger.error(e.getMessage());
         }
-        return host + "/api/folder/" + local.getPath();
+        return host + "/api/folder/" + local.getPath().replaceAll("\\\\", "/");
     }
 
     /**
