@@ -18,7 +18,7 @@ import java.util.Map;
 public interface PublicStepsRepository extends JpaRepository<PublicSteps, Integer> {
     Page<PublicSteps> findByProjectId(int projectId, Pageable pageable);
 
-    @Query(value = "select id,name from public_steps where project_id=?1", nativeQuery = true)
+    @Query(value = "select id,name from public_steps where project_id=?1 order by id desc", nativeQuery = true)
     List<Map<Integer, String>> findByProjectId(int projectId);
 
     @Transactional
