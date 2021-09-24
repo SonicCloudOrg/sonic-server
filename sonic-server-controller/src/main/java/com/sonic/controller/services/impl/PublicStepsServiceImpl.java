@@ -35,7 +35,7 @@ public class PublicStepsServiceImpl implements PublicStepsService {
     }
 
     @Override
-    @CachePut(value = "sonic:publicSteps", key = "#publicOper.id", unless = "#result == null")
+    @CachePut(value = "sonic:publicSteps", key = "#publicSteps.id", unless = "#result == null")
     public PublicSteps save(PublicSteps publicSteps) {
         publicStepsRepository.save(publicSteps);
         return publicSteps;
