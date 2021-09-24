@@ -41,7 +41,7 @@ public class StepsController {
     @GetMapping("/resetCaseId")
     public RespModel resetCaseId(@RequestParam(name = "id") int id) {
         if (stepsService.resetCaseId(id)) {
-            return new RespModel(0, "移出测试用例成功！");
+            return new RespModel(2000, "移出测试用例成功！");
         } else {
             return new RespModel(RespEnum.ID_NOT_FOUND);
         }
