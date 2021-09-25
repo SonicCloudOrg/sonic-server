@@ -31,4 +31,7 @@ public interface ControllerFeignClient {
 
     @GetMapping("/agents/findKeyById")
     RespModel findKeyById(@RequestParam(name = "id") int id);
+
+    @GetMapping("/testCases/findSteps")
+    RespModel findSteps(@RequestParam(name = "id") int id);
 }

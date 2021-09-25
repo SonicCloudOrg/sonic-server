@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.dao.GlobalParamsRepository;
 import com.sonic.controller.dao.TestCasesRepository;
-import com.sonic.controller.models.PublicSteps;
-import com.sonic.controller.models.Steps;
-import com.sonic.controller.models.TestCases;
-import com.sonic.controller.models.TestSuites;
+import com.sonic.controller.models.*;
 import com.sonic.controller.services.PublicStepsService;
 import com.sonic.controller.services.StepsService;
 import com.sonic.controller.services.TestCasesService;
@@ -109,7 +106,12 @@ public class TestCasesServiceImpl implements TestCasesService {
                 array.add(getStep(steps));
             }
             jsonDebug.put("steps", array);
-            jsonDebug.put("gp", globalParamsRepository.findByProjectId(runStepCase.getProjectId()));
+            List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(runStepCase.getProjectId());
+            JSONObject gp = new JSONObject();
+            for (GlobalParams g : globalParamsList) {
+                gp.put(g.getParamsKey(), g.getParamsValue());
+            }
+            jsonDebug.put("gp", gp);
             return jsonDebug;
         } else {
             return null;

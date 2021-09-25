@@ -31,7 +31,9 @@ public class TestDataReceiver {
             switch (jsonMsg.getString("msg")) {
                 case "auth":
                     controllerResp = controllerFeignClient.auth(jsonMsg.getString("key"));
-                    if ((Integer) controllerResp.getData() != 0) {
+                    if (controllerResp != null
+                            && controllerResp.getCode() == 2000
+                            && (Integer) controllerResp.getData() != 0) {
                         JSONObject auth = new JSONObject();
                         auth.put("msg", "auth");
                         auth.put("id", controllerResp.getData());
@@ -57,6 +59,20 @@ public class TestDataReceiver {
                 case "record":
                 case "status":
                     controllerResp = controllerFeignClient.saveResultDetail(jsonMsg);
+                    break;
+                case "findSteps":
+                    controllerResp = controllerFeignClient.findSteps(jsonMsg.getInteger("caseId"));
+                    if (controllerResp != null
+                            && controllerResp.getCode() == 2000) {
+                        JSONObject data = (JSONObject) controllerResp.getData();
+                        JSONObject steps = new JSONObject();
+                        steps.put("msg", "runStep");
+                        steps.put("pf", data.getInteger("pf"));
+                        steps.put("steps", data.getJSONArray("steps"));
+                        steps.put("gp", data.getJSONArray("gp"));
+                        steps.put("sessionId", jsonMsg.getString("sessionId"));
+                        rabbitTemplate.convertAndSend("MsgDirectExchange", jsonMsg.getString("key"), steps);
+                    }
                     break;
             }
             if (controllerResp != null && controllerResp.getCode() == 2000) {
