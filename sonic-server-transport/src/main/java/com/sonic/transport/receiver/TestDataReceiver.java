@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 @Component
 public class TestDataReceiver {
@@ -64,13 +65,15 @@ public class TestDataReceiver {
                     controllerResp = controllerFeignClient.findSteps(jsonMsg.getInteger("caseId"));
                     if (controllerResp != null
                             && controllerResp.getCode() == 2000) {
-                        JSONObject data = (JSONObject) controllerResp.getData();
+                        LinkedHashMap d = (LinkedHashMap) controllerResp.getData();
                         JSONObject steps = new JSONObject();
                         steps.put("msg", "runStep");
-                        steps.put("pf", data.getInteger("pf"));
-                        steps.put("steps", data.getJSONArray("steps"));
-                        steps.put("gp", data.getJSONArray("gp"));
+                        steps.put("pf", d.get("pf"));
+                        steps.put("steps", d.get("steps"));
+                        steps.put("gp", d.get("gp"));
                         steps.put("sessionId", jsonMsg.getString("sessionId"));
+                        steps.put("pwd", jsonMsg.getString("pwd"));
+                        steps.put("udId", jsonMsg.getString("udId"));
                         rabbitTemplate.convertAndSend("MsgDirectExchange", jsonMsg.getString("key"), steps);
                     }
                     break;
@@ -81,7 +84,7 @@ public class TestDataReceiver {
                 channel.basicReject(deliveryTag, true);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             channel.basicReject(deliveryTag, true);
         }
     }

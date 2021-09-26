@@ -137,7 +137,7 @@ public class TestCasesServiceImpl implements TestCasesService {
                 step.put("pubSteps", publicStepsJson);
             }
         }
-        step.put("steps", step);
+        step.put("step", steps);
         return step;
     }
 }
