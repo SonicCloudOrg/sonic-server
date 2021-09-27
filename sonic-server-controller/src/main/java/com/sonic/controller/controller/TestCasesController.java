@@ -6,6 +6,7 @@ import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.TestCases;
 import com.sonic.controller.services.TestCasesService;
+import com.sonic.controller.tools.RedisTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Api(tags = "测试用例相关")
 @RestController
@@ -60,7 +63,14 @@ public class TestCasesController {
     @WebAspect
     @ApiOperation(value = "更新测试用例信息", notes = "新增或更改测试用例信息")
     @PutMapping
-    public RespModel save(@Validated @RequestBody TestCases testCases) {
+    public RespModel save(@Validated @RequestBody TestCases testCases, HttpServletRequest request) {
+        if (request.getHeader("sonicToken") != null) {
+            String token = request.getHeader("sonicToken");
+            if (RedisTool.get("sonic:user:" + token) != null) {
+                String userName = RedisTool.get("sonic:user:" + token).toString();
+                testCases.setDesigner(userName);
+            }
+        }
         testCasesService.save(testCases);
         return new RespModel(RespEnum.UPDATE_OK);
     }
