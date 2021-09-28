@@ -17,9 +17,13 @@ import com.sonic.controller.services.ResultsService;
 import com.sonic.controller.services.StepsService;
 import com.sonic.controller.services.TestSuitesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -169,7 +173,23 @@ public class TestSuitesServiceImpl implements TestSuitesService {
     }
 
     @Override
-    public List<TestSuites> findByProjectId(int projectId) {
-        return testSuitesRepository.findByProjectId(projectId, Sort.by(Sort.Direction.DESC, "id"));
+    public Page<TestSuites> findByProjectId(int projectId, String name, Pageable pageable) {
+        Specification<TestSuites> spc = (root, query, cb) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            if (projectId != 0) {
+                predicateList.add(cb.and(cb.equal(root.get("projectId"), projectId)));
+            }
+            if (name != null && name.length() > 0) {
+                predicateList.add(cb.and(cb.like(root.get("name"), "%" + name + "%")));
+            }
+            query.orderBy(cb.desc(root.get("id")));
+            if (predicateList.size() != 0) {
+                Predicate[] p = new Predicate[predicateList.size()];
+                return query.where(predicateList.toArray(p)).getRestriction();
+            } else {
+                return query.getRestriction();
+            }
+        };
+        return testSuitesRepository.findAll(spc, pageable);
     }
 }
