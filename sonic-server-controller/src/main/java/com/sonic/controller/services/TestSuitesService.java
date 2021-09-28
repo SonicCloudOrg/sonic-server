@@ -3,6 +3,8 @@ package com.sonic.controller.services;
 
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.TestSuites;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,5 +22,5 @@ public interface TestSuitesService {
 
     void save(TestSuites testSuites);
 
-    List<TestSuites> findByProjectId(int projectId);
+    Page<TestSuites> findByProjectId(int projectId, String name, Pageable pageable);
 }

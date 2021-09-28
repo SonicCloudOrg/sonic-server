@@ -22,9 +22,6 @@ public class TestSuites {
     @ApiModelProperty(value = "测试套件平台类型", required = true, example = "1")
     int platform;
     @Positive
-    @ApiModelProperty(value = "测试套件类型", required = true, example = "1")
-    int type;
-    @Positive
     @ApiModelProperty(value = "模块并发线程", required = true, example = "1")
     int moduleThread;
     @Positive
@@ -68,14 +65,6 @@ public class TestSuites {
 
     public void setPlatform(int platform) {
         this.platform = platform;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getModuleThread() {
@@ -132,7 +121,6 @@ public class TestSuites {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", platform=" + platform +
-                ", type=" + type +
                 ", moduleThread=" + moduleThread +
                 ", caseThread=" + caseThread +
                 ", deviceThread=" + deviceThread +
