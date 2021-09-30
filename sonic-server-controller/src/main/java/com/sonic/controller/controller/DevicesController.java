@@ -70,6 +70,15 @@ public class DevicesController {
     }
 
     @WebAspect
+    @ApiOperation(value = "查询所有设备", notes = "不分页的设备列表")
+    @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class)
+    @GetMapping("/listAll")
+    public RespModel<List<Devices>> listAll(@RequestParam(name = "platform") int platform) {
+        return new RespModel(RespEnum.SEARCH_OK,
+                devicesService.findAll(platform));
+    }
+
+    @WebAspect
     @ApiOperation(value = "批量查询设备", notes = "查找id列表的设备信息，可以传多个ids[]")
     @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
     @GetMapping("/findByIdIn")

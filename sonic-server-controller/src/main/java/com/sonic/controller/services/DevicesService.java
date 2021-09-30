@@ -22,6 +22,8 @@ public interface DevicesService {
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                           String deviceInfo, Pageable pageable);
 
+    List<Devices> findAll(int platform);
+
     List<Devices> findByIdIn(List<Integer> ids);
 
     Devices findByAgentIdAndUdId(int agentId, String udId);

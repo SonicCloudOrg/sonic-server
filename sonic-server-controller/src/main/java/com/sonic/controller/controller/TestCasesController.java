@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(tags = "测试用例相关")
 @RestController
@@ -46,6 +47,15 @@ public class TestCasesController {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "editTime"));
         return new RespModel(RespEnum.SEARCH_OK,
                 testCasesService.findAll(projectId, platform, name, pageable));
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查询测试用例列表", notes = "不分页的测试用例列表")
+    @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class)
+    @GetMapping("/listAll")
+    public RespModel<List<TestCases>> findAll(@RequestParam(name = "platform") int platform) {
+        return new RespModel(RespEnum.SEARCH_OK,
+                testCasesService.findAll(platform));
     }
 
     @WebAspect

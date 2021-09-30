@@ -5,6 +5,8 @@ import com.sonic.controller.models.TestCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * @author ZhouYiXun
  * @des 测试用例逻辑层
@@ -12,6 +14,8 @@ import org.springframework.data.domain.Pageable;
  */
 public interface TestCasesService {
     Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable);
+
+    List<TestCases> findAll(int platform);
 
     boolean delete(int id);
 
