@@ -153,6 +153,11 @@ public class DevicesServiceImpl implements DevicesService {
     }
 
     @Override
+    public List<Devices> findAll(int platform) {
+        return devicesRepository.findByPlatformOrderByIdDesc(platform);
+    }
+
+    @Override
     public List<Devices> findByIdIn(List<Integer> ids) {
         return devicesRepository.findByIdIn(ids);
     }

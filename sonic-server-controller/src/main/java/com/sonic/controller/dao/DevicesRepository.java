@@ -19,6 +19,8 @@ public interface DevicesRepository extends JpaRepository<Devices, Integer>, JpaS
 
     List<Devices> findByIdIn(List<Integer> ids);
 
+    List<Devices> findByPlatformOrderByIdDesc(int platform);
+
     @Query(value = "select cpu from devices group by cpu", nativeQuery = true)
     List<String> findCpuList();
 

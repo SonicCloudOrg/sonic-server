@@ -61,6 +61,11 @@ public class TestCasesServiceImpl implements TestCasesService {
     }
 
     @Override
+    public List<TestCases> findAll(int platform) {
+        return testCasesRepository.findByPlatformOrderByEditTimeDesc(platform);
+    }
+
+    @Override
     public boolean delete(int id) {
         if (testCasesRepository.existsById(id)) {
             TestCases testCases = testCasesRepository.findById(id).get();
