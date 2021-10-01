@@ -15,9 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ZhouYiXun
@@ -113,8 +111,21 @@ public class TestCasesServiceImpl implements TestCasesService {
             jsonDebug.put("steps", array);
             List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(runStepCase.getProjectId());
             JSONObject gp = new JSONObject();
+            Map<String, List<String>> valueMap = new HashMap<>();
             for (GlobalParams g : globalParamsList) {
-                gp.put(g.getParamsKey(), g.getParamsValue());
+                if (g.getParamsValue().contains("|")) {
+                    List<String> shuffle = Arrays.asList(g.getParamsValue().split("|"));
+                    Collections.shuffle(shuffle);
+                    valueMap.put(g.getParamsKey(), shuffle);
+                }else {
+                    gp.put(g.getParamsKey(), g.getParamsValue());
+                }
+            }
+            for (String k : valueMap.keySet()) {
+                if (valueMap.get(k).size() > 0) {
+                    String v = valueMap.get(k).get(0);
+                    gp.put(k, v);
+                }
             }
             jsonDebug.put("gp", gp);
             return jsonDebug;

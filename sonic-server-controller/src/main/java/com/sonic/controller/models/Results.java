@@ -25,10 +25,10 @@ public class Results {
     int projectId;
     @ApiModelProperty(value = "触发者", example = "ZhouYiXun")
     String strike;
-    @ApiModelProperty(value = "发送的Agent数量", example = "1")
-    int sendAgentCount;
-    @ApiModelProperty(value = "接收的Agent数量", example = "2")
-    int receiveAgentCount;
+    @ApiModelProperty(value = "发送的消息数量", example = "1")
+    int sendMsgCount;
+    @ApiModelProperty(value = "接收的消息数量", example = "2")
+    int receiveMsgCount;
     @ApiModelProperty(value = "状态", example = "WARN")
     int status;
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
@@ -79,20 +79,20 @@ public class Results {
         this.strike = strike;
     }
 
-    public int getSendAgentCount() {
-        return sendAgentCount;
+    public int getSendMsgCount() {
+        return sendMsgCount;
     }
 
-    public void setSendAgentCount(int sendAgentCount) {
-        this.sendAgentCount = sendAgentCount;
+    public void setSendMsgCount(int sendMsgCount) {
+        this.sendMsgCount = sendMsgCount;
     }
 
-    public int getReceiveAgentCount() {
-        return receiveAgentCount;
+    public int getReceiveMsgCount() {
+        return receiveMsgCount;
     }
 
-    public void setReceiveAgentCount(int receiveAgentCount) {
-        this.receiveAgentCount = receiveAgentCount;
+    public void setReceiveMsgCount(int receiveMsgCount) {
+        this.receiveMsgCount = receiveMsgCount;
     }
 
     public int getStatus() {
@@ -119,8 +119,8 @@ public class Results {
                 ", suiteName='" + suiteName + '\'' +
                 ", projectId=" + projectId +
                 ", strike='" + strike + '\'' +
-                ", sendAgentCount=" + sendAgentCount +
-                ", receiveAgentCount=" + receiveAgentCount +
+                ", sendMsgCount=" + sendMsgCount +
+                ", receiveMsgCount=" + receiveMsgCount +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 '}';

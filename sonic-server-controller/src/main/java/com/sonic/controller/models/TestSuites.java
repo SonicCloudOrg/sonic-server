@@ -33,7 +33,7 @@ public class TestSuites {
     List<TestCases> testCases;
     @ApiModelProperty(value = "指定设备列表")
     @ManyToMany(fetch = FetchType.EAGER)
-    List<Devices> devices;
+    Set<Devices> devices;
 
     public TestSuites() {
     }
@@ -86,11 +86,11 @@ public class TestSuites {
         this.testCases = testCases;
     }
 
-    public List<Devices> getDevices() {
+    public Set<Devices> getDevices() {
         return devices;
     }
 
-    public void setDevices(List<Devices> devices) {
+    public void setDevices(Set<Devices> devices) {
         this.devices = devices;
     }
 

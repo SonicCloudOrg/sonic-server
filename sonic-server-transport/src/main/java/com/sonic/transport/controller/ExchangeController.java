@@ -43,7 +43,10 @@ public class ExchangeController {
     @WebAspect
     @PostMapping("/sendTestData")
     public RespModel sendTestData(@RequestBody JSONObject jsonObject) {
-        rabbitTemplate.convertAndSend("AgentExchange", null, jsonObject);
+        if (jsonObject.getString("key") != null) {
+            jsonObject.put("msg", "suite");
+            rabbitTemplate.convertAndSend("MsgDirectExchange", jsonObject.getString("key"), jsonObject);
+        }
         return new RespModel(2000, "发送成功！");
     }
 }

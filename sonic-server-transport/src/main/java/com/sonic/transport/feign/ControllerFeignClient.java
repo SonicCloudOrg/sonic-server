@@ -34,4 +34,7 @@ public interface ControllerFeignClient {
 
     @GetMapping("/testCases/findSteps")
     RespModel findSteps(@RequestParam(name = "id") int id);
+
+    @GetMapping("/results/subResultCount")
+    RespModel subResultCount(@RequestParam(name = "id") int id);
 }

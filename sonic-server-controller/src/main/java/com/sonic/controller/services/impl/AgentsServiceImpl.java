@@ -9,6 +9,7 @@ import com.sonic.controller.models.interfaces.AgentStatus;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.services.AgentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,6 +77,7 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
+    @Cacheable(value = "sonic:agentKey", key = "#id", unless = "#result == null")
     public String findKeyById(int id) {
         if (agentsRepository.existsById(id)) {
             return agentsRepository.findById(id).get().getSecretKey();
