@@ -10,6 +10,7 @@ import com.sonic.controller.dao.TestSuitesRepository;
 import com.sonic.controller.feign.TransportFeignClient;
 import com.sonic.controller.models.*;
 import com.sonic.controller.models.interfaces.AgentStatus;
+import com.sonic.controller.models.interfaces.CoverType;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.PublicStepsService;
@@ -24,9 +25,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ZhouYiXun
@@ -65,7 +64,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         if (onLineAgent == 0) {
             return new RespModel(3000, "暂无Agent在线！");
         }
-        Set<Devices> devicesList = testSuites.getDevices();
+        List<Devices> devicesList = testSuites.getDevices();
         int onLineCount = 0;
         for (Devices devices : devicesList) {
             if (devices.getStatus().equals(DeviceStatus.ONLINE)) {
@@ -75,23 +74,64 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         if (onLineCount == 0) {
             return new RespModel(3000, "所选设备暂无可用！");
         }
-        Results results = new Results();
-        results.setStatus(ResultStatus.RUNNING);
-        results.setSuiteId(suiteId);
-        results.setSuiteName(testSuites.getName());
-        results.setStrike(strike);
-        results.setSendAgentCount(onLineAgent);
-        results.setReceiveAgentCount(0);
-        results.setProjectId(testSuites.getProjectId());
-        resultsService.save(results);
-        JSONObject jsonSuite = new JSONObject();
-        JSONArray suiteArray = new JSONArray();
-        //全局参数
+        //组装全局参数为json对象
         List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(testSuites.getProjectId());
         JSONObject gp = new JSONObject();
         for (GlobalParams g : globalParamsList) {
             gp.put(g.getParamsKey(), g.getParamsValue());
         }
+        //将包含|的拆开多个参数并打乱，去掉json对象多参数的字段
+        Map<String, List<String>> valueMap = new HashMap<>();
+        for (String s : gp.keySet()) {
+            if (gp.getString(s).contains("|")) {
+                List<String> shuffle = Arrays.asList(gp.getString(s).split("|"));
+                Collections.shuffle(shuffle);
+                valueMap.put(s, shuffle);
+                gp.remove(s);
+            }
+        }
+        int deviceIndex = 0;
+        if (testSuites.getCover() == CoverType.CASE) {
+            for (TestCases testCases : testSuites.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                List<JSONObject> steps = new ArrayList<>();
+                List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (Steps s : stepsList) {
+                    steps.add(getStep(s));
+                }
+                suite.put("steps", steps);
+                suite.put("cid", testCases.getId());
+                suite.put("device", devicesList.get(deviceIndex));
+                if (deviceIndex == devicesList.size() - 1) {
+                    deviceIndex = 0;
+                } else {
+                    deviceIndex++;
+                }
+                //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                for (String k : valueMap.keySet()) {
+                    if (valueMap.get(k).size() > 0) {
+                        String v = valueMap.get(k).get(0);
+                        gp.put(k, v);
+                        valueMap.get(k).remove(0);
+                    } else {
+                        valueMap.remove(k);
+                    }
+                }
+                suite.put("gp", gp);
+            }
+        }
+//        Results results = new Results();
+//        results.setStatus(ResultStatus.RUNNING);
+//        results.setSuiteId(suiteId);
+//        results.setSuiteName(testSuites.getName());
+//        results.setStrike(strike);
+//        results.setSendAgentCount(onLineAgent);
+//        results.setReceiveAgentCount(0);
+//        results.setProjectId(testSuites.getProjectId());
+//        resultsService.save(results);
+//        JSONObject jsonSuite = new JSONObject();
+//        JSONArray suiteArray = new JSONArray();
+
         //组装用例和步骤
         for (TestCases testCases : testSuites.getTestCases()) {
             JSONObject cases = new JSONObject();
@@ -105,9 +145,9 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             suiteArray.add(cases);
         }
         //线程配置
-        jsonSuite.put("mt", testSuites.getModuleThread());
-        jsonSuite.put("ct", testSuites.getCaseThread());
-        jsonSuite.put("dt", testSuites.getDeviceThread());
+//        jsonSuite.put("mt", testSuites.getModuleThread());
+//        jsonSuite.put("ct", testSuites.getCaseThread());
+//        jsonSuite.put("dt", testSuites.getDeviceThread());
         jsonSuite.put("gp", gp);
         jsonSuite.put("suite", suiteArray);
         jsonSuite.put("sp", testSuites.getPlatform());
