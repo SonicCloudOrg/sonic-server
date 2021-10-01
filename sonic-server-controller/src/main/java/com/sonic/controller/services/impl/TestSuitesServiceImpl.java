@@ -10,12 +10,10 @@ import com.sonic.controller.dao.TestSuitesRepository;
 import com.sonic.controller.feign.TransportFeignClient;
 import com.sonic.controller.models.*;
 import com.sonic.controller.models.interfaces.AgentStatus;
+import com.sonic.controller.models.interfaces.CoverType;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
-import com.sonic.controller.services.PublicStepsService;
-import com.sonic.controller.services.ResultsService;
-import com.sonic.controller.services.StepsService;
-import com.sonic.controller.services.TestSuitesService;
+import com.sonic.controller.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author ZhouYiXun
@@ -44,7 +40,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
     @Autowired
     private ResultsService resultsService;
     @Autowired
-    private AgentsRepository agentsRepository;
+    private AgentsService agentsService;
     @Autowired
     private GlobalParamsRepository globalParamsRepository;
     @Autowired
@@ -61,18 +57,13 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         if (testSuites.getTestCases().size() == 0) {
             return new RespModel(3000, "该测试套件内无测试用例！");
         }
-        int onLineAgent = agentsRepository.findCountByStatus(AgentStatus.ONLINE);
-        if (onLineAgent == 0) {
-            return new RespModel(3000, "暂无Agent在线！");
-        }
-        Set<Devices> devicesList = testSuites.getDevices();
-        int onLineCount = 0;
+        List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
         for (Devices devices : devicesList) {
-            if (devices.getStatus().equals(DeviceStatus.ONLINE)) {
-                onLineCount++;
+            if (devices.getStatus().equals(DeviceStatus.OFFLINE) || devices.getStatus().equals(DeviceStatus.DISCONNECTED)) {
+                devicesList.remove(devices);
             }
         }
-        if (onLineCount == 0) {
+        if (devicesList.size() == 0) {
             return new RespModel(3000, "所选设备暂无可用！");
         }
         Results results = new Results();
@@ -80,47 +71,101 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         results.setSuiteId(suiteId);
         results.setSuiteName(testSuites.getName());
         results.setStrike(strike);
-        results.setSendAgentCount(onLineAgent);
-        results.setReceiveAgentCount(0);
+        if (testSuites.getCover() == CoverType.CASE) {
+            results.setSendMsgCount(testSuites.getTestCases().size());
+        }
+        if (testSuites.getCover() == CoverType.DEVICE) {
+            results.setSendMsgCount(testSuites.getTestCases().size() * testSuites.getDevices().size());
+        }
+        results.setReceiveMsgCount(0);
         results.setProjectId(testSuites.getProjectId());
         resultsService.save(results);
-        JSONObject jsonSuite = new JSONObject();
-        JSONArray suiteArray = new JSONArray();
-        //全局参数
+        //组装全局参数为json对象
         List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(testSuites.getProjectId());
+        //将包含|的拆开多个参数并打乱，去掉json对象多参数的字段
+        Map<String, List<String>> valueMap = new HashMap<>();
         JSONObject gp = new JSONObject();
         for (GlobalParams g : globalParamsList) {
-            gp.put(g.getParamsKey(), g.getParamsValue());
-        }
-        //组装用例和步骤
-        for (TestCases testCases : testSuites.getTestCases()) {
-            JSONObject cases = new JSONObject();
-            JSONArray arraySuite = new JSONArray();
-            List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-            for (Steps steps : stepsList) {
-                arraySuite.add(getStep(steps));
+            if (g.getParamsValue().contains("|")) {
+                List<String> shuffle = Arrays.asList(g.getParamsValue().split("|"));
+                Collections.shuffle(shuffle);
+                valueMap.put(g.getParamsKey(), shuffle);
+            } else {
+                gp.put(g.getParamsKey(), g.getParamsValue());
             }
-            cases.put("steps", arraySuite);
-            cases.put("case", testCases);
-            suiteArray.add(cases);
         }
-        //线程配置
-        jsonSuite.put("mt", testSuites.getModuleThread());
-        jsonSuite.put("ct", testSuites.getCaseThread());
-        jsonSuite.put("dt", testSuites.getDeviceThread());
-        jsonSuite.put("gp", gp);
-        jsonSuite.put("suite", suiteArray);
-        jsonSuite.put("sp", testSuites.getPlatform());
-        jsonSuite.put("rid", results.getId());
-        JSONObject plugin = new JSONObject();
-        for (Devices devices : devicesList) {
-            plugin.put(devices.getUdId(), devices.getPassword());
+        int deviceIndex = 0;
+        if (testSuites.getCover() == CoverType.CASE) {
+            for (TestCases testCases : testSuites.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                List<JSONObject> steps = new ArrayList<>();
+                List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (Steps s : stepsList) {
+                    steps.add(getStep(s));
+                }
+                suite.put("steps", steps);
+                suite.put("cid", testCases.getId());
+                Devices devices = devicesList.get(deviceIndex);
+                suite.put("device", devices);
+                if (deviceIndex == devicesList.size() - 1) {
+                    deviceIndex = 0;
+                } else {
+                    deviceIndex++;
+                }
+                //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                for (String k : valueMap.keySet()) {
+                    if (valueMap.get(k).size() > 0) {
+                        String v = valueMap.get(k).get(0);
+                        gp.put(k, v);
+                        valueMap.get(k).remove(0);
+                    } else {
+                        valueMap.remove(k);
+                    }
+                }
+                suite.put("gp", gp);
+                suite.put("rid", results.getId());
+                String key = agentsService.findKeyById(devices.getAgentId());
+                suite.put("key", key);
+                RespModel testDataResp = transportFeignClient.sendTestData(suite);
+                if (testDataResp.getCode() != 2000) {
+                    results.setSendMsgCount(results.getSendMsgCount() - 1);
+                    resultsService.save(results);
+                }
+            }
         }
-        jsonSuite.put("plugin", plugin);
-        jsonSuite.put("msg", "suite");
-        RespModel testDataResp = transportFeignClient.sendTestData(jsonSuite);
-        if (testDataResp.getCode() != 0) {
-            return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+        if (testSuites.getCover() == CoverType.DEVICE) {
+            for (TestCases testCases : testSuites.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                List<JSONObject> steps = new ArrayList<>();
+                List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (Steps s : stepsList) {
+                    steps.add(getStep(s));
+                }
+                for (Devices devices : devicesList) {
+                    suite.put("steps", steps);
+                    suite.put("cid", testCases.getId());
+                    suite.put("device", devices);
+                    //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                    for (String k : valueMap.keySet()) {
+                        if (valueMap.get(k).size() > 0) {
+                            String v = valueMap.get(k).get(0);
+                            gp.put(k, v);
+                            valueMap.get(k).remove(0);
+                        } else {
+                            valueMap.remove(k);
+                        }
+                    }
+                    suite.put("gp", gp);
+                    suite.put("rid", results.getId());
+                    String key = agentsService.findKeyById(devices.getAgentId());
+                    suite.put("key", key);
+                    RespModel testDataResp = transportFeignClient.sendTestData(suite);
+                    if (testDataResp.getCode() != 2000) {
+                        results.setSendMsgCount(results.getSendMsgCount() - 1);
+                        resultsService.save(results);
+                    }
+                }
+            }
         }
         return new RespModel(RespEnum.HANDLE_OK);
     }

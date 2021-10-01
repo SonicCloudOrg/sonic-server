@@ -52,4 +52,9 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     public RespModel findSteps(int id) {
        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }
+
+    @Override
+    public RespModel subResultCount(int id) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
 }

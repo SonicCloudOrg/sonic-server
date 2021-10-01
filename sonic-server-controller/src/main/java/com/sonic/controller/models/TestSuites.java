@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,20 +23,14 @@ public class TestSuites {
     @ApiModelProperty(value = "测试套件平台类型", required = true, example = "1")
     int platform;
     @Positive
-    @ApiModelProperty(value = "模块并发线程", required = true, example = "1")
-    int moduleThread;
-    @Positive
-    @ApiModelProperty(value = "用例并发线程", required = true, example = "1")
-    int caseThread;
-    @Positive
-    @ApiModelProperty(value = "设备并发线程", required = true, example = "10")
-    int deviceThread;
+    @ApiModelProperty(value = "覆盖类型", required = true, example = "1")
+    int cover;
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
     @ApiModelProperty(value = "包含的测试用例")
     @ManyToMany(fetch = FetchType.EAGER)
-    Set<TestCases> testCases;
+    List<TestCases> testCases;
     @ApiModelProperty(value = "指定设备列表")
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Devices> devices;
@@ -67,28 +62,12 @@ public class TestSuites {
         this.platform = platform;
     }
 
-    public int getModuleThread() {
-        return moduleThread;
+    public int getCover() {
+        return cover;
     }
 
-    public void setModuleThread(int moduleThread) {
-        this.moduleThread = moduleThread;
-    }
-
-    public int getCaseThread() {
-        return caseThread;
-    }
-
-    public void setCaseThread(int caseThread) {
-        this.caseThread = caseThread;
-    }
-
-    public int getDeviceThread() {
-        return deviceThread;
-    }
-
-    public void setDeviceThread(int deviceThread) {
-        this.deviceThread = deviceThread;
+    public void setCover(int cover) {
+        this.cover = cover;
     }
 
     public int getProjectId() {
@@ -99,11 +78,11 @@ public class TestSuites {
         this.projectId = projectId;
     }
 
-    public Set<TestCases> getTestCases() {
+    public List<TestCases> getTestCases() {
         return testCases;
     }
 
-    public void setTestCases(Set<TestCases> testCases) {
+    public void setTestCases(List<TestCases> testCases) {
         this.testCases = testCases;
     }
 
@@ -121,9 +100,7 @@ public class TestSuites {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", platform=" + platform +
-                ", moduleThread=" + moduleThread +
-                ", caseThread=" + caseThread +
-                ", deviceThread=" + deviceThread +
+                ", cover=" + cover +
                 ", projectId=" + projectId +
                 ", testCases=" + testCases +
                 ", devices=" + devices +

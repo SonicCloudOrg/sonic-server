@@ -21,4 +21,6 @@ public interface ResultsService {
     void clean(int day);
 
     void suiteResult(int id);
+
+    void subResultCount(int id);
 }

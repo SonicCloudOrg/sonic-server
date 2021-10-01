@@ -112,20 +112,29 @@ public class ResultsServiceImpl implements ResultsService {
             }
             //状态赋予等级最高的
             results.setStatus(status > results.getStatus() ? status : results.getStatus());
-            if (results.getSendAgentCount() <= 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
+            if (results.getSendMsgCount() <= 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
                 delete(id);
             } else {
-                results.setReceiveAgentCount(results.getReceiveAgentCount() + 1);
-                save(results);
-                //发收相同的话，表明测试结束了
-                if (results.getReceiveAgentCount() == results.getSendAgentCount()) {
-                    Projects projects = projectsService.findById(results.getProjectId());
-                    if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
-                        robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
-                                results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
-                    }
-                }
+//                results.setReceiveAgentCount(results.getReceiveAgentCount() + 1);
+//                save(results);
+//                //发收相同的话，表明测试结束了
+//                if (results.getReceiveAgentCount() == results.getSendAgentCount()) {
+//                    Projects projects = projectsService.findById(results.getProjectId());
+//                    if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+//                        robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
+//                                results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+//                    }
+//                }
             }
+        }
+    }
+
+    @Override
+    public void subResultCount(int id) {
+        Results results = findById(id);
+        if (results != null) {
+            results.setSendMsgCount(results.getSendMsgCount() - 1);
+            resultsRepository.save(results);
         }
     }
 }

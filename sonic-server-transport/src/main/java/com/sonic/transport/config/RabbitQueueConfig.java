@@ -19,19 +19,9 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitQueueConfig {
     private final Logger logger = LoggerFactory.getLogger(RabbitQueueConfig.class);
 
-    @Bean("PackageExchange")
-    public FanoutExchange PackageExchange() {
-        return new FanoutExchange("PackageExchange", true, false);
-    }
-
     @Bean("MsgDirectExchange")
     public DirectExchange MsgDirectExchange() {
         return new DirectExchange("MsgDirectExchange", true, false);
-    }
-
-    @Bean("AgentExchange")
-    public FanoutExchange AgentExchange() {
-        return new FanoutExchange("AgentExchange", true, false);
     }
 
     @Bean("DataExchange")

@@ -47,6 +47,9 @@ public class TestDataReceiver {
             case "offLine":
                 controllerResp = controllerFeignClient.offLine(jsonMsg.getInteger("agentId"));
                 break;
+            case "subResultCount":
+                controllerResp = controllerFeignClient.subResultCount(jsonMsg.getInteger("rid"));
+                break;
             case "deviceDetail":
                 controllerResp = controllerFeignClient.deviceStatus(jsonMsg);
                 break;
