@@ -30,18 +30,18 @@ public class ResultDetailServiceImpl implements ResultDetailService {
 
     @Override
     public void saveByTransport(JSONObject jsonMsg) {
-        Devices resultDevice = devicesService.findByAgentIdAndUdId(jsonMsg.getInteger("agentId")
-                , jsonMsg.getString("udId"));
-        ResultDetail resultInfo = new ResultDetail();
-        resultInfo.setType(jsonMsg.getString("msg"));
-        resultInfo.setLog(jsonMsg.getString("log"));
-        resultInfo.setDes(jsonMsg.getString("des"));
-        resultInfo.setStatus(jsonMsg.getInteger("status"));
-        resultInfo.setResultId(jsonMsg.getInteger("rid"));
-        resultInfo.setCaseId(jsonMsg.getInteger("cid"));
-        resultInfo.setTime(jsonMsg.getDate("time"));
-        resultInfo.setDeviceId(resultDevice == null ? 0 : resultDevice.getId());
-        save(resultInfo);
+//        Devices resultDevice = devicesService.findByAgentIdAndUdId(jsonMsg.getInteger("agentId")
+//                , jsonMsg.getString("udId"));
+//        ResultDetail resultInfo = new ResultDetail();
+//        resultInfo.setType(jsonMsg.getString("msg"));
+//        resultInfo.setLog(jsonMsg.getString("log"));
+//        resultInfo.setDes(jsonMsg.getString("des"));
+//        resultInfo.setStatus(jsonMsg.getInteger("status"));
+//        resultInfo.setResultId(jsonMsg.getInteger("rid"));
+//        resultInfo.setCaseId(jsonMsg.getInteger("cid"));
+//        resultInfo.setTime(jsonMsg.getDate("time"));
+//        resultInfo.setDeviceId(resultDevice == null ? 0 : resultDevice.getId());
+//        save(resultInfo);
     }
 
     @Override

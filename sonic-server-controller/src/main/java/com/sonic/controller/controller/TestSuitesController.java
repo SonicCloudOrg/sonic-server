@@ -5,6 +5,7 @@ import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.TestSuites;
 import com.sonic.controller.services.TestSuitesService;
+import com.sonic.controller.tools.RedisTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Api(tags = "测试套件相关")
@@ -28,13 +30,17 @@ public class TestSuitesController {
 
     @WebAspect
     @ApiOperation(value = "运行测试套件", notes = "运行指定项目的指定测试套件")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "id", value = "测试套件id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "strike", value = "触发器", dataTypeClass = Integer.class)
-    })
+    @ApiImplicitParam(name = "id", value = "测试套件id", dataTypeClass = Integer.class)
     @GetMapping("/runSuite")
     public RespModel runSuite(@RequestParam(name = "id") int id
-            , @RequestParam(name = "strike") String strike) {
+            , HttpServletRequest request) {
+        String strike = "SYSTEM";
+        if (request.getHeader("sonicToken") != null) {
+            String token = request.getHeader("sonicToken");
+            if (RedisTool.get("sonic:user:" + token) != null) {
+                strike = RedisTool.get("sonic:user:" + token).toString();
+            }
+        }
         return testSuitesService.runSuite(id, strike);
     }
 
