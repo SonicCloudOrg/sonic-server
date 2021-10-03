@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @ApiModel("公共步骤模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 public class PublicSteps {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

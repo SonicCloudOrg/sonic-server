@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
 </p>
-<p align="center">🎉Sonic Client Test Platform</p>
+<p align="center">🎉Sonic Cloud Test Platform</p>
 <p align="center">
   <span>English |</span>
   <a href="https://github.com/ZhouYixun/sonic-server/blob/main/README_CN.md">  
@@ -21,7 +21,7 @@
 
 #### What is sonic ?
 
-> Nowadays, automatic testing, remote control and other technologies have gradually matured. [Appium](https://github.com/appium/appium) can be said to be the leader in the field of automation, and [STF](https://github.com/openstf/stf) is the ancestor of remote control. A long time ago, I began to have an idea about whether to provide test solutions for all clients (Android, IOS, windows, MAC and web applications) on one platform. Therefore, sonic client test platform was born.
+> Nowadays, automatic testing, remote control and other technologies have gradually matured. [Appium](https://github.com/appium/appium) can be said to be the leader in the field of automation, and [STF](https://github.com/openstf/stf) is the ancestor of remote control. A long time ago, I began to have an idea about whether to provide test solutions for all clients (Android, IOS, windows, MAC and web applications) on one platform. Therefore, sonic cloud test platform was born.
 
 #### Vision
 

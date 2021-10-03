@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @ApiModel("测试套件模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 public class TestSuites {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

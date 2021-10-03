@@ -11,6 +11,7 @@ import java.util.Date;
 
 @Entity
 @ApiModel("测试结果模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 @EntityListeners(AuditingEntityListener.class)
 public class Results {
     @Id
