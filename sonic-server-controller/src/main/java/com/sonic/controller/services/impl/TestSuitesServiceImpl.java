@@ -58,9 +58,9 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             return new RespModel(3000, "该测试套件内无测试用例！");
         }
         List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
-        for (Devices devices : devicesList) {
-            if (devices.getStatus().equals(DeviceStatus.OFFLINE) || devices.getStatus().equals(DeviceStatus.DISCONNECTED)) {
-                devicesList.remove(devices);
+        for (int i = devicesList.size() - 1; i >= 0; i--) {
+            if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
+                devicesList.remove(devicesList.get(i));
             }
         }
         if (devicesList.size() == 0) {
@@ -126,6 +126,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 suite.put("rid", results.getId());
                 String key = agentsService.findKeyById(devices.getAgentId());
                 suite.put("key", key);
+                suite.put("wait", 0);
                 RespModel testDataResp = transportFeignClient.sendTestData(suite);
                 if (testDataResp.getCode() != 2000) {
                     results.setSendMsgCount(results.getSendMsgCount() - 1);
@@ -159,6 +160,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                     suite.put("rid", results.getId());
                     String key = agentsService.findKeyById(devices.getAgentId());
                     suite.put("key", key);
+                    suite.put("wait", 0);
                     RespModel testDataResp = transportFeignClient.sendTestData(suite);
                     if (testDataResp.getCode() != 2000) {
                         results.setSendMsgCount(results.getSendMsgCount() - 1);
@@ -198,7 +200,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 step.put("pubSteps", publicStepsJson);
             }
         }
-        step.put("steps", step);
+        step.put("step", steps);
         return step;
     }
 

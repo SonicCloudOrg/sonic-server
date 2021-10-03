@@ -12,6 +12,7 @@ import java.util.List;
 
 @Entity
 @ApiModel("页面控件模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 public class Elements {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

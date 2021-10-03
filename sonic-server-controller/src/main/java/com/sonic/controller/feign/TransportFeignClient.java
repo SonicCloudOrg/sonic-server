@@ -15,6 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "sonic-server-transport", fallback = TransportFeignClientFallBack.class)
 public interface TransportFeignClient {
 
-    @PostMapping("/transport/sendTestData")
+    @PostMapping("/exchange/sendTestData")
     RespModel sendTestData(@RequestBody JSONObject jsonObject);
 }

@@ -16,6 +16,7 @@ import java.util.Set;
 
 @Entity
 @ApiModel("测试用例模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 @EntityListeners(AuditingEntityListener.class)
 public class TestCases {
     @Id

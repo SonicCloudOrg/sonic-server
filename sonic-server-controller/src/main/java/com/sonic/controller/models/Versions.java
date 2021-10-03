@@ -3,16 +3,14 @@ package com.sonic.controller.models;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
 
 @Entity
 @ApiModel("版本迭代模型")
+@Table(indexes = {@Index(columnList = "projectId")})
 public class Versions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
