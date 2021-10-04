@@ -89,43 +89,8 @@ public class ResultsServiceImpl implements ResultsService {
     public void suiteResult(int id) {
         Results results = findById(id);
         if (results != null) {
-            List<ResultDetail> resultDetailList = resultDetailService.findByResultIdAndType(id, "status");
-            int failCount = 0;
-            int sucCount = 0;
-            int warnCount = 0;
-            int status;
-            for (ResultDetail resultDetail : resultDetailList) {
-                if (resultDetail.getStatus() == ResultDetailStatus.FAIL) {
-                    failCount++;
-                } else if (resultDetail.getStatus() == ResultDetailStatus.WARN) {
-                    warnCount++;
-                } else {
-                    sucCount++;
-                }
-            }
-            if (failCount > 0) {
-                status = ResultStatus.FAIL;
-            } else if (warnCount > 0) {
-                status = ResultStatus.WARNING;
-            } else {
-                status = ResultStatus.PASS;
-            }
-            //状态赋予等级最高的
-            results.setStatus(status > results.getStatus() ? status : results.getStatus());
-            if (results.getSendMsgCount() <= 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
-                delete(id);
-            } else {
-//                results.setReceiveAgentCount(results.getReceiveAgentCount() + 1);
-//                save(results);
-//                //发收相同的话，表明测试结束了
-//                if (results.getReceiveAgentCount() == results.getSendAgentCount()) {
-//                    Projects projects = projectsService.findById(results.getProjectId());
-//                    if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
-//                        robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
-//                                results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
-//                    }
-//                }
-            }
+            results.setReceiveMsgCount(results.getReceiveMsgCount() + 1);
+            setStatus(results);
         }
     }
 
@@ -134,7 +99,47 @@ public class ResultsServiceImpl implements ResultsService {
         Results results = findById(id);
         if (results != null) {
             results.setSendMsgCount(results.getSendMsgCount() - 1);
-            resultsRepository.save(results);
+            setStatus(results);
+        }
+    }
+
+    public void setStatus(Results results) {
+        List<ResultDetail> resultDetailList = resultDetailService.findAll(results.getId(), 0, "status", 0);
+        int failCount = 0;
+        int sucCount = 0;
+        int warnCount = 0;
+        int status;
+        for (ResultDetail resultDetail : resultDetailList) {
+            if (resultDetail.getStatus() == ResultDetailStatus.FAIL) {
+                failCount++;
+            } else if (resultDetail.getStatus() == ResultDetailStatus.WARN) {
+                warnCount++;
+            } else {
+                sucCount++;
+            }
+        }
+        if (failCount > 0) {
+            status = ResultStatus.FAIL;
+        } else if (warnCount > 0) {
+            status = ResultStatus.WARNING;
+        } else {
+            status = ResultStatus.PASS;
+        }
+        //状态赋予等级最高的
+        results.setStatus(status > results.getStatus() ? status : results.getStatus());
+        if (results.getSendMsgCount() < 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
+            delete(results.getId());
+        } else {
+            save(results);
+            //发收相同的话，表明测试结束了
+            if (results.getReceiveMsgCount() == results.getSendMsgCount()) {
+                results.setEndTime(new Date());
+                Projects projects = projectsService.findById(results.getProjectId());
+                if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                    robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
+                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+                }
+            }
         }
     }
 }
