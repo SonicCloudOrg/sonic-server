@@ -109,10 +109,11 @@ public class ResultsServiceImpl implements ResultsService {
                 JSONArray result = new JSONArray();
                 List<TestCases> testCasesList = testSuites.getTestCases();
                 List<JSONObject> caseTimes = resultDetailRepository.findTimeByResultIdGroupByCaseId(results.getId());
-                List<ResultDetail> statusList = resultDetailService.findAll(results.getId(), 0, "status", 0);
+                List<JSONObject> statusList = resultDetailRepository.findStatusByResultIdGroupByCaseId(results.getId());
                 for (TestCases testCases : testCasesList) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("case", testCases);
+                    int status = 0;
                     for (int j = caseTimes.size() - 1; j >= 0; j--) {
                         if (caseTimes.get(j).getInteger("case_id") == testCases.getId()) {
                             jsonObject.put("startTime", caseTimes.get(j).getDate("startTime"));
@@ -123,14 +124,18 @@ public class ResultsServiceImpl implements ResultsService {
                     }
                     List<JSONObject> device = new ArrayList<>();
                     for (int i = statusList.size() - 1; i >= 0; i--) {
-                        if (statusList.get(i).getCaseId() == testCases.getId()) {
+                        if (statusList.get(i).getInteger("case_id") == testCases.getId()) {
                             JSONObject deviceIdAndStatus = new JSONObject();
-                            deviceIdAndStatus.put("deviceId", statusList.get(i).getDeviceId());
-                            deviceIdAndStatus.put("status", statusList.get(i).getStatus());
+                            deviceIdAndStatus.put("deviceId", statusList.get(i).getInteger("device_id"));
+                            deviceIdAndStatus.put("status", statusList.get(i).getInteger("status"));
+                            if (statusList.get(i).getInteger("status") > status) {
+                                status = statusList.get(i).getInteger("status");
+                            }
                             device.add(deviceIdAndStatus);
                             statusList.remove(i);
                         }
                     }
+                    jsonObject.put("status", status);
                     jsonObject.put("device", device);
                     result.add(jsonObject);
                 }
