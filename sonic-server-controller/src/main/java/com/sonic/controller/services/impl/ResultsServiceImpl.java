@@ -1,9 +1,11 @@
 package com.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.sonic.controller.dao.ResultDetailRepository;
 import com.sonic.controller.dao.ResultsRepository;
-import com.sonic.controller.models.Projects;
-import com.sonic.controller.models.ResultDetail;
-import com.sonic.controller.models.Results;
+import com.sonic.controller.dao.TestSuitesRepository;
+import com.sonic.controller.models.*;
 import com.sonic.controller.models.interfaces.ResultDetailStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
@@ -36,6 +38,10 @@ public class ResultsServiceImpl implements ResultsService {
     private ProjectsService projectsService;
     @Autowired
     private RobotMsgTool robotMsgTool;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private ResultDetailRepository resultDetailRepository;
 
     @Override
     public Page<Results> findByProjectId(int projectId, Pageable pageable) {
@@ -91,6 +97,49 @@ public class ResultsServiceImpl implements ResultsService {
         if (results != null) {
             results.setReceiveMsgCount(results.getReceiveMsgCount() + 1);
             setStatus(results);
+        }
+    }
+
+    @Override
+    public JSONArray findCaseStatus(int id) {
+        Results results = findById(id);
+        if (results != null) {
+            TestSuites testSuites = testSuitesService.findById(results.getSuiteId());
+            if (testSuites != null) {
+                JSONArray result = new JSONArray();
+                List<TestCases> testCasesList = testSuites.getTestCases();
+                List<JSONObject> caseTimes = resultDetailRepository.findTimeByResultIdGroupByCaseId(results.getId());
+                List<ResultDetail> statusList = resultDetailService.findAll(results.getId(), 0, "status", 0);
+                for (TestCases testCases : testCasesList) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("case", testCases);
+                    for (int j = caseTimes.size() - 1; j >= 0; j--) {
+                        if (caseTimes.get(j).getInteger("case_id") == testCases.getId()) {
+                            jsonObject.put("startTime", caseTimes.get(j).getDate("startTime"));
+                            jsonObject.put("endTime", caseTimes.get(j).getDate("endTime"));
+                            caseTimes.remove(j);
+                            break;
+                        }
+                    }
+                    List<JSONObject> device = new ArrayList<>();
+                    for (int i = statusList.size() - 1; i >= 0; i--) {
+                        if (statusList.get(i).getCaseId() == testCases.getId()) {
+                            JSONObject deviceIdAndStatus = new JSONObject();
+                            deviceIdAndStatus.put("deviceId", statusList.get(i).getDeviceId());
+                            deviceIdAndStatus.put("status", statusList.get(i).getStatus());
+                            device.add(deviceIdAndStatus);
+                            statusList.remove(i);
+                        }
+                    }
+                    jsonObject.put("device", device);
+                    result.add(jsonObject);
+                }
+                return result;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
 

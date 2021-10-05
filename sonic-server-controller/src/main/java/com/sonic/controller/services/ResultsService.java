@@ -1,5 +1,7 @@
 package com.sonic.controller.services;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.models.Results;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,8 @@ public interface ResultsService {
     void clean(int day);
 
     void suiteResult(int id);
+
+    JSONArray findCaseStatus(int id);
 
     void subResultCount(int id);
 }

@@ -35,6 +35,8 @@ public class ResultDetailServiceImpl implements ResultDetailService {
     private ResultDetailRepository resultDetailRepository;
     @Autowired
     private DevicesService devicesService;
+    @Autowired
+    private ResultsService resultsService;
 
     @Override
     public void save(ResultDetail resultDetail) {
@@ -56,7 +58,7 @@ public class ResultDetailServiceImpl implements ResultDetailService {
         resultInfo.setDeviceId(resultDevice == null ? 0 : resultDevice.getId());
         save(resultInfo);
         if (jsonMsg.getString("msg").equals("status")) {
-
+            resultsService.suiteResult(jsonMsg.getInteger("rid"));
         }
     }
 
