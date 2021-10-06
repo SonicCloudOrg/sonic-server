@@ -14,10 +14,10 @@ public interface ResultDetailRepository extends JpaRepository<ResultDetail, Inte
     List<JSONObject> findTimeByResultIdGroupByCaseId(int resultId);
 
     @Query(value = "select t2.device_id, t2.case_id, IFNULL(t1.status,4) as status " +
-            "from (select device_id, status from result_detail where result_id=?1 and type = 'status')t1" +
+            "from (select case_id, device_id, status from result_detail where result_id=?1 and type = 'status')t1" +
             " right join" +
-            "(select case_id, device_id from result_detail where result_id=?1 and type = 'step' group by device_id)t2" +
-            " on t1.device_id = t2.device_id", nativeQuery = true)
+            "(select case_id, device_id from result_detail where result_id=?1 and type = 'step' group by case_id, device_id)t2" +
+            " on t1.device_id = t2.device_id and t1.case_id = t2.case_id", nativeQuery = true)
     List<JSONObject> findStatusByResultIdGroupByCaseId(int resultId);
 
     @Transactional
