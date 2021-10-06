@@ -2,7 +2,7 @@ spring:
   version: @project.version@
   application:
     name: @project.artifactId@
-    des: "Sonic云测平台 - 文件中心"
+    des: "Sonic云真机测试平台 - 文件中心"
   cloud:
     config:
       discovery:

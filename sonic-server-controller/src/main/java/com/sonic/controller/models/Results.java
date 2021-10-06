@@ -36,6 +36,8 @@ public class Results {
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date createTime;
+    @ApiModelProperty(value = "结束时间", example = "2021-08-15 11:36:00")
+    Date endTime;
 
     public Results() {
     }
@@ -112,6 +114,14 @@ public class Results {
         this.createTime = createTime;
     }
 
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
         return "Results{" +
@@ -124,6 +134,7 @@ public class Results {
                 ", receiveMsgCount=" + receiveMsgCount +
                 ", status=" + status +
                 ", createTime=" + createTime +
+                ", endTime=" + endTime +
                 '}';
     }
 }

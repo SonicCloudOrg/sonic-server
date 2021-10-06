@@ -1,5 +1,6 @@
 package com.sonic.controller.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
@@ -70,5 +71,18 @@ public class ResultsController {
     public RespModel subResultCount(@RequestParam(name = "id") int id) {
         resultsService.subResultCount(id);
         return new RespModel(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查询测试结果用例状态", notes = "查询对应id的测试结果用例状态")
+    @ApiImplicitParam(name = "id", value = "测试结果id", dataTypeClass = Integer.class)
+    @GetMapping("/findCaseStatus")
+    public RespModel<JSONArray> findCaseStatus(@RequestParam(name = "id") int id) {
+        JSONArray result = resultsService.findCaseStatus(id);
+        if (result == null) {
+            return new RespModel(RespEnum.ID_NOT_FOUND);
+        } else {
+            return new RespModel(RespEnum.SEARCH_OK, result);
+        }
     }
 }

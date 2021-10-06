@@ -180,14 +180,14 @@ public class RobotMsgTool {
         } else {
             notFixColorString = "<font color=#F56C6C>" + noFixNum + "</font>";
         }
-        markdown.put("text", "### Sonic云测平台日报 \n" +
+        markdown.put("text", "### Sonic云真机测试平台日报 \n" +
                 "> ###### 项目：" + projectName + " \n" +
                 "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
                 "> ###### 运行时长：" + time + " \n" +
                 "> ###### 发现崩溃：" + crashColorString + "   卡顿：" + lagColorString + "\n" +
                 "> ###### 未修复问题：" + notFixColorString + "个 \n" +
                 "> ###### 问题列表：[点击查看](http://" + clientHost + "/Sonic/Home/" + projectId + "/Crash)");
-        markdown.put("title", "Sonic云测平台日报");
+        markdown.put("title", "Sonic云真机测试平台日报");
         jsonObject.put("msgtype", "markdown");
         jsonObject.put("markdown", markdown);
         signAndSend(token, secret, jsonObject);

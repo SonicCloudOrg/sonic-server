@@ -1,9 +1,11 @@
 package com.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.sonic.controller.dao.ResultDetailRepository;
 import com.sonic.controller.dao.ResultsRepository;
-import com.sonic.controller.models.Projects;
-import com.sonic.controller.models.ResultDetail;
-import com.sonic.controller.models.Results;
+import com.sonic.controller.dao.TestSuitesRepository;
+import com.sonic.controller.models.*;
 import com.sonic.controller.models.interfaces.ResultDetailStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
@@ -36,6 +38,10 @@ public class ResultsServiceImpl implements ResultsService {
     private ProjectsService projectsService;
     @Autowired
     private RobotMsgTool robotMsgTool;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private ResultDetailRepository resultDetailRepository;
 
     @Override
     public Page<Results> findByProjectId(int projectId, Pageable pageable) {
@@ -89,43 +95,56 @@ public class ResultsServiceImpl implements ResultsService {
     public void suiteResult(int id) {
         Results results = findById(id);
         if (results != null) {
-            List<ResultDetail> resultDetailList = resultDetailService.findByResultIdAndType(id, "status");
-            int failCount = 0;
-            int sucCount = 0;
-            int warnCount = 0;
-            int status;
-            for (ResultDetail resultDetail : resultDetailList) {
-                if (resultDetail.getStatus() == ResultDetailStatus.FAIL) {
-                    failCount++;
-                } else if (resultDetail.getStatus() == ResultDetailStatus.WARN) {
-                    warnCount++;
-                } else {
-                    sucCount++;
+            results.setReceiveMsgCount(results.getReceiveMsgCount() + 1);
+            setStatus(results);
+        }
+    }
+
+    @Override
+    public JSONArray findCaseStatus(int id) {
+        Results results = findById(id);
+        if (results != null) {
+            TestSuites testSuites = testSuitesService.findById(results.getSuiteId());
+            if (testSuites != null) {
+                JSONArray result = new JSONArray();
+                List<TestCases> testCasesList = testSuites.getTestCases();
+                List<JSONObject> caseTimes = resultDetailRepository.findTimeByResultIdGroupByCaseId(results.getId());
+                List<JSONObject> statusList = resultDetailRepository.findStatusByResultIdGroupByCaseId(results.getId());
+                for (TestCases testCases : testCasesList) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("case", testCases);
+                    int status = 0;
+                    for (int j = caseTimes.size() - 1; j >= 0; j--) {
+                        if (caseTimes.get(j).getInteger("case_id") == testCases.getId()) {
+                            jsonObject.put("startTime", caseTimes.get(j).getDate("startTime"));
+                            jsonObject.put("endTime", caseTimes.get(j).getDate("endTime"));
+                            caseTimes.remove(j);
+                            break;
+                        }
+                    }
+                    List<JSONObject> device = new ArrayList<>();
+                    for (int i = statusList.size() - 1; i >= 0; i--) {
+                        if (statusList.get(i).getInteger("case_id") == testCases.getId()) {
+                            JSONObject deviceIdAndStatus = new JSONObject();
+                            deviceIdAndStatus.put("deviceId", statusList.get(i).getInteger("device_id"));
+                            deviceIdAndStatus.put("status", statusList.get(i).getInteger("status"));
+                            if (statusList.get(i).getInteger("status") > status) {
+                                status = statusList.get(i).getInteger("status");
+                            }
+                            device.add(deviceIdAndStatus);
+                            statusList.remove(i);
+                        }
+                    }
+                    jsonObject.put("status", status);
+                    jsonObject.put("device", device);
+                    result.add(jsonObject);
                 }
-            }
-            if (failCount > 0) {
-                status = ResultStatus.FAIL;
-            } else if (warnCount > 0) {
-                status = ResultStatus.WARNING;
+                return result;
             } else {
-                status = ResultStatus.PASS;
+                return null;
             }
-            //状态赋予等级最高的
-            results.setStatus(status > results.getStatus() ? status : results.getStatus());
-            if (results.getSendMsgCount() <= 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
-                delete(id);
-            } else {
-//                results.setReceiveAgentCount(results.getReceiveAgentCount() + 1);
-//                save(results);
-//                //发收相同的话，表明测试结束了
-//                if (results.getReceiveAgentCount() == results.getSendAgentCount()) {
-//                    Projects projects = projectsService.findById(results.getProjectId());
-//                    if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
-//                        robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
-//                                results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
-//                    }
-//                }
-            }
+        } else {
+            return null;
         }
     }
 
@@ -134,7 +153,47 @@ public class ResultsServiceImpl implements ResultsService {
         Results results = findById(id);
         if (results != null) {
             results.setSendMsgCount(results.getSendMsgCount() - 1);
-            resultsRepository.save(results);
+            setStatus(results);
+        }
+    }
+
+    public void setStatus(Results results) {
+        List<ResultDetail> resultDetailList = resultDetailService.findAll(results.getId(), 0, "status", 0);
+        int failCount = 0;
+        int sucCount = 0;
+        int warnCount = 0;
+        int status;
+        for (ResultDetail resultDetail : resultDetailList) {
+            if (resultDetail.getStatus() == ResultDetailStatus.FAIL) {
+                failCount++;
+            } else if (resultDetail.getStatus() == ResultDetailStatus.WARN) {
+                warnCount++;
+            } else {
+                sucCount++;
+            }
+        }
+        if (failCount > 0) {
+            status = ResultStatus.FAIL;
+        } else if (warnCount > 0) {
+            status = ResultStatus.WARNING;
+        } else {
+            status = ResultStatus.PASS;
+        }
+        //状态赋予等级最高的
+        results.setStatus(status > results.getStatus() ? status : results.getStatus());
+        if (results.getSendMsgCount() < 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
+            delete(results.getId());
+        } else {
+            save(results);
+            //发收相同的话，表明测试结束了
+            if (results.getReceiveMsgCount() == results.getSendMsgCount()) {
+                results.setEndTime(new Date());
+                Projects projects = projectsService.findById(results.getProjectId());
+                if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                    robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
+                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+                }
+            }
         }
     }
 }

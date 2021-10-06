@@ -2,6 +2,8 @@ package com.sonic.controller.services;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.models.ResultDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,7 +17,9 @@ public interface ResultDetailService {
 
     void saveByTransport(JSONObject jsonObject);
 
-    List<ResultDetail> findByResultIdAndType(int resultId, String type);
+    Page<ResultDetail> findAll(int resultId, int caseId, String type, int deviceId, Pageable pageable);
+
+    List<ResultDetail> findAll(int resultId, int caseId, String type, int deviceId);
 
     void deleteByResultId(int resultId);
 }
