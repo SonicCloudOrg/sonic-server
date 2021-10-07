@@ -13,9 +13,9 @@ import java.util.Map;
  * @date 2021/8/20 17:51
  */
 public interface PublicStepsService {
-    Page<PublicSteps> findByProjectId(int projectId, Pageable pageable);
+    Page<PublicSteps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable);
 
-    List<Map<Integer, String>> findByProjectId(int projectId);
+    List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform);
 
     PublicSteps save(PublicSteps publicSteps);
 

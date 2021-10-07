@@ -19,6 +19,9 @@ public class PublicSteps {
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
+    @Positive
+    @ApiModelProperty(value = "平台", required = true, example = "1")
+    int platform;
     @NotNull
     @ApiModelProperty(value = "公共步骤名称", required = true, example = "登陆步骤")
     String name;
@@ -45,6 +48,14 @@ public class PublicSteps {
         this.projectId = projectId;
     }
 
+    public int getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(int platform) {
+        this.platform = platform;
+    }
+
     public String getName() {
         return name;
     }
@@ -66,6 +77,7 @@ public class PublicSteps {
         return "PublicSteps{" +
                 "id=" + id +
                 ", projectId=" + projectId +
+                ", platform=" + platform +
                 ", name='" + name + '\'' +
                 ", steps=" + steps +
                 '}';
