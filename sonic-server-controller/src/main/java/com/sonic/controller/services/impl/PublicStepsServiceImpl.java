@@ -25,13 +25,13 @@ public class PublicStepsServiceImpl implements PublicStepsService {
     private PublicStepsRepository publicStepsRepository;
 
     @Override
-    public Page<PublicSteps> findByProjectId(int projectId, Pageable pageable) {
-        return publicStepsRepository.findByProjectId(projectId, pageable);
+    public Page<PublicSteps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable) {
+        return publicStepsRepository.findByProjectIdAndPlatform(projectId, platform, pageable);
     }
 
     @Override
-    public List<Map<Integer, String>> findByProjectId(int projectId) {
-        return publicStepsRepository.findByProjectId(projectId);
+    public List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform) {
+        return publicStepsRepository.findByProjectIdAndPlatform(projectId, platform);
     }
 
     @Override

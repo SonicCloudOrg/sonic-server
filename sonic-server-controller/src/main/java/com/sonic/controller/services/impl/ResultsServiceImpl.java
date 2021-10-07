@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,6 +104,7 @@ public class ResultsServiceImpl implements ResultsService {
     @Override
     public JSONArray findCaseStatus(int id) {
         Results results = findById(id);
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (results != null) {
             TestSuites testSuites = testSuitesService.findById(results.getSuiteId());
             if (testSuites != null) {
@@ -116,8 +118,8 @@ public class ResultsServiceImpl implements ResultsService {
                     int status = 0;
                     for (int j = caseTimes.size() - 1; j >= 0; j--) {
                         if (caseTimes.get(j).getInteger("case_id") == testCases.getId()) {
-                            jsonObject.put("startTime", caseTimes.get(j).getDate("startTime"));
-                            jsonObject.put("endTime", caseTimes.get(j).getDate("endTime"));
+                            jsonObject.put("startTime", sf.format(caseTimes.get(j).getDate("startTime")));
+                            jsonObject.put("endTime", sf.format(caseTimes.get(j).getDate("endTime")));
                             caseTimes.remove(j);
                             break;
                         }
@@ -188,6 +190,7 @@ public class ResultsServiceImpl implements ResultsService {
             //发收相同的话，表明测试结束了
             if (results.getReceiveMsgCount() == results.getSendMsgCount()) {
                 results.setEndTime(new Date());
+                save(results);
                 Projects projects = projectsService.findById(results.getProjectId());
                 if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
                     robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),

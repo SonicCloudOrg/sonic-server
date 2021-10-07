@@ -8,8 +8,13 @@ import com.sonic.controller.models.http.StepSort;
 import com.sonic.controller.services.StepsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +33,24 @@ public class StepsController {
     private StepsService stepsService;
 
     @WebAspect
+    @ApiOperation(value = "查找步骤列表", notes = "查找对应用例id下的步骤列表（分页）")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    })
+    @GetMapping("/list")
+    public RespModel<Page<Steps>> findAll(@RequestParam(name = "projectId") int projectId,
+                                          @RequestParam(name = "page") int page,
+                                          @RequestParam(name = "pageSize") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        return new RespModel(RespEnum.SEARCH_OK, stepsService.findByProjectId(projectId, pageable));
+    }
+
+    @WebAspect
     @ApiOperation(value = "查找步骤列表", notes = "查找对应用例id下的步骤列表")
     @ApiImplicitParam(name = "caseId", value = "测试用例id", dataTypeClass = Integer.class)
-    @GetMapping("/list")
+    @GetMapping("/listAll")
     public RespModel<List<Steps>> findByCaseIdOrderBySort(@RequestParam(name = "caseId") int caseId) {
         return new RespModel(RespEnum.SEARCH_OK, stepsService.findByCaseIdOrderBySort(caseId));
     }
