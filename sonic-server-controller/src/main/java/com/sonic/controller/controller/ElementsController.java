@@ -30,12 +30,13 @@ public class ElementsController {
     @ApiOperation(value = "查找控件元素列表1", notes = "查找对应项目id的控件元素列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
     public RespModel<Page<Elements>> findAll(@RequestParam(name = "projectId") int projectId,
-                                             @RequestParam(name = "type") String type,
+                                             @RequestParam(name = "type", required = false) String type,
                                              @RequestParam(name = "page") int page,
                                              @RequestParam(name = "pageSize") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);

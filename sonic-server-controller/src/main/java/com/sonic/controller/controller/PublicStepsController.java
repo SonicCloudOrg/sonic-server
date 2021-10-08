@@ -31,17 +31,15 @@ public class PublicStepsController {
     @ApiOperation(value = "查询公共步骤列表1", notes = "查找对应项目id下的公共步骤列表（分页）")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
-    public RespModel<Page<PublicSteps>> findByProjectIdAndPlatform(@RequestParam(name = "projectId") int projectId,
-                                                                   @RequestParam(name = "platform") int platform,
+    public RespModel<Page<PublicSteps>> findByProjectId(@RequestParam(name = "projectId") int projectId,
                                                                    @RequestParam(name = "page") int page,
                                                                    @RequestParam(name = "pageSize") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        return new RespModel(RespEnum.SEARCH_OK, publicStepsService.findByProjectIdAndPlatform(projectId, platform, pageable));
+        return new RespModel(RespEnum.SEARCH_OK, publicStepsService.findByProjectId(projectId, pageable));
     }
 
     @WebAspect

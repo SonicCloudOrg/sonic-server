@@ -27,24 +27,10 @@ public class ElementsServiceImpl implements ElementsService {
     private ElementsRepository elementsRepository;
     @Autowired
     private StepsRepository stepsRepository;
-    @Autowired
-    private CacheManager cacheManager;
 
     @Override
     public boolean save(Elements elements) {
         try {
-            if (elementsRepository.existsById(elements.getId())) {
-                //清理缓存
-                Elements full = elementsRepository.findById(elements.getId()).get();
-                Cache cachePublic = cacheManager.getCache("sonic:publicSteps");
-                List<Steps> stepsList = full.getSteps();
-                for (Steps steps : stepsList) {
-                    List<PublicSteps> publicStepsList = steps.getPublicSteps();
-                    for (PublicSteps publicSteps : publicStepsList) {
-                        cachePublic.evict(publicSteps.getId());
-                    }
-                }
-            }
             elementsRepository.save(elements);
             return true;
         } catch (Exception e) {

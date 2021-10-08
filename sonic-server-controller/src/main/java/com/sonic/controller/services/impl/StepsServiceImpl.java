@@ -26,8 +26,6 @@ public class StepsServiceImpl implements StepsService {
     private StepsRepository stepsRepository;
     @Autowired
     private PublicStepsService publicStepsService;
-    @Autowired
-    private CacheManager cacheManager;
 
     @Override
     public List<Steps> findByCaseIdOrderBySort(int caseId) {
@@ -49,14 +47,6 @@ public class StepsServiceImpl implements StepsService {
     @Override
     public boolean delete(int id) {
         if (stepsRepository.existsById(id)) {
-            //清理缓存
-            Steps steps = stepsRepository.findById(id).get();
-            List<PublicSteps> publicSteps = steps.getPublicSteps();
-            Cache cachePublic = cacheManager.getCache("sonic:publicSteps");
-            for (PublicSteps publicStep : publicSteps) {
-                publicStep.getSteps().remove(steps);
-                cachePublic.evict(publicStep.getId());
-            }
             stepsRepository.deleteById(id);
             return true;
         } else {
@@ -76,14 +66,6 @@ public class StepsServiceImpl implements StepsService {
         }
         if (!stepsRepository.existsById(steps.getId())) {
             steps.setSort(stepsRepository.findMaxSort() + 1);
-        } else {
-            //清理缓存，因为发生了变动，需要清理已有缓存
-            Steps s = stepsRepository.findById(steps.getId()).get();
-            Cache cachePublic = cacheManager.getCache("sonic:publicStep");
-            List<PublicSteps> publicSteps = s.getPublicSteps();
-            for (PublicSteps p : publicSteps) {
-                cachePublic.evict(p.getId());
-            }
         }
         stepsRepository.save(steps);
     }
@@ -119,8 +101,8 @@ public class StepsServiceImpl implements StepsService {
     }
 
     @Override
-    public Page<Steps> findByProjectId(int projectId, Pageable pageable) {
-        return stepsRepository.findByProjectId(projectId
+    public Page<Steps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable) {
+        return stepsRepository.findByProjectIdAndPlatform(projectId, platform
                 , pageable);
     }
 }

@@ -36,15 +36,17 @@ public class StepsController {
     @ApiOperation(value = "查找步骤列表", notes = "查找对应用例id下的步骤列表（分页）")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
     public RespModel<Page<Steps>> findAll(@RequestParam(name = "projectId") int projectId,
+                                          @RequestParam(name = "platform") int platform,
                                           @RequestParam(name = "page") int page,
                                           @RequestParam(name = "pageSize") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        return new RespModel(RespEnum.SEARCH_OK, stepsService.findByProjectId(projectId, pageable));
+        return new RespModel(RespEnum.SEARCH_OK, stepsService.findByProjectIdAndPlatform(projectId, platform, pageable));
     }
 
     @WebAspect

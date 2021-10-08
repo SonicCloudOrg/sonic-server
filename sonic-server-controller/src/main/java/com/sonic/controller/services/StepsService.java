@@ -25,5 +25,5 @@ public interface StepsService {
 
     void sortSteps(StepSort stepSort);
 
-    Page<Steps> findByProjectId(int projectId, Pageable pageable);
+    Page<Steps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable);
 }
