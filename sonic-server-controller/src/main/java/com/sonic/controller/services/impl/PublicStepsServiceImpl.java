@@ -4,9 +4,6 @@ import com.sonic.controller.dao.PublicStepsRepository;
 import com.sonic.controller.models.PublicSteps;
 import com.sonic.controller.services.PublicStepsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,8 +22,8 @@ public class PublicStepsServiceImpl implements PublicStepsService {
     private PublicStepsRepository publicStepsRepository;
 
     @Override
-    public Page<PublicSteps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable) {
-        return publicStepsRepository.findByProjectIdAndPlatform(projectId, platform, pageable);
+    public Page<PublicSteps> findByProjectId(int projectId, Pageable pageable) {
+        return publicStepsRepository.findByProjectId(projectId, pageable);
     }
 
     @Override
@@ -35,14 +32,12 @@ public class PublicStepsServiceImpl implements PublicStepsService {
     }
 
     @Override
-    @CachePut(value = "sonic:publicSteps", key = "#publicSteps.id", unless = "#result == null")
     public PublicSteps save(PublicSteps publicSteps) {
         publicStepsRepository.save(publicSteps);
         return publicSteps;
     }
 
     @Override
-    @CacheEvict(value = "sonic:publicSteps", key = "#id")
     public boolean delete(int id) {
         if (publicStepsRepository.existsById(id)) {
             publicStepsRepository.deleteById(id);
@@ -53,7 +48,6 @@ public class PublicStepsServiceImpl implements PublicStepsService {
     }
 
     @Override
-    @Cacheable(value = "sonic:publicSteps", key = "#id", unless = "#result == null")
     public PublicSteps findById(int id) {
         if (publicStepsRepository.existsById(id)) {
             return publicStepsRepository.findById(id).get();

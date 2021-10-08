@@ -29,5 +29,5 @@ public interface StepsRepository extends JpaRepository<Steps, Integer> {
     @Transactional
     void deleteByProjectId(@Param("projectId") int projectId);
 
-    Page<Steps> findByProjectId(int projectId, Pageable pageable);
+    Page<Steps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable);
 }

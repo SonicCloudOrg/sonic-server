@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 2021/8/20 17:51
  */
 public interface PublicStepsService {
-    Page<PublicSteps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable);
+    Page<PublicSteps> findByProjectId(int projectId, Pageable pageable);
 
     List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform);
 
