@@ -3,6 +3,14 @@ server:
 
 spring:
   quartz:
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: SonicQuartz
+            instanceId: AUTO
+          jobStore:
+            isClustered: true
     job-store-type: jdbc
     jdbc:
-      initialize-schema: always
+      initialize-schema: never

@@ -5,17 +5,15 @@ import com.sonic.common.http.RespModel;
 import com.sonic.controller.dao.ElementsRepository;
 import com.sonic.controller.dao.StepsRepository;
 import com.sonic.controller.models.Elements;
-import com.sonic.controller.models.PublicSteps;
 import com.sonic.controller.models.Steps;
 import com.sonic.controller.services.ElementsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class ElementsServiceImpl implements ElementsService {
     }
 
     @Override
-    public Page<Elements> findAll(int projectId, String type, Pageable pageable) {
+    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Pageable pageable) {
         Specification<Elements> spc = (root, query, cb) -> {
             List<Order> orders = new ArrayList<>();
             orders.add(cb.desc(root.get("id")));
@@ -59,6 +57,16 @@ public class ElementsServiceImpl implements ElementsService {
                         predicateList.add(cb.and(cb.equal(root.get("eleType"), "image")));
                         break;
                 }
+            }
+            if (eleTypes != null) {
+                CriteriaBuilder.In<Object> in = cb.in(root.get("eleType"));
+                for (String e : eleTypes) {
+                    in.value(e);
+                }
+                predicateList.add(cb.and(in));
+            }
+            if (name != null && name.length() > 0) {
+                predicateList.add(cb.and(cb.like(root.get("eleName"), "%" + name + "%")));
             }
             Predicate[] p = new Predicate[predicateList.size()];
             return query.where(predicateList.toArray(p)).getRestriction();

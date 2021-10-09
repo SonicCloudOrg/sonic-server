@@ -23,14 +23,14 @@ public class Jobs {
     @NotNull
     @ApiModelProperty(value = "定时任务名称", required = true, example = "每周三跑一次")
     String name;
-    @Positive
+    @NotNull
     @ApiModelProperty(value = "附带值", required = true, example = "123")
     String content;
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
     @ApiModelProperty(value = "状态（1为开启，2为关闭）", example = "1")
-    Integer status;
+    int status;
     @NotNull
     @ApiModelProperty(value = "cron表达式", required = true, example = "* 30 * * * ?")
     String cronExpression;

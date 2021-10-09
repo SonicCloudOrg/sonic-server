@@ -30,6 +30,8 @@ public class ElementsController {
     @ApiOperation(value = "查找控件元素列表1", notes = "查找对应项目id的控件元素列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "eleTypes[]", value = "类型(多个)", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "name", value = "控件名称", dataTypeClass = String.class),
             @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
@@ -37,10 +39,12 @@ public class ElementsController {
     @GetMapping("/list")
     public RespModel<Page<Elements>> findAll(@RequestParam(name = "projectId") int projectId,
                                              @RequestParam(name = "type", required = false) String type,
+                                             @RequestParam(name = "eleTypes[]", required = false) List<String> eleTypes,
+                                             @RequestParam(name = "name", required = false) String name,
                                              @RequestParam(name = "page") int page,
                                              @RequestParam(name = "pageSize") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return new RespModel(RespEnum.SEARCH_OK, elementsService.findAll(projectId, type, pageable));
+        return new RespModel(RespEnum.SEARCH_OK, elementsService.findAll(projectId, type, eleTypes, name, pageable));
     }
 
     @WebAspect
