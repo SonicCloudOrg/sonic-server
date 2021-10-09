@@ -34,17 +34,20 @@ public class JobsServiceImpl implements JobsService {
             try {
                 quartzHandler.updateScheduleJob(scheduler, jobs);
             } catch (Exception e) {
+                e.printStackTrace();
                 return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
             }
             jobsRepository.save(jobs);
             return new RespModel(RespEnum.UPDATE_OK);
         } else {
+            jobsRepository.save(jobs);
             try {
                 quartzHandler.createScheduleJob(scheduler, jobs);
             } catch (Exception e) {
+                delete(jobs.getId());
+                e.printStackTrace();
                 return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
             }
-            jobsRepository.save(jobs);
             return new RespModel(RespEnum.HANDLE_OK);
         }
     }

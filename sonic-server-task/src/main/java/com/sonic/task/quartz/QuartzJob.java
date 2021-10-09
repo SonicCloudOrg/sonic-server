@@ -27,7 +27,7 @@ public class QuartzJob extends QuartzJobBean implements Job {
     private JobsService jobsService;
 
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext jobExecutionContext) {
         JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         Jobs jobs = jobsService.findById(dataMap.getInt("id"));
         if (jobs != null) {
@@ -35,7 +35,10 @@ public class QuartzJob extends QuartzJobBean implements Job {
             switch (jobs.getType()) {
                 case JobType.TEST_JOB:
                     int suiteId = data.getInteger("suiteId");
+                    logger.info(suiteId+"");
+                    break;
                 case JobType.CLEAN_FILE_JOB:
+                    break;
                 case JobType.CLEAN_RESULT_JOB:
                     break;
             }

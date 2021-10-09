@@ -4,6 +4,7 @@ import com.sonic.controller.dao.VersionsRepository;
 import com.sonic.controller.models.Versions;
 import com.sonic.controller.services.VersionsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +36,8 @@ public class VersionsServiceImpl implements VersionsService {
 
     @Override
     public List<Versions> findByProjectId(int projectId) {
-        return versionsRepository.findByProjectId(projectId);
+        Sort s = Sort.by(Sort.Direction.DESC, "createTime");
+        return versionsRepository.findByProjectId(projectId, s);
     }
 
     @Override
