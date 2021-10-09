@@ -7,10 +7,13 @@ import com.sonic.task.models.Jobs;
 import com.sonic.task.models.interfaces.JobStatus;
 import com.sonic.task.quartz.QuartzHandler;
 import com.sonic.task.service.JobsService;
+import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 /**
@@ -23,32 +26,24 @@ public class JobsServiceImpl implements JobsService {
     @Autowired
     private QuartzHandler quartzHandler;
     @Autowired
-    private Scheduler scheduler;
-    @Autowired
     private JobsRepository jobsRepository;
 
     @Override
     public RespModel save(Jobs jobs) {
+        EntityManager em = createEntityManager();
+        em.getTransaction().begin();
         jobs.setStatus(JobStatus.ENABLE);
-        if (jobsRepository.existsById(jobs.getId())) {
-            try {
-                quartzHandler.updateScheduleJob(scheduler, jobs);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
-            }
-            jobsRepository.save(jobs);
-            return new RespModel(RespEnum.UPDATE_OK);
-        } else {
-            jobsRepository.save(jobs);
-            try {
-                quartzHandler.createScheduleJob(scheduler, jobs);
-            } catch (Exception e) {
-                delete(jobs.getId());
-                e.printStackTrace();
-                return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
+        jobsRepository.save(jobs);
+        CronTrigger trigger = quartzHandler.getTrigger(jobs);
+        try {
+            if (trigger != null) {
+                quartzHandler.updateScheduleJob(jobs);
+            } else {
+                quartzHandler.createScheduleJob(jobs);
             }
             return new RespModel(RespEnum.HANDLE_OK);
+        } catch (Exception e) {
+            return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
         }
     }
 
@@ -59,7 +54,7 @@ public class JobsServiceImpl implements JobsService {
             switch (type) {
                 case JobStatus.DISABLE:
                     try {
-                        quartzHandler.pauseScheduleJob(scheduler, jobs);
+                        quartzHandler.pauseScheduleJob(jobs);
                     } catch (Exception e) {
                         return new RespModel(3000, "关闭失败！");
                     }
@@ -68,7 +63,7 @@ public class JobsServiceImpl implements JobsService {
                     return new RespModel(2000, "关闭成功！");
                 case JobStatus.ENABLE:
                     try {
-                        quartzHandler.resumeScheduleJob(scheduler, jobs);
+                        quartzHandler.resumeScheduleJob(jobs);
                     } catch (Exception e) {
                         return new RespModel(3000, "开启失败！");
                     }
@@ -88,7 +83,7 @@ public class JobsServiceImpl implements JobsService {
         if (jobsRepository.existsById(id)) {
             Jobs jobs = jobsRepository.findById(id).get();
             try {
-                quartzHandler.deleteScheduleJob(scheduler, jobs);
+                quartzHandler.deleteScheduleJob(jobs);
             } catch (Exception e) {
                 return new RespModel(RespEnum.DELETE_ERROR);
             }
