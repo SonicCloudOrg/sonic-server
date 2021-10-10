@@ -78,6 +78,23 @@ public class QuartzHandler {
      * @param jobs
      * @return void
      * @author ZhouYiXun
+     * @des 执行定时任务
+     * @date 2021/10/10 12:43
+     */
+    public void runScheduleJob(Jobs jobs) {
+        JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
+        try {
+            scheduler.triggerJob(jobKey);
+            logger.info("运行一次定时任务成功");
+        } catch (SchedulerException e) {
+            logger.error("运行一次定时任务出错：" + e.getMessage());
+        }
+    }
+
+    /**
+     * @param jobs
+     * @return void
+     * @author ZhouYiXun
      * @des 更新定时任务
      * @date 2021/8/21 17:43
      */

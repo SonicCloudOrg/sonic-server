@@ -1,6 +1,7 @@
 package com.sonic.task.controller;
 
 import com.sonic.common.config.WebAspect;
+import com.sonic.common.exception.SonicCronException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.models.Jobs;
@@ -30,7 +31,7 @@ public class JobsController {
     @WebAspect
     @ApiOperation(value = "更新定时任务信息", notes = "新增或更新定时任务的信息")
     @PutMapping
-    public RespModel save(@Validated @RequestBody Jobs jobs) {
+    public RespModel save(@Validated @RequestBody Jobs jobs) throws SonicCronException {
         return jobsService.save(jobs);
     }
 

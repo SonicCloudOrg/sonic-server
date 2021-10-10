@@ -1,5 +1,6 @@
 package com.sonic.common.config;
 
+import com.sonic.common.exception.SonicCronException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class GlobalWebException {
     @ExceptionHandler(Exception.class)
     public RespModel ErrHandler(Exception exception) {
         logger.error(exception.getMessage());
-        logger.error(exception.getStackTrace().toString());
+        exception.printStackTrace();
         if (exception instanceof MissingServletRequestParameterException) {
             return new RespModel(RespEnum.PARAMS_MISSING_ERROR);
         } else if (exception instanceof ConstraintViolationException) {
@@ -33,8 +34,9 @@ public class GlobalWebException {
             return new RespModel(RespEnum.PARAMS_NOT_VALID);
         } else if (exception instanceof HttpMessageNotReadableException) {
             return new RespModel(RespEnum.PARAMS_NOT_READABLE);
+        } else if (exception instanceof SonicCronException) {
+            return new RespModel(RespEnum.CRON_NOT_VALID);
         } else {
-            exception.printStackTrace();
             return new RespModel(RespEnum.UNKNOWN_ERROR);
         }
     }
