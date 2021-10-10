@@ -2,6 +2,9 @@ package com.sonic.task.quartz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sonic.common.http.RespModel;
+import com.sonic.task.feign.ControllerFeignClient;
+import com.sonic.task.feign.FolderFeignClient;
 import com.sonic.task.models.Jobs;
 import com.sonic.task.models.interfaces.JobType;
 import com.sonic.task.service.JobsService;
@@ -12,6 +15,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
@@ -25,22 +29,49 @@ public class QuartzJob extends QuartzJobBean implements Job {
     private final Logger logger = LoggerFactory.getLogger(QuartzJob.class);
     @Autowired
     private JobsService jobsService;
+    @Autowired
+    private ControllerFeignClient controllerFeignClient;
+    @Autowired
+    private FolderFeignClient folderFeignClient;
+    @Value("${sonic.jobs.filesKeepDay}")
+    private int filesKeepDay;
+    @Value("${sonic.jobs.resultsKeepDay}")
+    private int resultsKeepDay;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-        Jobs jobs = jobsService.findById(dataMap.getInt("id"));
-        if (jobs != null) {
-            JSONObject data = JSON.parseObject(jobs.getContent());
-            switch (jobs.getType()) {
-                case JobType.TEST_JOB:
-                    int suiteId = data.getInteger("suiteId");
-                    logger.info(suiteId+"");
-                    break;
-                case JobType.CLEAN_FILE_JOB:
-                    break;
-                case JobType.CLEAN_RESULT_JOB:
-                    break;
+        int type = dataMap.getInt("type");
+        switch (type) {
+            case JobType.TEST_JOB: {
+                Jobs jobs = jobsService.findById(dataMap.getInt("id"));
+                if (jobs != null) {
+                    RespModel r = controllerFeignClient.runSuite(jobs.getSuiteId());
+                    logger.info("定时任务开始执行：测试套件" + jobs.getSuiteId() + " " + r);
+                } else {
+                    logger.info("定时任务id:" + dataMap.getInt("id") + "不存在！");
+                }
+                break;
+            }
+            case JobType.CLEAN_FILE_JOB: {
+                RespModel r = folderFeignClient.delete(filesKeepDay);
+                logger.info("清理文件任务开始：" + r);
+                break;
+            }
+            case JobType.CLEAN_RESULT_JOB: {
+                RespModel r = controllerFeignClient.clean(resultsKeepDay);
+                logger.info("清理测试结果任务开始：" + r);
+                break;
+            }
+            case JobType.SEND_DAY_REPORT: {
+                RespModel r = controllerFeignClient.sendDayReport();
+                logger.info("发送日报任务开始：" + r);
+                break;
+            }
+            case JobType.SEND_WEEK_REPORT: {
+                RespModel r = controllerFeignClient.sendWeekReport();
+                logger.info("发送周报任务开始：" + r);
+                break;
             }
         }
     }

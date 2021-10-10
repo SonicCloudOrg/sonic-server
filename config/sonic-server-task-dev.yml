@@ -1,7 +1,9 @@
 server:
-  port: 8095
+  port: 8096
 
 spring:
+  datasource:
+    initialization-mode: always
   quartz:
     properties:
       org:
@@ -14,3 +16,12 @@ spring:
     job-store-type: jdbc
     jdbc:
       initialize-schema: never
+
+sonic:
+  jobs:
+    fileCron: 0 0 12 * * ?
+    resultCron: 0 0 12 * * ?
+    dayReportCron: 0 0 10 * * ?
+    weekReportCron: 0 0 10 ? * Mon
+    filesKeepDay: 60
+    resultsKeepDay: 60

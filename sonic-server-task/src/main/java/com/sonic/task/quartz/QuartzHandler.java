@@ -1,6 +1,7 @@
 package com.sonic.task.quartz;
 
 import com.sonic.task.models.Jobs;
+import com.sonic.task.models.interfaces.JobType;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class QuartzHandler {
             Class<? extends Job> jobClass = QuartzJob.class;
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobs.getId() + "").build();
             jobDetail.getJobDataMap().put("id", jobs.getId());
+            jobDetail.getJobDataMap().put("type", JobType.TEST_JOB);
             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobs.getCronExpression())
                     .withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobs.getId() + "").withSchedule(scheduleBuilder).build();
@@ -147,5 +149,30 @@ public class QuartzHandler {
             e.printStackTrace();
         }
         return trigger;
+    }
+
+    public void createTrigger(String type, int typeCode, String cron) {
+        try {
+            TriggerKey triggerKey = TriggerKey.triggerKey(type);
+            CronTrigger hasTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+            if (hasTrigger == null) {
+                Class<? extends Job> jobClass = QuartzJob.class;
+                JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(type).build();
+                jobDetail.getJobDataMap().put("type", typeCode);
+                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
+                        .withMisfireHandlingInstructionDoNothing();
+                CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(type).withSchedule(scheduleBuilder).build();
+                scheduler.scheduleJob(jobDetail, trigger);
+                logger.info("创建" + type + "系统定时任务成功");
+            } else {
+                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
+                        .withMisfireHandlingInstructionDoNothing();
+                hasTrigger = hasTrigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+                scheduler.rescheduleJob(triggerKey, hasTrigger);
+                logger.info(type + "系统定时任务已存在");
+            }
+        } catch (SchedulerException e) {
+            logger.error("创建" + type + "定时任务出错：" + e.getMessage());
+        }
     }
 }
