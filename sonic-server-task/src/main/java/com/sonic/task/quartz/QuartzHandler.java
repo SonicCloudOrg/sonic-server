@@ -25,7 +25,7 @@ public class QuartzHandler {
      * @des 创建定时任务
      * @date 2021/8/21 17:40
      */
-    public void createScheduleJob(Jobs jobs) {
+    public void createScheduleJob(Jobs jobs) throws SchedulerException {
         try {
             Class<? extends Job> jobClass = QuartzJob.class;
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobs.getId() + "").build();
@@ -37,6 +37,7 @@ public class QuartzHandler {
             logger.info("创建定时任务成功");
         } catch (SchedulerException e) {
             logger.error("创建定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 
@@ -47,13 +48,14 @@ public class QuartzHandler {
      * @des 暂停定时任务
      * @date 2021/8/21 17:42
      */
-    public void pauseScheduleJob(Jobs jobs) {
+    public void pauseScheduleJob(Jobs jobs) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.pauseJob(jobKey);
             logger.info("暂停定时任务成功");
         } catch (SchedulerException e) {
             logger.error("暂停定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 
@@ -64,13 +66,14 @@ public class QuartzHandler {
      * @des 重启定时任务
      * @date 2021/8/21 17:43
      */
-    public void resumeScheduleJob(Jobs jobs) {
+    public void resumeScheduleJob(Jobs jobs) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.resumeJob(jobKey);
             logger.info("重启定时任务成功");
         } catch (SchedulerException e) {
             logger.error("重启定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 
@@ -81,13 +84,14 @@ public class QuartzHandler {
      * @des 执行定时任务
      * @date 2021/10/10 12:43
      */
-    public void runScheduleJob(Jobs jobs) {
+    public void runScheduleJob(Jobs jobs) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.triggerJob(jobKey);
             logger.info("运行一次定时任务成功");
         } catch (SchedulerException e) {
             logger.error("运行一次定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 
@@ -98,7 +102,7 @@ public class QuartzHandler {
      * @des 更新定时任务
      * @date 2021/8/21 17:43
      */
-    public void updateScheduleJob(Jobs jobs) {
+    public void updateScheduleJob(Jobs jobs) throws SchedulerException {
         try {
             TriggerKey triggerKey = TriggerKey.triggerKey(jobs.getId() + "");
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
@@ -109,6 +113,7 @@ public class QuartzHandler {
             logger.info("更新定时任务成功");
         } catch (SchedulerException e) {
             logger.error("更新定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 
@@ -119,7 +124,7 @@ public class QuartzHandler {
      * @des 删除定时任务
      * @date 2021/8/21 17:44
      */
-    public void deleteScheduleJob(Jobs jobs) {
+    public void deleteScheduleJob(Jobs jobs) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         TriggerKey triggerKey = TriggerKey.triggerKey(jobs.getId() + "");
         try {
@@ -129,6 +134,7 @@ public class QuartzHandler {
             logger.info("删除定时任务成功");
         } catch (SchedulerException e) {
             logger.error("删除定时任务出错：" + e.getMessage());
+            throw e;
         }
     }
 

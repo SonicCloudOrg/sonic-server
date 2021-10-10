@@ -41,9 +41,9 @@ public class JobsController {
             @ApiImplicitParam(name = "id", value = "定时任务id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "type", value = "状态类型", dataTypeClass = Integer.class),
     })
-    @GetMapping("/updateJob")
-    public RespModel updateJob(@RequestParam(name = "id") int id, @RequestParam(name = "type") int type) {
-        return jobsService.updateJob(id, type);
+    @GetMapping("/updateStatus")
+    public RespModel updateStatus(@RequestParam(name = "id") int id, @RequestParam(name = "type") int type) {
+        return jobsService.updateStatus(id, type);
     }
 
     @WebAspect

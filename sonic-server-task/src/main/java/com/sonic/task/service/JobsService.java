@@ -14,7 +14,7 @@ import java.util.List;
 public interface JobsService {
     RespModel save(Jobs jobs) throws SonicCronException;
 
-    RespModel updateJob(int id, int type);
+    RespModel updateStatus(int id, int type);
 
     RespModel delete(int id);
 

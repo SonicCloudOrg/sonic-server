@@ -13,4 +13,4 @@ spring:
             isClustered: true
     job-store-type: jdbc
     jdbc:
-      initialize-schema: always
+      initialize-schema: never

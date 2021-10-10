@@ -20,8 +20,7 @@ public enum RespEnum {
     PARAMS_VIOLATE_ERROR(4002, "字段校验异常！"),
     UNKNOWN_ERROR(4003, "发生未知异常！"),
     PARAMS_NOT_VALID(4004, "字段缺失或校验异常！"),
-    PARAMS_NOT_READABLE(4005, "解析参数失败！"),
-    CRON_NOT_VALID(4006, "请检查cron表达式是否无误！");
+    PARAMS_NOT_READABLE(4005, "解析参数失败！");
 
     private int code;
     private String message;

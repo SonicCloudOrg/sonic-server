@@ -25,7 +25,6 @@ public class GlobalWebException {
     @ExceptionHandler(Exception.class)
     public RespModel ErrHandler(Exception exception) {
         logger.error(exception.getMessage());
-        exception.printStackTrace();
         if (exception instanceof MissingServletRequestParameterException) {
             return new RespModel(RespEnum.PARAMS_MISSING_ERROR);
         } else if (exception instanceof ConstraintViolationException) {
@@ -35,8 +34,9 @@ public class GlobalWebException {
         } else if (exception instanceof HttpMessageNotReadableException) {
             return new RespModel(RespEnum.PARAMS_NOT_READABLE);
         } else if (exception instanceof SonicCronException) {
-            return new RespModel(RespEnum.CRON_NOT_VALID);
+            return new RespModel(4006,exception.getMessage());
         } else {
+            exception.printStackTrace();
             return new RespModel(RespEnum.UNKNOWN_ERROR);
         }
     }
