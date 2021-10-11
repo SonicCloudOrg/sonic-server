@@ -8,4 +8,5 @@ package com.sonic.task.models.interfaces;
 public interface JobStatus {
     int ENABLE = 1;
     int DISABLE = 2;
+    int ONCE = 3;
 }

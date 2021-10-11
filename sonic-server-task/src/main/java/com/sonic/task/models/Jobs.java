@@ -17,15 +17,12 @@ public class Jobs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "id", example = "1")
     int id;
-    @Positive
-    @ApiModelProperty(value = "类型", required = true, example = "1")
-    int type;
     @NotNull
     @ApiModelProperty(value = "定时任务名称", required = true, example = "每周三跑一次")
     String name;
-    @NotNull
-    @ApiModelProperty(value = "附带值", required = true, example = "123")
-    String content;
+    @Positive
+    @ApiModelProperty(value = "套件id", required = true, example = "123")
+    int suiteId;
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
@@ -35,23 +32,12 @@ public class Jobs {
     @ApiModelProperty(value = "cron表达式", required = true, example = "* 30 * * * ?")
     String cronExpression;
 
-    public Jobs() {
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -62,12 +48,12 @@ public class Jobs {
         this.name = name;
     }
 
-    public String getContent() {
-        return content;
+    public int getSuiteId() {
+        return suiteId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setSuiteId(int suiteId) {
+        this.suiteId = suiteId;
     }
 
     public int getProjectId() {
@@ -78,11 +64,11 @@ public class Jobs {
         this.projectId = projectId;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -96,11 +82,10 @@ public class Jobs {
 
     @Override
     public String toString() {
-        return "Tasks{" +
+        return "Jobs{" +
                 "id=" + id +
-                ", type=" + type +
                 ", name='" + name + '\'' +
-                ", content='" + content + '\'' +
+                ", suiteId=" + suiteId +
                 ", projectId=" + projectId +
                 ", status=" + status +
                 ", cronExpression='" + cronExpression + '\'' +

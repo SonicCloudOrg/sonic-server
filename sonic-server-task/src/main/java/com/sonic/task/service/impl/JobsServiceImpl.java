@@ -3,15 +3,18 @@ package com.sonic.task.service.impl;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.dao.JobsRepository;
+import com.sonic.common.exception.SonicCronException;
 import com.sonic.task.models.Jobs;
 import com.sonic.task.models.interfaces.JobStatus;
 import com.sonic.task.quartz.QuartzHandler;
 import com.sonic.task.service.JobsService;
-import org.quartz.Scheduler;
+import org.quartz.CronTrigger;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author ZhouYiXun
@@ -23,60 +26,52 @@ public class JobsServiceImpl implements JobsService {
     @Autowired
     private QuartzHandler quartzHandler;
     @Autowired
-    private Scheduler scheduler;
-    @Autowired
     private JobsRepository jobsRepository;
 
     @Override
-    public RespModel save(Jobs jobs) {
+    @Transactional(rollbackFor = SonicCronException.class)
+    public RespModel save(Jobs jobs) throws SonicCronException {
         jobs.setStatus(JobStatus.ENABLE);
-        if (jobsRepository.existsById(jobs.getId())) {
-            try {
-                quartzHandler.updateScheduleJob(scheduler, jobs);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
-            }
-            jobsRepository.save(jobs);
-            return new RespModel(RespEnum.UPDATE_OK);
-        } else {
-            jobsRepository.save(jobs);
-            try {
-                quartzHandler.createScheduleJob(scheduler, jobs);
-            } catch (Exception e) {
-                delete(jobs.getId());
-                e.printStackTrace();
-                return new RespModel(3000, "操作失败!请检查cron表达式是否无误！");
+        jobsRepository.save(jobs);
+        CronTrigger trigger = quartzHandler.getTrigger(jobs);
+        try {
+            if (trigger != null) {
+                quartzHandler.updateScheduleJob(jobs);
+            } else {
+                quartzHandler.createScheduleJob(jobs);
             }
             return new RespModel(RespEnum.HANDLE_OK);
+        } catch (RuntimeException | SchedulerException e) {
+            e.printStackTrace();
+            throw new SonicCronException("操作失败！请检查cron表达式是否无误！");
         }
     }
 
     @Override
-    public RespModel updateJob(int id, int type) {
+    public RespModel updateStatus(int id, int type) {
         if (jobsRepository.existsById(id)) {
-            Jobs jobs = jobsRepository.findById(id).get();
-            switch (type) {
-                case JobStatus.DISABLE:
-                    try {
-                        quartzHandler.pauseScheduleJob(scheduler, jobs);
-                    } catch (Exception e) {
-                        return new RespModel(3000, "关闭失败！");
-                    }
-                    jobs.setStatus(JobStatus.DISABLE);
-                    jobsRepository.save(jobs);
-                    return new RespModel(2000, "关闭成功！");
-                case JobStatus.ENABLE:
-                    try {
-                        quartzHandler.resumeScheduleJob(scheduler, jobs);
-                    } catch (Exception e) {
-                        return new RespModel(3000, "开启失败！");
-                    }
-                    jobs.setStatus(JobStatus.ENABLE);
-                    jobsRepository.save(jobs);
-                    return new RespModel(2000, "开启成功！");
-                default:
-                    return new RespModel(3000, "参数有误！");
+            try {
+                Jobs jobs = jobsRepository.findById(id).get();
+                switch (type) {
+                    case JobStatus.DISABLE:
+                        quartzHandler.pauseScheduleJob(jobs);
+                        jobs.setStatus(JobStatus.DISABLE);
+                        jobsRepository.save(jobs);
+                        return new RespModel(2000, "关闭成功！");
+                    case JobStatus.ENABLE:
+                        quartzHandler.resumeScheduleJob(jobs);
+                        jobs.setStatus(JobStatus.ENABLE);
+                        jobsRepository.save(jobs);
+                        return new RespModel(2000, "开启成功！");
+                    case JobStatus.ONCE:
+                        quartzHandler.runScheduleJob(jobs);
+                        return new RespModel(2000, "开始运行！");
+                    default:
+                        return new RespModel(3000, "参数有误！");
+                }
+            } catch (RuntimeException | SchedulerException e) {
+                e.printStackTrace();
+                return new RespModel(3000, "操作失败！");
             }
         } else {
             return new RespModel(RespEnum.ID_NOT_FOUND);
@@ -88,7 +83,7 @@ public class JobsServiceImpl implements JobsService {
         if (jobsRepository.existsById(id)) {
             Jobs jobs = jobsRepository.findById(id).get();
             try {
-                quartzHandler.deleteScheduleJob(scheduler, jobs);
+                quartzHandler.deleteScheduleJob(jobs);
             } catch (Exception e) {
                 return new RespModel(RespEnum.DELETE_ERROR);
             }
@@ -100,8 +95,8 @@ public class JobsServiceImpl implements JobsService {
     }
 
     @Override
-    public List<Jobs> findByProjectId(int projectId) {
-        return jobsRepository.findByProjectId(projectId);
+    public Page<Jobs> findByProjectId(int projectId, Pageable pageable) {
+        return jobsRepository.findByProjectId(projectId, pageable);
     }
 
     @Override

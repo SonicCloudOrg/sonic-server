@@ -129,8 +129,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 suite.put("wait", 0);
                 RespModel testDataResp = transportFeignClient.sendTestData(suite);
                 if (testDataResp.getCode() != 2000) {
-                    results.setSendMsgCount(results.getSendMsgCount() - 1);
-                    resultsService.save(results);
+                    resultsService.subResultCount(results.getId());
                 }
             }
         }
@@ -163,8 +162,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                     suite.put("wait", 0);
                     RespModel testDataResp = transportFeignClient.sendTestData(suite);
                     if (testDataResp.getCode() != 2000) {
-                        results.setSendMsgCount(results.getSendMsgCount() - 1);
-                        resultsService.save(results);
+                        resultsService.subResultCount(results.getId());
                     }
                 }
             }
@@ -175,7 +173,10 @@ public class TestSuitesServiceImpl implements TestSuitesService {
     @Override
     public TestSuites findById(int id) {
         if (testSuitesRepository.existsById(id)) {
-            return testSuitesRepository.findById(id).get();
+            TestSuites testSuites = testSuitesRepository.findById(id).get();
+            Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
+            testSuites.setTestCases(new ArrayList<>(testCasesSet));
+            return testSuites;
         } else {
             return null;
         }
@@ -238,5 +239,10 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             }
         };
         return testSuitesRepository.findAll(spc, pageable);
+    }
+
+    @Override
+    public List<TestSuites> findByProjectId(int projectId) {
+        return testSuitesRepository.findByProjectId(projectId, Sort.by(Sort.Direction.DESC, "id"));
     }
 }

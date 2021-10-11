@@ -1,6 +1,7 @@
 package com.sonic.task.controller;
 
 import com.sonic.common.config.WebAspect;
+import com.sonic.common.exception.SonicCronException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.models.Jobs;
@@ -10,6 +11,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +35,7 @@ public class JobsController {
     @WebAspect
     @ApiOperation(value = "更新定时任务信息", notes = "新增或更新定时任务的信息")
     @PutMapping
-    public RespModel save(@Validated @RequestBody Jobs jobs) {
+    public RespModel save(@Validated @RequestBody Jobs jobs) throws SonicCronException {
         return jobsService.save(jobs);
     }
 
@@ -40,9 +45,9 @@ public class JobsController {
             @ApiImplicitParam(name = "id", value = "定时任务id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "type", value = "状态类型", dataTypeClass = Integer.class),
     })
-    @GetMapping("/updateJob")
-    public RespModel updateJob(@RequestParam(name = "id") int id, @RequestParam(name = "type") int type) {
-        return jobsService.updateJob(id, type);
+    @GetMapping("/updateStatus")
+    public RespModel updateStatus(@RequestParam(name = "id") int id, @RequestParam(name = "type") int type) {
+        return jobsService.updateStatus(id, type);
     }
 
     @WebAspect
@@ -55,10 +60,17 @@ public class JobsController {
 
     @WebAspect
     @ApiOperation(value = "查询定时任务列表", notes = "查找对应项目id的定时任务列表")
-    @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    })
     @GetMapping("/list")
-    public RespModel<List<Jobs>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
-        return new RespModel(RespEnum.SEARCH_OK, jobsService.findByProjectId(projectId));
+    public RespModel<Page<Jobs>> findByProjectId(@RequestParam(name = "projectId") int projectId
+            , @RequestParam(name = "page") int page
+            , @RequestParam(name = "pageSize") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        return new RespModel(RespEnum.SEARCH_OK, jobsService.findByProjectId(projectId, pageable));
     }
 
     @WebAspect

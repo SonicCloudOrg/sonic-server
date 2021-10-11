@@ -51,11 +51,15 @@ public class TestCasesController {
 
     @WebAspect
     @ApiOperation(value = "查询测试用例列表", notes = "不分页的测试用例列表")
-    @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
+    })
     @GetMapping("/listAll")
-    public RespModel<List<TestCases>> findAll(@RequestParam(name = "platform") int platform) {
+    public RespModel<List<TestCases>> findAll(@RequestParam(name = "projectId") int projectId,
+                                              @RequestParam(name = "platform") int platform) {
         return new RespModel(RespEnum.SEARCH_OK,
-                testCasesService.findAll(platform));
+                testCasesService.findAll(projectId, platform));
     }
 
     @WebAspect
@@ -107,5 +111,14 @@ public class TestCasesController {
         } else {
             return new RespModel(-1, "查询出错！");
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "批量查询用例", notes = "查找id列表的用例信息，可以传多个ids[]")
+    @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
+    @GetMapping("/findByIdIn")
+    public RespModel<List<TestCases>> findByIdIn(@RequestParam(name = "ids[]") List<Integer> ids) {
+        return new RespModel(RespEnum.SEARCH_OK,
+                testCasesService.findByIdIn(ids));
     }
 }

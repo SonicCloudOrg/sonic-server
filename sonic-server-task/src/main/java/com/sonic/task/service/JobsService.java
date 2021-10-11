@@ -1,9 +1,10 @@
 package com.sonic.task.service;
 
+import com.sonic.common.exception.SonicCronException;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.models.Jobs;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author ZhouYiXun
@@ -11,13 +12,13 @@ import java.util.List;
  * @date 2021/8/22 11:20
  */
 public interface JobsService {
-    RespModel save(Jobs jobs);
+    RespModel save(Jobs jobs) throws SonicCronException;
 
-    RespModel updateJob(int id, int type);
+    RespModel updateStatus(int id, int type);
 
     RespModel delete(int id);
 
-    List<Jobs> findByProjectId(int projectId);
+    Page<Jobs> findByProjectId(int projectId, Pageable pageable);
 
     Jobs findById(int id);
 }

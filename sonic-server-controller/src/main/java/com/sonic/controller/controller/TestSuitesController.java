@@ -77,6 +77,14 @@ public class TestSuitesController {
     }
 
     @WebAspect
+    @ApiOperation(value = "查询测试套件列表", notes = "用于查询对应项目id下的测试套件列表(不分页)")
+    @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
+    @GetMapping("/listAll")
+    public RespModel<List<TestSuites>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
+        return new RespModel(RespEnum.SEARCH_OK, testSuitesService.findByProjectId(projectId));
+    }
+
+    @WebAspect
     @ApiOperation(value = "测试套件详情", notes = "查看测试套件的配置信息详情")
     @ApiImplicitParam(name = "id", value = "测试套件id", dataTypeClass = Integer.class)
     @GetMapping

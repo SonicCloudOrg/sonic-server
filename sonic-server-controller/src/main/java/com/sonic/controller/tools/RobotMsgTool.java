@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
 
 /**
@@ -87,7 +89,7 @@ public class RobotMsgTool {
                 " \n异常数：" + warn +
                 " \n失败数：" + fail);
         link.put("title", "测试套件: " + suiteName + " 运行完毕！");
-        link.put("messageUrl", "http://" + clientHost + "/Sonic/Home/" + projectId + "/ResultInfo/" + resultId);
+        link.put("messageUrl", "http://" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId);
         //判断测试结果，来决定显示什么图片
         if (fail > 0) {
             link.put("picUrl", errorUrl);
@@ -147,46 +149,38 @@ public class RobotMsgTool {
      * @param projectName 项目名称
      * @param yesterday   昨天的起始时间
      * @param today       今天的起始时间
-     * @param time        运行时长
-     * @param crashNum    崩溃数量
-     * @param lagNum      卡顿数量
-     * @param noFixNum    未修复数量
      * @return void
      * @author ZhouYiXun
      * @des 发送日报
      * @date 2021/8/20 18:42
      */
     public void sendDayReportMessage(String token, String secret, int projectId, String projectName,
-                                     String yesterday, String today, String time,
-                                     int crashNum, int lagNum, int noFixNum) {
+                                     String yesterday, String today, int passCount, int warnCount, int failCount) {
         JSONObject jsonObject = new JSONObject();
         JSONObject markdown = new JSONObject();
         //根据三个数量来决定markdown的字体颜色
-        String crashColorString;
-        if (crashNum == 0) {
-            crashColorString = "<font color=#67C23A>" + crashNum + "</font>";
+        String failColorString;
+        if (failCount == 0) {
+            failColorString = "<font color=#67C23A>" + failCount + "</font>";
         } else {
-            crashColorString = "<font color=#F56C6C>" + crashNum + "</font>";
+            failColorString = "<font color=#F56C6C>" + failCount + "</font>";
         }
-        String lagColorString;
-        if (lagNum == 0) {
-            lagColorString = "<font color=#67C23A>" + lagNum + "</font>";
+        String warnColorString;
+        if (warnCount == 0) {
+            warnColorString = "<font color=#67C23A>" + warnCount + "</font>";
         } else {
-            lagColorString = "<font color=#F56C6C>" + lagNum + "</font>";
+            warnColorString = "<font color=#E6A23C>" + warnCount + "</font>";
         }
-        String notFixColorString;
-        if (noFixNum == 0) {
-            notFixColorString = "<font color=#67C23A>" + noFixNum + "</font>";
-        } else {
-            notFixColorString = "<font color=#F56C6C>" + noFixNum + "</font>";
-        }
+        int total = passCount + warnCount + failCount;
         markdown.put("text", "### Sonic云真机测试平台日报 \n" +
                 "> ###### 项目：" + projectName + " \n" +
                 "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
-                "> ###### 运行时长：" + time + " \n" +
-                "> ###### 发现崩溃：" + crashColorString + "   卡顿：" + lagColorString + "\n" +
-                "> ###### 未修复问题：" + notFixColorString + "个 \n" +
-                "> ###### 问题列表：[点击查看](http://" + clientHost + "/Sonic/Home/" + projectId + "/Crash)");
+                "> ###### 通过数：<font color=#67C23A>" + passCount + "</font> \n" +
+                "> ###### 异常数：" + warnColorString + " \n" +
+                "> ###### 失败数：" + failColorString + " \n" +
+                "> ###### 测试通过率：" + (total > 0 ?
+                new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                "> ###### 详细统计：[点击查看](http://" + clientHost + "/Home/" + projectId);
         markdown.put("title", "Sonic云真机测试平台日报");
         jsonObject.put("msgtype", "markdown");
         jsonObject.put("markdown", markdown);
