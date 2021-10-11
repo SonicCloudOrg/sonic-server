@@ -59,8 +59,8 @@ public class TestCasesServiceImpl implements TestCasesService {
     }
 
     @Override
-    public List<TestCases> findAll(int platform) {
-        return testCasesRepository.findByPlatformOrderByEditTimeDesc(platform);
+    public List<TestCases> findAll(int projectId, int platform) {
+        return testCasesRepository.findByProjectIdAndPlatformOrderByEditTimeDesc(projectId, platform);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class TestCasesServiceImpl implements TestCasesService {
                     List<String> shuffle = Arrays.asList(g.getParamsValue().split("|"));
                     Collections.shuffle(shuffle);
                     valueMap.put(g.getParamsKey(), shuffle);
-                }else {
+                } else {
                     gp.put(g.getParamsKey(), g.getParamsValue());
                 }
             }
@@ -132,6 +132,11 @@ public class TestCasesServiceImpl implements TestCasesService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<TestCases> findByIdIn(List<Integer> ids) {
+        return testCasesRepository.findByIdIn(ids);
     }
 
     /**

@@ -13,7 +13,9 @@ import java.util.List;
  * @date 2021/8/20 15:29
  */
 public interface TestCasesRepository extends JpaRepository<TestCases, Integer>, JpaSpecificationExecutor<TestCases> {
-    List<TestCases> findByPlatformOrderByEditTimeDesc(int platform);
+    List<TestCases> findByProjectIdAndPlatformOrderByEditTimeDesc(int projectId, int platform);
+
+    List<TestCases> findByIdIn(List<Integer> ids);
 
     @Transactional
     void deleteByProjectId(int projectId);

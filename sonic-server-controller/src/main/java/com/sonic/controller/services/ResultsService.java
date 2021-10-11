@@ -27,4 +27,6 @@ public interface ResultsService {
     JSONArray findCaseStatus(int id);
 
     void subResultCount(int id);
+
+    JSONObject chart(String startTime, String endTime, int projectId);
 }

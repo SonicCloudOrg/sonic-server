@@ -20,6 +20,18 @@ public interface ResultDetailRepository extends JpaRepository<ResultDetail, Inte
             " on t1.device_id = t2.device_id and t1.case_id = t2.case_id", nativeQuery = true)
     List<JSONObject> findStatusByResultIdGroupByCaseId(int resultId);
 
+    @Query(value = "select t.case_id,sum(t.diff) as total from (select case_id,result_id,TIMESTAMPDIFF(SECOND,min(time),max(time)) as diff " +
+            "from result_detail where result_id in " +
+            "(select id from results where end_time>?1 and end_time<=?2 and project_id=?3) " +
+            "and type='step' group by result_id,case_id)t group by t.case_id order by total desc limit 5", nativeQuery = true)
+    List<JSONObject> findTopCases(String startTime, String endTime, int projectId);
+
+    @Query(value = "select t.device_id,sum(t.diff) as total from (select device_id,case_id,result_id,TIMESTAMPDIFF(SECOND,min(time),max(time)) as diff " +
+            "from result_detail where result_id in " +
+            "(select id from results where end_time>?1 and end_time<=?2 and project_id=?3) " +
+            "and type='step' group by result_id,case_id,device_id)t group by t.device_id order by total desc limit 5", nativeQuery = true)
+    List<JSONObject> findTopDevices(String startTime, String endTime, int projectId);
+
     @Transactional
     void deleteByResultId(int resultId);
 }

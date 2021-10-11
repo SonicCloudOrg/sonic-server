@@ -10,6 +10,7 @@ import com.sonic.controller.models.interfaces.ResultDetailStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
 import com.sonic.controller.tools.RobotMsgTool;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -43,6 +46,8 @@ public class ResultsServiceImpl implements ResultsService {
     private TestSuitesService testSuitesService;
     @Autowired
     private ResultDetailRepository resultDetailRepository;
+    @Autowired
+    private TestCasesService testCasesService;
 
     @Override
     public Page<Results> findByProjectId(int projectId, Pageable pageable) {
@@ -109,8 +114,12 @@ public class ResultsServiceImpl implements ResultsService {
             TestSuites testSuites = testSuitesService.findById(results.getSuiteId());
             if (testSuites != null) {
                 JSONArray result = new JSONArray();
-                List<TestCases> testCasesList = testSuites.getTestCases();
                 List<JSONObject> caseTimes = resultDetailRepository.findTimeByResultIdGroupByCaseId(results.getId());
+                List<Integer> ci = new ArrayList<>();
+                for (JSONObject j : caseTimes) {
+                    ci.add(j.getInteger("case_id"));
+                }
+                List<TestCases> testCasesList = testCasesService.findByIdIn(ci);
                 List<JSONObject> statusList = resultDetailRepository.findStatusByResultIdGroupByCaseId(results.getId());
                 for (TestCases testCases : testCasesList) {
                     JSONObject jsonObject = new JSONObject();
@@ -157,6 +166,57 @@ public class ResultsServiceImpl implements ResultsService {
             results.setSendMsgCount(results.getSendMsgCount() - 1);
             setStatus(results);
         }
+    }
+
+    @Override
+    public JSONObject chart(String startTime, String endTime, int projectId) {
+        List<String> dateList = getBetweenDate(startTime.substring(0, 10), endTime.substring(0, 10));
+        JSONObject result = new JSONObject();
+        result.put("case", resultDetailRepository.findTopCases(startTime, endTime, projectId));
+        result.put("device", resultDetailRepository.findTopDevices(startTime, endTime, projectId));
+        List<JSONObject> rateList = resultsRepository.findDayPassRate(startTime, endTime, projectId);
+        List<JSONObject> rateResult = new ArrayList<>();
+        for (String date : dateList) {
+            JSONObject d = new JSONObject();
+            d.put("date", date);
+            d.put("rate", 0);
+            for (Iterator<JSONObject> ite = rateList.iterator(); ite.hasNext(); ) {
+                JSONObject s = ite.next();
+                if (s.getString("date").equals(date)) {
+                    d.put("rate", s.getFloat("rate"));
+                    ite.remove();
+                    break;
+                }
+            }
+            rateResult.add(d);
+        }
+        result.put("pass", rateResult);
+        result.put("status", resultsRepository.findDayStatus(startTime, endTime, projectId));
+        return result;
+    }
+
+    public static List<String> getBetweenDate(String begin, String end) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        List<String> betweenList = new ArrayList<String>();
+
+        try {
+            Calendar startDay = Calendar.getInstance();
+            startDay.setTime(format.parse(begin));
+            startDay.add(Calendar.DATE, -1);
+
+            while (true) {
+                startDay.add(Calendar.DATE, 1);
+                Date newDate = startDay.getTime();
+                String newend = format.format(newDate);
+                betweenList.add(newend);
+                if (end.equals(newend)) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return betweenList;
     }
 
     public void setStatus(Results results) {

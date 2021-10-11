@@ -11,6 +11,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,10 +60,17 @@ public class JobsController {
 
     @WebAspect
     @ApiOperation(value = "查询定时任务列表", notes = "查找对应项目id的定时任务列表")
-    @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    })
     @GetMapping("/list")
-    public RespModel<List<Jobs>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
-        return new RespModel(RespEnum.SEARCH_OK, jobsService.findByProjectId(projectId));
+    public RespModel<Page<Jobs>> findByProjectId(@RequestParam(name = "projectId") int projectId
+            , @RequestParam(name = "page") int page
+            , @RequestParam(name = "pageSize") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        return new RespModel(RespEnum.SEARCH_OK, jobsService.findByProjectId(projectId, pageable));
     }
 
     @WebAspect

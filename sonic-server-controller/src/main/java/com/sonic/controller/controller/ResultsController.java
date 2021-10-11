@@ -1,6 +1,7 @@
 package com.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
@@ -84,5 +85,19 @@ public class ResultsController {
         } else {
             return new RespModel(RespEnum.SEARCH_OK, result);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查询报表", notes = "查找前端首页报表信息")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "startTime", value = "起始时间", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataTypeClass = String.class)
+    })
+    @GetMapping("/chart")
+    public RespModel<JSONObject> chart(@RequestParam(name = "projectId") int projectId,
+                                       @RequestParam(name = "startTime") String startTime,
+                                       @RequestParam(name = "endTime") String endTime) {
+        return new RespModel(RespEnum.SEARCH_OK, resultsService.chart(startTime, endTime, projectId));
     }
 }

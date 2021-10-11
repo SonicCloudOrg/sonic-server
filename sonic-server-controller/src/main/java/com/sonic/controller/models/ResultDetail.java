@@ -12,6 +12,7 @@ import java.util.Date;
 @Table(indexes = {
         @Index(name = "IDX_RESULT_ID", columnList = "resultId"),
         @Index(name = "IDX_TIME", columnList = "time"),
+        @Index(name = "IDX_TYPE", columnList = "type"),
         @Index(name = "IDX_RESULT_ID_CASE_ID_TYPE_DEVICE_ID", columnList = "resultId"),
         @Index(name = "IDX_RESULT_ID_CASE_ID_TYPE_DEVICE_ID", columnList = "caseId"),
         @Index(name = "IDX_RESULT_ID_CASE_ID_TYPE_DEVICE_ID", columnList = "type"),

@@ -15,7 +15,7 @@ import java.util.List;
 public interface TestCasesService {
     Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable);
 
-    List<TestCases> findAll(int platform);
+    List<TestCases> findAll(int projectId, int platform);
 
     boolean delete(int id);
 
@@ -24,4 +24,6 @@ public interface TestCasesService {
     TestCases findById(int id);
 
     JSONObject findSteps(int id);
+
+    List<TestCases> findByIdIn(List<Integer> ids);
 }

@@ -3,8 +3,8 @@ package com.sonic.task.service;
 import com.sonic.common.exception.SonicCronException;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.models.Jobs;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author ZhouYiXun
@@ -18,7 +18,7 @@ public interface JobsService {
 
     RespModel delete(int id);
 
-    List<Jobs> findByProjectId(int projectId);
+    Page<Jobs> findByProjectId(int projectId, Pageable pageable);
 
     Jobs findById(int id);
 }

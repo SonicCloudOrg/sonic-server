@@ -11,10 +11,10 @@ import com.sonic.task.service.JobsService;
 import org.quartz.CronTrigger;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * @author ZhouYiXun
@@ -64,7 +64,7 @@ public class JobsServiceImpl implements JobsService {
                         jobsRepository.save(jobs);
                         return new RespModel(2000, "开启成功！");
                     case JobStatus.ONCE:
-                        quartzHandler.resumeScheduleJob(jobs);
+                        quartzHandler.runScheduleJob(jobs);
                         return new RespModel(2000, "开始运行！");
                     default:
                         return new RespModel(3000, "参数有误！");
@@ -95,8 +95,8 @@ public class JobsServiceImpl implements JobsService {
     }
 
     @Override
-    public List<Jobs> findByProjectId(int projectId) {
-        return jobsRepository.findByProjectId(projectId);
+    public Page<Jobs> findByProjectId(int projectId, Pageable pageable) {
+        return jobsRepository.findByProjectId(projectId, pageable);
     }
 
     @Override

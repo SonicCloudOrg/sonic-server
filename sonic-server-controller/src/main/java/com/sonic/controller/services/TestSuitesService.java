@@ -23,4 +23,6 @@ public interface TestSuitesService {
     void save(TestSuites testSuites);
 
     Page<TestSuites> findByProjectId(int projectId, String name, Pageable pageable);
+
+    List<TestSuites> findByProjectId(int projectId);
 }
