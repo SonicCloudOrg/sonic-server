@@ -8,11 +8,13 @@ import com.sonic.controller.models.Devices;
 import com.sonic.controller.models.interfaces.AgentStatus;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.services.AgentsService;
+import org.aspectj.weaver.loadtime.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AgentsServiceImpl implements AgentsService {
@@ -24,6 +26,27 @@ public class AgentsServiceImpl implements AgentsService {
     @Override
     public List<Agents> findAgents() {
         return agentsRepository.findAll();
+    }
+
+    @Override
+    public void updateName(int id, String name) {
+        if (id == 0) {
+            Agents agents = new Agents();
+            agents.setName(name);
+            agents.setHost("未知");
+            agents.setStatus(AgentStatus.OFFLINE);
+            agents.setVersion("未知");
+            agents.setPort(0);
+            agents.setSystemType("未知");
+            agents.setSecretKey(UUID.randomUUID().toString());
+            agentsRepository.save(agents);
+        } else {
+            if (agentsRepository.existsById(id)) {
+                Agents a = agentsRepository.findById(id).get();
+                a.setName(name);
+                agentsRepository.save(a);
+            }
+        }
     }
 
     public void resetDevice(int id) {

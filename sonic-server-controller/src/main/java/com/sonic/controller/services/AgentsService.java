@@ -13,6 +13,8 @@ import java.util.List;
 public interface AgentsService {
     List<Agents> findAgents();
 
+    void updateName(int id, String name);
+
     void save(JSONObject agents);
 
     boolean offLine(int id);

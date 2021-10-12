@@ -40,6 +40,13 @@ public class AgentsController {
     }
 
     @WebAspect
+    @PutMapping("/updateName")
+    public RespModel updateName(@RequestBody JSONObject jsonObject) {
+        agentsService.updateName(jsonObject.getInteger("id"), jsonObject.getString("name"));
+        return new RespModel(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
     @GetMapping("/offLine")
     public RespModel offLine(@RequestParam(name = "id") int id) {
         agentsService.offLine(id);

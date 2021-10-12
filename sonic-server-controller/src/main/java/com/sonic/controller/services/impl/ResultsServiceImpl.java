@@ -195,6 +195,71 @@ public class ResultsServiceImpl implements ResultsService {
         return result;
     }
 
+    @Override
+    public void sendDayReport() {
+        long timeMillis = Calendar.getInstance().getTimeInMillis();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Projects> projectsList = projectsService.findAll();
+        for (Projects projects : projectsList) {
+            Date yesterday = new Date(timeMillis - 86400000);
+            Date today = new Date(timeMillis);
+            List<JSONObject> status = resultsRepository.findDayStatus(sf.format(yesterday), sf.format(today), projects.getId());
+            int suc = 0;
+            int warn = 0;
+            int fail = 0;
+            for (JSONObject j : status) {
+                switch (j.getInteger("status")) {
+                    case 1:
+                        suc += j.getInteger("total");
+                        break;
+                    case 2:
+                        warn += j.getInteger("total");
+                        break;
+                    case 3:
+                        fail += j.getInteger("total");
+                        break;
+                }
+            }
+            if (projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                robotMsgTool.sendDayReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
+                        , projects.getProjectName(), sf.format(yesterday), sf.format(today), suc, warn, fail);
+            }
+        }
+    }
+
+    @Override
+    public void sendWeekReport() {
+        long timeMillis = Calendar.getInstance().getTimeInMillis();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Projects> projectsList = projectsService.findAll();
+        for (Projects projects : projectsList) {
+            Date lastWeek = new Date(timeMillis - 86400000 * 7L);
+            Date today = new Date(timeMillis);
+            List<JSONObject> status = resultsRepository.findDayStatus(sf.format(lastWeek), sf.format(today), projects.getId());
+            int count = resultsRepository.findRunCount(sf.format(lastWeek), sf.format(today), projects.getId());
+            int suc = 0;
+            int warn = 0;
+            int fail = 0;
+            for (JSONObject j : status) {
+                switch (j.getInteger("status")) {
+                    case 1:
+                        suc += j.getInteger("total");
+                        break;
+                    case 2:
+                        warn += j.getInteger("total");
+                        break;
+                    case 3:
+                        fail += j.getInteger("total");
+                        break;
+                }
+            }
+            if (projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                robotMsgTool.sendWeekReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
+                        , projects.getProjectName(), sf.format(lastWeek), sf.format(today), suc, warn, fail, count);
+            }
+        }
+    }
+
     public static List<String> getBetweenDate(String begin, String end) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         List<String> betweenList = new ArrayList<String>();

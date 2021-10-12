@@ -12,12 +12,5 @@ import java.util.List;
  * @date 2021/8/16 20:29
  */
 public interface AgentsRepository extends JpaRepository<Agents, Integer> {
-    Agents findByHost(String host);
-
-    @Query(value = "select count(*) from agents where status?=1", nativeQuery = true)
-    int findCountByStatus(int status);
-
-    Agents findTopByName(String name);
-
     Agents findBySecretKey(String key);
 }

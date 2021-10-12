@@ -180,8 +180,42 @@ public class RobotMsgTool {
                 "> ###### 失败数：" + failColorString + " \n" +
                 "> ###### 测试通过率：" + (total > 0 ?
                 new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
-                "> ###### 详细统计：[点击查看](http://" + clientHost + "/Home/" + projectId);
+                "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
         markdown.put("title", "Sonic云真机测试平台日报");
+        jsonObject.put("msgtype", "markdown");
+        jsonObject.put("markdown", markdown);
+        signAndSend(token, secret, jsonObject);
+    }
+
+    public void sendWeekReportMessage(String token, String secret, int projectId, String projectName,
+                                      String yesterday, String today, int passCount, int warnCount, int failCount, int count) {
+        JSONObject jsonObject = new JSONObject();
+        JSONObject markdown = new JSONObject();
+        //根据三个数量来决定markdown的字体颜色
+        String failColorString;
+        if (failCount == 0) {
+            failColorString = "<font color=#67C23A>" + failCount + "</font>";
+        } else {
+            failColorString = "<font color=#F56C6C>" + failCount + "</font>";
+        }
+        String warnColorString;
+        if (warnCount == 0) {
+            warnColorString = "<font color=#67C23A>" + warnCount + "</font>";
+        } else {
+            warnColorString = "<font color=#E6A23C>" + warnCount + "</font>";
+        }
+        int total = passCount + warnCount + failCount;
+        markdown.put("text", "### Sonic云真机测试平台周报 \n" +
+                "> ###### 项目：" + projectName + " \n" +
+                "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
+                "> ###### 共测试：" + count + " 次\n" +
+                "> ###### 通过数：<font color=#67C23A>" + passCount + "</font> \n" +
+                "> ###### 异常数：" + warnColorString + " \n" +
+                "> ###### 失败数：" + failColorString + " \n" +
+                "> ###### 测试通过率：" + (total > 0 ?
+                new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
+        markdown.put("title", "Sonic云真机测试平台周报");
         jsonObject.put("msgtype", "markdown");
         jsonObject.put("markdown", markdown);
         signAndSend(token, secret, jsonObject);

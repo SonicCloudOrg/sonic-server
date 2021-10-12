@@ -53,10 +53,10 @@ public class TestDataReceiver {
             case "deviceDetail":
                 controllerResp = controllerFeignClient.deviceStatus(jsonMsg);
                 break;
-            case "elapsed":
-                jsonMsg.remove("msg");
-                controllerResp = controllerFeignClient.saveElapsed(jsonMsg);
-                break;
+//            case "elapsed":
+//                jsonMsg.remove("msg");
+//                controllerResp = controllerFeignClient.saveElapsed(jsonMsg);
+//                break;
             case "step":
             case "perform":
             case "record":

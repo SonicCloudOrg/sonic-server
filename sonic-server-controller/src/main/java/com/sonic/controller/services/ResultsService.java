@@ -29,4 +29,8 @@ public interface ResultsService {
     void subResultCount(int id);
 
     JSONObject chart(String startTime, String endTime, int projectId);
+
+    void sendDayReport();
+
+    void sendWeekReport();
 }

@@ -29,7 +29,7 @@ public class Agents {
     @NotNull
     @ApiModelProperty(value = "Agent端所在host", example = "127.0.0.1")
     String host;
-    @Positive
+    @NotNull
     @ApiModelProperty(value = "Agent端暴露web端口", example = "1234")
     int port;
     @ApiModelProperty(value = "Agent端状态", example = "1")
