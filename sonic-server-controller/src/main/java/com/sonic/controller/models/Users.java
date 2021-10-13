@@ -23,9 +23,6 @@ public class Users {
     @NotNull
     @ApiModelProperty(value = "用户密码", required = true, example = "123456")
     String password;
-    @NotNull
-    @ApiModelProperty(value = "所属部门", required = true, example = "中后台-测试部")
-    String department;
     @Positive
     @ApiModelProperty(value = "角色", required = true, example = "1")
     int role;
@@ -56,12 +53,12 @@ public class Users {
         this.password = password;
     }
 
-    public String getDepartment() {
-        return department;
+    public int getRole() {
+        return role;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setRole(int role) {
+        this.role = role;
     }
 
     @Override
@@ -70,7 +67,7 @@ public class Users {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", department='" + department + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

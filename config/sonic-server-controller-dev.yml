@@ -9,7 +9,7 @@ spring:
 
 robot:
   client:
-    host: "http://localhost:8080"
+    host: "http://localhost:3000"
   img:
     success: ""
     warning: ""

@@ -100,4 +100,20 @@ public class ResultsController {
                                        @RequestParam(name = "endTime") String endTime) {
         return new RespModel(RespEnum.SEARCH_OK, resultsService.chart(startTime, endTime, projectId));
     }
+
+    @WebAspect
+    @ApiOperation(value = "发送日报", notes = "发送所有项目日报")
+    @GetMapping("/sendDayReport")
+    public RespModel sendDayReport() {
+        resultsService.sendDayReport();
+        return new RespModel(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
+    @ApiOperation(value = "发送周报", notes = "发送所有项目周报")
+    @GetMapping("/sendWeekReport")
+    public RespModel sendWeekReport() {
+        resultsService.sendWeekReport();
+        return new RespModel(RespEnum.HANDLE_OK);
+    }
 }

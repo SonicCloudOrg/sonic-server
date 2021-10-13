@@ -28,6 +28,9 @@ public interface ResultsRepository extends JpaRepository<Results, Integer> {
     @Query(value = "select status,count(*) as total from results where end_time>?1 and end_time<=?2 and project_id=?3 group by status", nativeQuery = true)
     List<JSONObject> findDayStatus(String startTime, String endTime, int projectId);
 
+    @Query(value = "select count(*) as total from results where end_time>?1 and end_time<=?2 and project_id=?3", nativeQuery = true)
+    int findRunCount(String startTime, String endTime, int projectId);
+
     @Transactional
     void deleteByProjectId(int projectId);
 
