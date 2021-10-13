@@ -47,7 +47,12 @@ public class QuartzJob extends QuartzJobBean implements Job {
                 Jobs jobs = jobsService.findById(dataMap.getInt("id"));
                 if (jobs != null) {
                     RespModel r = controllerFeignClient.runSuite(jobs.getSuiteId());
-                    logger.info("定时任务开始执行：测试套件" + jobs.getSuiteId() + " " + r);
+                    if (r.getCode() == 3001) {
+                        logger.info("测试套件" + jobs.getSuiteId() + " 已删除" + r);
+                        jobsService.delete(dataMap.getInt("id"));
+                    } else {
+                        logger.info("定时任务开始执行：测试套件" + jobs.getSuiteId() + " " + r);
+                    }
                 } else {
                     logger.info("定时任务id:" + dataMap.getInt("id") + "不存在！");
                 }

@@ -69,7 +69,7 @@ public class APIDocumentConfig {
                 .extensions(openApiExtensionResolver.buildSettingExtensions())
                 .useDefaultResponseMessages(false)
                 .securitySchemes(Arrays.asList(
-                        new ApiKey("sonicToken", "sonicToken", "header")))
+                        new ApiKey("SonicToken", "SonicToken", "header")))
                 .securityContexts(securityContexts());
     }
 
@@ -83,7 +83,7 @@ public class APIDocumentConfig {
         return Arrays.asList(
                 SecurityContext.builder()
                         .securityReferences(auth())
-                        .forPaths(PathSelectors.regex("^((?!(login)).)*$"))
+                        .forPaths(PathSelectors.regex("^((?!(register|login)).)*$"))
                         .build()
         );
     }
@@ -91,7 +91,7 @@ public class APIDocumentConfig {
     /**
      * @return java.util.List<springfox.documentation.service.SecurityReference>
      * @author ZhouYiXun
-     * @des 设置sonicToken在接口文档页面
+     * @des 设置SonicToken在接口文档页面
      * @date 2021/8/15 22:54
      */
     private List<SecurityReference> auth() {
@@ -99,7 +99,7 @@ public class APIDocumentConfig {
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         return Arrays.asList(
-                new SecurityReference("sonicToken", authorizationScopes));
+                new SecurityReference("SonicToken", authorizationScopes));
     }
 
     /**
@@ -112,7 +112,7 @@ public class APIDocumentConfig {
         return new ApiInfoBuilder()
                 .title(title + " Open API")
                 .termsOfServiceUrl("Please visit: https://github.com/ZhouYixun/sonic-server")
-                .contact(new Contact("ZhouYiXun  email: zyx291028775@qq.com","", ""))
+                .contact(new Contact("ZhouYiXun  email: zyx291028775@qq.com", "", ""))
                 .version(version)
                 .description(name + " 服务开放API，注意不要频繁请求。")
                 .build();

@@ -1,6 +1,6 @@
 package com.sonic.common.config;
 
-import com.sonic.common.exception.SonicCronException;
+import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import org.slf4j.Logger;
@@ -33,8 +33,8 @@ public class GlobalWebException {
             return new RespModel(RespEnum.PARAMS_NOT_VALID);
         } else if (exception instanceof HttpMessageNotReadableException) {
             return new RespModel(RespEnum.PARAMS_NOT_READABLE);
-        } else if (exception instanceof SonicCronException) {
-            return new RespModel(4006,exception.getMessage());
+        } else if (exception instanceof SonicException) {
+            return new RespModel(4006, exception.getMessage());
         } else {
             exception.printStackTrace();
             return new RespModel(RespEnum.UNKNOWN_ERROR);

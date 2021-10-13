@@ -3,7 +3,7 @@ package com.sonic.task.service.impl;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.dao.JobsRepository;
-import com.sonic.common.exception.SonicCronException;
+import com.sonic.common.exception.SonicException;
 import com.sonic.task.models.Jobs;
 import com.sonic.task.models.interfaces.JobStatus;
 import com.sonic.task.quartz.QuartzHandler;
@@ -29,8 +29,8 @@ public class JobsServiceImpl implements JobsService {
     private JobsRepository jobsRepository;
 
     @Override
-    @Transactional(rollbackFor = SonicCronException.class)
-    public RespModel save(Jobs jobs) throws SonicCronException {
+    @Transactional(rollbackFor = SonicException.class)
+    public RespModel save(Jobs jobs) throws SonicException {
         jobs.setStatus(JobStatus.ENABLE);
         jobsRepository.save(jobs);
         CronTrigger trigger = quartzHandler.getTrigger(jobs);
@@ -43,7 +43,7 @@ public class JobsServiceImpl implements JobsService {
             return new RespModel(RespEnum.HANDLE_OK);
         } catch (RuntimeException | SchedulerException e) {
             e.printStackTrace();
-            throw new SonicCronException("操作失败！请检查cron表达式是否无误！");
+            throw new SonicException("操作失败！请检查cron表达式是否无误！");
         }
     }
 

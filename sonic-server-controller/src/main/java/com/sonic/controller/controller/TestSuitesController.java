@@ -4,6 +4,7 @@ import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.TestSuites;
+import com.sonic.controller.models.Users;
 import com.sonic.controller.services.TestSuitesService;
 import com.sonic.controller.tools.RedisTool;
 import io.swagger.annotations.Api;
@@ -35,10 +36,11 @@ public class TestSuitesController {
     public RespModel runSuite(@RequestParam(name = "id") int id
             , HttpServletRequest request) {
         String strike = "SYSTEM";
-        if (request.getHeader("sonicToken") != null) {
-            String token = request.getHeader("sonicToken");
-            if (RedisTool.get("sonic:user:" + token) != null) {
-                strike = RedisTool.get("sonic:user:" + token).toString();
+        if (request.getHeader("SonicToken") != null) {
+            String token = request.getHeader("SonicToken");
+            Object t = RedisTool.get("sonic:user:" + token);
+            if (t != null) {
+                strike = ((Users) t).getUserName();
             }
         }
         return testSuitesService.runSuite(id, strike);

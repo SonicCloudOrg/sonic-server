@@ -3,15 +3,13 @@ package com.sonic.controller.models;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Entity
 @ApiModel("用户模型")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userName"}))
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +17,7 @@ public class Users {
     int id;
     @NotNull
     @ApiModelProperty(value = "用户名称", required = true, example = "ZhouYiXun")
-    String username;
+    String userName;
     @NotNull
     @ApiModelProperty(value = "用户密码", required = true, example = "123456")
     String password;
@@ -27,7 +25,8 @@ public class Users {
     @ApiModelProperty(value = "角色", required = true, example = "1")
     int role;
 
-    public Users(){}
+    public Users() {
+    }
 
     public int getId() {
         return id;
@@ -37,12 +36,12 @@ public class Users {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -65,7 +64,7 @@ public class Users {
     public String toString() {
         return "Users{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
