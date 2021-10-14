@@ -46,7 +46,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public String login(UserInfo userInfo) {
         Users users = usersRepository.findByUserName(userInfo.getUserName());
-        if (DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
+        if (users != null && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
             String token = JWTTokenTool.getToken(userInfo.getUserName());
             users.setPassword("");
             redisTool.set("sonic:user:" + token, users, 7);
@@ -71,7 +71,7 @@ public class UsersServiceImpl implements UsersService {
     public RespModel resetPwd(String token, ChangePwd changePwd) {
         Object redisTokenObject = RedisTool.get("sonic:user:" + token);
         if (redisTokenObject != null) {
-            Users users = ((Users) redisTokenObject);
+            Users users = usersRepository.findByUserName(((Users) redisTokenObject).getUserName());
             if (users != null) {
                 if (DigestUtils.md5DigestAsHex(changePwd.getOldPwd().getBytes()).equals(users.getPassword())) {
                     users.setPassword(DigestUtils.md5DigestAsHex(changePwd.getNewPwd().getBytes()));
