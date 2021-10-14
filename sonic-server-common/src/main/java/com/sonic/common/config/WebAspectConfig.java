@@ -47,7 +47,7 @@ public class WebAspectConfig {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("url", request.getRequestURL().toString());
         jsonObject.put("method", request.getMethod());
-        jsonObject.put("auth", request.getHeader("sonicToken"));
+        jsonObject.put("auth", request.getHeader("SonicToken"));
         jsonObject.put("class", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
         jsonObject.put("request", Arrays.toString(joinPoint.getArgs()));
         logger.info(jsonObject.toJSONString());

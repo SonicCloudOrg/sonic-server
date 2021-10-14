@@ -52,10 +52,10 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         if (testSuitesRepository.existsById(suiteId)) {
             testSuites = testSuitesRepository.findById(suiteId).get();
         } else {
-            return new RespModel(3000, "测试套件已删除！");
+            return new RespModel(3001, "测试套件已删除！");
         }
         if (testSuites.getTestCases().size() == 0) {
-            return new RespModel(3000, "该测试套件内无测试用例！");
+            return new RespModel(3002, "该测试套件内无测试用例！");
         }
         List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
         for (int i = devicesList.size() - 1; i >= 0; i--) {
@@ -64,7 +64,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             }
         }
         if (devicesList.size() == 0) {
-            return new RespModel(3000, "所选设备暂无可用！");
+            return new RespModel(3003, "所选设备暂无可用！");
         }
         Results results = new Results();
         results.setStatus(ResultStatus.RUNNING);

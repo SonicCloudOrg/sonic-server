@@ -10,8 +10,8 @@ spring:
     basic:
       enabled: true
     user:
-      name: sonic
-      password: tester
+      name: ${SEC_NAME:sonic}
+      password: ${SEC_PASSWORD:sonic}
 
 eureka:
   datacenter: sonic-server
@@ -20,11 +20,11 @@ eureka:
     hostname: ${EUREKA_HOST:127.0.0.1}
     instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
   client:
-    #    单机部署的话放开以下注释
-    register-with-eureka: false
-    fetch-registry: false
+    #    单机部署的话以下为false
+    register-with-eureka: ${IS_CLUSTERED:false}
+    fetch-registry: ${IS_CLUSTERED:false}
     service-url:
-      defaultZone: ${EUREKA_URL:http://sonic:tester@127.0.0.1:9090/eureka/}
+      defaultZone: ${EUREKA_URL:http://sonic:sonic@127.0.0.1:9090/eureka/}
 
 logging:
   file:

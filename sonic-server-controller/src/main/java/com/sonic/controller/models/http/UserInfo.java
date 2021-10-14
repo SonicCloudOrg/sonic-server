@@ -9,18 +9,18 @@ import javax.validation.constraints.NotNull;
 public class UserInfo {
     @NotNull
     @ApiModelProperty(value = "账户名", required = true, example = "ZhouYiXun")
-    private String username;
+    private String userName;
 
     @NotNull
     @ApiModelProperty(value = "密码", required = true, example = "123456")
     private String password;
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

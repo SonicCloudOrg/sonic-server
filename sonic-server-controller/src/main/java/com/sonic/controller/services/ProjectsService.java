@@ -1,5 +1,6 @@
 package com.sonic.controller.services;
 
+import com.sonic.common.exception.SonicException;
 import com.sonic.controller.models.Projects;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ProjectsService {
     Projects findById(int id);
 
     List<Projects> findAll();
+
+    void delete(int id) throws SonicException;
 }

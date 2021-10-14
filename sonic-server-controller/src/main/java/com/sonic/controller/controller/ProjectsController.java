@@ -1,6 +1,7 @@
 package com.sonic.controller.controller;
 
 import com.sonic.common.config.WebAspect;
+import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.Projects;
@@ -52,5 +53,14 @@ public class ProjectsController {
         } else {
             return new RespModel(RespEnum.ID_NOT_FOUND);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "删除", notes = "删除对应id下的详细信息")
+    @ApiImplicitParam(name = "id", value = "项目id", dataTypeClass = Integer.class)
+    @DeleteMapping
+    public RespModel delete(@RequestParam(name = "id") int id) throws SonicException {
+        projectsService.delete(id);
+        return new RespModel(RespEnum.DELETE_OK);
     }
 }

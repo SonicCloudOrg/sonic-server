@@ -5,6 +5,7 @@ import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.TestCases;
+import com.sonic.controller.models.Users;
 import com.sonic.controller.services.TestCasesService;
 import com.sonic.controller.tools.RedisTool;
 import io.swagger.annotations.Api;
@@ -78,10 +79,11 @@ public class TestCasesController {
     @ApiOperation(value = "更新测试用例信息", notes = "新增或更改测试用例信息")
     @PutMapping
     public RespModel save(@Validated @RequestBody TestCases testCases, HttpServletRequest request) {
-        if (request.getHeader("sonicToken") != null) {
-            String token = request.getHeader("sonicToken");
-            if (RedisTool.get("sonic:user:" + token) != null) {
-                String userName = RedisTool.get("sonic:user:" + token).toString();
+        if (request.getHeader("SonicToken") != null) {
+            String token = request.getHeader("SonicToken");
+            Object t = RedisTool.get("sonic:user:" + token);
+            if (t != null) {
+                String userName = ((Users) t).getUserName();
                 testCases.setDesigner(userName);
             }
         }

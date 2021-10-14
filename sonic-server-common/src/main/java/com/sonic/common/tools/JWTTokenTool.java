@@ -30,21 +30,6 @@ public class JWTTokenTool {
 
     /**
      * @param token
-     * @return java.lang.String
-     * @author ZhouYiXun
-     * @des 由token获取生成时的用户信息
-     * @date 2021/8/15 23:05
-     */
-    public static String getUserName(String token) {
-        try {
-            return JWT.decode(token).getAudience().get(0);
-        } catch (JWTDecodeException e) {
-            return null;
-        }
-    }
-
-    /**
-     * @param token
      * @return boolean
      * @author ZhouYiXun
      * @des 校验token的签名是否合法

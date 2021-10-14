@@ -1,6 +1,6 @@
 package com.sonic.task.service;
 
-import com.sonic.common.exception.SonicCronException;
+import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.models.Jobs;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
  * @date 2021/8/22 11:20
  */
 public interface JobsService {
-    RespModel save(Jobs jobs) throws SonicCronException;
+    RespModel save(Jobs jobs) throws SonicException;
 
     RespModel updateStatus(int id, int type);
 

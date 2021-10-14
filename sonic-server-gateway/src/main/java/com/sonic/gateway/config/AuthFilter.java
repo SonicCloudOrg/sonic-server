@@ -25,6 +25,8 @@ import java.util.List;
 public class AuthFilter implements GlobalFilter, Ordered {
     @Value("${filter.white-list}")
     private List<String> whiteList;
+    @Value("${filter.resetToken}")
+    private Boolean resetToken;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -33,40 +35,22 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return chain.filter(exchange);
             }
         }
-        String token = exchange.getRequest().getHeaders().getFirst("sonicToken");
-        if (token.equals("test")) {
-            return chain.filter(exchange);
-        }
+        String token = exchange.getRequest().getHeaders().getFirst("SonicToken");
         ServerHttpResponse response = exchange.getResponse();
         response.getHeaders().add("Content-Type", "text/plain;charset=UTF-8");
         DataBuffer buffer = sendResp(response);
         if (token == null) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.writeWith(Mono.just(buffer));
-        }
-        String username = JWTTokenTool.getUserName(token);
-        if (username != null && username.length() > 0) {
-            String redisToken;
-            Object redisTokenObject = RedisTool.get("sonic:user:" + username);
-            if (redisTokenObject == null) {
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                return response.writeWith(Mono.just(buffer));
-            }
-            redisToken = redisTokenObject.toString();
-            if (!redisToken.equals(token)) {
-                response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                return response.writeWith(Mono.just(buffer));
-            } else {
-                RedisTool.expire("sonic:user:" + username, 7);
-            }
-        } else {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.writeWith(Mono.just(buffer));
         }
         // 验证 token
         if (!JWTTokenTool.verify(token)) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.writeWith(Mono.just(buffer));
+        }
+        Object redisTokenObject = RedisTool.get("sonic:user:" + token);
+        if (redisTokenObject == null) {
+            return response.writeWith(Mono.just(buffer));
+        } else if (resetToken) {
+            RedisTool.expire("sonic:user:" + token, 7);
         }
         return chain.filter(exchange);
     }
