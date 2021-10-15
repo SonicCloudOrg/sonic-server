@@ -1,0 +1,16 @@
+server:
+  port: 0
+
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+          max-attempts: 5
+          max-interval: 10000
+          initial-interval: 10000
+          default-requeue-rejected: true
+    publisher-confirm-type: correlated
+    publisher-returns: true

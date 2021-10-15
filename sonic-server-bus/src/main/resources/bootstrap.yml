@@ -11,13 +11,13 @@ spring:
       server:
         composite:
           - type: ${CONFIG_TYPE:native}
-            uri: ${GIT_URL:git@github.com:ZhouYixun/sonic-server-config-yml.git}
-            ignore-local-ssh-settings: true
-            search-paths: /config
-            private-key: |
-              -----BEGIN RSA PRIVATE KEY-----
-              ${GIT_KEY:xxx}
-              -----END RSA PRIVATE KEY-----
+#            uri: ${GIT_URL:git@github.com:ZhouYixun/sonic-server-config-yml.git}
+#            ignore-local-ssh-settings: true
+#            search-paths: /config
+#            private-key: |
+#              -----BEGIN RSA PRIVATE KEY-----
+#              ${GIT_KEY:xxx}
+#              -----END RSA PRIVATE KEY-----
         bootstrap: true
 
 eureka:
