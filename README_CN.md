@@ -10,7 +10,7 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-doing-orange">
+    <img src="https://img.shields.io/badge/release-v1.0.0-orange">
   </a>
   <a href="https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE">  
     <img src="https://img.shields.io/github/license/ZhouYiXun/sonic-server?color=green&label=license&logo=license&logoColor=green">
@@ -41,19 +41,17 @@
 + 可视化报表
 + 更多...
 
-## 技术栈
-
-## 架构设计
-
-## 功能介绍
-
 ## 打包方式
 
 ```
-mvn package -Pprod
+mvn package 
 ```
 
 ## 部署方式
+
+```
+docker-compose up -d
+```
 
 ## 开源许可协议
 
