@@ -12,6 +12,9 @@
   <a href="#">  
     <img src="https://img.shields.io/badge/release-v1.0.0-orange">
   </a>
+  <a href="#">  
+    <img src="https://img.shields.io/github/commit-activity/m/ZhouYixun/sonic-agent">
+  </a>
   <a href="https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE">  
     <img src="https://img.shields.io/github/license/ZhouYiXun/sonic-server?color=green&label=license&logo=license&logoColor=green">
   </a>
