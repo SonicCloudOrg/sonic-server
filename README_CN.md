@@ -20,6 +20,8 @@
   </a>
 </p>
 
+### 官方网站
+ [Sonic Official Website](http://zhouyixun.gitee.io/sonic-official-website)
 ## 背景
 
 #### 什么是Sonic？
