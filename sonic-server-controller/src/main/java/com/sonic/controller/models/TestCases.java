@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -48,10 +49,10 @@ public class TestCases {
     @LastModifiedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date editTime;
-    @ManyToMany(mappedBy = "testCases")
+    @ManyToMany(mappedBy = "testCases", fetch = FetchType.EAGER)
     @JsonIgnore
     @JSONField(serialize = false)
-    Set<TestSuites> testSuites;
+    List<TestSuites> testSuites;
 
     public TestCases() {
     }
@@ -128,11 +129,11 @@ public class TestCases {
         this.editTime = editTime;
     }
 
-    public Set<TestSuites> getTestSuites() {
+    public List<TestSuites> getTestSuites() {
         return testSuites;
     }
 
-    public void setTestSuites(Set<TestSuites> testSuites) {
+    public void setTestSuites(List<TestSuites> testSuites) {
         this.testSuites = testSuites;
     }
 
