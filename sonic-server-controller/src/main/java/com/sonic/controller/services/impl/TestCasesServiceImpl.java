@@ -67,7 +67,7 @@ public class TestCasesServiceImpl implements TestCasesService {
     public boolean delete(int id) {
         if (testCasesRepository.existsById(id)) {
             TestCases testCases = testCasesRepository.findById(id).get();
-            Set<TestSuites> testSuitesSet = testCases.getTestSuites();
+            List<TestSuites> testSuitesSet = testCases.getTestSuites();
             for (TestSuites testSuites : testSuitesSet) {
                 testSuites.getTestCases().remove(testCases);
             }
