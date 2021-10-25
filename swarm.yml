@@ -74,7 +74,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-controller:
-    image: "zhouyixun/sonic-server-controller:v1.0.0"
+    image: "zhouyixun/sonic-server-controller:v1.0.1"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
