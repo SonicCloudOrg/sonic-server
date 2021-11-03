@@ -2,7 +2,7 @@ server:
   port: 8094
 
 filter:
-  white-list: /users/login,/users/register,/swagger-resources,/v2/api-docs,/folder/upload,/folder/recordFiles,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/
+  white-list: /users/login,/users/register,/swagger-resources,/v2/api-docs,/folder/upload,/folder/recordFiles,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
   resetToken: true
 
 spring:
@@ -27,5 +27,10 @@ spring:
         - id: transport
           uri: lb://sonic-server-transport
           predicates: Path=/api/transport/**
+          filters:
+            - StripPrefix=2
+        - id: bus
+          uri: lb://sonic-server-bus
+          predicates: Path=/api/bus/**
           filters:
             - StripPrefix=2

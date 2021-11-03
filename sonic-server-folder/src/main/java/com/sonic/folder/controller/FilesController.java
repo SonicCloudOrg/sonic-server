@@ -37,7 +37,7 @@ public class FilesController {
     public RespModel delete(@RequestParam(name = "day") int day) {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
-        List<String> fileList = Arrays.asList("imageFiles", "recordFiles", "logFiles");
+        List<String> fileList = Arrays.asList("imageFiles", "recordFiles", "logFiles", "packageFiles");
         cachedThreadPool.execute(() -> {
             for (String fileType : fileList) {
                 File[] type = new File(fileType).listFiles();

@@ -31,7 +31,7 @@ public class Elements {
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     int projectId;
     //因为一个控件可以存在于多个步骤，也可以一个步骤有多个同样的控件，所以是多对多关系
-    @ManyToMany(mappedBy = "elements")
+    @ManyToMany(mappedBy = "elements", fetch = FetchType.EAGER)
     @JsonIgnore
     @JSONField(serialize = false)
     List<Steps> steps;

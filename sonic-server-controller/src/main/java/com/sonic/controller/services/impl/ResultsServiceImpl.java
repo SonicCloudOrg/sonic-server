@@ -220,9 +220,9 @@ public class ResultsServiceImpl implements ResultsService {
                         break;
                 }
             }
-            if (projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
                 robotMsgTool.sendDayReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
-                        , projects.getProjectName(), sf.format(yesterday), sf.format(today), suc, warn, fail);
+                        , projects.getProjectName(), sf.format(yesterday), sf.format(today), suc, warn, fail, projects.getRobotType());
             }
         }
     }
@@ -253,9 +253,9 @@ public class ResultsServiceImpl implements ResultsService {
                         break;
                 }
             }
-            if (projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
                 robotMsgTool.sendWeekReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
-                        , projects.getProjectName(), sf.format(lastWeek), sf.format(today), suc, warn, fail, count);
+                        , projects.getProjectName(), sf.format(lastWeek), sf.format(today), suc, warn, fail, count, projects.getRobotType());
             }
         }
     }
@@ -317,9 +317,9 @@ public class ResultsServiceImpl implements ResultsService {
                 results.setEndTime(new Date());
                 save(results);
                 Projects projects = projectsService.findById(results.getProjectId());
-                if (projects != null && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
+                if (projects != null && projects.getRobotType() != 0 && projects.getRobotToken().length() > 0 && projects.getRobotSecret().length() > 0) {
                     robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
-                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId());
+                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId(), projects.getRobotType());
                 }
             }
         }

@@ -30,7 +30,7 @@ public class UploadController {
     @ApiOperation(value = "上传文件", notes = "上传文件到服务器")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),
-            @ApiImplicitParam(name = "type", value = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles)", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "type", value = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)", dataTypeClass = String.class),
     })
     @PostMapping
     public RespModel<String> uploadFiles(@RequestParam(name = "file") MultipartFile file,

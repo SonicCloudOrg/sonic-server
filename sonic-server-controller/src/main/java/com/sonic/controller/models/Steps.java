@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @ApiModel("运行步骤模型")
@@ -49,10 +50,10 @@ public class Steps {
     @ApiModelProperty(value = "包含元素列表")
     @ManyToMany(fetch = FetchType.EAGER)
     List<Elements> elements;
-    @ManyToMany(mappedBy = "steps")
+    @ManyToMany(mappedBy = "steps",fetch = FetchType.EAGER)
     @JsonIgnore
     @JSONField(serialize = false)
-    List<PublicSteps> publicSteps;
+    Set<PublicSteps> publicSteps;
 
     public Steps() {
     }
@@ -137,11 +138,11 @@ public class Steps {
         this.elements = elements;
     }
 
-    public List<PublicSteps> getPublicSteps() {
+    public Set<PublicSteps> getPublicSteps() {
         return publicSteps;
     }
 
-    public void setPublicSteps(List<PublicSteps> publicSteps) {
+    public void setPublicSteps(Set<PublicSteps> publicSteps) {
         this.publicSteps = publicSteps;
     }
 
