@@ -47,6 +47,11 @@ public class StepsServiceImpl implements StepsService {
     @Override
     public boolean delete(int id) {
         if (stepsRepository.existsById(id)) {
+            Steps steps = stepsRepository.findById(id).get();
+            for (PublicSteps publicSteps : steps.getPublicSteps()) {
+                publicSteps.getSteps().remove(steps);
+                publicStepsService.save(publicSteps);
+            }
             stepsRepository.deleteById(id);
             return true;
         } else {

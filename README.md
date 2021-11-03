@@ -10,7 +10,7 @@
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.0.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.1.0-orange">
   </a>
   <a href="#">  
     <img src="https://img.shields.io/github/commit-activity/m/ZhouYixun/sonic-agent">

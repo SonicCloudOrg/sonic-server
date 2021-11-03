@@ -22,6 +22,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
                 .addResourceLocations("file:///" + System.getProperty("user.dir") + "/recordFiles/");
         registry.addResourceHandler("/logFiles/**")
                 .addResourceLocations("file:///" + System.getProperty("user.dir") + "/logFiles/");
+        registry.addResourceHandler("/packageFiles/**")
+                .addResourceLocations("file:///" + System.getProperty("user.dir") + "/packageFiles/");
         super.addResourceHandlers(registry);
     }
 }

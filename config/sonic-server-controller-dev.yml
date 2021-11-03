@@ -11,6 +11,6 @@ robot:
   client:
     host: "http://localhost:3000"
   img:
-    success: ""
-    warning: ""
-    error: ""
+    success: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/suc.png"
+    warning: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/warn.png"
+    error: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/fail.png"
