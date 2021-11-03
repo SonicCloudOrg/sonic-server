@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "zhouyixun/sonic-server-eureka:v1.0.0"
+    image: "zhouyixun/sonic-server-eureka:v1.1.0"
     hostname: sonic-server-eureka
     environment:
       - EUREKA_HOST=sonic-server-eureka
@@ -24,7 +24,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-bus:
-    image: "zhouyixun/sonic-server-bus:v1.0.1"
+    image: "zhouyixun/sonic-server-bus:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -48,7 +48,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-gateway:
-    image: "zhouyixun/sonic-server-gateway:v1.0.0"
+    image: "zhouyixun/sonic-server-gateway:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -74,7 +74,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-controller:
-    image: "zhouyixun/sonic-server-controller:v1.0.1"
+    image: "zhouyixun/sonic-server-controller:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
