@@ -99,7 +99,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-folder:
-    image: "zhouyixun/sonic-server-folder:v1.0.0"
+    image: "zhouyixun/sonic-server-folder:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -109,6 +109,7 @@ services:
       - ./keepFiles/:/keepFiles/
       - ./imageFiles/:/imageFiles/
       - ./recordFiles/:/recordFiles/
+      - ./packageFiles/:/packageFiles/
       - ./logs/:/logs/
     depends_on:
       - sonic-server-bus
@@ -127,7 +128,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-task:
-    image: "zhouyixun/sonic-server-task:v1.0.0"
+    image: "zhouyixun/sonic-server-task:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -152,7 +153,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-transport:
-    image: "zhouyixun/sonic-server-transport:v1.0.0"
+    image: "zhouyixun/sonic-server-transport:v1.1.0"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
