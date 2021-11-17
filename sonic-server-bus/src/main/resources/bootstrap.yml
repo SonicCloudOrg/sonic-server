@@ -7,7 +7,7 @@ spring:
     active: composite,${PROFILE:dev}
   cloud:
     config:
-      name: @project.artifactId@,logging,rabbitmq
+      name: @project.artifactId@,logging
       server:
         composite:
           - type: ${CONFIG_TYPE:native}

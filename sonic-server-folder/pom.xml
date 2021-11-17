@@ -10,15 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sonic-server-folder</artifactId>
-    <version>1.1.0</version>
+    <version>v1.2.0-beta2</version>
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--   消息总线     -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
-        </dependency>
         <!--   配置中心客户端     -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

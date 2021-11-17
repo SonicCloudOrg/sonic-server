@@ -19,6 +19,11 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     }
 
     @Override
+    public RespModel findAgentById(int id) {
+       return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
+
+    @Override
     public RespModel offLine(int id) {
         return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }

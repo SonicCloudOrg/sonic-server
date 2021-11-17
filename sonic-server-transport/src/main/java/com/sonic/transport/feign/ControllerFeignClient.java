@@ -14,6 +14,9 @@ public interface ControllerFeignClient {
     @PutMapping("/agents")
     RespModel saveAgent(@RequestBody JSONObject agents);
 
+    @GetMapping("/agents")
+    RespModel findAgentById(@RequestParam(name = "id") int id);
+
     @GetMapping("/agents/offLine")
     RespModel offLine(@RequestParam(name = "id") int id);
 

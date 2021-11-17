@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.common.tools.JWTTokenTool;
-import com.sonic.gateway.tools.RedisTool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,12 +21,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
-@RefreshScope
 public class AuthFilter implements GlobalFilter, Ordered {
     @Value("${filter.white-list}")
     private List<String> whiteList;
-    @Value("${filter.resetToken}")
-    private Boolean resetToken;
+    @Autowired
+    private JWTTokenTool jwtTokenTool;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -43,14 +42,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return response.writeWith(Mono.just(buffer));
         }
         // 验证 token
-        if (!JWTTokenTool.verify(token)) {
+        if (!jwtTokenTool.verify(token)) {
             return response.writeWith(Mono.just(buffer));
-        }
-        Object redisTokenObject = RedisTool.get("sonic:user:" + token);
-        if (redisTokenObject == null) {
-            return response.writeWith(Mono.just(buffer));
-        } else if (resetToken) {
-            RedisTool.expire("sonic:user:" + token, 7);
         }
         return chain.filter(exchange);
     }
