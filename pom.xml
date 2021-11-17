@@ -89,6 +89,7 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
+                            <pushImage>true</pushImage>
                             <imageName>zhouyixun/${project.artifactId}:${project.version}</imageName>
                             <baseImage>adoptopenjdk/openjdk15:alpine AS builder</baseImage>
                             <runs>
