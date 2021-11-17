@@ -89,7 +89,8 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
-                            <imageName>zhouyixun/${project.artifactId}:v${project.version}</imageName>
+                            <pushImage>true</pushImage>
+                            <imageName>zhouyixun/${project.artifactId}:${project.version}</imageName>
                             <baseImage>adoptopenjdk/openjdk15:alpine AS builder</baseImage>
                             <runs>
                                 <run>ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</run>

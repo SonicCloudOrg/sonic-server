@@ -1,6 +1,5 @@
 package com.sonic.controller.services.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
@@ -10,7 +9,6 @@ import com.sonic.controller.models.Users;
 import com.sonic.controller.models.http.ChangePwd;
 import com.sonic.controller.models.http.UserInfo;
 import com.sonic.controller.services.UsersService;
-import com.sonic.controller.tools.RedisTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private UsersRepository usersRepository;
     @Autowired
-    private RedisTool redisTool;
+    private JWTTokenTool jwtTokenTool;
 
     @Override
     @Transactional(rollbackFor = SonicException.class)
@@ -47,9 +45,8 @@ public class UsersServiceImpl implements UsersService {
     public String login(UserInfo userInfo) {
         Users users = usersRepository.findByUserName(userInfo.getUserName());
         if (users != null && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
-            String token = JWTTokenTool.getToken(userInfo.getUserName());
+            String token = jwtTokenTool.getToken(users.getUserName());
             users.setPassword("");
-            redisTool.set("sonic:user:" + token, users, 7);
             logger.info("用户：" + userInfo.getUserName() + "登入! token:" + token);
             return token;
         } else {
@@ -59,9 +56,11 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users getUserInfo(String token) {
-        Object redisTokenObject = RedisTool.get("sonic:user:" + token);
-        if (redisTokenObject != null) {
-            return (Users) redisTokenObject;
+        String name = jwtTokenTool.getUserName(token);
+        if (name != null) {
+            Users users = usersRepository.findByUserName(name);
+            users.setPassword("");
+            return users;
         } else {
             return null;
         }
@@ -69,9 +68,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public RespModel resetPwd(String token, ChangePwd changePwd) {
-        Object redisTokenObject = RedisTool.get("sonic:user:" + token);
-        if (redisTokenObject != null) {
-            Users users = usersRepository.findByUserName(((Users) redisTokenObject).getUserName());
+        String name = jwtTokenTool.getUserName(token);
+        if (name != null) {
+            Users users = usersRepository.findByUserName(name);
             if (users != null) {
                 if (DigestUtils.md5DigestAsHex(changePwd.getOldPwd().getBytes()).equals(users.getPassword())) {
                     users.setPassword(DigestUtils.md5DigestAsHex(changePwd.getNewPwd().getBytes()));

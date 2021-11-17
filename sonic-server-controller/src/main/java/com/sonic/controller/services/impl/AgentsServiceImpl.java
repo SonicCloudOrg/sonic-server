@@ -100,7 +100,6 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
-    @Cacheable(value = "sonic:agentKey", key = "#id", unless = "#result == null")
     public String findKeyById(int id) {
         if (agentsRepository.existsById(id)) {
             return agentsRepository.findById(id).get().getSecretKey();

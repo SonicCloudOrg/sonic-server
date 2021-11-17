@@ -39,6 +39,8 @@ public class Devices {
     String manufacturer;
     @ApiModelProperty(value = "安装密码", example = "123456")
     String password;
+    @ApiModelProperty(value = "设备图片路径")
+    String imgUrl;
     @ManyToMany(mappedBy = "devices")
     @JsonIgnore
     @JSONField(serialize = false)
@@ -143,6 +145,14 @@ public class Devices {
         this.password = password;
     }
 
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
     public Set<TestSuites> getTestSuites() {
         return testSuites;
     }
@@ -166,6 +176,7 @@ public class Devices {
                 ", cpu='" + cpu + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", password='" + password + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
                 '}';
     }
 }

@@ -124,9 +124,8 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 }
                 suite.put("gp", gp);
                 suite.put("rid", results.getId());
-                String key = agentsService.findKeyById(devices.getAgentId());
-                suite.put("key", key);
                 suite.put("wait", 0);
+                suite.put("id", devices.getAgentId());
                 RespModel testDataResp = transportFeignClient.sendTestData(suite);
                 if (testDataResp.getCode() != 2000) {
                     resultsService.subResultCount(results.getId());
@@ -157,9 +156,8 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                     }
                     suite.put("gp", gp);
                     suite.put("rid", results.getId());
-                    String key = agentsService.findKeyById(devices.getAgentId());
-                    suite.put("key", key);
                     suite.put("wait", 0);
+                    suite.put("id", devices.getAgentId());
                     RespModel testDataResp = transportFeignClient.sendTestData(suite);
                     if (testDataResp.getCode() != 2000) {
                         resultsService.subResultCount(results.getId());

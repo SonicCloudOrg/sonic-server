@@ -1,12 +1,6 @@
 server:
   port: 0
 
-spring:
-  data:
-    redis:
-      repositories:
-        enabled: false
-
 robot:
   client:
     host: "http://localhost:3000"

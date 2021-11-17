@@ -8,7 +8,7 @@ spring:
       discovery:
         enabled: true
         service-id: sonic-server-bus
-      name: @project.artifactId@,rabbitmq,actuator,redis,logging
+      name: @project.artifactId@,actuator,logging,common
       profile: ${PROFILE:dev}
       fail-fast: true
 

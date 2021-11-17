@@ -8,7 +8,7 @@ spring:
       discovery:
         enabled: true
         service-id: sonic-server-bus
-      name: @project.artifactId@,rabbitmq,actuator,jdbc,feign,logging,knife4j
+      name: @project.artifactId@,actuator,jdbc,feign,logging,knife4j
       profile: ${PROFILE:dev}
       fail-fast: true
 

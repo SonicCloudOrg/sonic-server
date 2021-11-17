@@ -3,6 +3,7 @@ package com.sonic.controller.services;
 import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.models.Devices;
 import com.sonic.controller.models.http.DevicePwdChange;
+import com.sonic.controller.models.http.UpdateDeviceImg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,6 +16,8 @@ import java.util.List;
  */
 public interface DevicesService {
     boolean savePwd(DevicePwdChange devicePwdChange);
+
+    void updateImg(UpdateDeviceImg updateDeviceImg);
 
     void save(Devices devices);
 

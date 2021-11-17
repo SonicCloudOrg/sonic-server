@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespModel;
 import com.sonic.transport.feign.ControllerFeignClient;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import com.sonic.transport.netty.NettyServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +13,6 @@ import java.util.LinkedHashMap;
 @RestController
 @RequestMapping("/exchange")
 public class ExchangeController {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
     @Autowired
     private ControllerFeignClient controllerFeignClient;
 
@@ -30,7 +28,8 @@ public class ExchangeController {
                 jsonObject.put("msg", "reboot");
                 jsonObject.put("udId", d.get("udId"));
                 jsonObject.put("platform", d.get("platform"));
-                rabbitTemplate.convertAndSend("MsgDirectExchange", (String) agent.getData(), jsonObject);
+                LinkedHashMap a = (LinkedHashMap) agent.getData();
+                NettyServer.getMap().get(a.get("id")).writeAndFlush(jsonObject.toJSONString());
                 return new RespModel(2000, "发送成功！");
             } else {
                 return agent;
@@ -43,9 +42,9 @@ public class ExchangeController {
     @WebAspect
     @PostMapping("/sendTestData")
     public RespModel sendTestData(@RequestBody JSONObject jsonObject) {
-        if (jsonObject.getString("key") != null) {
+        if (jsonObject.getInteger("id") != null) {
             jsonObject.put("msg", "suite");
-            rabbitTemplate.convertAndSend("MsgDirectExchange", jsonObject.getString("key"), jsonObject);
+            NettyServer.getMap().get(jsonObject.getInteger("id")).writeAndFlush(jsonObject.toJSONString());
         }
         return new RespModel(2000, "发送成功！");
     }

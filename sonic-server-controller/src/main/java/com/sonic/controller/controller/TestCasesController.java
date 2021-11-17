@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
+import com.sonic.common.tools.JWTTokenTool;
 import com.sonic.controller.models.TestCases;
 import com.sonic.controller.models.Users;
 import com.sonic.controller.services.TestCasesService;
-import com.sonic.controller.tools.RedisTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -29,6 +29,8 @@ import java.util.List;
 public class TestCasesController {
     @Autowired
     private TestCasesService testCasesService;
+    @Autowired
+    private JWTTokenTool jwtTokenTool;
 
     @WebAspect
     @ApiOperation(value = "查询测试用例列表", notes = "查找对应项目id下的测试用例列表")
@@ -81,9 +83,8 @@ public class TestCasesController {
     public RespModel save(@Validated @RequestBody TestCases testCases, HttpServletRequest request) {
         if (request.getHeader("SonicToken") != null) {
             String token = request.getHeader("SonicToken");
-            Object t = RedisTool.get("sonic:user:" + token);
-            if (t != null) {
-                String userName = ((Users) t).getUserName();
+            String userName = jwtTokenTool.getUserName(token);
+            if (userName != null) {
                 testCases.setDesigner(userName);
             }
         }
