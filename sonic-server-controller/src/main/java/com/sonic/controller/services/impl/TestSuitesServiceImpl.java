@@ -96,6 +96,8 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         }
         int deviceIndex = 0;
         if (testSuites.getCover() == CoverType.CASE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
             for (TestCases testCases : testSuites.getTestCases()) {
                 JSONObject suite = new JSONObject();
                 List<JSONObject> steps = new ArrayList<>();
@@ -106,7 +108,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 suite.put("steps", steps);
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                suite.put("device", devices);
+                suite.put("device", Arrays.asList(devices));
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -124,15 +126,23 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                 }
                 suite.put("gp", gp);
                 suite.put("rid", results.getId());
-                suite.put("wait", 0);
-                suite.put("id", devices.getAgentId());
-                RespModel testDataResp = transportFeignClient.sendTestData(suite);
-                if (testDataResp.getCode() != 2000) {
-                    resultsService.subResultCount(results.getId());
-                }
+                agentIds.add(devices.getAgentId());
+                suiteDetail.add(suite);
             }
+            JSONObject result = new JSONObject();
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
+            }
+//            RespModel testDataResp = transportFeignClient.sendTestData(suite);
+//            if (testDataResp.getCode() != 2000) {
+//                resultsService.subResultCount(results.getId());
+//            }
         }
         if (testSuites.getCover() == CoverType.DEVICE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
             for (TestCases testCases : testSuites.getTestCases()) {
                 JSONObject suite = new JSONObject();
                 List<JSONObject> steps = new ArrayList<>();
@@ -141,28 +151,30 @@ public class TestSuitesServiceImpl implements TestSuitesService {
                     steps.add(getStep(s));
                 }
                 for (Devices devices : devicesList) {
-                    suite.put("steps", steps);
-                    suite.put("cid", testCases.getId());
-                    suite.put("device", devices);
-                    //如果该字段的多参数数组还有，放入对象。否则去掉字段
-                    for (String k : valueMap.keySet()) {
-                        if (valueMap.get(k).size() > 0) {
-                            String v = valueMap.get(k).get(0);
-                            gp.put(k, v);
-                            valueMap.get(k).remove(0);
-                        } else {
-                            valueMap.remove(k);
-                        }
-                    }
-                    suite.put("gp", gp);
-                    suite.put("rid", results.getId());
-                    suite.put("wait", 0);
-                    suite.put("id", devices.getAgentId());
-                    RespModel testDataResp = transportFeignClient.sendTestData(suite);
-                    if (testDataResp.getCode() != 2000) {
-                        resultsService.subResultCount(results.getId());
+                    agentIds.add(devices.getAgentId());
+                }
+                suite.put("steps", steps);
+                suite.put("cid", testCases.getId());
+                suite.put("device", devicesList);
+                //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                for (String k : valueMap.keySet()) {
+                    if (valueMap.get(k).size() > 0) {
+                        String v = valueMap.get(k).get(0);
+                        gp.put(k, v);
+                        valueMap.get(k).remove(0);
+                    } else {
+                        valueMap.remove(k);
                     }
                 }
+                suite.put("gp", gp);
+                suite.put("rid", results.getId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
             }
         }
         return new RespModel(RespEnum.HANDLE_OK);
