@@ -19,6 +19,8 @@ public class Devices {
     int id;
     @ApiModelProperty(value = "设备名称", example = "My HUAWEI")
     String name;
+    @ApiModelProperty(value = "设备备注", example = "My HUAWEI")
+    String nickName;
     @ApiModelProperty(value = "型号", example = "HUAWEI MATE 40")
     String model;
     @ApiModelProperty(value = "序列号", example = "random")
@@ -45,6 +47,8 @@ public class Devices {
     @JsonIgnore
     @JSONField(serialize = false)
     Set<TestSuites> testSuites;
+    @ApiModelProperty(value = "设备占用者")
+    String user;
 
     public Devices() {
     }
@@ -55,6 +59,14 @@ public class Devices {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getName() {
@@ -161,11 +173,21 @@ public class Devices {
         this.testSuites = testSuites;
     }
 
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Devices{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
                 ", model='" + model + '\'' +
                 ", udId='" + udId + '\'' +
                 ", status='" + status + '\'' +
@@ -177,6 +199,7 @@ public class Devices {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", password='" + password + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
+                ", user='" + user + '\'' +
                 '}';
     }
 }

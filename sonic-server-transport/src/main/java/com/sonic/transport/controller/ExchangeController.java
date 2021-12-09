@@ -43,7 +43,6 @@ public class ExchangeController {
     @PostMapping("/sendTestData")
     public RespModel sendTestData(@RequestBody JSONObject jsonObject) {
         if (jsonObject.getInteger("id") != null) {
-            jsonObject.put("msg", "suite");
             NettyServer.getMap().get(jsonObject.getInteger("id")).writeAndFlush(jsonObject.toJSONString());
         }
         return new RespModel(2000, "发送成功！");
