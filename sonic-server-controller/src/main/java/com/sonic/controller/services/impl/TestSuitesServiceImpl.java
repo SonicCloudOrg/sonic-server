@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.*;
@@ -54,6 +55,8 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         } else {
             return new RespModel(3001, "测试套件已删除！");
         }
+        Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
+        testSuites.setTestCases(new ArrayList<>(testCasesSet));
         if (testSuites.getTestCases().size() == 0) {
             return new RespModel(3002, "该测试套件内无测试用例！");
         }
@@ -133,6 +136,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
+                result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
 //            RespModel testDataResp = transportFeignClient.sendTestData(suite);
@@ -174,6 +178,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
+                result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
         }
@@ -223,6 +228,89 @@ public class TestSuitesServiceImpl implements TestSuitesService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public RespModel<String> forceStopSuite(int resultId, String strike) {
+        Results results = resultsService.findById(resultId);
+        if (ObjectUtils.isEmpty(results)) {
+            return new RespModel<>(3001, "测试结果模板不存在！");
+        }
+        int suiteId = results.getSuiteId();
+
+        TestSuites testSuites;
+        if (testSuitesRepository.existsById(suiteId)) {
+            testSuites = testSuitesRepository.findById(suiteId).get();
+        } else {
+            return new RespModel<>(3001, "测试套件已删除！");
+        }
+        Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
+        testSuites.setTestCases(new ArrayList<>(testCasesSet));
+        if (testSuites.getTestCases().size() == 0) {
+            return new RespModel<>(3002, "该测试套件内无测试用例！");
+        }
+        List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
+
+        results.setStatus(ResultStatus.FAIL);
+        results.setStrike(strike);
+        if (testSuites.getCover() == CoverType.CASE) {
+            results.setSendMsgCount(testSuites.getTestCases().size());
+        }
+        if (testSuites.getCover() == CoverType.DEVICE) {
+            results.setSendMsgCount(testSuites.getTestCases().size() * testSuites.getDevices().size());
+        }
+        results.setProjectId(testSuites.getProjectId());
+        resultsService.save(results);
+
+
+        int deviceIndex = 0;
+        if (testSuites.getCover() == CoverType.CASE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCases testCases : testSuites.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                suite.put("cid", testCases.getId());
+                Devices devices = devicesList.get(deviceIndex);
+                suite.put("device", Arrays.asList(devices));
+                if (deviceIndex == devicesList.size() - 1) {
+                    deviceIndex = 0;
+                } else {
+                    deviceIndex++;
+                }
+                suite.put("rid", results.getId());
+                agentIds.add(devices.getAgentId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
+            }
+        }
+        if (testSuites.getCover() == CoverType.DEVICE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCases testCases : testSuites.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                for (Devices devices : devicesList) {
+                    agentIds.add(devices.getAgentId());
+                }
+                suite.put("cid", testCases.getId());
+                suite.put("device", devicesList);
+                suite.put("rid", results.getId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
+            }
+        }
+        return new RespModel(RespEnum.HANDLE_OK);
     }
 
     @Override

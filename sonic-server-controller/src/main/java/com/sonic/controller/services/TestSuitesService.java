@@ -20,6 +20,8 @@ public interface TestSuitesService {
 
     boolean delete(int id);
 
+    RespModel<String> forceStopSuite(int id, String strike);
+
     void save(TestSuites testSuites);
 
     Page<TestSuites> findByProjectId(int projectId, String name, Pageable pageable);

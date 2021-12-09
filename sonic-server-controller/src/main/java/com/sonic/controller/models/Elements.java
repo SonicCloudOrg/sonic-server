@@ -24,6 +24,8 @@ public class Elements {
     @NotNull
     @ApiModelProperty(value = "控件类型", required = true, example = "xpath")
     String eleType;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @ApiModelProperty(value = "控件值", required = true, example = "//@[text()='home']")
     String eleValue;

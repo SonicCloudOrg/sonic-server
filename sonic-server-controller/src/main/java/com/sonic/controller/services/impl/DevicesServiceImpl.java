@@ -3,11 +3,13 @@ package com.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.sonic.controller.dao.DevicesRepository;
 import com.sonic.controller.models.Devices;
-import com.sonic.controller.models.http.DevicePwdChange;
+import com.sonic.controller.models.Users;
+import com.sonic.controller.models.http.DeviceDetailChange;
 import com.sonic.controller.models.http.UpdateDeviceImg;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.models.interfaces.PlatformType;
 import com.sonic.controller.services.DevicesService;
+import com.sonic.controller.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,17 +31,29 @@ import java.util.List;
 public class DevicesServiceImpl implements DevicesService {
     @Autowired
     private DevicesRepository devicesRepository;
+    @Autowired
+    private UsersService usersService;
 
     @Override
-    public boolean savePwd(DevicePwdChange devicePwdChange) {
-        if (devicesRepository.existsById(devicePwdChange.getId())) {
-            Devices devices = devicesRepository.findById(devicePwdChange.getId()).get();
-            devices.setPassword(devicePwdChange.getPassword());
+    public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
+        if (devicesRepository.existsById(deviceDetailChange.getId())) {
+            Devices devices = devicesRepository.findById(deviceDetailChange.getId()).get();
+            devices.setNickName(deviceDetailChange.getNickName());
+            devices.setPassword(deviceDetailChange.getPassword());
             devicesRepository.save(devices);
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void updateUser(JSONObject jsonObject) {
+        Users users = usersService.getUserInfo(jsonObject.getString("token"));
+        Devices devices = findByAgentIdAndUdId(jsonObject.getInteger("agentId"),
+                jsonObject.getString("udId"));
+        devices.setUser(users.getUserName());
+        save(devices);
     }
 
     @Override

@@ -47,6 +47,24 @@ public class TestSuitesController {
     }
 
     @WebAspect
+    @ApiOperation(value = "停止测试套件运行", notes = "停止测试套件运行")
+    @ApiImplicitParam(name = "resultId", value = "测试结果Id", dataTypeClass = Integer.class)
+    @GetMapping("/forceStopSuite")
+    public RespModel<String> forceStopSuite(@RequestParam(name = "resultId") int resultId
+            , HttpServletRequest request) {
+        String strike = "SYSTEM";
+        if (request.getHeader("SonicToken") != null) {
+            String token = request.getHeader("SonicToken");
+            String userName = jwtTokenTool.getUserName(token);
+            if (userName != null) {
+                strike = userName;
+            }
+        }
+        return testSuitesService.forceStopSuite(resultId, strike);
+    }
+
+
+    @WebAspect
     @ApiOperation(value = "删除测试套件", notes = "删除指定id的测试套件")
     @ApiImplicitParam(name = "id", value = "测试套件id", dataTypeClass = Integer.class)
     @DeleteMapping
