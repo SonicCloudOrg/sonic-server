@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sonic-server-controller</artifactId>
-    <version>v1.2.0-rc</version>
+    <version>v1.2.0-release</version>
     <packaging>jar</packaging>
 
     <!-- 依赖列表   -->
