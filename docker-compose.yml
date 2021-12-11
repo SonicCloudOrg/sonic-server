@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "zhouyixun/sonic-server-eureka:v1.2.0-beta2"
+    image: "sonicorg/sonic-server-eureka:v1.2.0-release"
     hostname: sonic-server-eureka
     environment:
       - EUREKA_HOST=sonic-server-eureka
@@ -12,7 +12,7 @@ services:
     ports:
       - "9090:9090"
   sonic-server-bus:
-    image: "zhouyixun/sonic-server-bus:v1.2.0-beta2"
+    image: "sonicorg/sonic-server-bus:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -24,7 +24,7 @@ services:
     depends_on:
       - sonic-server-eureka
   sonic-server-gateway:
-    image: "zhouyixun/sonic-server-gateway:v1.2.0-beta2"
+    image: "sonicorg/sonic-server-gateway:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -38,7 +38,7 @@ services:
     ports:
       - "8094:8094"
   sonic-server-controller:
-    image: "zhouyixun/sonic-server-controller:v1.2.0-rc"
+    image: "sonicorg/sonic-server-controller:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -51,7 +51,7 @@ services:
       - sonic-server-eureka
       - sonic-server-gateway
   sonic-server-folder:
-    image: "zhouyixun/sonic-server-folder:v1.2.0-beta2"
+    image: "sonicorg/sonic-server-folder:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -68,7 +68,7 @@ services:
       - sonic-server-eureka
       - sonic-server-gateway
   sonic-server-task:
-    image: "zhouyixun/sonic-server-task:v1.2.0-rc"
+    image: "sonicorg/sonic-server-task:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -81,7 +81,7 @@ services:
       - sonic-server-eureka
       - sonic-server-gateway
   sonic-server-transport:
-    image: "zhouyixun/sonic-server-transport:v1.2.0-rc"
+    image: "sonicorg/sonic-server-transport:v1.2.0-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
