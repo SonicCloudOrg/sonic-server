@@ -5,6 +5,6 @@ robot:
   client:
     host: "http://localhost:3000"
   img:
-    success: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/suc.png"
-    warning: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/warn.png"
-    error: "https://gitee.com/ZhouYixun/sonic-official-website/raw/master/src/assets/fail.png"
+    success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/suc.png"
+    warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/warn.png"
+    error: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/fail.png"

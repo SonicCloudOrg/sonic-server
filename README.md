@@ -1,27 +1,27 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZhouYixun/sonic-server/main/logo.png">
+  <img src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
 <p align="center">🎉Sonic Cloud Real Machine Testing Platform</p>
 <p align="center">
   <span>English |</span>
-  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/README_CN.md">  
+  <a href="https://github.com/SonicCloudOrg/sonic-server/blob/main/README_CN.md">  
      简体中文
   </a>
 </p>
 <p align="center">
   <a href="#">  
-    <img src="https://img.shields.io/badge/release-v1.1.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.2.0-orange">
   </a>
   <a href="#">  
-    <img src="https://img.shields.io/github/commit-activity/m/ZhouYixun/sonic-agent">
+    <img src="https://img.shields.io/github/commit-activity/m/SonicCloudOrg/sonic-agent">
   </a>
-  <a href="https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE">  
-    <img src="https://img.shields.io/github/license/ZhouYiXun/sonic-server?color=green&label=license&logo=license&logoColor=green">
+  <a href="https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE">  
+    <img src="https://img.shields.io/github/license/SonicCloudOrg/sonic-server?color=green&label=license&logo=license&logoColor=green">
   </a>
 </p>
 
 ### Official Website
-[Sonic Official Website](http://zhouyixun.gitee.io/sonic-official-website)
+[Sonic Official Website](http://sonic-cloud.gitee.io)
 ## Background
 
 #### What is sonic ?

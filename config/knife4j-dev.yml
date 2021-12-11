@@ -5,4 +5,4 @@ knife4j:
     enableHostText: "http://localhost:8094"
     enableFooter: false
     enableFooterCustom: true
-    footerCustomContent: MIT License | Copyright 2021 - [ZhouYiXun/sonic-server](https://github.com/ZhouYixun/sonic-server/blob/main/LICENSE)
+    footerCustomContent: MIT License | Copyright 2021 - [SonicCloudOrg/sonic-server](https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE)
