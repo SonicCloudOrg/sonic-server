@@ -41,7 +41,7 @@ public class DevicesController {
 
     @PutMapping("/updateUser")
     public RespModel updateUser(@RequestBody JSONObject jsonObject) {
-        devicesService.updateUser(jsonObject);
+        devicesService.updateDevicesUser(jsonObject);
         return new RespModel(RespEnum.UPDATE_OK);
     }
 
