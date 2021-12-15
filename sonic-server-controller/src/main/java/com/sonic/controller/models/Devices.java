@@ -49,6 +49,8 @@ public class Devices {
     Set<TestSuites> testSuites;
     @ApiModelProperty(value = "设备占用者")
     String user;
+    @ApiModelProperty(value = "设备温度", example = "33")
+    String temperature;
 
     public Devices() {
     }
@@ -61,20 +63,20 @@ public class Devices {
         this.id = id;
     }
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getModel() {
@@ -173,13 +175,20 @@ public class Devices {
         this.testSuites = testSuites;
     }
 
-
     public String getUser() {
         return user;
     }
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
     }
 
     @Override
@@ -200,6 +209,7 @@ public class Devices {
                 ", password='" + password + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", user='" + user + '\'' +
+                ", temperature='" + temperature + '\'' +
                 '}';
     }
 }
