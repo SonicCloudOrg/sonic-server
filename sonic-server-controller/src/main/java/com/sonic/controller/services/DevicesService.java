@@ -17,7 +17,7 @@ import java.util.List;
 public interface DevicesService {
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
-    void updateUser(JSONObject jsonObject);
+    void updateDevicesUser(JSONObject jsonObject);
 
     void updateImg(UpdateDeviceImg updateDeviceImg);
 

@@ -48,7 +48,7 @@ public class DevicesServiceImpl implements DevicesService {
     }
 
     @Override
-    public void updateUser(JSONObject jsonObject) {
+    public void updateDevicesUser(JSONObject jsonObject) {
         Users users = usersService.getUserInfo(jsonObject.getString("token"));
         Devices devices = findByAgentIdAndUdId(jsonObject.getInteger("agentId"),
                 jsonObject.getString("udId"));
