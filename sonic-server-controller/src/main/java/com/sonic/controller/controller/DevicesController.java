@@ -39,10 +39,23 @@ public class DevicesController {
         }
     }
 
-    @PutMapping("/updateUser")
-    public RespModel updateUser(@RequestBody JSONObject jsonObject) {
-        devicesService.updateUser(jsonObject);
+    @PutMapping("/updateDevicesUser")
+    public RespModel updateDevicesUser(@RequestBody JSONObject jsonObject) {
+        devicesService.updateDevicesUser(jsonObject);
         return new RespModel(RespEnum.UPDATE_OK);
+    }
+
+    @PutMapping("/refreshDevicesTemper")
+    public RespModel refreshDevicesTemper(@RequestBody JSONObject jsonObject) {
+        devicesService.refreshDevicesTemper(jsonObject);
+        return new RespModel(RespEnum.UPDATE_OK);
+    }
+
+    @WebAspect
+    @ApiOperation(value = "获取温度概况", notes = "获取现有温度概况")
+    @GetMapping("/findTemper")
+    public RespModel<Integer> findTemper() {
+        return new RespModel(RespEnum.SEARCH_OK, devicesService.findTemper());
     }
 
     @WebAspect

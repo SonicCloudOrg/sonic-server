@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sonic-server-transport</artifactId>
-    <version>v1.2.0-release</version>
+    <version>v1.3.0-beta1</version>
     <packaging>jar</packaging>
 
     <dependencies>

@@ -38,7 +38,7 @@ services:
     ports:
       - "8094:8094"
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.2.0-release"
+    image: "sonicorg/sonic-server-controller:v1.3.0-beta1"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -81,7 +81,7 @@ services:
       - sonic-server-eureka
       - sonic-server-gateway
   sonic-server-transport:
-    image: "sonicorg/sonic-server-transport:v1.2.0-release"
+    image: "sonicorg/sonic-server-transport:v1.3.0-beta1"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/

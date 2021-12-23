@@ -21,6 +21,10 @@ public interface DevicesRepository extends JpaRepository<Devices, Integer>, JpaS
 
     List<Devices> findByPlatformOrderByIdDesc(int platform);
 
+    @Query(value = "select avg(temperature) as avg from devices " +
+            "where temperature <> 0 and status in (?1)", nativeQuery = true)
+    Integer findTemper(List<String> ids);
+
     @Query(value = "select cpu from devices group by cpu", nativeQuery = true)
     List<String> findCpuList();
 

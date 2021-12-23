@@ -17,7 +17,7 @@ import java.util.List;
 public interface DevicesService {
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
-    void updateUser(JSONObject jsonObject);
+    void updateDevicesUser(JSONObject jsonObject);
 
     void updateImg(UpdateDeviceImg updateDeviceImg);
 
@@ -38,4 +38,8 @@ public interface DevicesService {
     void deviceStatus(JSONObject jsonObject);
 
     Devices findById(int id);
+
+    Integer findTemper();
+
+    void refreshDevicesTemper(JSONObject jsonObject);
 }
