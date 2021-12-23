@@ -136,6 +136,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
+                result.put("pf",testSuites.getPlatform());
                 result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
@@ -178,6 +179,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
+                result.put("pf",testSuites.getPlatform());
                 result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
@@ -283,6 +285,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             }
             JSONObject result = new JSONObject();
             result.put("msg", "forceStopSuite");
+            result.put("pf",testSuites.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
@@ -304,6 +307,7 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             }
             JSONObject result = new JSONObject();
             result.put("msg", "forceStopSuite");
+            result.put("pf",testSuites.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);

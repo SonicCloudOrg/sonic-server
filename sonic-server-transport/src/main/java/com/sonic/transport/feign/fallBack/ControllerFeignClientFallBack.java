@@ -19,6 +19,11 @@ public class ControllerFeignClientFallBack implements ControllerFeignClient {
     }
 
     @Override
+    public RespModel refreshDevicesTemper(JSONObject jsonObject) {
+        return new RespModel(RespEnum.SERVICE_NOT_FOUND);
+    }
+
+    @Override
     public RespModel saveAgent(JSONObject agents) {
         return new RespModel(RespEnum.SERVICE_NOT_FOUND);
     }
