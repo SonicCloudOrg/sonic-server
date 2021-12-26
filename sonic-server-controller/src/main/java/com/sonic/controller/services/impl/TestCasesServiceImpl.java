@@ -2,19 +2,25 @@ package com.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.controller.dao.GlobalParamsRepository;
-import com.sonic.controller.dao.TestCasesRepository;
-import com.sonic.controller.models.*;
-import com.sonic.controller.services.PublicStepsService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sonic.controller.mapper.PublicStepsMapper;
+import com.sonic.controller.mapper.TestCasesMapper;
+import com.sonic.controller.mapper.TestSuitesTestCasesMapper;
+import com.sonic.controller.models.domain.GlobalParams;
+import com.sonic.controller.models.domain.PublicSteps;
+import com.sonic.controller.models.domain.TestCases;
+import com.sonic.controller.models.domain.TestSuitesTestCases;
+import com.sonic.controller.models.dto.StepsDTO;
+import com.sonic.controller.services.GlobalParamsService;
 import com.sonic.controller.services.StepsService;
 import com.sonic.controller.services.TestCasesService;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.Predicate;
 import java.util.*;
 
 /**
@@ -23,60 +29,55 @@ import java.util.*;
  * @date 2021/8/20 17:51
  */
 @Service
-public class TestCasesServiceImpl implements TestCasesService {
-    @Autowired
-    private TestCasesRepository testCasesRepository;
-    @Autowired
-    private StepsService stepsService;
-    @Autowired
-    private PublicStepsService publicStepsService;
-    @Autowired
-    private GlobalParamsRepository globalParamsRepository;
+public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
+
+    @Autowired private StepsService stepsService;
+    @Autowired private PublicStepsMapper publicStepsMapper;
+    @Autowired private GlobalParamsService globalParamsService;
+    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
 
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable) {
-        Specification<TestCases> spc = (root, query, cb) -> {
-            List<Predicate> predicateList = new ArrayList<>();
-            if (projectId != 0) {
-                predicateList.add(cb.and(cb.equal(root.get("projectId"), projectId)));
-            }
-            if (platform != 0) {
-                predicateList.add(cb.and(cb.equal(root.get("platform"), platform)));
-            }
-            if (name != null && name.length() > 0) {
-                predicateList.add(cb.and(cb.like(root.get("name"), "%" + name + "%")));
-            }
-            //默认按照最后更新时间倒序
-            query.orderBy(cb.desc(root.get("editTime")));
-            if (predicateList.size() != 0) {
-                Predicate[] p = new Predicate[predicateList.size()];
-                return query.where(predicateList.toArray(p)).getRestriction();
-            } else {
-                return query.getRestriction();
-            }
-        };
-        return testCasesRepository.findAll(spc, pageable);
+    public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
+
+        LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
+        if (projectId != 0) {
+            lambdaQuery.eq(TestCases::getProjectId, projectId);
+        }
+        if (platform != 0) {
+            lambdaQuery.eq(TestCases::getPlatform, platform);
+        }
+        if (name != null && name.length() > 0) {
+            lambdaQuery.like(TestCases::getName, name);
+        }
+
+        return lambdaQuery.orderByDesc(TestCases::getEditTime)
+                .page(pageable);
     }
 
     @Override
     public List<TestCases> findAll(int projectId, int platform) {
-        return testCasesRepository.findByProjectIdAndPlatformOrderByEditTimeDesc(projectId, platform);
+        return lambdaQuery().eq(TestCases::getProjectId, projectId)
+                .eq(TestCases::getPlatform, platform)
+                .orderByDesc(TestCases::getEditTime)
+                .list();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean delete(int id) {
-        if (testCasesRepository.existsById(id)) {
-            TestCases testCases = testCasesRepository.findById(id).get();
-            List<TestSuites> testSuitesSet = testCases.getTestSuites();
-            for (TestSuites testSuites : testSuitesSet) {
-                testSuites.getTestCases().remove(testCases);
-            }
-            List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(id);
-            for (Steps steps : stepsList) {
+        if (existsById(id)) {
+            // 删除suite映射关系
+            testSuitesTestCasesMapper.delete(
+                    new LambdaQueryWrapper<TestSuitesTestCases>()
+                            .eq(TestSuitesTestCases::getTestCasesId, id)
+            );
+
+            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id);
+            for (StepsDTO steps : stepsList) {
                 steps.setCaseId(0);
-                stepsService.save(steps);
+                stepsService.updateById(steps.convertTo());
             }
-            testCasesRepository.deleteById(id);
+            baseMapper.deleteById(id);
             return true;
         } else {
             return false;
@@ -84,32 +85,26 @@ public class TestCasesServiceImpl implements TestCasesService {
     }
 
     @Override
-    public void save(TestCases testCases) {
-        testCasesRepository.save(testCases);
-    }
-
-    @Override
     public TestCases findById(int id) {
-        if (testCasesRepository.existsById(id)) {
-            return testCasesRepository.findById(id).get();
-        } else {
-            return null;
-        }
+        return baseMapper.selectById(id);
     }
 
+    @Transactional
     @Override
     public JSONObject findSteps(int id) {
-        if (testCasesRepository.existsById(id)) {
-            TestCases runStepCase = testCasesRepository.findById(id).get();
+
+        if (existsById(id)) {
+            TestCases runStepCase = baseMapper.selectById(id);
             JSONObject jsonDebug = new JSONObject();
             jsonDebug.put("pf", runStepCase.getPlatform());
+
             JSONArray array = new JSONArray();
-            List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(id);
-            for (Steps steps : stepsList) {
+            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id);
+            for (StepsDTO steps : stepsList) {
                 array.add(getStep(steps));
             }
             jsonDebug.put("steps", array);
-            List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(runStepCase.getProjectId());
+            List<GlobalParams> globalParamsList = globalParamsService.findAll(runStepCase.getProjectId());
             JSONObject gp = new JSONObject();
             Map<String, List<String>> valueMap = new HashMap<>();
             for (GlobalParams g : globalParamsList) {
@@ -136,7 +131,7 @@ public class TestCasesServiceImpl implements TestCasesService {
 
     @Override
     public List<TestCases> findByIdIn(List<Integer> ids) {
-        return testCasesRepository.findByIdIn(ids);
+        return listByIds(ids);
     }
 
     /**
@@ -146,13 +141,15 @@ public class TestCasesServiceImpl implements TestCasesService {
      * @des 递归获取步骤
      * @date 2021/8/20 17:50
      */
-    private JSONObject getStep(Steps steps) {
+    private JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
         if (steps.getStepType().equals("publicStep")) {
-            PublicSteps publicSteps = publicStepsService.findById(Integer.parseInt(steps.getText()));
+            PublicSteps publicSteps = publicStepsMapper.selectById(Integer.parseInt(steps.getText()));
+
             if (publicSteps != null) {
+                List<StepsDTO> stepsList = stepsService.listByPublicStepsId(publicSteps.getId());
                 JSONArray publicStepsJson = new JSONArray();
-                for (Steps pubStep : publicSteps.getSteps()) {
+                for (StepsDTO pubStep : stepsList) {
                     publicStepsJson.add(getStep(pubStep));
                 }
                 step.put("pubSteps", publicStepsJson);
@@ -160,5 +157,10 @@ public class TestCasesServiceImpl implements TestCasesService {
         }
         step.put("step", steps);
         return step;
+    }
+
+    @Override
+    public boolean deleteByProjectId(int projectId) {
+        return baseMapper.delete(new LambdaQueryWrapper<>()) > 0;
     }
 }

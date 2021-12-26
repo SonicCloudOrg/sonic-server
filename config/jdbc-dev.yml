@@ -4,8 +4,16 @@ spring:
     url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
     username: root
     password: Sonic!@#123
-  jpa:
-    open-in-view: true
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+# mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath:mapping/*.xml, classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+  global-config:
+    # 是否显示mybatis-plus图标
+    banner: false
+  configuration:
+    # 关闭二级缓存
+    cache-enabled: false
+    # 关闭一级缓存
+    localCacheScope: STATEMENT
+    # sql日志
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

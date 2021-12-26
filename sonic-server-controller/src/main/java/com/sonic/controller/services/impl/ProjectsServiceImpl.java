@@ -1,10 +1,11 @@
 package com.sonic.controller.services.impl;
 
 import com.sonic.common.exception.SonicException;
-import com.sonic.controller.dao.*;
-import com.sonic.controller.models.Projects;
-import com.sonic.controller.models.Results;
-import com.sonic.controller.services.ProjectsService;
+import com.sonic.controller.mapper.ProjectsMapper;
+import com.sonic.controller.models.domain.Projects;
+import com.sonic.controller.models.domain.Results;
+import com.sonic.controller.services.*;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,67 +18,47 @@ import java.util.List;
  * @date 2021/8/21 20:57
  */
 @Service
-public class ProjectsServiceImpl implements ProjectsService {
-    @Autowired
-    private ProjectsRepository projectsRepository;
-    @Autowired
-    private ElementsRepository elementsRepository;
-    @Autowired
-    private GlobalParamsRepository globalParamsRepository;
-    @Autowired
-    private ModulesRepository modulesRepository;
-    @Autowired
-    private VersionsRepository versionsRepository;
-    @Autowired
-    private PublicStepsRepository publicStepsRepository;
-    @Autowired
-    private ResultsRepository resultsRepository;
-    @Autowired
-    private ResultDetailRepository resultDetailRepository;
-    @Autowired
-    private StepsRepository stepsRepository;
-    @Autowired
-    private TestSuitesRepository testSuitesRepository;
-    @Autowired
-    private TestCasesRepository testCasesRepository;
+public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projects> implements ProjectsService {
 
-    @Override
-    public void save(Projects projects) {
-        projectsRepository.save(projects);
-    }
+    @Autowired private ElementsService elementsService;
+    @Autowired private GlobalParamsService globalParamsService;
+    @Autowired private ModulesService modulesService;
+    @Autowired private VersionsService versionsService;
+    @Autowired private PublicStepsService publicStepsService;
+    @Autowired private ResultsService resultsService;
+    @Autowired private ResultDetailService resultDetailService;
+    @Autowired private StepsService stepsService;
+    @Autowired private TestSuitesService testSuitesService;
+    @Autowired private TestCasesService testCasesService;
 
     @Override
     public Projects findById(int id) {
-        if (projectsRepository.existsById(id)) {
-            return projectsRepository.findById(id).get();
-        } else {
-            return null;
-        }
+        return baseMapper.selectById(id);
     }
 
     @Override
     public List<Projects> findAll() {
-        return projectsRepository.findAll();
+        return list();
     }
 
     @Override
-    @Transactional(rollbackFor = SonicException.class)
+    @Transactional(rollbackFor = Exception.class)
     public void delete(int id) throws SonicException {
         try {
-            testSuitesRepository.deleteByProjectId(id);
-            publicStepsRepository.deleteByProjectId(id);
-            testCasesRepository.deleteByProjectId(id);
-            stepsRepository.deleteByProjectId(id);
-            elementsRepository.deleteByProjectId(id);
-            modulesRepository.deleteByProjectId(id);
-            globalParamsRepository.deleteByProjectId(id);
-            List<Results> resultsList = resultsRepository.findByProjectId(id);
+            testSuitesService.deleteByProjectId(id);
+            publicStepsService.deleteByProjectId(id);
+            testCasesService.deleteByProjectId(id);
+            stepsService.deleteByProjectId(id);
+            elementsService.deleteByProjectId(id);
+            modulesService.deleteByProjectId(id);
+            globalParamsService.deleteByProjectId(id);
+            List<Results> resultsList = resultsService.findByProjectId(id);
             for (Results results : resultsList) {
-                resultDetailRepository.deleteByResultId(results.getId());
+                resultDetailService.deleteByResultId(results.getId());
             }
-            resultsRepository.deleteByProjectId(id);
-            versionsRepository.deleteByProjectId(id);
-            projectsRepository.deleteById(id);
+            resultsService.deleteByProjectId(id);
+            versionsService.deleteByProjectId(id);
+            baseMapper.deleteById(id);
         } catch (Exception e) {
             throw new SonicException("删除出错！请联系管理员！");
         }

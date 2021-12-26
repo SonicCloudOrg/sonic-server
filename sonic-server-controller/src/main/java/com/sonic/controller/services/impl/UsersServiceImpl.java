@@ -4,16 +4,18 @@ import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.common.tools.JWTTokenTool;
-import com.sonic.controller.dao.UsersRepository;
-import com.sonic.controller.models.Users;
+import com.sonic.controller.mapper.UsersMapper;
+import com.sonic.controller.models.domain.Users;
 import com.sonic.controller.models.http.ChangePwd;
 import com.sonic.controller.models.http.UserInfo;
 import com.sonic.controller.services.UsersService;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
 
 /**
@@ -22,19 +24,21 @@ import org.springframework.util.DigestUtils;
  * @date 2021/10/13 11:26
  */
 @Service
-public class UsersServiceImpl implements UsersService {
+public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> implements UsersService {
     private final Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
-    @Autowired
-    private UsersRepository usersRepository;
+
     @Autowired
     private JWTTokenTool jwtTokenTool;
 
+    @Autowired
+    private UsersMapper usersMapper;
+
     @Override
-    @Transactional(rollbackFor = SonicException.class)
+    @Transactional(rollbackFor = Exception.class)
     public void register(Users users) throws SonicException {
         try {
             users.setPassword(DigestUtils.md5DigestAsHex(users.getPassword().getBytes()));
-            usersRepository.save(users);
+            save(users);
         } catch (Exception e) {
             e.printStackTrace();
             throw new SonicException("注册失败！用户名已存在！");
@@ -43,7 +47,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public String login(UserInfo userInfo) {
-        Users users = usersRepository.findByUserName(userInfo.getUserName());
+        Users users = findByUserName(userInfo.getUserName());
         if (users != null && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
             String token = jwtTokenTool.getToken(users.getUserName());
             users.setPassword("");
@@ -58,7 +62,7 @@ public class UsersServiceImpl implements UsersService {
     public Users getUserInfo(String token) {
         String name = jwtTokenTool.getUserName(token);
         if (name != null) {
-            Users users = usersRepository.findByUserName(name);
+            Users users = findByUserName(name);
             users.setPassword("");
             return users;
         } else {
@@ -67,14 +71,14 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public RespModel resetPwd(String token, ChangePwd changePwd) {
+    public RespModel<String> resetPwd(String token, ChangePwd changePwd) {
         String name = jwtTokenTool.getUserName(token);
         if (name != null) {
-            Users users = usersRepository.findByUserName(name);
+            Users users = findByUserName(name);
             if (users != null) {
                 if (DigestUtils.md5DigestAsHex(changePwd.getOldPwd().getBytes()).equals(users.getPassword())) {
                     users.setPassword(DigestUtils.md5DigestAsHex(changePwd.getNewPwd().getBytes()));
-                    usersRepository.save(users);
+                    save(users);
                     return new RespModel(2000, "修改密码成功！");
                 } else {
                     return new RespModel(4001, "旧密码错误！");
@@ -85,5 +89,11 @@ public class UsersServiceImpl implements UsersService {
         } else {
             return new RespModel(RespEnum.UNAUTHORIZED);
         }
+    }
+
+    @Override
+    public Users findByUserName(String userName) {
+        Assert.hasText(userName, "userName must not be null");
+        return lambdaQuery().eq(Users::getUserName, userName).one();
     }
 }

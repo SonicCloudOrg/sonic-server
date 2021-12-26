@@ -2,28 +2,30 @@ package com.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
-import com.sonic.controller.dao.AgentsRepository;
-import com.sonic.controller.dao.GlobalParamsRepository;
-import com.sonic.controller.dao.TestSuitesRepository;
+import com.sonic.common.tools.BeanTool;
 import com.sonic.controller.feign.TransportFeignClient;
-import com.sonic.controller.models.*;
-import com.sonic.controller.models.interfaces.AgentStatus;
+import com.sonic.controller.mapper.*;
+import com.sonic.controller.models.base.CommentPage;
+import com.sonic.controller.models.base.TypeConverter;
+import com.sonic.controller.models.domain.*;
+import com.sonic.controller.models.dto.*;
 import com.sonic.controller.models.interfaces.CoverType;
 import com.sonic.controller.models.interfaces.DeviceStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.criteria.Predicate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -31,60 +33,57 @@ import java.util.*;
  * @date 2021/8/20 17:51
  */
 @Service
-public class TestSuitesServiceImpl implements TestSuitesService {
-    @Autowired
-    private TestSuitesRepository testSuitesRepository;
-    @Autowired
-    private StepsService stepsService;
-    @Autowired
-    private PublicStepsService publicStepsService;
-    @Autowired
-    private ResultsService resultsService;
-    @Autowired
-    private AgentsService agentsService;
-    @Autowired
-    private GlobalParamsRepository globalParamsRepository;
-    @Autowired
-    private TransportFeignClient transportFeignClient;
+public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
+
+    @Autowired private TestCasesMapper testCasesMapper;
+    @Autowired private ElementsMapper elementsMapper;
+    @Autowired private DevicesMapper devicesMapper;
+    @Autowired private ResultsService resultsService;
+    @Autowired private GlobalParamsService globalParamsService;
+    @Autowired private StepsService stepsService;
+    @Autowired private PublicStepsService publicStepsService;
+    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired private TransportFeignClient transportFeignClient;
 
     @Override
-    public RespModel runSuite(int suiteId, String strike) {
-        TestSuites testSuites;
-        if (testSuitesRepository.existsById(suiteId)) {
-            testSuites = testSuitesRepository.findById(suiteId).get();
+    @Transactional(rollbackFor = Exception.class)
+    public RespModel<String> runSuite(int suiteId, String strike) {
+        TestSuitesDTO testSuitesDTO;
+        if (existsById(suiteId)) {
+            testSuitesDTO = findById(suiteId);
         } else {
-            return new RespModel(3001, "测试套件已删除！");
+            return new RespModel<>(3001, "测试套件已删除！");
         }
-        Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
-        testSuites.setTestCases(new ArrayList<>(testCasesSet));
-        if (testSuites.getTestCases().size() == 0) {
-            return new RespModel(3002, "该测试套件内无测试用例！");
+
+        if (testSuitesDTO.getTestCases().size() == 0) {
+            return new RespModel<>(3002, "该测试套件内无测试用例！");
         }
-        List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
-        for (int i = devicesList.size() - 1; i >= 0; i--) {
-            if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
-                devicesList.remove(devicesList.get(i));
-            }
-        }
+
+        List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
         if (devicesList.size() == 0) {
-            return new RespModel(3003, "所选设备暂无可用！");
+            return new RespModel<>(3003, "所选设备暂无可用！");
         }
+
+        // 初始化部分结果状态信息
         Results results = new Results();
         results.setStatus(ResultStatus.RUNNING);
         results.setSuiteId(suiteId);
-        results.setSuiteName(testSuites.getName());
+        results.setSuiteName(testSuitesDTO.getName());
         results.setStrike(strike);
-        if (testSuites.getCover() == CoverType.CASE) {
-            results.setSendMsgCount(testSuites.getTestCases().size());
+        if (testSuitesDTO.getCover() == CoverType.CASE) {
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size());
         }
-        if (testSuites.getCover() == CoverType.DEVICE) {
-            results.setSendMsgCount(testSuites.getTestCases().size() * testSuites.getDevices().size());
+        if (testSuitesDTO.getCover() == CoverType.DEVICE) {
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * testSuitesDTO.getDevices().size());
         }
         results.setReceiveMsgCount(0);
-        results.setProjectId(testSuites.getProjectId());
+        results.setProjectId(testSuitesDTO.getProjectId());
         resultsService.save(results);
+
         //组装全局参数为json对象
-        List<GlobalParams> globalParamsList = globalParamsRepository.findByProjectId(testSuites.getProjectId());
+        List<GlobalParams> globalParamsList = globalParamsService.findAll(testSuitesDTO.getProjectId());
+
         //将包含|的拆开多个参数并打乱，去掉json对象多参数的字段
         Map<String, List<String>> valueMap = new HashMap<>();
         JSONObject gp = new JSONObject();
@@ -98,20 +97,20 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             }
         }
         int deviceIndex = 0;
-        if (testSuites.getCover() == CoverType.CASE) {
+        if (testSuitesDTO.getCover() == CoverType.CASE) {
             List<JSONObject> suiteDetail = new ArrayList<>();
             Set<Integer> agentIds = new HashSet<>();
-            for (TestCases testCases : testSuites.getTestCases()) {
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
                 JSONObject suite = new JSONObject();
                 List<JSONObject> steps = new ArrayList<>();
-                List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-                for (Steps s : stepsList) {
+                List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (StepsDTO s : stepsList) {
                     steps.add(getStep(s));
                 }
                 suite.put("steps", steps);
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                suite.put("device", Arrays.asList(devices));
+                suite.put("device", List.of(devices));
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -136,23 +135,19 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                result.put("pf",testSuites.getPlatform());
+                result.put("pf", testSuitesDTO.getPlatform());
                 result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
-//            RespModel testDataResp = transportFeignClient.sendTestData(suite);
-//            if (testDataResp.getCode() != 2000) {
-//                resultsService.subResultCount(results.getId());
-//            }
         }
-        if (testSuites.getCover() == CoverType.DEVICE) {
+        if (testSuitesDTO.getCover() == CoverType.DEVICE) {
             List<JSONObject> suiteDetail = new ArrayList<>();
             Set<Integer> agentIds = new HashSet<>();
-            for (TestCases testCases : testSuites.getTestCases()) {
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
                 JSONObject suite = new JSONObject();
                 List<JSONObject> steps = new ArrayList<>();
-                List<Steps> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-                for (Steps s : stepsList) {
+                List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (StepsDTO s : stepsList) {
                     steps.add(getStep(s));
                 }
                 for (Devices devices : devicesList) {
@@ -179,21 +174,127 @@ public class TestSuitesServiceImpl implements TestSuitesService {
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                result.put("pf",testSuites.getPlatform());
+                result.put("pf", testSuitesDTO.getPlatform());
                 result.put("msg", "suite");
                 transportFeignClient.sendTestData(result);
             }
         }
-        return new RespModel(RespEnum.HANDLE_OK);
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @Override
-    public TestSuites findById(int id) {
-        if (testSuitesRepository.existsById(id)) {
-            TestSuites testSuites = testSuitesRepository.findById(id).get();
-            Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
-            testSuites.setTestCases(new ArrayList<>(testCasesSet));
-            return testSuites;
+    @Transactional(rollbackFor = Exception.class)
+    public RespModel<String> forceStopSuite(int resultId, String strike) {
+
+        Results results = resultsService.findById(resultId);
+        if (ObjectUtils.isEmpty(results)) {
+            return new RespModel<>(3001, "测试结果模板不存在！");
+        }
+        int suiteId = results.getSuiteId();
+
+        TestSuitesDTO testSuitesDTO;
+        if (existsById(suiteId)) {
+            testSuitesDTO = findById(suiteId);
+        } else {
+            return new RespModel<>(3001, "测试套件已删除！");
+        }
+
+        if (testSuitesDTO.getTestCases().size() == 0) {
+            return new RespModel<>(3002, "该测试套件内无测试用例！");
+        }
+
+        List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
+        for (int i = devicesList.size() - 1; i >= 0; i--) {
+            if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
+                devicesList.remove(devicesList.get(i));
+            }
+        }
+        if (devicesList.size() == 0) {
+            return new RespModel<>(3003, "运行设备暂无法连接！");
+        }
+
+        results.setStatus(ResultStatus.FAIL);
+        results.setStrike(strike);
+        if (testSuitesDTO.getCover() == CoverType.CASE) {
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size());
+        }
+        if (testSuitesDTO.getCover() == CoverType.DEVICE) {
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * testSuitesDTO.getDevices().size());
+        }
+        results.setProjectId(testSuitesDTO.getProjectId());
+        resultsService.save(results);
+
+
+        int deviceIndex = 0;
+        if (testSuitesDTO.getCover() == CoverType.CASE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                suite.put("cid", testCases.getId());
+                Devices devices = devicesList.get(deviceIndex);
+                suite.put("device", List.of(devices));
+                if (deviceIndex == devicesList.size() - 1) {
+                    deviceIndex = 0;
+                } else {
+                    deviceIndex++;
+                }
+                suite.put("rid", results.getId());
+                agentIds.add(devices.getAgentId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
+            result.put("pf", testSuitesDTO.getPlatform());
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
+            }
+        }
+        if (testSuitesDTO.getCover() == CoverType.DEVICE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                for (Devices devices : devicesList) {
+                    agentIds.add(devices.getAgentId());
+                }
+                suite.put("cid", testCases.getId());
+                suite.put("device", devicesList);
+                suite.put("rid", results.getId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
+            result.put("pf", testSuitesDTO.getPlatform());
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                result.put("id", id);
+                transportFeignClient.sendTestData(result);
+            }
+        }
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
+
+    @Override
+    @Transactional
+    public TestSuitesDTO findById(int id) {
+        if (existsById(id)) {
+            TestSuitesDTO testSuitesDTO = baseMapper.selectById(id).convertTo();
+            int suiteId = testSuitesDTO.getId();
+
+            // 填充testcase
+            List<TestCasesDTO> testCasesDTOList = testCasesMapper.listByTestSuitesId(suiteId)
+                    .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
+            testSuitesDTO.setTestCases(testCasesDTOList);
+
+            // 填充devices
+            List<DevicesDTO> devicesDTOList = devicesMapper.listByTestSuitesId(suiteId)
+                    .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
+            testSuitesDTO.setDevices(devicesDTOList);
+
+            return testSuitesDTO;
         } else {
             return null;
         }
@@ -206,13 +307,14 @@ public class TestSuitesServiceImpl implements TestSuitesService {
      * @des 递归获取步骤
      * @date 2021/8/20 17:50
      */
-    private JSONObject getStep(Steps steps) {
+    @Transactional
+    public JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
         if (steps.getStepType().equals("publicStep")) {
-            PublicSteps publicSteps = publicStepsService.findById(Integer.parseInt(steps.getText()));
-            if (publicSteps != null) {
+            PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(steps.getText()));
+            if (publicStepsDTO != null) {
                 JSONArray publicStepsJson = new JSONArray();
-                for (Steps pubStep : publicSteps.getSteps()) {
+                for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
                     publicStepsJson.add(getStep(pubStep));
                 }
                 step.put("pubSteps", publicStepsJson);
@@ -224,127 +326,78 @@ public class TestSuitesServiceImpl implements TestSuitesService {
 
     @Override
     public boolean delete(int id) {
-        if (testSuitesRepository.existsById(id)) {
-            testSuitesRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+        return baseMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveTestSuites(TestSuitesDTO testSuitesDTO) {
+        TestSuites testSuites = testSuitesDTO.convertTo();
+        save(testSuites);
+
+        Integer suiteId = testSuites.getId();
+        testSuitesDTO.setId(suiteId);
+
+        List<TestCasesDTO> testCases = testSuitesDTO.getTestCases();
+        List<DevicesDTO> devices = testSuitesDTO.getDevices();
+
+        // 删除旧数据
+        testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
+                .eq(TestSuitesDevices::getTestSuitesId, suiteId)
+        );
+        testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
+                .eq(TestSuitesTestCases::getTestSuitesId, suiteId)
+        );
+
+        // 保存testcase映射
+        for (TestCasesDTO testCase : testCases) {
+            testSuitesTestCasesMapper.insert(
+                    new TestSuitesTestCases().setTestSuitesId(suiteId).setTestCasesId(testCase.getId())
+            );
+        }
+
+        // 保存devices映射
+        for (DevicesDTO device : devices) {
+            testSuitesDevicesMapper.insert(
+                    new TestSuitesDevices().setTestSuitesId(suiteId).setDevicesId(device.getId())
+            );
         }
     }
 
     @Override
-    public RespModel<String> forceStopSuite(int resultId, String strike) {
-        Results results = resultsService.findById(resultId);
-        if (ObjectUtils.isEmpty(results)) {
-            return new RespModel<>(3001, "测试结果模板不存在！");
-        }
-        int suiteId = results.getSuiteId();
+    @Transactional
+    public CommentPage<TestSuitesDTO> findByProjectId(int projectId, String name, Page<TestSuites> pageable) {
 
-        TestSuites testSuites;
-        if (testSuitesRepository.existsById(suiteId)) {
-            testSuites = testSuitesRepository.findById(suiteId).get();
-        } else {
-            return new RespModel<>(3001, "测试套件已删除！");
-        }
-        Set<TestCases> testCasesSet = new HashSet<>(testSuites.getTestCases());
-        testSuites.setTestCases(new ArrayList<>(testCasesSet));
-        if (testSuites.getTestCases().size() == 0) {
-            return new RespModel<>(3002, "该测试套件内无测试用例！");
-        }
-        List<Devices> devicesList = new ArrayList<>(testSuites.getDevices());
+        LambdaQueryChainWrapper<TestSuites> lambdaQuery = lambdaQuery();
 
-        results.setStatus(ResultStatus.FAIL);
-        results.setStrike(strike);
-        if (testSuites.getCover() == CoverType.CASE) {
-            results.setSendMsgCount(testSuites.getTestCases().size());
+        if (projectId != 0) {
+            lambdaQuery.eq(TestSuites::getProjectId, projectId);
         }
-        if (testSuites.getCover() == CoverType.DEVICE) {
-            results.setSendMsgCount(testSuites.getTestCases().size() * testSuites.getDevices().size());
+        if (name != null && name.length() > 0) {
+            lambdaQuery.like(TestSuites::getName, name);
         }
-        results.setProjectId(testSuites.getProjectId());
-        resultsService.save(results);
 
+        lambdaQuery.orderByDesc(TestSuites::getId);
+        Page<TestSuites> page = lambdaQuery.page(pageable);
 
-        int deviceIndex = 0;
-        if (testSuites.getCover() == CoverType.CASE) {
-            List<JSONObject> suiteDetail = new ArrayList<>();
-            Set<Integer> agentIds = new HashSet<>();
-            for (TestCases testCases : testSuites.getTestCases()) {
-                JSONObject suite = new JSONObject();
-                suite.put("cid", testCases.getId());
-                Devices devices = devicesList.get(deviceIndex);
-                suite.put("device", Arrays.asList(devices));
-                if (deviceIndex == devicesList.size() - 1) {
-                    deviceIndex = 0;
-                } else {
-                    deviceIndex++;
-                }
-                suite.put("rid", results.getId());
-                agentIds.add(devices.getAgentId());
-                suiteDetail.add(suite);
-            }
-            JSONObject result = new JSONObject();
-            result.put("msg", "forceStopSuite");
-            result.put("pf",testSuites.getPlatform());
-            result.put("cases", suiteDetail);
-            for (Integer id : agentIds) {
-                result.put("id", id);
-                transportFeignClient.sendTestData(result);
-            }
-        }
-        if (testSuites.getCover() == CoverType.DEVICE) {
-            List<JSONObject> suiteDetail = new ArrayList<>();
-            Set<Integer> agentIds = new HashSet<>();
-            for (TestCases testCases : testSuites.getTestCases()) {
-                JSONObject suite = new JSONObject();
-                for (Devices devices : devicesList) {
-                    agentIds.add(devices.getAgentId());
-                }
-                suite.put("cid", testCases.getId());
-                suite.put("device", devicesList);
-                suite.put("rid", results.getId());
-                suiteDetail.add(suite);
-            }
-            JSONObject result = new JSONObject();
-            result.put("msg", "forceStopSuite");
-            result.put("pf",testSuites.getPlatform());
-            result.put("cases", suiteDetail);
-            for (Integer id : agentIds) {
-                result.put("id", id);
-                transportFeignClient.sendTestData(result);
-            }
-        }
-        return new RespModel(RespEnum.HANDLE_OK);
+        List<TestSuitesDTO> testSuitesDTOList = page.getRecords()
+                // 转换 + 填充 testcase 和 devices
+                .stream().map(e -> findById(e.getId())).collect(Collectors.toList());
+
+        return CommentPage.convertFrom(page, testSuitesDTOList);
     }
 
     @Override
-    public void save(TestSuites testSuites) {
-        testSuitesRepository.save(testSuites);
+    public List<TestSuitesDTO> findByProjectId(int projectId) {
+        return lambdaQuery().eq(TestSuites::getProjectId, projectId)
+                .orderByDesc(TestSuites::getId)
+                .list()
+                // 转换 + 填充 testcase 和 devices
+                .stream().map(e -> findById(e.getId())).collect(Collectors.toList());
     }
 
     @Override
-    public Page<TestSuites> findByProjectId(int projectId, String name, Pageable pageable) {
-        Specification<TestSuites> spc = (root, query, cb) -> {
-            List<Predicate> predicateList = new ArrayList<>();
-            if (projectId != 0) {
-                predicateList.add(cb.and(cb.equal(root.get("projectId"), projectId)));
-            }
-            if (name != null && name.length() > 0) {
-                predicateList.add(cb.and(cb.like(root.get("name"), "%" + name + "%")));
-            }
-            query.orderBy(cb.desc(root.get("id")));
-            if (predicateList.size() != 0) {
-                Predicate[] p = new Predicate[predicateList.size()];
-                return query.where(predicateList.toArray(p)).getRestriction();
-            } else {
-                return query.getRestriction();
-            }
-        };
-        return testSuitesRepository.findAll(spc, pageable);
-    }
-
-    @Override
-    public List<TestSuites> findByProjectId(int projectId) {
-        return testSuitesRepository.findByProjectId(projectId, Sort.by(Sort.Direction.DESC, "id"));
+    public boolean deleteByProjectId(int projectId) {
+        return baseMapper.delete(new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId)) > 0;
     }
 }

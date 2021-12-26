@@ -1,12 +1,13 @@
 package com.sonic.controller.services;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.controller.models.Devices;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.sonic.controller.models.domain.Devices;
 import com.sonic.controller.models.http.DeviceDetailChange;
 import com.sonic.controller.models.http.UpdateDeviceImg;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -14,18 +15,16 @@ import java.util.List;
  * @des 设备逻辑层
  * @date 2021/8/16 22:51
  */
-public interface DevicesService {
+public interface DevicesService extends IService<Devices> {
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
     void updateDevicesUser(JSONObject jsonObject);
 
     void updateImg(UpdateDeviceImg updateDeviceImg);
 
-    void save(Devices devices);
-
     Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
-                          String deviceInfo, Pageable pageable);
+                          String deviceInfo, Page<Devices> pageable);
 
     List<Devices> findAll(int platform);
 
@@ -33,13 +32,18 @@ public interface DevicesService {
 
     Devices findByAgentIdAndUdId(int agentId, String udId);
 
+
     JSONObject getFilterOption();
 
     void deviceStatus(JSONObject jsonObject);
 
     Devices findById(int id);
 
-    Integer findTemper();
+    List<Devices> listByAgentId(int agentId);
+
+    String getName(String model) throws IOException;
 
     void refreshDevicesTemper(JSONObject jsonObject);
+
+    Integer findTemper();
 }

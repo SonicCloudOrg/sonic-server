@@ -2,28 +2,30 @@ package com.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.controller.dao.ResultDetailRepository;
-import com.sonic.controller.dao.ResultsRepository;
-import com.sonic.controller.dao.TestSuitesRepository;
-import com.sonic.controller.models.*;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sonic.controller.mapper.ResultsMapper;
+import com.sonic.controller.models.domain.Projects;
+import com.sonic.controller.models.domain.ResultDetail;
+import com.sonic.controller.models.domain.Results;
+import com.sonic.controller.models.domain.TestCases;
+import com.sonic.controller.models.dto.TestSuitesDTO;
 import com.sonic.controller.models.interfaces.ResultDetailStatus;
 import com.sonic.controller.models.interfaces.ResultStatus;
 import com.sonic.controller.services.*;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import com.sonic.controller.tools.RobotMsgTool;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -31,59 +33,50 @@ import java.util.stream.Collectors;
  * @date 2021/8/21 16:09
  */
 @Service
-public class ResultsServiceImpl implements ResultsService {
+public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results> implements ResultsService {
+
     private final Logger logger = LoggerFactory.getLogger(ResultsServiceImpl.class);
     ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-    @Autowired
-    private ResultsRepository resultsRepository;
-    @Autowired
-    private ResultDetailService resultDetailService;
-    @Autowired
-    private ProjectsService projectsService;
-    @Autowired
-    private RobotMsgTool robotMsgTool;
-    @Autowired
-    private TestSuitesService testSuitesService;
-    @Autowired
-    private ResultDetailRepository resultDetailRepository;
-    @Autowired
-    private TestCasesService testCasesService;
+
+    @Autowired private ResultsMapper resultsMapper;
+    @Autowired private ResultDetailService resultDetailService;
+    @Autowired private ProjectsService projectsService;
+    @Autowired private RobotMsgTool robotMsgTool;
+    @Autowired private TestSuitesService testSuitesService;
+    @Autowired private TestCasesService testCasesService;
 
     @Override
-    public Page<Results> findByProjectId(int projectId, Pageable pageable) {
-        return resultsRepository.findByProjectId(projectId, pageable);
+    public Page<Results> findByProjectId(int projectId, Page<Results> pageable) {
+        return lambdaQuery().eq(Results::getProjectId, projectId)
+                .orderByDesc(Results::getId)
+                .page(pageable);
     }
 
     @Override
+    public List<Results> findByProjectId(int projectId) {
+        return lambdaQuery().eq(Results::getProjectId, projectId).list();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean delete(int id) {
-        if (resultsRepository.existsById(id)) {
-            resultsRepository.deleteById(id);
-            resultDetailService.deleteByResultId(id);
-            return true;
-        } else {
-            return false;
-        }
+        int count = resultsMapper.deleteById(id);
+        resultDetailService.deleteByResultId(id);
+        return count > 0;
     }
 
     @Override
     public Results findById(int id) {
-        if (resultsRepository.existsById(id)) {
-            return resultsRepository.findById(id).get();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void save(Results results) {
-        resultsRepository.saveAndFlush(results);
+        return baseMapper.selectById(id);
     }
 
     @Override
     public void clean(int day) {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
         long time = timeMillis - day * 86400000L;
-        List<Results> resultsList = resultsRepository.findByCreateTimeBefore(new Date(time));
+        List<Results> resultsList = lambdaQuery()
+                .lt(Results::getCreateTime, new Date(time))
+                .list();
         cachedThreadPool.execute(() -> {
             for (Results results : resultsList) {
                 logger.info("清理测试报告id：" + results.getId());
@@ -107,20 +100,21 @@ public class ResultsServiceImpl implements ResultsService {
     }
 
     @Override
+    @Transactional
     public JSONArray findCaseStatus(int id) {
         Results results = findById(id);
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (results != null) {
-            TestSuites testSuites = testSuitesService.findById(results.getSuiteId());
-            if (testSuites != null) {
+            TestSuitesDTO testSuitesDTO = testSuitesService.findById(results.getSuiteId());
+            if (testSuitesDTO != null) {
                 JSONArray result = new JSONArray();
-                List<JSONObject> caseTimes = resultDetailRepository.findTimeByResultIdGroupByCaseId(results.getId());
+                List<JSONObject> caseTimes = resultDetailService.findTimeByResultIdGroupByCaseId(results.getId());
                 List<Integer> ci = new ArrayList<>();
                 for (JSONObject j : caseTimes) {
                     ci.add(j.getInteger("case_id"));
                 }
                 List<TestCases> testCasesList = testCasesService.findByIdIn(ci);
-                List<JSONObject> statusList = resultDetailRepository.findStatusByResultIdGroupByCaseId(results.getId());
+                List<JSONObject> statusList = resultDetailService.findStatusByResultIdGroupByCaseId(results.getId());
                 for (TestCases testCases : testCasesList) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("case", testCases);
@@ -168,13 +162,14 @@ public class ResultsServiceImpl implements ResultsService {
         }
     }
 
+    @Transactional
     @Override
     public JSONObject chart(String startTime, String endTime, int projectId) {
         List<String> dateList = getBetweenDate(startTime.substring(0, 10), endTime.substring(0, 10));
         JSONObject result = new JSONObject();
-        result.put("case", resultDetailRepository.findTopCases(startTime, endTime, projectId));
-        result.put("device", resultDetailRepository.findTopDevices(startTime, endTime, projectId));
-        List<JSONObject> rateList = resultsRepository.findDayPassRate(startTime, endTime, projectId);
+        result.put("case", resultDetailService.findTopCases(startTime, endTime, projectId));
+        result.put("device", resultDetailService.findTopDevices(startTime, endTime, projectId));
+        List<JSONObject> rateList = resultsMapper.findDayPassRate(startTime, endTime, projectId);
         List<JSONObject> rateResult = new ArrayList<>();
         for (String date : dateList) {
             JSONObject d = new JSONObject();
@@ -191,10 +186,11 @@ public class ResultsServiceImpl implements ResultsService {
             rateResult.add(d);
         }
         result.put("pass", rateResult);
-        result.put("status", resultsRepository.findDayStatus(startTime, endTime, projectId));
+        result.put("status", resultsMapper.findDayStatus(startTime, endTime, projectId));
         return result;
     }
 
+    @Transactional
     @Override
     public void sendDayReport() {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
@@ -203,7 +199,7 @@ public class ResultsServiceImpl implements ResultsService {
         for (Projects projects : projectsList) {
             Date yesterday = new Date(timeMillis - 86400000);
             Date today = new Date(timeMillis);
-            List<JSONObject> status = resultsRepository.findDayStatus(sf.format(yesterday), sf.format(today), projects.getId());
+            List<JSONObject> status = resultsMapper.findDayStatus(sf.format(yesterday), sf.format(today), projects.getId());
             int suc = 0;
             int warn = 0;
             int fail = 0;
@@ -227,6 +223,7 @@ public class ResultsServiceImpl implements ResultsService {
         }
     }
 
+    @Transactional
     @Override
     public void sendWeekReport() {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
@@ -235,8 +232,8 @@ public class ResultsServiceImpl implements ResultsService {
         for (Projects projects : projectsList) {
             Date lastWeek = new Date(timeMillis - 86400000 * 7L);
             Date today = new Date(timeMillis);
-            List<JSONObject> status = resultsRepository.findDayStatus(sf.format(lastWeek), sf.format(today), projects.getId());
-            int count = resultsRepository.findRunCount(sf.format(lastWeek), sf.format(today), projects.getId());
+            List<JSONObject> status = resultsMapper.findDayStatus(sf.format(lastWeek), sf.format(today), projects.getId());
+            int count = resultsMapper.findRunCount(sf.format(lastWeek), sf.format(today), projects.getId());
             int suc = 0;
             int warn = 0;
             int fail = 0;
@@ -284,6 +281,7 @@ public class ResultsServiceImpl implements ResultsService {
         return betweenList;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void setStatus(Results results) {
         List<ResultDetail> resultDetailList = resultDetailService.findAll(results.getId(), 0, "status", 0);
         int failCount = 0;
@@ -323,5 +321,10 @@ public class ResultsServiceImpl implements ResultsService {
                 }
             }
         }
+    }
+
+    @Override
+    public void deleteByProjectId(int projectId) {
+        baseMapper.delete(new LambdaQueryWrapper<Results>().eq(Results::getProjectId, projectId));
     }
 }

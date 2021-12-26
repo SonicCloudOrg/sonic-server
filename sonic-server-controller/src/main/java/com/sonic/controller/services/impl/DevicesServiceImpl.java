@@ -2,27 +2,22 @@ package com.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.controller.dao.DevicesRepository;
-import com.sonic.controller.models.Devices;
-import com.sonic.controller.models.Users;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sonic.controller.mapper.DevicesMapper;
+import com.sonic.controller.models.domain.Devices;
+import com.sonic.controller.models.domain.Users;
 import com.sonic.controller.models.http.DeviceDetailChange;
 import com.sonic.controller.models.http.UpdateDeviceImg;
 import com.sonic.controller.models.interfaces.DeviceStatus;
-import com.sonic.controller.models.interfaces.PlatformType;
+import com.sonic.controller.models.params.DevicesSearchParams;
 import com.sonic.controller.services.DevicesService;
 import com.sonic.controller.services.UsersService;
+import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,19 +27,21 @@ import java.util.List;
  * @date 2021/8/16 22:51
  */
 @Service
-public class DevicesServiceImpl implements DevicesService {
+public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
+
     @Autowired
-    private DevicesRepository devicesRepository;
+    private DevicesMapper devicesMapper;
+
     @Autowired
     private UsersService usersService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
-        if (devicesRepository.existsById(deviceDetailChange.getId())) {
-            Devices devices = devicesRepository.findById(deviceDetailChange.getId()).get();
+        if (existsById(deviceDetailChange.getId())) {
+            Devices devices = findById(deviceDetailChange.getId());
             devices.setNickName(deviceDetailChange.getNickName());
             devices.setPassword(deviceDetailChange.getPassword());
-            devicesRepository.save(devices);
+            save(devices);
             return true;
         } else {
             return false;
@@ -62,173 +59,60 @@ public class DevicesServiceImpl implements DevicesService {
 
     @Override
     public void updateImg(UpdateDeviceImg updateDeviceImg) {
-        if (devicesRepository.existsById(updateDeviceImg.getId())) {
-            Devices devices = devicesRepository.findById(updateDeviceImg.getId()).get();
+        if (existsById(updateDeviceImg.getId())) {
+            Devices devices = findById(updateDeviceImg.getId());
             devices.setImgUrl(updateDeviceImg.getImgUrl());
-            devicesRepository.save(devices);
+            save(devices);
         }
     }
 
     @Override
-    public void save(Devices devices) {
-        devicesRepository.save(devices);
-    }
-
-    @Override
-    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,
-                                 List<String> manufacturer, List<String> cpu, List<String> size,
-                                 List<Integer> agentId, List<String> status, String deviceInfo,
-                                 Pageable pageable) {
-        Specification<Devices> spc = (root, query, cb) -> {
-            //根据status的字符串自定义排序
-            List<Order> orders = new ArrayList<>();
-            orders.add(cb.asc(cb.selectCase()
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.ONLINE), 1)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.DEBUGGING), 2)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.TESTING), 3)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.ERROR), 4)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.UNAUTHORIZED), 5)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.OFFLINE), 6)
-                    .when(cb.equal(root.get("status").as(String.class), DeviceStatus.DISCONNECTED), 7)
-                    .otherwise(8)));
-            orders.add(cb.asc(root.get("status")));
-            orders.add(cb.desc(root.get("id")));
-            query.orderBy(orders);
-            List<Predicate> predicateList = new ArrayList<>();
-            if (androidVersion != null || iOSVersion != null) {
-                List<Predicate> androidAndiOS = new ArrayList<>();
-                //查找类型为安卓的并且version%的设备
-                if (androidVersion != null) {
-                    List<Predicate> list = new ArrayList<>();
-                    for (String version : androidVersion) {
-                        List<Predicate> platform = new ArrayList<>();
-                        platform.add(cb.equal(root.get("platform"), PlatformType.ANDROID));
-                        platform.add(cb.like(root.get("version"), version + "%"));
-                        Predicate[] p = new Predicate[platform.size()];
-                        list.add(cb.and(platform.toArray(p)));
-                    }
-                    Predicate[] l = new Predicate[list.size()];
-                    androidAndiOS.add(cb.or(list.toArray(l)));
-                }
-                //查找类型为iOS的并且version%的设备
-                if (iOSVersion != null) {
-                    List<Predicate> list = new ArrayList<>();
-                    for (String version : iOSVersion) {
-                        List<Predicate> platform = new ArrayList<>();
-                        platform.add(cb.equal(root.get("platform"), PlatformType.IOS));
-                        platform.add(cb.like(root.get("version"), version + "%"));
-                        Predicate[] p = new Predicate[platform.size()];
-                        list.add(cb.and(platform.toArray(p)));
-                    }
-                    Predicate[] l = new Predicate[list.size()];
-                    androidAndiOS.add(cb.or(list.toArray(l)));
-                }
-                //最后两个条件为or
-                Predicate[] result = new Predicate[androidAndiOS.size()];
-                predicateList.add(cb.or(androidAndiOS.toArray(result)));
-            }
-            if (manufacturer != null) {
-                CriteriaBuilder.In<Object> in = cb.in(root.get("manufacturer"));
-                for (String man : manufacturer) {
-                    in.value(man);
-                }
-                predicateList.add(cb.and(in));
-            }
-            if (cpu != null) {
-                CriteriaBuilder.In<Object> in = cb.in(root.get("cpu"));
-                for (String c : cpu) {
-                    in.value(c);
-                }
-                predicateList.add(cb.and(in));
-            }
-            if (size != null) {
-                CriteriaBuilder.In<Object> in = cb.in(root.get("size"));
-                for (String s : size) {
-                    in.value(s);
-                }
-                predicateList.add(cb.and(in));
-            }
-            if (agentId != null) {
-                CriteriaBuilder.In<Object> in = cb.in(root.get("agentId"));
-                for (int a : agentId) {
-                    in.value(a);
-                }
-                predicateList.add(cb.and(in));
-            }
-            if (status != null) {
-                CriteriaBuilder.In<Object> in = cb.in(root.get("status"));
-                for (String s : status) {
-                    in.value(s);
-                }
-                predicateList.add(cb.and(in));
-            }
-            if (deviceInfo != null) {
-                //因为是型号或者udId或者中文，所以三个条件为or
-                List<Predicate> modelOrUdId = new ArrayList<>();
-                modelOrUdId.add(cb.like(root.get("model"), "%" + deviceInfo + "%"));
-                modelOrUdId.add(cb.like(root.get("chiName"), "%" + deviceInfo + "%"));
-                modelOrUdId.add(cb.like(root.get("udId"), "%" + deviceInfo + "%"));
-                Predicate[] result = new Predicate[modelOrUdId.size()];
-                predicateList.add(cb.or(modelOrUdId.toArray(result)));
-            }
-            if (predicateList.size() != 0) {
-                Predicate[] p = new Predicate[predicateList.size()];
-                return query.where(predicateList.toArray(p)).getRestriction();
-            } else {
-                return query.getRestriction();
-            }
-        };
-        return devicesRepository.findAll(spc, pageable);
+    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
+                                 List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
+                                 String deviceInfo, Page<Devices> pageable) {
+        DevicesSearchParams params = new DevicesSearchParams()
+                .setIOSVersion(iOSVersion)
+                .setAndroidVersion(androidVersion)
+                .setManufacturer(manufacturer)
+                .setCpu(cpu)
+                .setSize(size)
+                .setAgentId(agentId)
+                .setStatus(status)
+                .setDeviceInfo(deviceInfo);
+        return devicesMapper.findByParams(pageable, params);
     }
 
     @Override
     public List<Devices> findAll(int platform) {
-        return devicesRepository.findByPlatformOrderByIdDesc(platform);
+        return lambdaQuery().eq(Devices::getPlatform, platform).orderByDesc(Devices::getId).list();
     }
 
     @Override
     public List<Devices> findByIdIn(List<Integer> ids) {
-        return devicesRepository.findByIdIn(ids);
+        return lambdaQuery().in(Devices::getId, ids).list();
     }
 
     @Override
     public Devices findByAgentIdAndUdId(int agentId, String udId) {
-        return devicesRepository.findByAgentIdAndUdId(agentId, udId);
+        return lambdaQuery().eq(Devices::getAgentId, agentId).eq(Devices::getUdId, udId).one();
     }
 
     @Override
     public JSONObject getFilterOption() {
         JSONObject jsonObject = new JSONObject();
-        List<String> cpuList = devicesRepository.findCpuList();
+        List<String> cpuList = devicesMapper.findCpuList();
         if (cpuList.contains("未知")) {
             cpuList.remove("未知");
             cpuList.add("未知");
         }
         jsonObject.put("cpu", cpuList);
-        List<String> sizeList = devicesRepository.findSizeList();
+        List<String> sizeList = devicesMapper.findSizeList();
         if (sizeList.contains("未知")) {
             sizeList.remove("未知");
             sizeList.add("未知");
         }
         jsonObject.put("size", sizeList);
         return jsonObject;
-    }
-
-    public String getName(String model) {
-        InputStream config = getClass().getResourceAsStream("/result.json");
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = JSON.parseObject(config, JSONObject.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                config.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return jsonObject.getString(model) == null ? "" : jsonObject.getString(model);
     }
 
     @Override
@@ -243,8 +127,9 @@ public class DevicesServiceImpl implements DevicesService {
             }
             if (jsonMsg.getString("model") != null) {
                 newDevices.setName(jsonMsg.getString("model"));
-                newDevices.setChiName(getName(jsonMsg.getString("model")));
             }
+            newDevices.setNickName("");
+            newDevices.setUser("");
             newDevices.setPlatform(jsonMsg.getInteger("platform"));
             newDevices.setVersion(jsonMsg.getString("version"));
             newDevices.setCpu(jsonMsg.getString("cpu"));
@@ -266,7 +151,6 @@ public class DevicesServiceImpl implements DevicesService {
             if (jsonMsg.getString("model") != null) {
                 if (!jsonMsg.getString("model").equals("未知")) {
                     devices.setModel(jsonMsg.getString("model"));
-                    devices.setChiName(getName(jsonMsg.getString("model")));
                 }
             }
             if (jsonMsg.getString("version") != null) {
@@ -284,26 +168,37 @@ public class DevicesServiceImpl implements DevicesService {
             if (jsonMsg.getString("manufacturer") != null) {
                 devices.setManufacturer(jsonMsg.getString("manufacturer"));
             }
-            if (jsonMsg.getString("status") != null) {
-                devices.setStatus(jsonMsg.getString("status"));
-            }
+            devices.setStatus(jsonMsg.getString("status"));
             save(devices);
         }
     }
 
     @Override
     public Devices findById(int id) {
-        if (devicesRepository.existsById(id)) {
-            return devicesRepository.findById(id).get();
-        } else {
-            return null;
-        }
+        return baseMapper.selectById(id);
     }
 
     @Override
-    public Integer findTemper() {
-        return devicesRepository.findTemper(Arrays.asList(DeviceStatus.ONLINE
-                ,DeviceStatus.DEBUGGING,DeviceStatus.TESTING));
+    public List<Devices> listByAgentId(int agentId) {
+        return lambdaQuery().eq(Devices::getAgentId, agentId).list();
+    }
+
+    @Override
+    public String getName(String model) {
+        InputStream config = getClass().getResourceAsStream("/result.json");
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = JSON.parseObject(config, JSONObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                config.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObject.getString(model) == null ? "" : jsonObject.getString(model);
     }
 
     @Override
@@ -314,8 +209,15 @@ public class DevicesServiceImpl implements DevicesService {
             Devices devices = findByAgentIdAndUdId(agentId, d.getString("udId"));
             if (devices != null) {
                 devices.setTemperature(d.getInteger("tem"));
-                devicesRepository.save(devices);
+                save(devices);
             }
         }
     }
+
+    @Override
+    public Integer findTemper() {
+        return devicesMapper.findTemper(Arrays.asList(DeviceStatus.ONLINE
+                ,DeviceStatus.DEBUGGING,DeviceStatus.TESTING));
+    }
+
 }
