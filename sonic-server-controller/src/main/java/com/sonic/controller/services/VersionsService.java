@@ -1,7 +1,8 @@
 package com.sonic.controller.services;
 
 
-import com.sonic.controller.models.Versions;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.sonic.controller.models.domain.Versions;
 
 import java.util.List;
 
@@ -10,12 +11,13 @@ import java.util.List;
  * @des 迭代逻辑层
  * @date 2021/8/16 22:54
  */
-public interface VersionsService {
-    void save(Versions versions);
+public interface VersionsService extends IService<Versions> {
 
     boolean delete(int id);
 
     List<Versions> findByProjectId(int projectId);
 
     Versions findById(int id);
+
+    void deleteByProjectId(int projectId);
 }

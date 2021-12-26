@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sonic.controller.mapper.PublicStepsMapper">
+
+    <select id="listStepsByPublicStepsIds" resultType="com.sonic.controller.models.dto.StepsDTO">
+        select pss.public_steps_id, s.* from public_steps_steps pss
+            inner join steps s on s.id = pss.steps_id
+        where public_steps_id in
+        <foreach collection="publicStepsIds" item="publicStepsId" open="(" close=")" separator=",">
+            #{publicStepsId}
+        </foreach>
+    </select>
+</mapper>

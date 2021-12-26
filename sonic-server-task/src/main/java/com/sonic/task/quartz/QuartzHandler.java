@@ -1,6 +1,6 @@
 package com.sonic.task.quartz;
 
-import com.sonic.task.models.Jobs;
+import com.sonic.task.models.domain.Jobs;
 import com.sonic.task.models.interfaces.JobType;
 import org.quartz.*;
 import org.slf4j.Logger;

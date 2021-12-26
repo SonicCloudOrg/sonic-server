@@ -1,7 +1,8 @@
 package com.sonic.controller.services;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.sonic.common.exception.SonicException;
-import com.sonic.controller.models.Projects;
+import com.sonic.controller.models.domain.Projects;
 
 import java.util.List;
 
@@ -10,8 +11,7 @@ import java.util.List;
  * @des 项目逻辑层
  * @date 2021/8/20 20:51
  */
-public interface ProjectsService {
-    void save(Projects projects);
+public interface ProjectsService extends IService<Projects> {
 
     Projects findById(int id);
 

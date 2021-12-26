@@ -3,7 +3,8 @@ package com.sonic.controller.controller;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
-import com.sonic.controller.models.GlobalParams;
+import com.sonic.controller.models.domain.GlobalParams;
+import com.sonic.controller.models.dto.GlobalParamsDTO;
 import com.sonic.controller.services.GlobalParamsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,15 +19,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/globalParams")
 public class GlobalParamsController {
+
     @Autowired
     private GlobalParamsService globalParamsService;
 
     @WebAspect
     @ApiOperation(value = "更新公共参数", notes = "新增或更新对应的公共参数")
     @PutMapping
-    public RespModel save(@Validated @RequestBody GlobalParams globalParams) {
-        globalParamsService.save(globalParams);
-        return new RespModel(RespEnum.UPDATE_OK);
+    public RespModel<String> save(@Validated @RequestBody GlobalParamsDTO globalParamsDTO) {
+        globalParamsService.save(globalParamsDTO.convertTo());
+        return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
     @WebAspect
@@ -34,18 +36,18 @@ public class GlobalParamsController {
     @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
     @GetMapping("/list")
     public RespModel<List<GlobalParams>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
-        return new RespModel(RespEnum.SEARCH_OK, globalParamsService.findAll(projectId));
+        return new RespModel<>(RespEnum.SEARCH_OK, globalParamsService.findAll(projectId));
     }
 
     @WebAspect
     @ApiOperation(value = "删除公共参数", notes = "删除对应id的公共参数")
     @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class)
     @DeleteMapping
-    public RespModel delete(@RequestParam(name = "id") int id) {
+    public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (globalParamsService.delete(id)) {
-            return new RespModel(RespEnum.DELETE_OK);
+            return new RespModel<>(RespEnum.DELETE_OK);
         } else {
-            return new RespModel(RespEnum.DELETE_ERROR);
+            return new RespModel<>(RespEnum.DELETE_ERROR);
         }
     }
 
@@ -56,9 +58,9 @@ public class GlobalParamsController {
     public RespModel<GlobalParams> findById(@RequestParam(name = "id") int id) {
         GlobalParams globalParams = globalParamsService.findById(id);
         if (globalParams != null) {
-            return new RespModel(RespEnum.SEARCH_OK, globalParams);
+            return new RespModel<>(RespEnum.SEARCH_OK, globalParams);
         } else {
-            return new RespModel(RespEnum.ID_NOT_FOUND);
+            return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
 }

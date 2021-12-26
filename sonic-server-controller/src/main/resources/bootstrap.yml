@@ -19,3 +19,12 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://sonic:sonic@127.0.0.1:9090/eureka/}
+
+# 数据库自动生成表
+actable:
+  model:
+    pack: com.sonic.controller.models.domain
+  table:
+    auto: update
+  database:
+    type: mysql

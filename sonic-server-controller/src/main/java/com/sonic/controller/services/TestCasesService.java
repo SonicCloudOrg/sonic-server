@@ -1,9 +1,9 @@
 package com.sonic.controller.services;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sonic.controller.models.TestCases;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.sonic.controller.models.domain.TestCases;
 
 import java.util.List;
 
@@ -12,18 +12,18 @@ import java.util.List;
  * @des 测试用例逻辑层
  * @date 2021/8/20 17:51
  */
-public interface TestCasesService {
-    Page<TestCases> findAll(int projectId, int platform, String name, Pageable pageable);
+public interface TestCasesService extends IService<TestCases> {
+    Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable);
 
     List<TestCases> findAll(int projectId, int platform);
 
     boolean delete(int id);
-
-    void save(TestCases testCases);
 
     TestCases findById(int id);
 
     JSONObject findSteps(int id);
 
     List<TestCases> findByIdIn(List<Integer> ids);
+
+    boolean deleteByProjectId(int projectId);
 }

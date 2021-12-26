@@ -4,7 +4,9 @@ import com.sonic.common.config.WebAspect;
 import com.sonic.common.exception.SonicException;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
-import com.sonic.controller.models.Projects;
+import com.sonic.controller.models.base.TypeConverter;
+import com.sonic.controller.models.domain.Projects;
+import com.sonic.controller.models.dto.ProjectsDTO;
 import com.sonic.controller.services.ProjectsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -24,34 +27,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/projects")
 public class ProjectsController {
+
     @Autowired
     private ProjectsService projectsService;
 
     @WebAspect
     @ApiOperation(value = "更新项目信息", notes = "新增或更新项目信息")
     @PutMapping
-    public RespModel save(@Validated @RequestBody Projects projects) {
-        projectsService.save(projects);
-        return new RespModel(RespEnum.UPDATE_OK);
+    public RespModel<String> save(@Validated @RequestBody ProjectsDTO projects) {
+        projectsService.save(projects.convertTo());
+        return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
     @WebAspect
     @ApiOperation(value = "查找所有项目", notes = "查找所有项目列表")
     @GetMapping("/list")
-    public RespModel<List<Projects>> findAll() {
-        return new RespModel(RespEnum.SEARCH_OK, projectsService.findAll());
+    public RespModel<List<ProjectsDTO>> findAll() {
+        return new RespModel<>(
+                RespEnum.SEARCH_OK,
+                projectsService.findAll().stream().map(TypeConverter::convertTo).collect(Collectors.toList())
+        );
     }
 
     @WebAspect
     @ApiOperation(value = "查询项目信息", notes = "查找对应id下的详细信息")
     @ApiImplicitParam(name = "id", value = "项目id", dataTypeClass = Integer.class)
     @GetMapping
-    public RespModel<Projects> findById(@RequestParam(name = "id") int id) {
+    public RespModel<?> findById(@RequestParam(name = "id") int id) {
         Projects projects = projectsService.findById(id);
         if (projects != null) {
-            return new RespModel(RespEnum.SEARCH_OK, projects);
+            return new RespModel<>(RespEnum.SEARCH_OK, projects.convertTo());
         } else {
-            return new RespModel(RespEnum.ID_NOT_FOUND);
+            return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
 
@@ -59,8 +66,8 @@ public class ProjectsController {
     @ApiOperation(value = "删除", notes = "删除对应id下的详细信息")
     @ApiImplicitParam(name = "id", value = "项目id", dataTypeClass = Integer.class)
     @DeleteMapping
-    public RespModel delete(@RequestParam(name = "id") int id) throws SonicException {
+    public RespModel<String> delete(@RequestParam(name = "id") int id) throws SonicException {
         projectsService.delete(id);
-        return new RespModel(RespEnum.DELETE_OK);
+        return new RespModel<>(RespEnum.DELETE_OK);
     }
 }

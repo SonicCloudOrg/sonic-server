@@ -47,6 +47,12 @@
             <artifactId>java-jwt</artifactId>
             <version>3.10.3</version>
         </dependency>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
     </dependencies>
 
     <!-- 打包构建配置  -->

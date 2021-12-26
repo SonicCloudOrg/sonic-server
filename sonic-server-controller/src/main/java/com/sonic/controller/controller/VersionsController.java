@@ -3,7 +3,8 @@ package com.sonic.controller.controller;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
-import com.sonic.controller.models.Versions;
+import com.sonic.controller.models.domain.Versions;
+import com.sonic.controller.models.dto.VersionsDTO;
 import com.sonic.controller.services.VersionsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,9 +25,9 @@ public class VersionsController {
     @WebAspect
     @ApiOperation(value = "更新版本迭代", notes = "新增或更改版本迭代信息")
     @PutMapping
-    public RespModel save(@Validated @RequestBody Versions versions) {
-        versionsService.save(versions);
-        return new RespModel(RespEnum.UPDATE_OK);
+    public RespModel<String> save(@Validated @RequestBody VersionsDTO versionsDTO) {
+        versionsService.save(versionsDTO.convertTo());
+        return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
     @WebAspect
@@ -34,18 +35,18 @@ public class VersionsController {
     @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
     @GetMapping("/list")
     public RespModel<List<Versions>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
-        return new RespModel(RespEnum.SEARCH_OK, versionsService.findByProjectId(projectId));
+        return new RespModel<>(RespEnum.SEARCH_OK, versionsService.findByProjectId(projectId));
     }
 
     @WebAspect
     @ApiOperation(value = "删除版本迭代", notes = "删除指定id的版本迭代")
     @ApiImplicitParam(name = "id", value = "版本迭代id", dataTypeClass = Integer.class)
     @DeleteMapping
-    public RespModel delete(@RequestParam(name = "id") int id) {
+    public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (versionsService.delete(id)) {
-            return new RespModel(RespEnum.DELETE_OK);
+            return new RespModel<>(RespEnum.DELETE_OK);
         } else {
-            return new RespModel(RespEnum.ID_NOT_FOUND);
+            return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
 
@@ -56,9 +57,9 @@ public class VersionsController {
     public RespModel<Versions> findById(@RequestParam(name = "id") int id) {
         Versions versions = versionsService.findById(id);
         if (versions != null) {
-            return new RespModel(RespEnum.SEARCH_OK, versions);
+            return new RespModel<>(RespEnum.SEARCH_OK, versions);
         } else {
-            return new RespModel(RespEnum.ID_NOT_FOUND);
+            return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
 }

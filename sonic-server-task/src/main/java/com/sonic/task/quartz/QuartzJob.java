@@ -1,17 +1,14 @@
 package com.sonic.task.quartz;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.sonic.common.http.RespModel;
 import com.sonic.task.feign.ControllerFeignClient;
 import com.sonic.task.feign.FolderFeignClient;
-import com.sonic.task.models.Jobs;
+import com.sonic.task.models.domain.Jobs;
 import com.sonic.task.models.interfaces.JobType;
 import com.sonic.task.service.JobsService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

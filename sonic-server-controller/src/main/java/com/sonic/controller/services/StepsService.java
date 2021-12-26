@@ -1,9 +1,11 @@
 package com.sonic.controller.services;
 
-import com.sonic.controller.models.Steps;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.sonic.controller.models.base.CommentPage;
+import com.sonic.controller.models.domain.Steps;
+import com.sonic.controller.models.dto.StepsDTO;
 import com.sonic.controller.models.http.StepSort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,18 +14,24 @@ import java.util.List;
  * @des 测试步骤逻辑层
  * @date 2021/8/20 17:51
  */
-public interface StepsService {
-    List<Steps> findByCaseIdOrderBySort(int caseId);
+public interface StepsService extends IService<Steps> {
+    List<StepsDTO> findByCaseIdOrderBySort(int caseId);
 
     boolean resetCaseId(int id);
 
     boolean delete(int id);
 
-    void save(Steps operations);
+    void saveStep(StepsDTO operations);
 
-    Steps findById(int id);
+    StepsDTO findById(int id);
 
     void sortSteps(StepSort stepSort);
 
-    Page<Steps> findByProjectIdAndPlatform(int projectId, int platform, Pageable pageable);
+    CommentPage<StepsDTO> findByProjectIdAndPlatform(int projectId, int platform, Page<Steps> pageable);
+
+    List<Steps> listStepsByElementsId(int elementsId);
+
+    boolean deleteByProjectId(int projectId);
+
+    List<StepsDTO> listByPublicStepsId(int publicStepsId);
 }
