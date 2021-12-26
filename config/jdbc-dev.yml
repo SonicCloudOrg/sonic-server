@@ -4,6 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
     username: root
     password: Sonic!@#123
+    # 会用到广播的事件
+    initialization-mode: always
+    schema:
+      - classpath:data.sql
 # mybatis-plus配置
 mybatis-plus:
   mapper-locations: classpath:mapping/*.xml, classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml

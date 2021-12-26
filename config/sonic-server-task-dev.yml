@@ -1,11 +1,5 @@
 server:
   port: 0
-
-spring:
-  datasource:
-    initialization-mode: always
-    schema:
-      - classpath:data.sql
   quartz:
     properties:
       org:
