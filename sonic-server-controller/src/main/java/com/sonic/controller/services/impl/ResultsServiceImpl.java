@@ -95,6 +95,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
         Results results = findById(id);
         if (results != null) {
             results.setReceiveMsgCount(results.getReceiveMsgCount() + 1);
+            save(results);
             setStatus(results);
         }
     }
@@ -309,7 +310,6 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
         if (results.getSendMsgCount() < 1 && sucCount == 0 && failCount == 0 && warnCount == 0) {
             delete(results.getId());
         } else {
-            save(results);
             //发收相同的话，表明测试结束了
             if (results.getReceiveMsgCount() == results.getSendMsgCount()) {
                 results.setEndTime(new Date());
