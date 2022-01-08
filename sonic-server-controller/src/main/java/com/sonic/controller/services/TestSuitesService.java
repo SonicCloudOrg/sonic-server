@@ -30,4 +30,6 @@ public interface TestSuitesService extends IService<TestSuites> {
     List<TestSuitesDTO> findByProjectId(int projectId);
 
     boolean deleteByProjectId(int projectId);
+
+    List<TestSuites> listTestSuitesByTestCasesId(int testCasesId);
 }

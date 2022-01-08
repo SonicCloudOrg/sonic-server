@@ -400,4 +400,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     public boolean deleteByProjectId(int projectId) {
         return baseMapper.delete(new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId)) > 0;
     }
+
+    @Override
+    public List<TestSuites> listTestSuitesByTestCasesId(int testCasesId) {
+        return testSuitesTestCasesMapper.listTestSuitesByTestCasesId(testCasesId);
+    }
 }

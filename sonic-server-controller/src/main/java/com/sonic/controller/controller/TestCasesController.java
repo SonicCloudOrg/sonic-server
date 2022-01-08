@@ -8,8 +8,10 @@ import com.sonic.common.http.RespModel;
 import com.sonic.common.tools.JWTTokenTool;
 import com.sonic.controller.models.base.CommentPage;
 import com.sonic.controller.models.domain.TestCases;
+import com.sonic.controller.models.domain.TestSuites;
 import com.sonic.controller.models.dto.TestCasesDTO;
 import com.sonic.controller.services.TestCasesService;
+import com.sonic.controller.services.TestSuitesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -29,6 +31,8 @@ public class TestCasesController {
     private TestCasesService testCasesService;
     @Autowired
     private JWTTokenTool jwtTokenTool;
+    @Autowired
+    private TestSuitesService testSuitesService;
 
     @WebAspect
     @ApiOperation(value = "查询测试用例列表", notes = "查找对应项目id下的测试用例列表")
@@ -75,6 +79,14 @@ public class TestCasesController {
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "删除测试用例检查", notes = "返回被引用的测试套件")
+    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+    @GetMapping("deleteCheck")
+    public RespModel<List<TestSuites>> deleteCheck(@RequestParam(name = "id") int id) {
+        return new RespModel<>(RespEnum.SEARCH_OK, testSuitesService.listTestSuitesByTestCasesId(id));
     }
 
     @WebAspect
