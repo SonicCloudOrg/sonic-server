@@ -3,19 +3,27 @@ package com.sonic.controller.services.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.mapper.ElementsMapper;
 import com.sonic.controller.models.domain.Elements;
 import com.sonic.controller.models.domain.Steps;
+import com.sonic.controller.models.dto.StepsDTO;
 import com.sonic.controller.services.ElementsService;
 import com.sonic.controller.services.StepsService;
+import com.sonic.controller.services.TestCasesService;
 import com.sonic.controller.services.impl.base.SonicServiceImpl;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
@@ -24,6 +32,8 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     private ElementsMapper elementsMapper;
     @Autowired
     private StepsService stepsService;
+    @Autowired
+    private TestCasesService testCasesService;
 
     @Override
     public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Page<Elements> pageable) {
@@ -53,26 +63,23 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     }
 
     @Override
+    public List<StepsDTO> findAllStepsByElementsId(int elementsId) {
+        return stepsService.listStepsByElementsId(elementsId).stream().map(e -> {
+            StepsDTO stepsDTO = e.convertTo();
+            return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()).convertTo());
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public RespModel<String> delete(int id) {
+    public RespModel delete(int id) {
         if (existsById(id)) {
-            try {
-                baseMapper.deleteById(id);
-                return new RespModel<>(RespEnum.DELETE_OK);
-            } catch (Exception e) {
-
-
-                List<Steps> stepsList = stepsService.listStepsByElementsId(id);
-                StringBuilder sList = new StringBuilder();
-                for (Steps s : stepsList) {
-                    if (sList.length() == 0) {
-                        sList.append(s.getId());
-                    } else {
-                        sList.append("，").append(s.getId());
-                    }
-                }
-                return new RespModel<>(-2, "删除失败！控件元素已存在于步骤id：" + sList + "中！");
+            List<StepsDTO> stepsList = findAllStepsByElementsId(id);
+            for (StepsDTO steps : stepsList) {
+                stepsService.delete(steps.getId());
             }
+            baseMapper.deleteById(id);
+            return new RespModel<>(RespEnum.DELETE_OK);
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
