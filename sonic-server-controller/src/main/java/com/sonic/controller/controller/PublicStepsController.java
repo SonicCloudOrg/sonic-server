@@ -6,8 +6,10 @@ import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
 import com.sonic.controller.models.base.CommentPage;
 import com.sonic.controller.models.domain.PublicSteps;
+import com.sonic.controller.models.domain.TestCases;
 import com.sonic.controller.models.dto.PublicStepsDTO;
 import com.sonic.controller.services.PublicStepsService;
+import com.sonic.controller.services.TestCasesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,6 +28,8 @@ public class PublicStepsController {
 
     @Autowired
     private PublicStepsService publicStepsService;
+    @Autowired
+    private TestCasesService testCasesService;
 
     @WebAspect
     @ApiOperation(value = "查询公共步骤列表1", notes = "查找对应项目id下的公共步骤列表（分页）")
@@ -76,6 +80,15 @@ public class PublicStepsController {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
+
+    @WebAspect
+    @ApiOperation(value = "删除公共步骤检查", notes = "返回引用公共步骤的用例")
+    @ApiImplicitParam(name = "id", value = "公共步骤id", dataTypeClass = Integer.class)
+    @GetMapping("deleteCheck")
+    public RespModel<List<TestCases>> deleteCheck(@RequestParam(name = "id") int id) {
+        return new RespModel<>(RespEnum.SEARCH_OK, testCasesService.listByPublicStepsId(id));
+    }
+
 
     @WebAspect
     @ApiOperation(value = "查找公共步骤信息", notes = "查询对应公共步骤的详细信息")

@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sonic.controller.mapper.PublicStepsMapper;
 import com.sonic.controller.mapper.TestCasesMapper;
 import com.sonic.controller.mapper.TestSuitesTestCasesMapper;
-import com.sonic.controller.models.domain.GlobalParams;
-import com.sonic.controller.models.domain.PublicSteps;
-import com.sonic.controller.models.domain.TestCases;
-import com.sonic.controller.models.domain.TestSuitesTestCases;
+import com.sonic.controller.models.domain.*;
 import com.sonic.controller.models.dto.StepsDTO;
 import com.sonic.controller.services.GlobalParamsService;
 import com.sonic.controller.services.StepsService;
@@ -20,8 +17,10 @@ import com.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -162,5 +161,15 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Override
     public boolean deleteByProjectId(int projectId) {
         return baseMapper.delete(new LambdaQueryWrapper<>()) > 0;
+    }
+
+    @Override
+    public List<TestCases> listByPublicStepsId(int publicStepsId) {
+        List<Steps> steps = stepsService.lambdaQuery().eq(Steps::getText, publicStepsId).list();
+        if (CollectionUtils.isEmpty(steps)) {
+            return new ArrayList<>();
+        }
+        Set<Integer> caseIdSet = steps.stream().map(Steps::getCaseId).collect(Collectors.toSet());
+        return lambdaQuery().in(TestCases::getId, caseIdSet).list();
     }
 }

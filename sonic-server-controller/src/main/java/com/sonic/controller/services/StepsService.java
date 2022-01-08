@@ -33,5 +33,8 @@ public interface StepsService extends IService<Steps> {
 
     boolean deleteByProjectId(int projectId);
 
+    /**
+     * 获取公共步骤里面的步骤
+     */
     List<StepsDTO> listByPublicStepsId(int publicStepsId);
 }

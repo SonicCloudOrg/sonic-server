@@ -26,4 +26,6 @@ public interface TestCasesService extends IService<TestCases> {
     List<TestCases> findByIdIn(List<Integer> ids);
 
     boolean deleteByProjectId(int projectId);
+
+    List<TestCases> listByPublicStepsId(int publicStepsId);
 }
