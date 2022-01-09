@@ -38,31 +38,18 @@
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
-            <artifactId>openblas</artifactId>
-            <version>0.3.9-1.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.3.0-1.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
+            <artifactId>javacpp-platform</artifactId>
             <version>1.5.3</version>
-            <classifier>linux-x86_64</classifier>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.3.0-1.5.3</version>
-            <classifier>linux-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>openblas</artifactId>
+            <artifactId>openblas-platform</artifactId>
             <version>0.3.9-1.5.3</version>
-            <classifier>linux-x86_64</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>opencv-platform</artifactId>
+            <version>4.3.0-1.5.3</version>
         </dependency>
     </dependencies>
 
