@@ -23,7 +23,7 @@ eureka:
 # 数据库自动生成表
 actable:
   model:
-    pack: com.sonic.task.models.domain
+    pack: org.cloud.sonic.task.models.domain
   table:
     auto: update
   database:

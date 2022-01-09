@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sonic.controller.mapper.DevicesMapper">
+<mapper namespace="org.cloud.sonic.controller.mapper.DevicesMapper">
 
-    <select id="findByParams" resultType="com.sonic.controller.models.domain.Devices">
+    <select id="findByParams" resultType="org.cloud.sonic.controller.models.domain.Devices">
         select d.* from devices d
         <where>
         1 = 1
