@@ -19,8 +19,8 @@ public interface StepsMapper extends BaseMapper<Steps> {
     @Select("select IFNULL(max(sort),0) from steps")
     int findMaxSort();
 
-    @Select("select s.* from steps_elements as se inner join steps as s on se.steps_id = s.id where se.elements_id = 2")
-    List<Steps> listStepsByElementId(@Param("elements_id") int elementsId);
+    @Select("select s.* from steps_elements as se inner join steps as s on se.steps_id = s.id where se.elements_id = #{elementsId}")
+    List<Steps> listStepsByElementId(@Param("elementsId") int elementsId);
 
     @Select("select s.* from public_steps_steps pss " +
                 "inner join steps s on pss.steps_id = s.id " +

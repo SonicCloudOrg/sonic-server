@@ -66,4 +66,7 @@ public class StepsDTO implements Serializable, TypeConverter<StepsDTO, Steps> {
     @JsonIgnore
     @JSONField(serialize = false)
     List<PublicStepsDTO> publicSteps;
+
+    @ApiModelProperty(value = "所属测试用例")
+    TestCasesDTO testCasesDTO;
 }

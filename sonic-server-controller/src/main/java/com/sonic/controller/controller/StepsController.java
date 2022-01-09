@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sonic.common.config.WebAspect;
 import com.sonic.common.http.RespEnum;
 import com.sonic.common.http.RespModel;
+import com.sonic.controller.mapper.PublicStepsMapper;
 import com.sonic.controller.models.base.CommentPage;
+import com.sonic.controller.models.domain.PublicSteps;
 import com.sonic.controller.models.domain.Steps;
 import com.sonic.controller.models.dto.StepsDTO;
 import com.sonic.controller.models.http.StepSort;
@@ -30,6 +32,8 @@ import java.util.List;
 public class StepsController {
     @Autowired
     private StepsService stepsService;
+    @Autowired
+    private PublicStepsMapper publicStepsMapper;
 
     @WebAspect
     @ApiOperation(value = "查找步骤列表", notes = "查找对应用例id下的步骤列表（分页）")
@@ -78,6 +82,14 @@ public class StepsController {
         } else {
             return new RespModel<>(RespEnum.DELETE_ERROR);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "删除操作步骤检查", notes = "返回步骤所属的公共步骤")
+    @ApiImplicitParam(name = "id", value = "步骤id", dataTypeClass = Integer.class)
+    @GetMapping("deleteCheck")
+    public RespModel<List<PublicSteps>> deleteCheck(@RequestParam(name = "id") int id) {
+        return new RespModel<>(RespEnum.SEARCH_OK, publicStepsMapper.listPubStepsByStepId(id));
     }
 
     @WebAspect
