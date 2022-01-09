@@ -1,9 +1,5 @@
 server:
   port: 0
-
-spring:
-  datasource:
-    initialization-mode: always
   quartz:
     properties:
       org:
