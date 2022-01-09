@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,12 +56,16 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         });
 
         // stepsId -> elementDTO
-        Map<Integer, List<ElementsDTO>> elementDTOMap = elementsMapper.listElementsByStepsIds(stepIdSet)
-                .stream().collect(Collectors.groupingBy(ElementsDTO::getStepsId));
+        Map<Integer, List<ElementsDTO>> elementDTOMap = new HashMap<>();
+        if (!stepIdSet.isEmpty()) {
+            elementDTOMap = elementsMapper.listElementsByStepsIds(stepIdSet)
+                    .stream().collect(Collectors.groupingBy(ElementsDTO::getStepsId));
+        }
 
         // 将element填充到step
+        Map<Integer, List<ElementsDTO>> finalElementDTOMap = elementDTOMap;
         stepsDTOMap.forEach((k, v) -> {
-            v.forEach(e -> e.setElements(elementDTOMap.get(e.getId())));
+            v.forEach(e -> e.setElements(finalElementDTOMap.get(e.getId())));
         });
         // 将step填充到public step
         publicStepsDTOList.forEach(e -> e.setSteps(stepsDTOMap.get(e.getId())));
