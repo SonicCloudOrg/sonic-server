@@ -89,7 +89,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         JSONObject gp = new JSONObject();
         for (GlobalParams g : globalParamsList) {
             if (g.getParamsValue().contains("|")) {
-                List<String> shuffle = Arrays.asList(g.getParamsValue().split("|"));
+                List<String> shuffle = Arrays.asList(g.getParamsValue().split("\\|"));
                 Collections.shuffle(shuffle);
                 valueMap.put(g.getParamsKey(), shuffle);
             } else {
