@@ -56,17 +56,6 @@ public class FileTool {
     }
 
     /**
-     * @param file 文件夹
-     * @return java.lang.String
-     * @author ZhouYiXun
-     * @des 上传
-     * @date 2021/8/18 20:41
-     */
-    public String upload(File file) throws IOException {
-        return host + "/api/folder/" + file.getPath().replaceAll("\\\\", "/");
-    }
-
-    /**
      * @param file
      * @return void
      * @author ZhouYiXun
