@@ -121,6 +121,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                 .le(Steps::getSort, stepSort.getStartId())
                 // >=
                 .ge(Steps::getSort, stepSort.getEndId())
+                .orderByAsc(Steps::getSort)
                 .list();
 
         if (stepSort.getDirection().equals("down")) {
