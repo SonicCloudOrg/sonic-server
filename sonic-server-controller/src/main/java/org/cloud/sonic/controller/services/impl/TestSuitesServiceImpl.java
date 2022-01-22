@@ -61,6 +61,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         }
 
         List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
+        for (int i = devicesList.size() - 1; i >= 0; i--) {
+            if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
+                devicesList.remove(devicesList.get(i));
+            }
+        }
         if (devicesList.size() == 0) {
             return new RespModel<>(3003, "所选设备暂无可用！");
         }
@@ -89,7 +94,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         JSONObject gp = new JSONObject();
         for (GlobalParams g : globalParamsList) {
             if (g.getParamsValue().contains("|")) {
-                List<String> shuffle = Arrays.asList(g.getParamsValue().split("\\|"));
+                List<String> shuffle = new ArrayList<>(Arrays.asList(g.getParamsValue().split("\\|")));
                 Collections.shuffle(shuffle);
                 valueMap.put(g.getParamsKey(), shuffle);
             } else {
