@@ -16,6 +16,7 @@ import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -135,8 +136,12 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByProjectId(int projectId) {
         PublicSteps publicSteps = lambdaQuery().eq(PublicSteps::getProjectId, projectId).one();
-        publicStepsStepsMapper.delete(new LambdaQueryWrapper<PublicStepsSteps>()
-                .eq(PublicStepsSteps::getPublicStepsId, publicSteps.getId()));
-        return delete(publicSteps.getId());
+        if (!ObjectUtils.isEmpty(publicSteps)) {
+            publicStepsStepsMapper.delete(new LambdaQueryWrapper<PublicStepsSteps>()
+                    .eq(PublicStepsSteps::getPublicStepsId, publicSteps.getId()));
+            delete(publicSteps.getId());
+            return true;
+        }
+        return false;
     }
 }
