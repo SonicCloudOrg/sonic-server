@@ -160,7 +160,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 
     @Override
     public boolean deleteByProjectId(int projectId) {
-        return baseMapper.delete(new LambdaQueryWrapper<>()) > 0;
+        return baseMapper.delete(new LambdaQueryWrapper<TestCases>().eq(TestCases::getProjectId, projectId)) > 0;
     }
 
     @Override

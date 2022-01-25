@@ -60,6 +60,7 @@ public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projec
             versionsService.deleteByProjectId(id);
             baseMapper.deleteById(id);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new SonicException("删除出错！请联系管理员！");
         }
     }
