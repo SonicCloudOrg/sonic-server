@@ -130,6 +130,9 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 
     @Override
     public List<TestCases> findByIdIn(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
         return listByIds(ids);
     }
 
