@@ -43,7 +43,7 @@
                 </foreach>
             </if>
             <if test="params.agentId != null and params.agentId.size() > 0">
-                and d.agentId in
+                and d.agent_id in
                 <foreach collection="params.agentId" item="agentId" open="(" close=")" separator=",">
                     #{agentId}
                 </foreach>
