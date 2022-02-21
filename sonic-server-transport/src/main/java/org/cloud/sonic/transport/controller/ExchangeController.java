@@ -22,7 +22,7 @@ public class ExchangeController {
         RespModel device = controllerFeignClient.findDeviceById(id);
         if (device.getCode() == 2000) {
             LinkedHashMap d = (LinkedHashMap) device.getData();
-            RespModel agent = controllerFeignClient.findKeyById((Integer) d.get("agentId"));
+            RespModel agent = controllerFeignClient.findAgentById((Integer) d.get("agentId"));
             if (agent.getCode() == 2000) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("msg", "reboot");
