@@ -160,7 +160,7 @@ public class DevicesController {
     @WebAspect
     @ApiOperation(value = "删除设备", notes = "设备必须离线才能删除，会删除设备与套件绑定关系")
     @DeleteMapping()
-    public RespModel<String> delete(@PathVariable int id) {
+    public RespModel<String> delete(@RequestParam(name = "id") int id) {
         return devicesService.delete(id);
     }
 }
