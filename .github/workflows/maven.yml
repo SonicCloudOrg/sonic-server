@@ -16,4 +16,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Validate and Compile with Maven
-      run: mvn validate compile -Pprod
+      run: mvn validate compile
