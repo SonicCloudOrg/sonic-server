@@ -129,7 +129,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                     }
                     List<JSONObject> device = new ArrayList<>();
                     for (int i = statusList.size() - 1; i >= 0; i--) {
-                        if (statusList.get(i).getInteger("case_id") == testCases.getId()) {
+                        if (statusList.get(i).getInteger("case_id").equals(testCases.getId())) {
                             JSONObject deviceIdAndStatus = new JSONObject();
                             deviceIdAndStatus.put("deviceId", statusList.get(i).getInteger("device_id"));
                             deviceIdAndStatus.put("status", statusList.get(i).getInteger("status"));

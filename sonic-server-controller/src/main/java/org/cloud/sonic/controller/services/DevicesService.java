@@ -3,9 +3,11 @@ package org.cloud.sonic.controller.services;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,4 +48,6 @@ public interface DevicesService extends IService<Devices> {
     void refreshDevicesTemper(JSONObject jsonObject);
 
     Integer findTemper();
+
+    RespModel<String> delete(int id);
 }
