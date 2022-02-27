@@ -2,9 +2,13 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
+import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.domain.TestSuitesDevices;
 import org.cloud.sonic.controller.models.domain.Users;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
@@ -15,11 +19,17 @@ import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.cloud.sonic.common.http.RespEnum.DELETE_ERROR;
+import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
 /**
  * @author ZhouYiXun
@@ -29,11 +39,10 @@ import java.util.List;
 @Service
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
-    @Autowired
-    private DevicesMapper devicesMapper;
+    @Autowired private DevicesMapper devicesMapper;
 
-    @Autowired
-    private UsersService usersService;
+    @Autowired private UsersService usersService;
+    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -89,7 +98,19 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public List<Devices> findByIdIn(List<Integer> ids) {
-        return lambdaQuery().in(Devices::getId, ids).list();
+        List<Devices> realDevices = lambdaQuery().in(Devices::getId, ids).list();
+        List<Devices> devices = new ArrayList<>();
+        for (int i = 0; i < ids.size(); i++) {
+            // 如果存在则直接加入，不存在则生成一个标记设备已删除的对象
+            if (!realDevices.isEmpty() && (realDevices.get(i) != null)
+                    && ids.get(i).equals(realDevices.get(i).getId())
+            ) {
+                devices.add(realDevices.get(i));
+            } else {
+                devices.add(Devices.newDeletedDevice(ids.get(i)));
+            }
+        }
+        return devices;
     }
 
     @Override
@@ -218,6 +239,24 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public Integer findTemper() {
         return devicesMapper.findTemper(Arrays.asList(DeviceStatus.ONLINE
                 ,DeviceStatus.DEBUGGING,DeviceStatus.TESTING));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public RespModel<String> delete(int id) {
+        Devices devices = devicesMapper.selectById(id);
+        if (ObjectUtils.isEmpty(devices)) {
+            return new RespModel<>(DELETE_ERROR, "设备已被删除过");
+        }
+        if (devices.getStatus().equals(DeviceStatus.OFFLINE) || devices.getStatus().equals(DeviceStatus.DISCONNECTED)) {
+            devicesMapper.deleteById(id);
+            testSuitesDevicesMapper.delete(
+                    new LambdaQueryWrapper<TestSuitesDevices>().eq(TestSuitesDevices::getDevicesId, id)
+            );
+        } else {
+            return new RespModel<>(DELETE_ERROR, "设备不处于离线状态");
+        }
+        return new RespModel<>(DELETE_OK);
     }
 
 }

@@ -102,4 +102,24 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     @TableField
     @Column(defaultValue = "0", comment = "设备温度")
     Integer temperature;
+
+    public static Devices newDeletedDevice(int id) {
+        String tips = "设备已删除";
+        return new Devices()
+                .setAgentId(0)
+                .setStatus("DISCONNECTED")
+                .setPlatform(0)
+                .setId(id)
+                .setVersion("未知")
+                .setSize("未知")
+                .setCpu("未知")
+                .setManufacturer("未知")
+                .setName(tips)
+                .setModel(tips)
+                .setChiName(tips)
+                .setNickName(tips)
+                .setName(tips)
+                .setUser(tips)
+                .setUdId(tips);
+    }
 }
