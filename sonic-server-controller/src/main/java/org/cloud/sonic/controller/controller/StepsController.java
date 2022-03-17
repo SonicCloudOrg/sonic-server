@@ -60,17 +60,17 @@ public class StepsController {
         return new RespModel<>(RespEnum.SEARCH_OK, stepsService.findByCaseIdOrderBySort(caseId));
     }
 
-    @WebAspect
-    @ApiOperation(value = "移出测试用例", notes = "将步骤从测试用例移出")
-    @ApiImplicitParam(name = "id", value = "步骤id", dataTypeClass = Integer.class)
-    @GetMapping("/resetCaseId")
-    public RespModel<String> resetCaseId(@RequestParam(name = "id") int id) {
-        if (stepsService.resetCaseId(id)) {
-            return new RespModel<>(2000, "移出测试用例成功！");
-        } else {
-            return new RespModel<>(RespEnum.ID_NOT_FOUND);
-        }
-    }
+//    @WebAspect
+//    @ApiOperation(value = "移出测试用例", notes = "将步骤从测试用例移出")
+//    @ApiImplicitParam(name = "id", value = "步骤id", dataTypeClass = Integer.class)
+//    @GetMapping("/resetCaseId")
+//    public RespModel<String> resetCaseId(@RequestParam(name = "id") int id) {
+//        if (stepsService.resetCaseId(id)) {
+//            return new RespModel<>(2000, "移出测试用例成功！");
+//        } else {
+//            return new RespModel<>(RespEnum.ID_NOT_FOUND);
+//        }
+//    }
 
     @WebAspect
     @ApiOperation(value = "删除操作步骤", notes = "将步骤删除，并且从所有公共步骤里移除")
