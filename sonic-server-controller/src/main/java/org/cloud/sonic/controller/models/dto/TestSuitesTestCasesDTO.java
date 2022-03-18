@@ -27,8 +27,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class TestSuitesTestCasesDTO implements Serializable, TypeConverter<TestSuitesTestCasesDTO, TestSuitesTestCases> {
 
-
     private Integer testSuitesId;
 
     private Integer testCasesId;
+
+    private Integer sort;
 }

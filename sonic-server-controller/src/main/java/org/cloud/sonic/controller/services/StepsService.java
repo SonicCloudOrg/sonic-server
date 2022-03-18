@@ -6,6 +6,7 @@ import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.http.StepSort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,17 @@ import java.util.List;
  */
 public interface StepsService extends IService<Steps> {
     List<StepsDTO> findByCaseIdOrderBySort(int caseId);
+
+    @Transactional
+    List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS);
+
+    /**
+     * 如果步骤是条件步骤，且子条件也可能是条件步骤，则递归填充条件步骤的子步骤，且所有步骤都会填充 {@link StepsDTO#elements} 属性
+     *
+     * @param stepsDTO 步骤对象（不需要填充）
+     */
+    @Transactional
+    void handleStep(StepsDTO stepsDTO);
 
     boolean resetCaseId(int id);
 

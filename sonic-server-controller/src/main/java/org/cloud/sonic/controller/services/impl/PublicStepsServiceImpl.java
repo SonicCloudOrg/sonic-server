@@ -12,6 +12,7 @@ import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.services.PublicStepsService;
+import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     @Autowired private PublicStepsStepsMapper publicStepsStepsMapper;
     @Autowired private StepsElementsMapper stepsElementsMapper;
     @Autowired private StepsMapper stepsMapper;
+    @Autowired private StepsService stepsService;
 
     @Transactional
     @Override
@@ -52,25 +54,11 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         // publicStepsId -> StepsDTO
         Map<Integer, List<StepsDTO>> stepsDTOMap = publicStepsMapper.listStepsByPublicStepsIds(publicStepsIdSet)
                 .stream().collect(Collectors.groupingBy(StepsDTO::getPublicStepsId));
-        Set<Integer> stepIdSet = new HashSet<>();
-        stepsDTOMap.values().forEach(vList -> {
-            vList.forEach(e -> stepIdSet.add(e.getId()));
-        });
 
-        // stepsId -> elementDTO
-        Map<Integer, List<ElementsDTO>> elementDTOMap = new HashMap<>();
-        if (!stepIdSet.isEmpty()) {
-            elementDTOMap = elementsMapper.listElementsByStepsIds(stepIdSet)
-                    .stream().collect(Collectors.groupingBy(ElementsDTO::getStepsId));
-        }
-
-        // 将element填充到step
-        Map<Integer, List<ElementsDTO>> finalElementDTOMap = elementDTOMap;
-        stepsDTOMap.forEach((k, v) -> {
-            v.forEach(e -> e.setElements(finalElementDTOMap.get(e.getId())));
-        });
         // 将step填充到public step
-        publicStepsDTOList.forEach(e -> e.setSteps(stepsDTOMap.get(e.getId())));
+        publicStepsDTOList.forEach(
+                e -> e.setSteps(stepsService.handleSteps(stepsDTOMap.get(e.getId())))
+        );
 
         return CommentPage.convertFrom(page, publicStepsDTOList);
     }
@@ -123,9 +111,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         List<StepsDTO> steps = stepsMapper.listByPublicStepsId(publicSteps.getId())
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
-        for (StepsDTO step : steps) {
-            step.setElements(elementsMapper.listElementsByStepsId(step.getId()));
-        }
+        stepsService.handleSteps(steps);
 
         PublicStepsDTO publicStepsDTO = publicSteps.convertTo().setSteps(steps);
         return publicStepsDTO.setSteps(steps);
