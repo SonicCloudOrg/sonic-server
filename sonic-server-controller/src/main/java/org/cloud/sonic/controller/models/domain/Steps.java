@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
 
 import java.io.Serializable;
 
@@ -38,6 +39,10 @@ public class Steps implements Serializable, TypeConverter<Steps, StepsDTO> {
     @TableId(value = "id", type = IdType.AUTO)
     @IsAutoIncrement
     private Integer id;
+
+    @TableField
+    @Column(value = "parent_id", defaultValue = "0", isNull = false, comment = "父级id，一般父级都是条件步骤")
+    private Integer parentId;
 
     @TableField
     @Column(value = "case_id", isNull = false, comment = "所属测试用例id")
@@ -72,4 +77,11 @@ public class Steps implements Serializable, TypeConverter<Steps, StepsDTO> {
     @TableField
     @Column(type = MySqlTypeConstant.LONGTEXT, isNull = false, comment = "其它信息")
     private String text;
+
+    /**
+     * @see ConditionEnum
+     */
+    @TableField
+    @Column(value = "condition_type", defaultValue = "0", isNull = false, comment = "条件类型")
+    private Integer conditionType;
 }

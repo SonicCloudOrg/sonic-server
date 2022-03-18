@@ -355,16 +355,22 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         );
 
         // 保存testcase映射
-        for (TestCasesDTO testCase : testCases) {
+        for (int i = 0; i < testCases.size(); i++) {
             testSuitesTestCasesMapper.insert(
-                    new TestSuitesTestCases().setTestSuitesId(suiteId).setTestCasesId(testCase.getId())
+                    new TestSuitesTestCases()
+                            .setTestSuitesId(suiteId)
+                            .setTestCasesId(testCases.get(i).getId())
+                            .setSort(i + 1)
             );
         }
 
         // 保存devices映射
-        for (DevicesDTO device : devices) {
+        for (int i = 0; i < devices.size(); i++) {
             testSuitesDevicesMapper.insert(
-                    new TestSuitesDevices().setTestSuitesId(suiteId).setDevicesId(device.getId())
+                    new TestSuitesDevices()
+                            .setTestSuitesId(suiteId)
+                            .setDevicesId(devices.get(i).getId())
+                            .setSort(i + 1)
             );
         }
     }

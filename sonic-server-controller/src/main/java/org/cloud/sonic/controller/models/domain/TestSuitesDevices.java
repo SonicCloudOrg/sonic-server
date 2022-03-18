@@ -40,4 +40,8 @@ public class TestSuitesDevices implements Serializable, TypeConverter<TestSuites
     @TableField
     @Column(value = "devices_id", isNull = false, comment = "设备id")
     private Integer devicesId;
+
+    @TableField
+    @Column(value = "sort", isNull = false, defaultValue = "0", comment = "排序用")
+    private Integer sort;
 }

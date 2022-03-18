@@ -25,7 +25,10 @@ public interface DevicesMapper extends BaseMapper<Devices> {
     @Select("select size from devices group by size")
     List<String> findSizeList();
 
-    @Select("select d.* from test_suites_devices tsd inner join devices d on d.id = tsd.devices_id where tsd.test_suites_id = #{TestSuitesId}")
+    @Select("select d.* from test_suites_devices tsd " +
+            "inner join devices d on d.id = tsd.devices_id " +
+            "where tsd.test_suites_id = #{TestSuitesId} " +
+            "order by tsd.sort asc")
     List<Devices> listByTestSuitesId(@Param("TestSuitesId") int TestSuitesId);
 
     Integer findTemper(@Param("ids") List<String> ids);

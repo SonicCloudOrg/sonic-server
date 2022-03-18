@@ -30,4 +30,6 @@ public class TestSuitesDevicesDTO implements Serializable, TypeConverter<TestSui
     private Integer testSuitesId;
 
     private Integer devicesId;
+
+    private Integer sort;
 }

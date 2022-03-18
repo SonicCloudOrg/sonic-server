@@ -12,12 +12,14 @@ import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.domain.StepsElements;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
 import org.cloud.sonic.controller.models.http.StepSort;
 import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,17 +38,54 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Autowired private PublicStepsStepsMapper publicStepsStepsMapper;
     @Autowired private StepsElementsMapper stepsElementsMapper;
 
+    @Transactional
     @Override
     public List<StepsDTO> findByCaseIdOrderBySort(int caseId) {
 
-        List<StepsDTO> stepsDTOList = lambdaQuery().eq(Steps::getCaseId, caseId)
+        // 取出用例下所有无父级的步骤
+        List<StepsDTO> stepsDTOList = lambdaQuery()
+                .eq(Steps::getCaseId, caseId)
+                .eq(Steps::getParentId, 0)
                 .orderByAsc(Steps::getSort)
                 .list()
                 // 转换成DTO
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-        // 填充elements
-        stepsDTOList.forEach(e -> e.setElements(elementsMapper.listElementsByStepsId(e.getId())));
+
+        // 遍历父级步骤，如果是条件步骤，则取出子步骤集合
+        handleSteps(stepsDTOList);
+
         return stepsDTOList;
+    }
+
+    @Transactional
+    @Override
+    public List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS) {
+        if (CollectionUtils.isEmpty(stepsDTOS)) {
+            return stepsDTOS;
+        }
+        for (StepsDTO stepsDTO : stepsDTOS) {
+            handleStep(stepsDTO);
+        }
+        return stepsDTOS;
+    }
+
+    @Transactional
+    @Override
+    public void handleStep(StepsDTO stepsDTO) {
+        if (stepsDTO == null) {
+            return;
+        }
+        stepsDTO.setElements(elementsMapper.listElementsByStepsId(stepsDTO.getId()));
+        // 如果是条件步骤
+        if (!stepsDTO.getConditionType().equals(ConditionEnum.NONE.getValue())) {
+            List<StepsDTO> childSteps = lambdaQuery()
+                    .eq(Steps::getParentId, stepsDTO.getId())
+                    .orderByAsc(Steps::getSort)
+                    .list()
+                    // 转换成DTO
+                    .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
+            stepsDTO.setChildSteps(handleSteps(childSteps));
+        }
     }
 
     @Override
@@ -106,9 +145,8 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Transactional
     @Override
     public StepsDTO findById(int id) {
-
         StepsDTO stepsDTO = baseMapper.selectById(id).convertTo();
-        stepsDTO.setElements(elementsMapper.listElementsByStepsId(stepsDTO.getId()));
+        handleStep(stepsDTO);
         return stepsDTO;
     }
 
@@ -145,15 +183,13 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         Page<Steps> page = lambdaQuery().eq(Steps::getProjectId, projectId)
                 .eq(Steps::getPlatform, platform)
+                .eq(Steps::getParentId, 0)
                 .orderByDesc(Steps::getId)
                 .page(pageable);
 
         List<StepsDTO> stepsDTOList = page.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-
-        for (StepsDTO stepsDTO : stepsDTOList) {
-            stepsDTO.setElements(elementsMapper.listElementsByStepsId(stepsDTO.getId()));
-        }
+        handleSteps(stepsDTOList);
 
         return CommentPage.convertFrom(page, stepsDTOList);
     }
