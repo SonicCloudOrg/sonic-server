@@ -40,6 +40,21 @@ public class ExchangeController {
     }
 
     @WebAspect
+    @GetMapping("/stop")
+    public RespModel<String> stop(@RequestParam(name = "id") int id) {
+        RespModel agent = controllerFeignClient.findAgentById(id);
+        if (agent.getCode() == 2000) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "stop");
+            LinkedHashMap a = (LinkedHashMap) agent.getData();
+            NettyServer.getMap().get(a.get("id")).writeAndFlush(jsonObject.toJSONString());
+            return new RespModel<>(2000, "发送成功！");
+        } else {
+            return agent;
+        }
+    }
+
+    @WebAspect
     @PostMapping("/sendTestData")
     public RespModel sendTestData(@RequestBody JSONObject jsonObject) {
         if (jsonObject.getInteger("id") != null) {

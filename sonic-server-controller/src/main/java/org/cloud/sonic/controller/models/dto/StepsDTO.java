@@ -3,15 +3,13 @@ package org.cloud.sonic.controller.models.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Steps;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -19,7 +17,8 @@ import java.io.Serializable;
 import java.util.List;
 
 @ApiModel("运行步骤DTO 模型")
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 @Builder
 @NoArgsConstructor
@@ -28,6 +27,9 @@ public class StepsDTO implements Serializable, TypeConverter<StepsDTO, Steps> {
 
     @ApiModelProperty(value = "id", example = "1")
     Integer id;
+
+    @ApiModelProperty(value = "父级id，一般父级都是条件步骤", example = "0")
+    Integer parentId;
 
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
@@ -60,6 +62,12 @@ public class StepsDTO implements Serializable, TypeConverter<StepsDTO, Steps> {
     @ApiModelProperty(value = "异常处理类型", required = true, example = "1")
     int error;
 
+    /**
+     * @see ConditionEnum
+     */
+    @ApiModelProperty(value = "步骤条件类型，0：非条件  1：if  2：else if  3：else  4：while", example = "0")
+    private Integer conditionType = 0;
+
     @ApiModelProperty(value = "包含元素列表")
     List<ElementsDTO> elements;
 
@@ -69,4 +77,7 @@ public class StepsDTO implements Serializable, TypeConverter<StepsDTO, Steps> {
 
     @ApiModelProperty(value = "所属测试用例")
     TestCasesDTO testCasesDTO;
+
+    @ApiModelProperty(value = "子步骤")
+    List<StepsDTO> childSteps;
 }

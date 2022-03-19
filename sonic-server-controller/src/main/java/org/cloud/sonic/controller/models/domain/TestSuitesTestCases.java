@@ -42,4 +42,8 @@ public class TestSuitesTestCases implements Serializable, TypeConverter<TestSuit
     @TableField
     @Column(value = "test_cases_id", isNull = false, comment = "测试用例id")
     private Integer testCasesId;
+
+    @TableField
+    @Column(value = "sort", isNull = false, defaultValue = "0", comment = "排序用")
+    private Integer sort;
 }
