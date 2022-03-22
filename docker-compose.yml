@@ -1,9 +1,11 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "sonicorg/sonic-server-eureka:v1.3.2-beta"
+    image: "sonicorg/sonic-server-eureka:v1.3.2-release"
     hostname: sonic-server-eureka
     environment:
+      - SEC_NAME=sonic #eureka用户名
+      - SEC_PASSWORD=sonic #eureka密码
       - EUREKA_HOST=sonic-server-eureka
     volumes:
       - ./logs/:/logs/
@@ -12,7 +14,7 @@ services:
     ports:
       - "9090:9090"
   sonic-server-bus:
-    image: "sonicorg/sonic-server-bus:v1.3.2-beta"
+    image: "sonicorg/sonic-server-bus:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -23,8 +25,9 @@ services:
       - ./logs/:/logs/
     depends_on:
       - sonic-server-eureka
+    restart: on-failure
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.3.2-beta"
+    image: "sonicorg/sonic-server-gateway:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -37,8 +40,9 @@ services:
       - sonic-server-eureka
     ports:
       - "8094:8094"
+    restart: on-failure
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.3.2-beta"
+    image: "sonicorg/sonic-server-controller:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -50,8 +54,9 @@ services:
       - sonic-server-bus
       - sonic-server-eureka
       - sonic-server-gateway
+    restart: on-failure
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.3.2-beta"
+    image: "sonicorg/sonic-server-folder:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -67,8 +72,9 @@ services:
       - sonic-server-bus
       - sonic-server-eureka
       - sonic-server-gateway
+    restart: on-failure
   sonic-server-task:
-    image: "sonicorg/sonic-server-task:v1.3.2-beta"
+    image: "sonicorg/sonic-server-task:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -80,8 +86,9 @@ services:
       - sonic-server-bus
       - sonic-server-eureka
       - sonic-server-gateway
+    restart: on-failure
   sonic-server-transport:
-    image: "sonicorg/sonic-server-transport:v1.3.2-beta"
+    image: "sonicorg/sonic-server-transport:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -95,6 +102,7 @@ services:
       - sonic-server-gateway
     ports:
       - "8095:8095"
+    restart: on-failure
 
 networks:
   sonic-network:

@@ -71,9 +71,9 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Transactional
     @Override
-    public void handleStep(StepsDTO stepsDTO) {
+    public StepsDTO handleStep(StepsDTO stepsDTO) {
         if (stepsDTO == null) {
-            return;
+            return null;
         }
         stepsDTO.setElements(elementsMapper.listElementsByStepsId(stepsDTO.getId()));
         // 如果是条件步骤
@@ -86,6 +86,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                     .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
             stepsDTO.setChildSteps(handleSteps(childSteps));
         }
+        return stepsDTO;
     }
 
     @Override

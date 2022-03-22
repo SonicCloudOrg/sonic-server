@@ -1,5 +1,6 @@
 package org.cloud.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -14,6 +15,7 @@ import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.*;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
 import org.cloud.sonic.controller.models.interfaces.CoverType;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.models.interfaces.ResultStatus;
@@ -325,6 +327,38 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 step.put("pubSteps", publicStepsJson);
             }
         }
+
+        List<JSONObject> childStepJsonObjs = new ArrayList<>();
+        JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
+
+        // 如果是条件步骤则遍历子步骤
+        if (!ConditionEnum.NONE.getValue().equals(steps.getConditionType())) {
+            List<StepsDTO> childSteps = steps.getChildSteps();
+            for (StepsDTO childStep : childSteps) {
+                // 如果子步骤是公共步骤，则再递归处理；如果不是，则不用处理
+                if (childStep.getStepType().equals("publicStep")) {
+                    PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(childStep.getText()));
+                    if (publicStepsDTO != null) {
+                        JSONArray publicStepsJson = new JSONArray();
+                        for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
+                            publicStepsJson.add(getStep(pubStep));
+                        }
+                        JSONObject childStepJsonObj = new JSONObject() {
+                            {
+                                put("pubSteps", publicStepsJson);
+                                put("step", stepsService.handleStep(childStep));
+                            }
+                        };
+                        childStepJsonObjs.add(childStepJsonObj);
+                    }
+                    // 改写子步骤为公共步骤
+                    stepsJsonObj.put("childSteps", childStepJsonObjs);
+                }
+            }
+            step.put("step", stepsJsonObj);
+            return step;
+        }
+
         step.put("step", steps);
         return step;
     }

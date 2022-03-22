@@ -1,9 +1,12 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "sonicorg/sonic-server-eureka:v1.3.2-beta"
+    image: "sonicorg/sonic-server-eureka:v1.3.2-release"
     hostname: sonic-server-eureka
     environment:
+      - SEC_NAME=sonic #eureka username
+      - SEC_PASSWORD=sonic #eureka password
+      - IS_CLUSTERED=false # You can use cluster mode.
       - EUREKA_HOST=sonic-server-eureka # You should checkout sonic-server-eureka env to support more.
     networks:
       - sonic-network
@@ -24,7 +27,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-bus:
-    image: "sonicorg/sonic-server-bus:v1.3.2-beta"
+    image: "sonicorg/sonic-server-bus:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -48,7 +51,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.3.2-beta"
+    image: "sonicorg/sonic-server-gateway:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -74,7 +77,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.3.2-beta"
+    image: "sonicorg/sonic-server-controller:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -99,7 +102,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.3.2-beta"
+    image: "sonicorg/sonic-server-folder:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -128,7 +131,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-task:
-    image: "sonicorg/sonic-server-task:v1.3.2-beta"
+    image: "sonicorg/sonic-server-task:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
@@ -153,7 +156,7 @@ services:
         delay: 20s
         max_attempts: 6
   sonic-server-transport:
-    image: "sonicorg/sonic-server-transport:v1.3.2-beta"
+    image: "sonicorg/sonic-server-transport:v1.3.2-release"
     environment:
       - PROFILE=prod
       - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
