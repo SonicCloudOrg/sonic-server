@@ -27,7 +27,7 @@ public interface StepsService extends IService<Steps> {
      * @param stepsDTO 步骤对象（不需要填充）
      */
     @Transactional
-    void handleStep(StepsDTO stepsDTO);
+    StepsDTO handleStep(StepsDTO stepsDTO);
 
     boolean resetCaseId(int id);
 
