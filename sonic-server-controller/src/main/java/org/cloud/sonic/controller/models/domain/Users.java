@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.interfaces.UserLoginType;
 
 import java.io.Serializable;
 
@@ -50,4 +51,8 @@ public class Users implements Serializable, TypeConverter<Users, UsersDTO> {
     @Column(value = "user_name", isNull = false, comment = "用户名")
     @Unique(value = "UNI_USER_NAME", columns = "user_name")
     private String userName;
+
+    @TableField
+    @Column(value = "source", isNull = false, defaultValue = UserLoginType.LOCAL, comment = "用户来源")
+    String source = UserLoginType.LOCAL;
 }
