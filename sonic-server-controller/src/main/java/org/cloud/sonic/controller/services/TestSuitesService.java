@@ -1,11 +1,14 @@
 package org.cloud.sonic.controller.services;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.TestSuites;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestSuitesDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +23,9 @@ public interface TestSuitesService extends IService<TestSuites> {
     RespModel<String> forceStopSuite(int id, String strike);
 
     TestSuitesDTO findById(int id);
+
+    @Transactional
+    JSONObject getStep(StepsDTO steps);
 
     boolean delete(int id);
 
