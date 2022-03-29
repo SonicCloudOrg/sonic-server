@@ -329,7 +329,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
 
-        List<JSONObject> childStepJsonObjs = new ArrayList<>();
+        JSONArray childStepJsonObjs = new JSONArray();
         JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
 
         // 如果是条件步骤则遍历子步骤
@@ -350,11 +350,14 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                                 put("step", stepsService.handleStep(childStep));
                             }
                         };
+                        // 添加转换后的公共步骤
                         childStepJsonObjs.add(childStepJsonObj);
                     }
-                    // 改写子步骤为公共步骤
-                    stepsJsonObj.put("childSteps", childStepJsonObjs);
+                } else {
+                    // 如果不是公共步骤，则直接添加
+                    childStepJsonObjs.add(childStep);
                 }
+                stepsJsonObj.put("childSteps", childStepJsonObjs);
             }
             step.put("step", stepsJsonObj);
             return step;
