@@ -66,7 +66,7 @@ public class StepsDTO implements Serializable, TypeConverter<StepsDTO, Steps> {
      * @see ConditionEnum
      */
     @ApiModelProperty(value = "步骤条件类型，0：非条件  1：if  2：else if  3：else  4：while", example = "0")
-    private Integer conditionType = 0;
+    private Integer conditionType;
 
     @ApiModelProperty(value = "包含元素列表")
     List<ElementsDTO> elements;
