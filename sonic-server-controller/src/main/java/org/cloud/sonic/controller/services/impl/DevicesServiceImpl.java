@@ -101,18 +101,18 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public List<Devices> findByIdIn(List<Integer> ids) {
-        List<Devices> realDevices = lambdaQuery().in(Devices::getId, ids).list();
+
+        // 不用in查询，以防出现传过来的ids顺序是乱的
         List<Devices> devices = new ArrayList<>();
-        for (int i = 0; i < ids.size(); i++) {
-            // 如果存在则直接加入，不存在则生成一个标记设备已删除的对象
-            if (!realDevices.isEmpty() && (realDevices.get(i) != null)
-                    && ids.get(i).equals(realDevices.get(i).getId())
-            ) {
-                devices.add(realDevices.get(i));
+        for (Integer id : ids) {
+            Devices device = findById(id);
+            if (ObjectUtils.isEmpty(device)) {
+                devices.add(Devices.newDeletedDevice(id));
             } else {
-                devices.add(Devices.newDeletedDevice(ids.get(i)));
+                devices.add(device);
             }
         }
+
         return devices;
     }
 
