@@ -1,6 +1,7 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,6 +42,16 @@ public class ResultDetailServiceImpl extends SonicServiceImpl<ResultDetailMapper
         resultInfo.setCaseId(jsonMsg.getInteger("cid"));
         resultInfo.setTime(jsonMsg.getDate("time"));
         resultInfo.setDeviceId(resultDevice == null ? 0 : resultDevice.getId());
+
+        if (resultInfo.getType().equals("status")) {
+            baseMapper.delete(new LambdaQueryWrapper<ResultDetail>()
+                    .eq(ResultDetail::getResultId, resultInfo.getResultId())
+                    .eq(ResultDetail::getType, resultInfo.getType())
+                    .eq(ResultDetail::getCaseId, resultInfo.getCaseId())
+                    .eq(ResultDetail::getDeviceId, resultInfo.getDeviceId())
+            );
+        }
+
         save(resultInfo);
         if (jsonMsg.getString("msg").equals("status")) {
             resultsService.suiteResult(jsonMsg.getInteger("rid"));
