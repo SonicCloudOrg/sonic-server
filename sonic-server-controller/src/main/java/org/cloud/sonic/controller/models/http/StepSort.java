@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 
 @ApiModel("拖拽排序请求模型")
 public class StepSort {
-    @Positive
+    @NotNull
     @ApiModelProperty(value = "测试用例id", required = true, example = "1")
     private int caseId;
     @NotNull
