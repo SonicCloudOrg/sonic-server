@@ -29,6 +29,13 @@ public class UsersController {
     private UsersService usersService;
 
     @WebAspect
+    @ApiOperation(value = "获取登录配置", notes = "获取登录信息配置")
+    @GetMapping("/loginConfig")
+    public RespModel<?> getLoginConfig() {
+        return new RespModel(RespEnum.SEARCH_OK, usersService.getLoginConfig());
+    }
+
+    @WebAspect
     @ApiOperation(value = "登录", notes = "用户登录")
     @PostMapping("/login")
     public RespModel<String> login(@Validated @RequestBody UserInfo userInfo) {

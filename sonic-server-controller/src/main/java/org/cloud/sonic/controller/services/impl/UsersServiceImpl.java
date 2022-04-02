@@ -1,5 +1,6 @@
 package org.cloud.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -40,13 +41,19 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
     @Autowired
     private UsersMapper usersMapper;
 
-    @Value("${sonic.ldap.enable}")
+    @Value("${sonic.user.ldap.enable}")
     private boolean ldapEnable;
 
-    @Value("${sonic.ldap.userId}")
+    @Value("${sonic.user.normal.enable}")
+    private boolean normalEnable;
+
+    @Value("${sonic.user.register.enable}")
+    private boolean registerEnable;
+
+    @Value("${sonic.user.ldap.userId}")
     private String userId;
 
-    @Value("${sonic.ldap.userBaseDN}")
+    @Value("${sonic.user.ldap.userBaseDN}")
     private String userBaseDN;
 
     @Autowired
@@ -54,14 +61,27 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
     private LdapTemplate ldapTemplate;
 
     @Override
+    public JSONObject getLoginConfig() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("registerEnable",registerEnable);
+        jsonObject.put("normalEnable",normalEnable);
+        jsonObject.put("ldapEnable",ldapEnable);
+        return jsonObject;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(Users users) throws SonicException {
-        try {
-            users.setPassword(DigestUtils.md5DigestAsHex(users.getPassword().getBytes()));
-            save(users);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SonicException("注册失败！用户名已存在！");
+        if (registerEnable) {
+            try {
+                users.setPassword(DigestUtils.md5DigestAsHex(users.getPassword().getBytes()));
+                save(users);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new SonicException("注册失败！用户名已存在！");
+            }
+        } else {
+            throw new SonicException("注册入口已关闭！");
         }
     }
 
@@ -73,7 +93,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
             if (checkLdapAuthenticate(userInfo, true)) {
                 token = jwtTokenTool.getToken(userInfo.getUserName());
             }
-        }else if (UserLoginType.LOCAL.equals(users.getSource()) && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
+        }else if (normalEnable && UserLoginType.LOCAL.equals(users.getSource()) && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
             token = jwtTokenTool.getToken(users.getUserName());
             users.setPassword("");
             logger.info("用户：" + userInfo.getUserName() + "登入! token:" + token);
