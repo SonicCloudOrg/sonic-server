@@ -32,8 +32,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         JSONObject jsonMsg = JSON.parseObject((String) msg);
         logger.info("服务器收到Agent: {} 消息: {}", ctx.channel().remoteAddress(), jsonMsg);
         switch (jsonMsg.getString("msg")) {
-            case "temperature": {
-                controllerFeignClient.refreshDevicesTemper(jsonMsg);
+            case "battery": {
+                controllerFeignClient.refreshDevicesBattery(jsonMsg);
                 break;
             }
             case "debugUser":
@@ -78,8 +78,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 查找 & 封装步骤对象
      *
-     * @param jsonMsg   websocket消息
-     * @return          步骤对象
+     * @param jsonMsg websocket消息
+     * @return 步骤对象
      */
     private JSONObject findSteps(JSONObject jsonMsg, String msg) {
         LinkedHashMap j = (LinkedHashMap) controllerFeignClient.findSteps(jsonMsg.getInteger("caseId")).getData();

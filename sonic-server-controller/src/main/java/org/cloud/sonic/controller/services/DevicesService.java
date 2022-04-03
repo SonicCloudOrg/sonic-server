@@ -45,7 +45,7 @@ public interface DevicesService extends IService<Devices> {
 
     String getName(String model) throws IOException;
 
-    void refreshDevicesTemper(JSONObject jsonObject);
+    void refreshDevicesBattery(JSONObject jsonObject);
 
     Integer findTemper();
 

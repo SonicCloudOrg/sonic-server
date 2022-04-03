@@ -14,8 +14,8 @@ public interface ControllerFeignClient {
     @PutMapping("/devices/updateDevicesUser")
     RespModel updateUser(@RequestBody JSONObject jsonObject);
 
-    @PutMapping("/devices/refreshDevicesTemper")
-    RespModel refreshDevicesTemper(@RequestBody JSONObject jsonObject);
+    @PutMapping("/devices/refreshDevicesBattery")
+    RespModel refreshDevicesBattery(@RequestBody JSONObject jsonObject);
 
     @PutMapping("/agents")
     RespModel saveAgent(@RequestBody JSONObject agents);
