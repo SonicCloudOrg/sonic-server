@@ -65,8 +65,7 @@ public class PublicStepsController {
     @ApiOperation(value = "更新公共步骤信息", notes = "新增或更新公共步骤信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody PublicStepsDTO publicStepsDTO) {
-        publicStepsService.savePublicSteps(publicStepsDTO);
-        return new RespModel<>(RespEnum.UPDATE_OK);
+        return new RespModel(RespEnum.UPDATE_OK, publicStepsService.savePublicSteps(publicStepsDTO));
     }
 
     @WebAspect
