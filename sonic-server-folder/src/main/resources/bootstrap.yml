@@ -3,19 +3,12 @@ spring:
   application:
     name: @project.artifactId@
     des: "Sonic云真机测试平台 - 文件中心"
+  profiles:
+    active: composite, ${PROFILE:dev}
   cloud:
     config:
-      discovery:
-        enabled: true
-        service-id: sonic-server-bus
-      name: @project.artifactId@,actuator,logging,knife4j,common
-      profile: ${PROFILE:dev}
-      fail-fast: true
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: ${EUREKA_URL:http://sonic:sonic@127.0.0.1:9090/eureka/}
+      name: @project.artifactId@,actuator,nacos,feign,logging,knife4j,common
+      server:
+        composite:
+          - type: ${CONFIG_TYPE:native}
+        bootstrap: true
