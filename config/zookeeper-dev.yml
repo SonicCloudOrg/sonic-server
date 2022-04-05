@@ -1,0 +1,12 @@
+# 用户需要改动
+zookeeper:
+  # 替换成 zookeeper 的ip地址
+  host: 127.0.0.1
+  # 替换成 zookeeper 的端口
+  port: 2181
+
+spring:
+  cloud:
+    zookeeper:
+      enabled: true
+      connect-string: ${zookeeper.host}:${zookeeper.port}

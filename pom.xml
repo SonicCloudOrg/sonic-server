@@ -41,6 +41,7 @@
         <netty-all.version>4.1.65.Final</netty-all.version>
         <jboss-marshalling.version>2.0.10.Final</jboss-marshalling.version>
         <spring-context-support.version>1.0.11</spring-context-support.version>
+        <zk.version>3.8.0</zk.version>
     </properties>
 
     <!-- 项目版本管理   -->
@@ -107,11 +108,6 @@
                         <artifactId>log4j</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.spring</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring-context-support.version}</version>
             </dependency>
 
             <!--ldap 依赖        -->

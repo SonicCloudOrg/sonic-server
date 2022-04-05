@@ -9,6 +9,6 @@ spring:
         enabled: true
         service-id: sonic-server-folder
       enabled: true
-      name: @project.artifactId@,nacos,dubbo,actuator,jdbc,feign,logging,knife4j,common,user
+      name: @project.artifactId@,zookeeper,dubbo,actuator,jdbc,feign,logging,knife4j,common,user
       profile: ${PROFILE:dev}
       fail-fast: true

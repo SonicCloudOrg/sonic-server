@@ -8,6 +8,6 @@ spring:
       discovery:
         enabled: true
         service-id: sonic-server-folder
-      name: @project.artifactId@,actuator,nacos,logging,common
+      name: @project.artifactId@,actuator,zookeeper,logging,common
       profile: ${PROFILE:dev}
       fail-fast: true

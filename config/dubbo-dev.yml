@@ -6,7 +6,7 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://${nacos.host}:${nacos.port}
+    address: zookeeper://${zookeeper.host}:${zookeeper.port}
     timeout: 60000
   consumer:
     check: false
