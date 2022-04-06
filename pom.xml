@@ -203,8 +203,22 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-    </dependencies>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <jdbc.url>localhost</jdbc.url>
+                <jdbc.port>3306</jdbc.port>
+                <jdbc.database>sonic</jdbc.database>
+                <jdbc.username>root</jdbc.username>
+                <jdbc.password>Sonic!@#123</jdbc.password>
+                <ldap.base>ou=system</ldap.base>
+                <ldap.username>'uid=admin,ou=system'</ldap.username>
+                <ldap.password>'password'</ldap.password>
+                <ldap.urls>ldap://127.0.0.1:10389</ldap.urls>
+            </properties>
+        </profile>
+    </profiles>
 
     <!-- 打包构建配置  -->
     <build>
