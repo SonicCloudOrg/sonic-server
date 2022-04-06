@@ -8,5 +8,6 @@ dubbo:
   registry:
     address: zookeeper://${zookeeper.host}:${zookeeper.port}
     timeout: 60000
+    check: true
   consumer:
     check: false
