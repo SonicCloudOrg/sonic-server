@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.http.DeviceDetailChange;
-import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
-import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.domain.Devices;
+import org.cloud.sonic.common.models.http.DeviceDetailChange;
+import org.cloud.sonic.common.models.http.UpdateDeviceImg;
+import org.cloud.sonic.common.services.DevicesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,9 +45,9 @@ public class DevicesController {
         return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
-    @PutMapping("/refreshDevicesTemper")
-    public RespModel<String> refreshDevicesTemper(@RequestBody JSONObject jsonObject) {
-        devicesService.refreshDevicesTemper(jsonObject);
+    @PutMapping("/refreshDevicesBattery")
+    public RespModel<String> refreshDevicesBattery(@RequestBody JSONObject jsonObject) {
+        devicesService.refreshDevicesBattery(jsonObject);
         return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
@@ -151,7 +151,7 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "获取温度概况", notes = "获取现有温度概况")
+    @ApiOperation(value = "获取电池概况", notes = "获取现有电池概况")
     @GetMapping("/findTemper")
     public RespModel<Integer> findTemper() {
         return new RespModel<>(RespEnum.SEARCH_OK, devicesService.findTemper());

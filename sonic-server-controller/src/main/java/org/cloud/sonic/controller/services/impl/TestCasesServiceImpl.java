@@ -5,14 +5,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.PublicStepsMapper;
 import org.cloud.sonic.controller.mapper.TestCasesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesTestCasesMapper;
-import org.cloud.sonic.controller.models.domain.*;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.services.GlobalParamsService;
-import org.cloud.sonic.controller.services.StepsService;
-import org.cloud.sonic.controller.services.TestCasesService;
+import org.cloud.sonic.common.models.domain.*;
+import org.cloud.sonic.common.models.dto.StepsDTO;
+import org.cloud.sonic.common.services.GlobalParamsService;
+import org.cloud.sonic.common.services.StepsService;
+import org.cloud.sonic.common.services.TestCasesService;
+import org.cloud.sonic.common.services.TestSuitesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,14 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
+@DubboService
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
     @Autowired private StepsService stepsService;
     @Autowired private PublicStepsMapper publicStepsMapper;
     @Autowired private GlobalParamsService globalParamsService;
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired private TestSuitesService testSuitesService;
 
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
@@ -100,7 +104,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             JSONArray array = new JSONArray();
             List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id);
             for (StepsDTO steps : stepsList) {
-                array.add(getStep(steps));
+                array.add(testSuitesService.getStep(steps));
             }
             jsonDebug.put("steps", array);
             List<GlobalParams> globalParamsList = globalParamsService.findAll(runStepCase.getProjectId());
@@ -134,31 +138,6 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             return new ArrayList<>();
         }
         return listByIds(ids);
-    }
-
-    /**
-     * @param steps
-     * @return com.alibaba.fastjson.JSONObject
-     * @author ZhouYiXun
-     * @des 递归获取步骤
-     * @date 2021/8/20 17:50
-     */
-    private JSONObject getStep(StepsDTO steps) {
-        JSONObject step = new JSONObject();
-        if (steps.getStepType().equals("publicStep")) {
-            PublicSteps publicSteps = publicStepsMapper.selectById(Integer.parseInt(steps.getText()));
-
-            if (publicSteps != null) {
-                List<StepsDTO> stepsList = stepsService.listByPublicStepsId(publicSteps.getId());
-                JSONArray publicStepsJson = new JSONArray();
-                for (StepsDTO pubStep : stepsList) {
-                    publicStepsJson.add(getStep(pubStep));
-                }
-                step.put("pubSteps", publicStepsJson);
-            }
-        }
-        step.put("step", steps);
-        return step;
     }
 
     @Override

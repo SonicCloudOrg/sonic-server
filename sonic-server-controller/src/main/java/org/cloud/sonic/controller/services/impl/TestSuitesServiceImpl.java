@@ -6,20 +6,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.feign.TransportFeignClient;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.*;
-import org.cloud.sonic.controller.models.dto.*;
-import org.cloud.sonic.controller.models.enums.ConditionEnum;
-import org.cloud.sonic.controller.models.interfaces.CoverType;
-import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
-import org.cloud.sonic.controller.models.interfaces.ResultStatus;
-import org.cloud.sonic.controller.services.*;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.base.TypeConverter;
+import org.cloud.sonic.common.models.domain.*;
+import org.cloud.sonic.common.models.dto.*;
+import org.cloud.sonic.common.models.enums.ConditionEnum;
+import org.cloud.sonic.common.models.interfaces.CoverType;
+import org.cloud.sonic.common.models.interfaces.DeviceStatus;
+import org.cloud.sonic.common.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
+@DubboService
 public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
 
     @Autowired private TestCasesMapper testCasesMapper;
@@ -315,6 +317,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
      * @date 2021/8/20 17:50
      */
     @Transactional
+    @Override
     public JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
         if (steps.getStepType().equals("publicStep")) {
@@ -328,7 +331,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
 
-        List<JSONObject> childStepJsonObjs = new ArrayList<>();
+        JSONArray childStepJsonObjs = new JSONArray();
         JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
 
         // 如果是条件步骤则遍历子步骤
@@ -349,11 +352,14 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                                 put("step", stepsService.handleStep(childStep));
                             }
                         };
+                        // 添加转换后的公共步骤
                         childStepJsonObjs.add(childStepJsonObj);
                     }
-                    // 改写子步骤为公共步骤
-                    stepsJsonObj.put("childSteps", childStepJsonObjs);
+                } else {
+                    // 如果不是公共步骤，则直接添加
+                    childStepJsonObjs.add(childStep);
                 }
+                stepsJsonObj.put("childSteps", childStepJsonObjs);
             }
             step.put("step", stepsJsonObj);
             return step;

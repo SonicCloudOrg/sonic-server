@@ -1,15 +1,17 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.ResultDetailMapper;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.domain.ResultDetail;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.services.ResultDetailService;
-import org.cloud.sonic.controller.services.ResultsService;
+import org.cloud.sonic.common.models.domain.Devices;
+import org.cloud.sonic.common.models.domain.ResultDetail;
+import org.cloud.sonic.common.services.DevicesService;
+import org.cloud.sonic.common.services.ResultDetailService;
+import org.cloud.sonic.common.services.ResultsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.List;
  * @date 2021/8/21 20:55
  */
 @Service
+@DubboService
 public class ResultDetailServiceImpl extends SonicServiceImpl<ResultDetailMapper, ResultDetail> implements ResultDetailService {
 
     @Autowired private ResultDetailMapper resultDetailMapper;
@@ -41,6 +44,16 @@ public class ResultDetailServiceImpl extends SonicServiceImpl<ResultDetailMapper
         resultInfo.setCaseId(jsonMsg.getInteger("cid"));
         resultInfo.setTime(jsonMsg.getDate("time"));
         resultInfo.setDeviceId(resultDevice == null ? 0 : resultDevice.getId());
+
+        if (resultInfo.getType().equals("status")) {
+            baseMapper.delete(new LambdaQueryWrapper<ResultDetail>()
+                    .eq(ResultDetail::getResultId, resultInfo.getResultId())
+                    .eq(ResultDetail::getType, resultInfo.getType())
+                    .eq(ResultDetail::getCaseId, resultInfo.getCaseId())
+                    .eq(ResultDetail::getDeviceId, resultInfo.getDeviceId())
+            );
+        }
+
         save(resultInfo);
         if (jsonMsg.getString("msg").equals("status")) {
             resultsService.suiteResult(jsonMsg.getInteger("rid"));

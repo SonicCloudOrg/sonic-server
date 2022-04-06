@@ -2,13 +2,15 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.rpc.RpcContext;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
-import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
-import org.cloud.sonic.controller.services.AgentsService;
-import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.common.models.domain.Agents;
+import org.cloud.sonic.common.models.domain.Devices;
+import org.cloud.sonic.common.models.interfaces.AgentStatus;
+import org.cloud.sonic.common.models.interfaces.DeviceStatus;
+import org.cloud.sonic.common.services.AgentsService;
+import org.cloud.sonic.common.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@DubboService
 public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService  {
 
     @Autowired

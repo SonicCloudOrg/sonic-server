@@ -4,10 +4,10 @@ import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.dto.UsersDTO;
-import org.cloud.sonic.controller.models.http.ChangePwd;
-import org.cloud.sonic.controller.models.http.UserInfo;
-import org.cloud.sonic.controller.services.UsersService;
+import org.cloud.sonic.common.models.dto.UsersDTO;
+import org.cloud.sonic.common.models.http.ChangePwd;
+import org.cloud.sonic.common.models.http.UserInfo;
+import org.cloud.sonic.common.services.UsersService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 public class UsersController {
     @Autowired
     private UsersService usersService;
+
+    @WebAspect
+    @ApiOperation(value = "获取登录配置", notes = "获取登录信息配置")
+    @GetMapping("/loginConfig")
+    public RespModel<?> getLoginConfig() {
+        return new RespModel(RespEnum.SEARCH_OK, usersService.getLoginConfig());
+    }
 
     @WebAspect
     @ApiOperation(value = "登录", notes = "用户登录")

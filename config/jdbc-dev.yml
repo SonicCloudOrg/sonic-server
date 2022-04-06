@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
-    username: root
-    password: Sonic!@#123
+    url: jdbc:mysql://81.70.118.76:3306/sonic-test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: sonic-test
+    password: mimajiushi
     # 会用到广播的事件
     initialization-mode: always
     schema:
@@ -21,3 +21,12 @@ mybatis-plus:
     localCacheScope: STATEMENT
     # sql日志
     # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 数据库自动生成表
+actable:
+  model:
+    pack: org.cloud.sonic.common.models.domain
+  table:
+    auto: update
+  database:
+    type: mysql

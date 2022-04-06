@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.PublicSteps;
-import org.cloud.sonic.controller.models.domain.TestCases;
-import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
-import org.cloud.sonic.controller.services.PublicStepsService;
-import org.cloud.sonic.controller.services.TestCasesService;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.domain.PublicSteps;
+import org.cloud.sonic.common.models.domain.TestCases;
+import org.cloud.sonic.common.models.dto.PublicStepsDTO;
+import org.cloud.sonic.common.services.PublicStepsService;
+import org.cloud.sonic.common.services.TestCasesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -65,8 +65,7 @@ public class PublicStepsController {
     @ApiOperation(value = "更新公共步骤信息", notes = "新增或更新公共步骤信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody PublicStepsDTO publicStepsDTO) {
-        publicStepsService.savePublicSteps(publicStepsDTO);
-        return new RespModel<>(RespEnum.UPDATE_OK);
+        return new RespModel(RespEnum.UPDATE_OK, publicStepsService.savePublicSteps(publicStepsDTO));
     }
 
     @WebAspect
