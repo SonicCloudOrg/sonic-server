@@ -18,9 +18,9 @@ import java.util.UUID;
  */
 @Configuration
 public class JWTTokenTool {
-    @Value("${gateway.secret}")
+    @Value("${sonic.token.secret}")
     private String TOKEN_SECRET;
-    @Value("${gateway.expireDay}")
+    @Value("${sonic.token.expireDay}")
     private int EXPIRE_DAY;
 
     /**

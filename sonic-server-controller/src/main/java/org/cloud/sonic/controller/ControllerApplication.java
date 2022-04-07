@@ -26,7 +26,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @DubboComponentScan(basePackages = {"org.cloud.sonic.controller.services.impl"})
 @EnableFeignClients(basePackages = {"org.cloud.sonic.common.feign"})
 @EnableDiscoveryClient
-@EnableScheduling
 public class ControllerApplication {
     public static void main(String[] args) {
         SpringApplication.run(ControllerApplication.class, args);

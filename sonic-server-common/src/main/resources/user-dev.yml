@@ -5,6 +5,9 @@ spring:
     password: 'password'
     urls: ldap://127.0.0.1:10389
 sonic:
+  token:
+    secret: sonic
+    expireDay: 14
   user:
     register:
       enable: true

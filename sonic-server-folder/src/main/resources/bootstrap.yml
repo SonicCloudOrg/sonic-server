@@ -7,7 +7,7 @@ spring:
     active: composite, ${PROFILE:dev}
   cloud:
     config:
-      name: @project.artifactId@,actuator,zookeeper,feign,logging,knife4j,common
+      name: @project.artifactId@,actuator,zookeeper,feign,logging,knife4j,user
       server:
         composite:
           - type: ${CONFIG_TYPE:native}
