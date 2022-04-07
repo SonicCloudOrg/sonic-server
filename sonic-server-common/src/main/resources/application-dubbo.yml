@@ -1,4 +1,3 @@
-# 用户无需改动
 dubbo:
   application:
     name: ${spring.application.name}-v${spring.version}
