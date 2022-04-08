@@ -71,7 +71,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired private TransportFeignClient transportFeignClient;
     @Autowired private AgentsService agentsService;
-    @DubboReference private AgentsClientService agentsClientService;
+    @DubboReference(parameters = {"router","address"})
+    private AgentsClientService agentsClientService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
