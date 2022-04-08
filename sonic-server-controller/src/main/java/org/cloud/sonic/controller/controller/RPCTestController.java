@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author chenwenjie.star
+ * @author JayWenStar
  * @date 2022/4/7 11:27 下午
  */
 @Api(tags = "RPC测试接口")

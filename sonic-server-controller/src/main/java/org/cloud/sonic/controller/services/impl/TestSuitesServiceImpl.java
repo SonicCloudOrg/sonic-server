@@ -22,9 +22,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.feign.TransportFeignClient;
@@ -41,6 +45,7 @@ import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
@@ -65,11 +70,15 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
     @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired private TransportFeignClient transportFeignClient;
+    @Autowired private AgentsService agentsService;
+    @DubboReference private AgentsClientService agentsClientService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> runSuite(int suiteId, String strike) {
         TestSuitesDTO testSuitesDTO;
+        // 统计不在线的agent
+        List<Integer> offLineAgentIds = new ArrayList<>();
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
@@ -161,8 +170,15 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                result.put("msg", "suite");
-                transportFeignClient.sendTestData(result);
+                // todo 换成zk节点判断是否存在
+                Agents agent = agentsService.findById(id);
+                if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
+                    offLineAgentIds.add(id);
+                } else {
+                    Address address = new Address(agent.getHost()+"", agent.getPort());
+                    RpcContext.getContext().setObjectAttachment("address", address);
+                    agentsClientService.runSuite(result);
+                }
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -200,11 +216,21 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                result.put("msg", "suite");
-                transportFeignClient.sendTestData(result);
+                // todo 换成zk节点判断是否存在
+                Agents agent = agentsService.findById(id);
+                if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
+                    offLineAgentIds.add(id);
+                } else {
+                    Address address = new Address(agent.getHost()+"", agent.getPort());
+                    RpcContext.getContext().setObjectAttachment("address", address);
+                    agentsClientService.runSuite(result);
+                }
             }
         }
-        return new RespModel<>(RespEnum.HANDLE_OK);
+        if (CollectionUtils.isEmpty(offLineAgentIds)) {
+            return new RespModel<>(RespEnum.HANDLE_OK);
+        }
+        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」不存在 or 不在线".formatted(offLineAgentIds));
     }
 
     @Override
