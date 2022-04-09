@@ -171,15 +171,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                // todo 换成zk节点判断是否存在
-                Agents agent = agentsService.findById(id);
-                if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-                    offLineAgentIds.add(id);
-                } else {
-                    Address address = new Address(agent.getHost()+"", agent.getPort());
-                    RpcContext.getContext().setObjectAttachment("address", address);
-                    agentsClientService.runSuite(result);
-                }
+                runSuite(id, offLineAgentIds, result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -217,21 +209,29 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                // todo 换成zk节点判断是否存在
-                Agents agent = agentsService.findById(id);
-                if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-                    offLineAgentIds.add(id);
-                } else {
-                    Address address = new Address(agent.getHost()+"", agent.getPort());
-                    RpcContext.getContext().setObjectAttachment("address", address);
-                    agentsClientService.runSuite(result);
-                }
+                runSuite(id, offLineAgentIds, result);
             }
         }
         if (CollectionUtils.isEmpty(offLineAgentIds)) {
             return new RespModel<>(RespEnum.HANDLE_OK);
         }
         return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」不存在 or 不在线".formatted(offLineAgentIds));
+    }
+
+    /**
+     * 外部不应该使用这个接口
+     */
+    @Transactional
+    public void runSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
+        // todo 换成zk节点判断是否存在
+        Agents agent = agentsService.findById(agentId);
+        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
+            offLineAgentIds.add(agentId);
+        } else {
+            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
+            RpcContext.getContext().setObjectAttachment("address", address);
+            agentsClientService.runSuite(result);
+        }
     }
 
     @Override
