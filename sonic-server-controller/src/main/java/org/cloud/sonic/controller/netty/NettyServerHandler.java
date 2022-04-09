@@ -47,15 +47,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                     controllerFeignClient.saveAgent((JSONObject) JSON.parse(String.valueOf(agent)));
                 }
                 break;
-            case "agentInfo":
-                if (NettyServer.getMap().get(jsonMsg.getInteger("agentId")) != null) {
-                    NettyServer.getMap().get(jsonMsg.getInteger("agentId")).close();
-                    NettyServer.getMap().remove(jsonMsg.getInteger("agentId"));
-                }
-                NettyServer.getMap().put(jsonMsg.getInteger("agentId"), ctx.channel());
-                jsonMsg.remove("msg");
-                controllerFeignClient.saveAgent(jsonMsg);
-                break;
+                // fixme 调试RPC先注释掉
+//            case "agentInfo":
+//                if (NettyServer.getMap().get(jsonMsg.getInteger("agentId")) != null) {
+//                    NettyServer.getMap().get(jsonMsg.getInteger("agentId")).close();
+//                    NettyServer.getMap().remove(jsonMsg.getInteger("agentId"));
+//                }
+//                NettyServer.getMap().put(jsonMsg.getInteger("agentId"), ctx.channel());
+//                jsonMsg.remove("msg");
+//                controllerFeignClient.saveAgent(jsonMsg);
+//                break;
             case "subResultCount":
                 controllerFeignClient.subResultCount(jsonMsg.getInteger("rid"));
                 break;
