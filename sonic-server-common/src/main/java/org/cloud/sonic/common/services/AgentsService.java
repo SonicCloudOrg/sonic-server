@@ -44,5 +44,12 @@ public interface AgentsService extends IService<Agents> {
 
     public void saveAgents(Agents agents);
 
+    /**
+     * 会根据 {@link Agents#getLockVersion()}
+     * @param agents
+     * @return
+     */
+    public boolean updateAgentsByLockVersion(Agents agents);
+
     public Agents findBySecretKey(String secretKey);
 }

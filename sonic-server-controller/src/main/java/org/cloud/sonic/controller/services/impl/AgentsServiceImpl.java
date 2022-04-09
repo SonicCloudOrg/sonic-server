@@ -17,6 +17,7 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -30,6 +31,7 @@ import org.cloud.sonic.common.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -103,11 +105,21 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
+    @Transactional
+    public boolean updateAgentsByLockVersion(Agents agents) {
+        return lambdaUpdate()
+                .eq(Agents::getId, agents.getId())
+                .eq(Agents::getLockVersion, agents.getLockVersion())
+                .update(agents.setLockVersion(agents.getLockVersion() + 1));
+    }
+
+    @Override
     public boolean offLine(int id) {
         if (existsById(id)) {
             Agents agentOffLine = findById(id);
-            agentOffLine.setStatus(AgentStatus.OFFLINE);
-            save(agentOffLine);
+            agentOffLine
+                    .setStatus(AgentStatus.OFFLINE);
+            updateAgentsByLockVersion(agentOffLine);
             resetDevice(agentOffLine.getId());
             return true;
         } else {
