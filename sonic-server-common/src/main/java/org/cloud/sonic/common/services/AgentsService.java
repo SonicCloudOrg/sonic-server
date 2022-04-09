@@ -32,7 +32,10 @@ public interface AgentsService extends IService<Agents> {
 
     void updateName(int id, String name);
 
+    @Deprecated
     boolean offLine(int id);
+
+    void offLine(Agents agents);
 
     int auth(String key);
 

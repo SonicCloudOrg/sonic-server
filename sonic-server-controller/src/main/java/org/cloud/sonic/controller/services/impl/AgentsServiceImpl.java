@@ -113,6 +113,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 .update(agents.setLockVersion(agents.getLockVersion() + 1));
     }
 
+    @Deprecated
     @Override
     public boolean offLine(int id) {
         if (existsById(id)) {
@@ -125,6 +126,13 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void offLine(Agents agentOffLine) {
+        agentOffLine.setStatus(AgentStatus.OFFLINE);
+        updateAgentsByLockVersion(agentOffLine);
+        resetDevice(agentOffLine.getId());
     }
 
     @Override

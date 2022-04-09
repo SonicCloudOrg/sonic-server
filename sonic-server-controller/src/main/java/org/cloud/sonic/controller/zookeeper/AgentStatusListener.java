@@ -15,9 +15,11 @@
  */
 package org.cloud.sonic.controller.zookeeper;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.cloud.sonic.common.models.domain.Agents;
 import org.cloud.sonic.common.services.AgentsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,10 +40,9 @@ public class AgentStatusListener {
             if (CuratorCacheListener.Type.NODE_DELETED != type) {
                 return;
             }
-            String path = oldData.getPath();
-            int agentId = Integer.parseInt(path.split("/")[2]);
-            System.out.println(path);
-            agentsService.offLine(agentId);
+            String agentJson = new String(oldData.getData());
+            Agents agents = JSON.parseObject(agentJson, Agents.class);
+            agentsService.offLine(agents);
         });
         curatorCache.start();
         return true;
