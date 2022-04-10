@@ -19,8 +19,12 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.cluster.router.address.Address;
+import org.apache.dubbo.rpc.service.EchoService;
+import org.cloud.sonic.common.services.AgentsClientService;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
 import org.cloud.sonic.common.models.domain.Agents;
 import org.cloud.sonic.common.models.domain.Devices;
@@ -46,6 +50,8 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     private DevicesService devicesService;
     @Resource
     private AgentsMapper agentsMapper;
+    @DubboReference(parameters = {"router","address"})
+    private AgentsClientService agentsClientService;
 
     @Override
     public List<Agents> findAgents() {
@@ -160,5 +166,25 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     public Agents findBySecretKey(String secretKey) {
         return lambdaQuery().eq(Agents::getSecretKey, secretKey).one();
+    }
+
+    @Override
+    public void correctionStatus() {
+        List<Agents> agentsList = findAgents();
+        String msg = "OK";
+        String res = "";
+        for (Agents agents : agentsList) {
+            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
+            RpcContext.getContext().setObjectAttachment("address", address);
+            try {
+                res = ((EchoService) agentsClientService).$echo(msg) + "";
+            } catch (Exception e) {
+                offLine(agents);
+                continue;
+            }
+            if (!msg.equals(res)) {
+                offLine(agents);
+            }
+        }
     }
 }
