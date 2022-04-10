@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (C) [SonicCloudOrg] Sonic Project
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.cloud.zookeeper.discovery.configclient.ZookeeperDiscoveryClientConfigServiceBootstrapConfiguration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author ZhouYiXun
