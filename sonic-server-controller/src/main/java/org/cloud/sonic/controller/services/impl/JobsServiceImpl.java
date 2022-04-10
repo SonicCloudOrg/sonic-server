@@ -100,7 +100,7 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
         try {
             quartzHandler.deleteScheduleJob(jobs);
         } catch (SchedulerException e) {
-            return new RespModel<>(RespEnum.DELETE_ERROR);
+            return new RespModel<>(RespEnum.DELETE_FAIL);
         }
         int count = baseMapper.deleteById(id);
         if (count > 0) {

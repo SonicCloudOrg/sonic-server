@@ -19,10 +19,12 @@ package org.cloud.sonic.controller.controller;
 import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.feign.ControllerFeignClient;
+import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.cloud.sonic.controller.netty.NettyServer;
+
 import java.util.LinkedHashMap;
 
 @RestController
@@ -45,7 +47,7 @@ public class ExchangeController {
                 jsonObject.put("platform", d.get("platform"));
                 LinkedHashMap a = (LinkedHashMap) agent.getData();
                 NettyServer.getMap().get(a.get("id")).writeAndFlush(jsonObject.toJSONString());
-                return new RespModel(2000, "发送成功！");
+                return new RespModel(RespEnum.SEND_OK);
             } else {
                 return agent;
             }
@@ -63,7 +65,7 @@ public class ExchangeController {
             jsonObject.put("msg", "stop");
             LinkedHashMap a = (LinkedHashMap) agent.getData();
             NettyServer.getMap().get(a.get("id")).writeAndFlush(jsonObject.toJSONString());
-            return new RespModel<>(2000, "发送成功！");
+            return new RespModel(RespEnum.SEND_OK);
         } else {
             return agent;
         }
@@ -75,6 +77,6 @@ public class ExchangeController {
         if (jsonObject.getInteger("id") != null) {
             NettyServer.getMap().get(jsonObject.getInteger("id")).writeAndFlush(jsonObject.toJSONString());
         }
-        return new RespModel(2000, "发送成功！");
+        return new RespModel(RespEnum.SEND_OK);
     }
 }

@@ -105,7 +105,7 @@ public class ElementsController {
         if (elementsService.save(elementsDTO.convertTo())) {
             return new RespModel<>(RespEnum.UPDATE_OK);
         } else {
-            return new RespModel<>(-1, "操作失败！请检查控件元素值是否过长！");
+            return new RespModel<>(RespEnum.UPDATE_FAIL);
         }
     }
 }
