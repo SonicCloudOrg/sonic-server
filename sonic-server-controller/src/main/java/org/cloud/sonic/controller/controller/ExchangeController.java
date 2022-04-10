@@ -53,10 +53,10 @@ public class ExchangeController {
         Devices devices = devicesService.findById(id);
         Agents agents = agentsService.findById(devices.getAgentId());
         if (ObjectUtils.isEmpty(agents)) {
-            return new RespModel<>(RespEnum.HANDLE_ERROR.getCode(), "agent不在线，无法重启设备");
+            return new RespModel<>(2001, "agent不在线，无法重启设备");
         }
         if (ObjectUtils.isEmpty(devices)) {
-            return new RespModel<>(RespEnum.HANDLE_ERROR.getCode(), "设备已被删除");
+            return new RespModel<>(2001, "设备已被删除");
         }
 
         Address address = new Address(agents.getHost() + "", agents.getRpcPort());
@@ -68,7 +68,7 @@ public class ExchangeController {
             deviceOnline = false;
         }
         if (!deviceOnline) {
-            return new RespModel<>(RespEnum.HANDLE_ERROR.getCode(), "设备已经不在线，无法调度，请校准设备状态");
+            return new RespModel<>(2001, "设备已经不在线，无法调度，请校准设备状态");
         }
 
         RpcContext.getContext().setObjectAttachment("address", address);
@@ -77,10 +77,10 @@ public class ExchangeController {
             if (reboot) {
                 return new RespModel<>(RespEnum.HANDLE_OK);
             }
-            return new RespModel<>(RespEnum.HANDLE_ERROR.getCode(), "重启设备失败，agent找不到该设备");
+            return new RespModel<>(2001, "重启设备失败，agent找不到该设备");
         } catch (Exception e) {
             log.error("重启设备失败，原因：", e);
-            return new RespModel<>(RespEnum.HANDLE_ERROR.getCode(), "重启设备失败，请带日志找开发者");
+            return new RespModel<>(2001, "重启设备失败，请带日志找开发者");
         }
     }
 
@@ -98,7 +98,7 @@ public class ExchangeController {
             agentsClientService.stop();
         } catch (Exception e) {
             log.error("停止agent失败，原因：", e);
-            return new RespModel<>(RespEnum.HANDLE_ERROR);
+            return new RespModel<>(RespEnum.UNKNOWN_ERROR);
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
     }

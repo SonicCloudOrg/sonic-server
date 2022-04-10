@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://81.70.118.76:3306/sonic-test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
-    username: sonic-test
-    password: mimajiushi
+    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: root
+    password: Sonic!@#123
     initialization-mode: always
     schema:
       - classpath:data.sql
