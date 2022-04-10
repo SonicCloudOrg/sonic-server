@@ -1,10 +1,5 @@
-spring:
-  ldap:
-    base: ou=system
-    username: 'uid=admin,ou=system'
-    password: 'password'
-    urls: ldap://127.0.0.1:10389
 sonic:
+  i18n: en_US
   token:
     secret: sonic
     expireDay: 14
@@ -17,3 +12,10 @@ sonic:
       enable: true
       userId: cn
       userBaseDN: ou=users
+
+spring:
+  ldap:
+    base: ou=system
+    username: 'uid=admin,ou=system'
+    password: 'password'
+    urls: ldap://127.0.0.1:10389
