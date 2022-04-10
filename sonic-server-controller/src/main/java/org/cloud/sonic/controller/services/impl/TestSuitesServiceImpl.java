@@ -296,7 +296,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suiteDetail.add(suite);
             }
             JSONObject result = new JSONObject();
-            result.put("msg", "forceStopSuite");
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {

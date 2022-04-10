@@ -187,4 +187,20 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             }
         }
     }
+
+    @Override
+    public boolean checkOnline(Agents agents) {
+        if (ObjectUtils.isEmpty(agents)) {
+            return false;
+        }
+        try {
+            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
+            RpcContext.getContext().setObjectAttachment("address", address);
+            String msg = "OK";
+            String res = ((EchoService) agentsClientService).$echo(msg) + "";
+            return msg.equals(res);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

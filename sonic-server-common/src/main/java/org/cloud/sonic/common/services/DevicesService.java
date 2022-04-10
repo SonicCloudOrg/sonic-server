@@ -65,4 +65,9 @@ public interface DevicesService extends IService<Devices> {
     Integer findTemper();
 
     RespModel<String> delete(int id);
+
+    /**
+     * 校准所有设备的离线状态（如果设备不在）
+     */
+    void correctionAllDevicesStatus();
 }

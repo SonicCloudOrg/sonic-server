@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
-    username: root
-    password: Sonic!@#123
+    url: jdbc:mysql://81.70.118.76:3306/sonic-test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: sonic-test
+    password: mimajiushi
     initialization-mode: always
     schema:
       - classpath:data.sql
@@ -15,6 +15,8 @@ mybatis-plus:
   configuration:
     cache-enabled: false
     localCacheScope: STATEMENT
+    # sql日志
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 actable:
   model:

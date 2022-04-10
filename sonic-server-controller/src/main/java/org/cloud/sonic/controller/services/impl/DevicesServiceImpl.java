@@ -286,4 +286,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         return new RespModel<>(DELETE_OK);
     }
 
+    @Override
+    public void correctionAllDevicesStatus() {
+
+    }
+
 }

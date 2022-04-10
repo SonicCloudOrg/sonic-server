@@ -63,4 +63,6 @@ public interface AgentsService extends IService<Agents> {
      */
     void correctionStatus();
 
+    boolean checkOnline(Agents agents);
+
 }

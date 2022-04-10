@@ -41,6 +41,12 @@ public class RespModel<T> {
         this.data = data;
     }
 
+    public RespModel(RespEnum respEnum, String message) {
+        this.code = respEnum.getCode();
+        this.message = message;
+        this.data = null;
+    }
+
     public int getCode() {
         return code;
     }

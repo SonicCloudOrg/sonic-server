@@ -23,6 +23,7 @@ package org.cloud.sonic.common.http;
  */
 public enum RespEnum {
     HANDLE_OK(2000, "操作成功！"),
+    HANDLE_ERROR(2001, "操作失败！"),
     SEARCH_OK(2000, "查询成功！"),
     UPDATE_OK(2000, "编辑成功！"),
     DELETE_OK(2000, "删除成功！"),
