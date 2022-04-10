@@ -32,6 +32,7 @@ public interface AgentsService extends IService<Agents> {
 
     void updateName(int id, String name);
 
+    // todo 删除
     @Deprecated
     boolean offLine(int id);
 
@@ -43,16 +44,23 @@ public interface AgentsService extends IService<Agents> {
 
     Agents findById(int id);
 
-    public void saveAgents(JSONObject jsonObject);
+    void saveAgents(JSONObject jsonObject);
 
-    public void saveAgents(Agents agents);
+    void saveAgents(Agents agents);
 
     /**
-     * 会根据 {@link Agents#getLockVersion()}
-     * @param agents
-     * @return
+     * 会根据 {@link Agents#getLockVersion()} 更新Agent状态
+     *
+     * @param agents agent对象
+     * @return       是否更新成功
      */
-    public boolean updateAgentsByLockVersion(Agents agents);
+    boolean updateAgentsByLockVersion(Agents agents);
 
-    public Agents findBySecretKey(String secretKey);
+    Agents findBySecretKey(String secretKey);
+
+    /**
+     * 校准agent在线状态，只应该在server端使用
+     */
+    void correctionStatus();
+
 }

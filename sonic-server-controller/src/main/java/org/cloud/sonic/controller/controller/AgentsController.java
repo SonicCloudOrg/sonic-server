@@ -105,4 +105,12 @@ public class AgentsController {
         }
     }
 
+    @WebAspect
+    @ApiOperation(value = "校准agent的在线状态", notes = "等心跳中断可能有20s延迟（取决于zk配置），这个接口某些情况能更快速更新状态")
+    @GetMapping("/correction/status")
+    public RespModel<String> correctionStatus() {
+        agentsService.correctionStatus();
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
+
 }
