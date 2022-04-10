@@ -18,10 +18,6 @@ package org.cloud.sonic.common.http;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.cloud.sonic.common.tools.SpringTool;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * @author ZhouYiXun
@@ -36,7 +32,6 @@ public class RespModel<T> {
     private String message;
     @ApiModelProperty(value = "响应详情")
     private T data;
-    private ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n/sonic", new Locale(SpringTool.getPropertiesValue("sonic.i18n")));
 
     public RespModel() {
     }
@@ -47,25 +42,19 @@ public class RespModel<T> {
 
     public RespModel(int code, String message, T data) {
         this.code = code;
-        this.message = resourceBundle.getString(message);
+        this.message = message;
         this.data = data;
     }
 
     public RespModel(RespEnum respEnum) {
         this.code = respEnum.getCode();
-        this.message = resourceBundle.getString(respEnum.getMessage());
+        this.message = respEnum.getMessage();
     }
 
     public RespModel(RespEnum respEnum, T data) {
         this.code = respEnum.getCode();
-        this.message = resourceBundle.getString(respEnum.getMessage());
+        this.message = respEnum.getMessage();
         this.data = data;
-    }
-
-    public RespModel(RespEnum respEnum, String message) {
-        this.code = respEnum.getCode();
-        this.message = message;
-        this.data = null;
     }
 
     public int getCode() {
@@ -81,7 +70,7 @@ public class RespModel<T> {
     }
 
     public RespModel<T> setMessage(String msg) {
-        this.message = resourceBundle.getString(msg);
+        this.message = msg;
         return this;
     }
 
