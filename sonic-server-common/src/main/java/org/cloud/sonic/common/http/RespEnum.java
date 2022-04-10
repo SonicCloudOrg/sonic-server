@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (C) [SonicCloudOrg] Sonic Project
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,23 +22,25 @@ package org.cloud.sonic.common.http;
  * @date 2021/8/15 18:26
  */
 public enum RespEnum {
-    HANDLE_OK(2000, "操作成功！"),
-    HANDLE_ERROR(2001, "操作失败！"),
-    SEARCH_OK(2000, "查询成功！"),
-    UPDATE_OK(2000, "编辑成功！"),
-    DELETE_OK(2000, "删除成功！"),
-    UPLOAD_OK(2000, "上传成功！"),
-    UNAUTHORIZED(1001, "身份验证异常！"),
-    SERVICE_NOT_FOUND(1002, "相关服务不可用！"),
-    ID_NOT_FOUND(3001, "id不存在！"),
-    DELETE_ERROR(3002, "删除失败！"),
-    UPLOAD_ERROR(3003, "上传失败！"),
-    PARAMS_MISSING_ERROR(4001, "部分参数缺失！"),
-    PARAMS_VIOLATE_ERROR(4002, "字段校验异常！"),
-    UNKNOWN_ERROR(4003, "发生未知异常！"),
-    PARAMS_NOT_VALID(4004, "字段缺失或校验异常！"),
-    PARAMS_NOT_READABLE(4005, "解析参数失败！"),
-    AGENT_NOT_ONLINE(5001, "agent不在线");
+    HANDLE_OK(2000, "ok.handle"),
+    SEARCH_OK(2000, "ok.search"),
+    UPDATE_OK(2000, "ok.update"),
+    DELETE_OK(2000, "ok.delete"),
+    UPLOAD_OK(2000, "ok.upload"),
+    SEND_OK(2000, "ok.send"),
+    UPDATE_FAIL(3004,"fail.update"),
+    DELETE_FAIL(3002, "fail.delete"),
+    UPLOAD_FAIL(3003, "fail.upload"),
+    UNAUTHORIZED(1001, "unauthorized"),
+    SERVICE_NOT_FOUND(1002, "not.found.service"),
+    ID_NOT_FOUND(3001, "not.found.id"),
+    DEVICE_NOT_FOUND(3002,"not.found.device"),
+    AGENT_NOT_ONLINE(5001, "not.online.agent"),
+    PARAMS_NOT_VALID(4004, "not.valid.params"),
+    PARAMS_NOT_READABLE(4005, "not.readable.params"),
+    PARAMS_MISSING_ERROR(4001, "error.params.missing"),
+    PARAMS_VIOLATE_ERROR(4002, "error.params.violate"),
+    UNKNOWN_ERROR(4003, "error.unknown");
 
     private int code;
     private String message;

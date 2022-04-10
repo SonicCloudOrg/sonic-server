@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (C) [SonicCloudOrg] Sonic Project
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,7 +96,7 @@ public class StepsController {
         if (stepsService.delete(id)) {
             return new RespModel<>(RespEnum.DELETE_OK);
         } else {
-            return new RespModel<>(RespEnum.DELETE_ERROR);
+            return new RespModel<>(RespEnum.DELETE_FAIL);
         }
     }
 

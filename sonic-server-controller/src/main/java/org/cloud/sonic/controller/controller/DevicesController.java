@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (C) [SonicCloudOrg] Sonic Project
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -162,7 +162,7 @@ public class DevicesController {
         if (devices != null) {
             return new RespModel<>(RespEnum.SEARCH_OK, devices);
         } else {
-            return new RespModel<>(3000, "设备不存在！");
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
     }
 

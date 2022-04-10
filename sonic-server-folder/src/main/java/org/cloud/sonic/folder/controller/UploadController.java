@@ -1,4 +1,4 @@
-/**
+/*
  *  Copyright (C) [SonicCloudOrg] Sonic Project
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.UUID;
 
 @Api(tags = "文件上传")
 @RestController
@@ -58,7 +57,7 @@ public class UploadController {
         if (url != null) {
             return new RespModel(RespEnum.UPLOAD_OK, url);
         } else {
-            return new RespModel(RespEnum.UPLOAD_ERROR);
+            return new RespModel(RespEnum.UPLOAD_FAIL);
         }
     }
 
@@ -88,7 +87,7 @@ public class UploadController {
             file.transferTo(local.getAbsoluteFile());
             responseModel = new RespModel<>(RespEnum.UPLOAD_OK);
         } catch (FileAlreadyExistsException e) {
-            responseModel = new RespModel<>(RespEnum.UPLOAD_ERROR);
+            responseModel = new RespModel<>(RespEnum.UPLOAD_FAIL);
         }
         //如果当前是最后一个，就开始合并录像文件
         if (index == total - 1) {

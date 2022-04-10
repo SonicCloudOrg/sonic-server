@@ -1,7 +1,27 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.common.http;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.cloud.sonic.common.tools.SpringTool;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author ZhouYiXun
@@ -16,6 +36,7 @@ public class RespModel<T> {
     private String message;
     @ApiModelProperty(value = "响应详情")
     private T data;
+    private ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n/sonic", new Locale(SpringTool.getPropertiesValue("sonic.i18n")));
 
     public RespModel() {
     }
@@ -26,18 +47,18 @@ public class RespModel<T> {
 
     public RespModel(int code, String message, T data) {
         this.code = code;
-        this.message = message;
+        this.message = resourceBundle.getString(message);
         this.data = data;
     }
 
     public RespModel(RespEnum respEnum) {
         this.code = respEnum.getCode();
-        this.message = respEnum.getMessage();
+        this.message = resourceBundle.getString(respEnum.getMessage());
     }
 
     public RespModel(RespEnum respEnum, T data) {
         this.code = respEnum.getCode();
-        this.message = respEnum.getMessage();
+        this.message = resourceBundle.getString(respEnum.getMessage());
         this.data = data;
     }
 
@@ -60,7 +81,7 @@ public class RespModel<T> {
     }
 
     public RespModel<T> setMessage(String msg) {
-        this.message = msg;
+        this.message = resourceBundle.getString(msg);
         return this;
     }
 
