@@ -13,6 +13,11 @@ spring:
           predicates: Path=/api/controller/**
           filters:
             - StripPrefix=2
+        - id: transport
+          uri: lb://sonic-server-controller
+          predicates: Path=/api/transport/**
+          filters:
+            - StripPrefix=2
         - id: folder
           uri: lb://sonic-server-folder
           predicates: Path=/api/folder/**
