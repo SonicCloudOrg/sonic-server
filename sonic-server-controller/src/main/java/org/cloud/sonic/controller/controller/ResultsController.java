@@ -81,7 +81,7 @@ public class ResultsController {
     @GetMapping("/clean")
     public RespModel<String> clean(@RequestParam(name = "day") int day) {
         resultsService.clean(day);
-        return new RespModel<>(0, "开始清理测试结果！");
+        return new RespModel<>(0, "result.clean");
     }
 
     @WebAspect

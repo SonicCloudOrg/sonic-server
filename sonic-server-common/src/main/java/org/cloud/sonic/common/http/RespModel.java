@@ -86,8 +86,8 @@ public class RespModel<T> {
     @Override
     public String toString() {
         return "RespModel{" +
-                "error=" + code +
-                ", errMsg='" + message + '\'' +
+                "code=" + code +
+                ", message='" + message + '\'' +
                 ", data=" + data +
                 '}';
     }

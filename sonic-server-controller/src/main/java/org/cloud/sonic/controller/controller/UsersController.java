@@ -57,9 +57,9 @@ public class UsersController {
     public RespModel<String> login(@Validated @RequestBody UserInfo userInfo) {
         String token = usersService.login(userInfo);
         if (token != null) {
-            return new RespModel<>(2000, "登录成功！", token);
+            return new RespModel<>(2000, "ok.login", token);
         } else {
-            return new RespModel<>(2001, "登录失败！");
+            return new RespModel<>(2001, "fail.login");
         }
     }
 
@@ -68,7 +68,7 @@ public class UsersController {
     @PostMapping("/register")
     public RespModel<String> register(@Validated @RequestBody UsersDTO users) throws SonicException {
         usersService.register(users.convertTo());
-        return new RespModel<>(2000, "注册成功！");
+        return new RespModel<>(2000, "ok.register");
     }
 
     @WebAspect

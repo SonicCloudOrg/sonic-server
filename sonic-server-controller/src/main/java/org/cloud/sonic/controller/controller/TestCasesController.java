@@ -140,7 +140,7 @@ public class TestCasesController {
         if (jsonObject != null) {
             return new RespModel<>(RespEnum.SEARCH_OK, jsonObject);
         } else {
-            return new RespModel<>(-1, "查询出错！");
+            return new RespModel<>(RespEnum.SEARCH_FAIL);
         }
     }
 

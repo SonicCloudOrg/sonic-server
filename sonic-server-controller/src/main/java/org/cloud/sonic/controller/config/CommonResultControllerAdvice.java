@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
- * @author JayWenStar
+ * @author JayWenStar,Eason
  * @date 2022/4/11 1:59 上午
  */
-@ControllerAdvice("org.cloud.sonic.controller.controller")
+@ControllerAdvice({"org.cloud.sonic.controller.controller","org.cloud.sonic.folder.controller"})
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
 
 

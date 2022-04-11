@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface FolderFeignClient {
 
     @GetMapping("/files/delete")
-    public RespModel delete(@RequestParam(name = "day") int day);
+    RespModel delete(@RequestParam(name = "day") int day);
 }

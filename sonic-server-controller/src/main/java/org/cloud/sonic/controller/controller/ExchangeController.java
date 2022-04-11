@@ -53,22 +53,22 @@ public class ExchangeController {
         Devices devices = devicesService.findById(id);
         Agents agents = agentsService.findById(devices.getAgentId());
         if (ObjectUtils.isEmpty(agents)) {
-            return new RespModel<>(2001, "agent不在线，无法重启设备");
+            return new RespModel<>(RespEnum.AGENT_NOT_ONLINE);
         }
         if (ObjectUtils.isEmpty(devices)) {
-            return new RespModel<>(2001, "设备已被删除");
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
 
         Address address = new Address(agents.getHost() + "", agents.getRpcPort());
         RpcContext.getContext().setObjectAttachment("address", address);
-        boolean deviceOnline = true;
+        boolean deviceOnline;
         try {
             deviceOnline = agentsClientService.checkDeviceOnline(devices.getUdId(), devices.getPlatform());
         } catch (Exception e) {
             deviceOnline = false;
         }
         if (!deviceOnline) {
-            return new RespModel<>(2001, "设备已经不在线，无法调度，请校准设备状态");
+            return new RespModel<>(2001, "reboot.not.online");
         }
 
         RpcContext.getContext().setObjectAttachment("address", address);
@@ -77,10 +77,10 @@ public class ExchangeController {
             if (reboot) {
                 return new RespModel<>(RespEnum.HANDLE_OK);
             }
-            return new RespModel<>(2001, "重启设备失败，agent找不到该设备");
+            return new RespModel<>(2001, "reboot.device.not.found");
         } catch (Exception e) {
-            log.error("重启设备失败，原因：", e);
-            return new RespModel<>(2001, "重启设备失败，请带日志找开发者");
+            log.error("Reboot device fail, cause :", e);
+            return new RespModel<>(2001, "reboot.error.unknown");
         }
     }
 
@@ -90,14 +90,14 @@ public class ExchangeController {
         Agents agents = agentsService.findById(id);
         boolean online = agentsService.checkOnline(agents);
         if (!online) {
-            return new RespModel<>(2000, "agent已经不在线，校准agent状态即可");
+            return new RespModel<>(2000, "stop.agent.not.online");
         }
         try {
             Address address = new Address(agents.getHost() + "", agents.getRpcPort());
             RpcContext.getContext().setObjectAttachment("address", address);
             agentsClientService.stop();
         } catch (Exception e) {
-            log.error("停止agent失败，原因：", e);
+            log.error("Stop agent fail, cause :", e);
             return new RespModel<>(RespEnum.UNKNOWN_ERROR);
         }
         return new RespModel<>(RespEnum.HANDLE_OK);

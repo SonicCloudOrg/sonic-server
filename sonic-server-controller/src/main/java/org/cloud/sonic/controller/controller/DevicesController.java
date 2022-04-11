@@ -51,7 +51,7 @@ public class DevicesController {
         if (devicesService.saveDetail(deviceDetailChange)) {
             return new RespModel<>(RespEnum.UPDATE_OK);
         } else {
-            return new RespModel<>(3000, "保存异常！");
+            return new RespModel<>(3000, "fail.save");
         }
     }
 

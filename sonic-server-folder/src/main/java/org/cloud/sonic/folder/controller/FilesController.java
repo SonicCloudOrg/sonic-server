@@ -55,6 +55,6 @@ public class FilesController {
                 }
             }
         });
-        return new RespModel(2000, "开始清理！");
+        return new RespModel(2000, "file.clean");
     }
 }
