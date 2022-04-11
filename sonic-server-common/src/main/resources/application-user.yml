@@ -1,5 +1,5 @@
 sonic:
-  i18n: en_US
+  i18n: zh_CN
   token:
     secret: sonic
     expireDay: 14
