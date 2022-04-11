@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: root
+    password: Sonic!@#123
+    initialization-mode: always
+    schema:
+      - classpath:data.sql
+
+mybatis-plus:
+  mapper-locations: classpath:mapping/*.xml, classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+  global-config:
+    banner: false
+  configuration:
+    cache-enabled: false
+    localCacheScope: STATEMENT
+    # sql日志
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+actable:
+  model:
+    pack: org.cloud.sonic.common.models.domain
+  table:
+    auto: update
+  database:
+    type: mysql

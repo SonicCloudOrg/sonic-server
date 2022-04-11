@@ -18,7 +18,7 @@ public class SwaggerProvider implements SwaggerResourcesProvider {
         List<SwaggerResource> resources = new ArrayList<>();
         List<String> instanceList = Arrays.asList(
                 "sonic-server-controller",
-                "sonic-server-folder","sonic-server-task");
+                "sonic-server-folder");
         instanceList.forEach(instance -> {
             String url = "/api/" + instance.substring(
                     instance.lastIndexOf("-") + 1) + "/v2/api-docs";

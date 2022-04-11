@@ -1,0 +1,12 @@
+dubbo:
+  application:
+    name: ${spring.application.name}-v${spring.version}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: zookeeper://${zookeeper.host}:${zookeeper.port}
+    timeout: 60000
+    check: true
+  consumer:
+    check: false

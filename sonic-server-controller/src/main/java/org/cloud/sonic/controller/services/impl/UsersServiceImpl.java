@@ -1,22 +1,38 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.mapper.UsersMapper;
-import org.cloud.sonic.controller.models.domain.Users;
-import org.cloud.sonic.controller.models.http.ChangePwd;
-import org.cloud.sonic.controller.models.http.UserInfo;
-import org.cloud.sonic.controller.models.interfaces.UserLoginType;
-import org.cloud.sonic.controller.services.UsersService;
+import org.cloud.sonic.common.models.domain.Users;
+import org.cloud.sonic.common.models.http.ChangePwd;
+import org.cloud.sonic.common.models.http.UserInfo;
+import org.cloud.sonic.common.models.interfaces.UserLoginType;
+import org.cloud.sonic.common.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
@@ -32,6 +48,7 @@ import org.springframework.util.DigestUtils;
  * @date 2021/10/13 11:26
  */
 @Service
+@DubboService
 public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> implements UsersService {
     private final Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
 
@@ -78,10 +95,10 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
                 save(users);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new SonicException("注册失败！用户名已存在！");
+                throw new SonicException("register.repeat.username");
             }
         } else {
-            throw new SonicException("注册入口已关闭！");
+            throw new SonicException("register.disable");
         }
     }
 
@@ -155,9 +172,9 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
                 if (DigestUtils.md5DigestAsHex(changePwd.getOldPwd().getBytes()).equals(users.getPassword())) {
                     users.setPassword(DigestUtils.md5DigestAsHex(changePwd.getNewPwd().getBytes()));
                     save(users);
-                    return new RespModel(2000, "修改密码成功！");
+                    return new RespModel(2000, "password.change.ok");
                 } else {
-                    return new RespModel(4001, "旧密码错误！");
+                    return new RespModel(4001, "password.auth.fail");
                 }
             } else {
                 return new RespModel(RespEnum.UNAUTHORIZED);

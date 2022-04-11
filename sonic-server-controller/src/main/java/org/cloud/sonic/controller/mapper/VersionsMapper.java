@@ -1,7 +1,7 @@
 package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.cloud.sonic.controller.models.domain.Versions;
+import org.cloud.sonic.common.models.domain.Versions;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -1,3 +1,19 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.folder.controller;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.UUID;
 
 @Api(tags = "文件上传")
 @RestController
@@ -42,7 +57,7 @@ public class UploadController {
         if (url != null) {
             return new RespModel(RespEnum.UPLOAD_OK, url);
         } else {
-            return new RespModel(RespEnum.UPLOAD_ERROR);
+            return new RespModel(RespEnum.UPLOAD_FAIL);
         }
     }
 
@@ -72,7 +87,7 @@ public class UploadController {
             file.transferTo(local.getAbsoluteFile());
             responseModel = new RespModel<>(RespEnum.UPLOAD_OK);
         } catch (FileAlreadyExistsException e) {
-            responseModel = new RespModel<>(RespEnum.UPLOAD_ERROR);
+            responseModel = new RespModel<>(RespEnum.UPLOAD_FAIL);
         }
         //如果当前是最后一个，就开始合并录像文件
         if (index == total - 1) {

@@ -1,21 +1,38 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.domain.TestSuitesDevices;
-import org.cloud.sonic.controller.models.domain.Users;
-import org.cloud.sonic.controller.models.http.DeviceDetailChange;
-import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
-import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
-import org.cloud.sonic.controller.models.params.DevicesSearchParams;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.services.UsersService;
+import org.cloud.sonic.common.models.domain.Devices;
+import org.cloud.sonic.common.models.domain.TestSuitesDevices;
+import org.cloud.sonic.common.models.domain.Users;
+import org.cloud.sonic.common.models.http.DeviceDetailChange;
+import org.cloud.sonic.common.models.http.UpdateDeviceImg;
+import org.cloud.sonic.common.models.interfaces.DeviceStatus;
+import org.cloud.sonic.common.models.params.DevicesSearchParams;
+import org.cloud.sonic.common.services.DevicesService;
+import org.cloud.sonic.common.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.cloud.sonic.common.http.RespEnum.DELETE_ERROR;
 import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
 /**
@@ -37,6 +53,7 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
  * @date 2021/8/16 22:51
  */
 @Service
+@DubboService
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
     @Autowired
@@ -267,6 +284,11 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             return new RespModel<>(3005, "设备不处于离线状态");
         }
         return new RespModel<>(DELETE_OK);
+    }
+
+    @Override
+    public void correctionAllDevicesStatus() {
+
     }
 
 }

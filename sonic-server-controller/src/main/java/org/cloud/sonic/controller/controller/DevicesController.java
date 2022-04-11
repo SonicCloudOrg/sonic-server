@@ -1,3 +1,19 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
@@ -5,11 +21,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.http.DeviceDetailChange;
-import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
-import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.domain.Devices;
+import org.cloud.sonic.common.models.http.DeviceDetailChange;
+import org.cloud.sonic.common.models.http.UpdateDeviceImg;
+import org.cloud.sonic.common.services.DevicesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -35,7 +51,7 @@ public class DevicesController {
         if (devicesService.saveDetail(deviceDetailChange)) {
             return new RespModel<>(RespEnum.UPDATE_OK);
         } else {
-            return new RespModel<>(3000, "保存异常！");
+            return new RespModel<>(3000, "fail.save");
         }
     }
 
@@ -146,7 +162,7 @@ public class DevicesController {
         if (devices != null) {
             return new RespModel<>(RespEnum.SEARCH_OK, devices);
         } else {
-            return new RespModel<>(3000, "设备不存在！");
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
     }
 

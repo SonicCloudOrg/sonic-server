@@ -1,0 +1,10 @@
+zookeeper:
+  host: 127.0.0.1
+  port: 2181
+
+spring:
+  cloud:
+    zookeeper:
+      register: true
+      enabled: true
+      connect-string: ${zookeeper.host}:${zookeeper.port}
