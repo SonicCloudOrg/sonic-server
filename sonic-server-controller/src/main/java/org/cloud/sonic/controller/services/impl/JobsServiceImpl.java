@@ -58,7 +58,7 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
             return new RespModel<>(RespEnum.HANDLE_OK);
         } catch (RuntimeException | SchedulerException e) {
             e.printStackTrace();
-            throw new SonicException("操作失败！请检查cron表达式是否无误！");
+            throw new SonicException("error.cron");
         }
     }
 
@@ -72,21 +72,21 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
                         quartzHandler.pauseScheduleJob(jobs);
                         jobs.setStatus(JobStatus.DISABLE);
                         save(jobs);
-                        return new RespModel<>(2000, "关闭成功！");
+                        return new RespModel<>(2000, "job.disable");
                     case JobStatus.ENABLE:
                         quartzHandler.resumeScheduleJob(jobs);
                         jobs.setStatus(JobStatus.ENABLE);
                         save(jobs);
-                        return new RespModel<>(2000, "开启成功！");
+                        return new RespModel<>(2000, "job.enable");
                     case JobStatus.ONCE:
                         quartzHandler.runScheduleJob(jobs);
-                        return new RespModel<>(2000, "开始运行！");
+                        return new RespModel<>(2000, "job.start");
                     default:
-                        return new RespModel<>(3000, "参数有误！");
+                        return new RespModel<>(3000, "job.params.invalid");
                 }
             } catch (RuntimeException | SchedulerException e) {
                 e.printStackTrace();
-                return new RespModel<>(3000, "操作失败！");
+                return new RespModel<>(3000, "job.handle.fail");
             }
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);

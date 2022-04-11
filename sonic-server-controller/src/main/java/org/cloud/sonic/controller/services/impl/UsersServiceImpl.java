@@ -95,10 +95,10 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
                 save(users);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new SonicException("注册失败！用户名已存在！");
+                throw new SonicException("register.repeat.username");
             }
         } else {
-            throw new SonicException("注册入口已关闭！");
+            throw new SonicException("register.disable");
         }
     }
 
@@ -172,9 +172,9 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
                 if (DigestUtils.md5DigestAsHex(changePwd.getOldPwd().getBytes()).equals(users.getPassword())) {
                     users.setPassword(DigestUtils.md5DigestAsHex(changePwd.getNewPwd().getBytes()));
                     save(users);
-                    return new RespModel(2000, "修改密码成功！");
+                    return new RespModel(2000, "password.change.ok");
                 } else {
-                    return new RespModel(4001, "旧密码错误！");
+                    return new RespModel(4001, "password.auth.fail");
                 }
             } else {
                 return new RespModel(RespEnum.UNAUTHORIZED);

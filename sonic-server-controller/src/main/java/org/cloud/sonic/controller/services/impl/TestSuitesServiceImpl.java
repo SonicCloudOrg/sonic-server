@@ -83,11 +83,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
-            return new RespModel<>(3001, "测试套件已删除！");
+            return new RespModel<>(3001, "suite.deleted");
         }
 
         if (testSuitesDTO.getTestCases().size() == 0) {
-            return new RespModel<>(3002, "该测试套件内无测试用例！");
+            return new RespModel<>(3002, "suite.empty.cases");
         }
 
         List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
@@ -97,7 +97,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
         if (devicesList.size() == 0) {
-            return new RespModel<>(3003, "所选设备暂无可用！");
+            return new RespModel<>(3003, "suite.not.free.device");
         }
 
         // 初始化部分结果状态信息
@@ -240,7 +240,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
         Results results = resultsService.findById(resultId);
         if (ObjectUtils.isEmpty(results)) {
-            return new RespModel<>(3001, "测试结果模板不存在！");
+            return new RespModel<>(3001, "suite.empty.result");
         }
         int suiteId = results.getSuiteId();
 
@@ -248,11 +248,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
-            return new RespModel<>(3001, "测试套件已删除！");
+            return new RespModel<>(3001, "suite.deleted");
         }
 
         if (testSuitesDTO.getTestCases().size() == 0) {
-            return new RespModel<>(3002, "该测试套件内无测试用例！");
+            return new RespModel<>(3002, "suite.empty.cases");
         }
 
         List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
@@ -262,7 +262,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
         if (devicesList.size() == 0) {
-            return new RespModel<>(3003, "运行设备暂无法连接！");
+            return new RespModel<>(3003, "suite.can.not.connect.device");
         }
 
         results.setStatus(ResultStatus.FAIL);
