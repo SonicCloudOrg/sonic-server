@@ -26,6 +26,7 @@ import org.cloud.sonic.common.models.http.UpdateDeviceImg;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author ZhouYiXun
@@ -69,5 +70,5 @@ public interface DevicesService extends IService<Devices> {
     /**
      * 校准所有设备的离线状态（如果设备不在）
      */
-    void correctionAllDevicesStatus();
+    CompletableFuture<Boolean> correctionAllDevicesStatus();
 }

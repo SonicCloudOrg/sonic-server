@@ -39,17 +39,11 @@ public interface ControllerFeignClient {
     RespModel findDeviceById(@RequestParam(name = "id") int id);
 
     @GetMapping("/devices/listAll")
-    public RespModel<List<Devices>> listAll(@RequestParam(name = "platform") int platform);
-
-    @GetMapping("/agents/auth")
-    RespModel auth(@RequestParam(name = "key") String key);
+    RespModel<List<Devices>> listAll(@RequestParam(name = "platform") int platform);
 
     @GetMapping("/agents/findKeyById")
     RespModel findKeyById(@RequestParam(name = "id") int id);
 
     @GetMapping("/testCases/findSteps")
     RespModel findSteps(@RequestParam(name = "id") int id);
-
-    @GetMapping("/results/subResultCount")
-    RespModel subResultCount(@RequestParam(name = "id") int id);
 }

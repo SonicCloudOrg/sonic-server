@@ -20,8 +20,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.models.domain.Agents;
+import org.cloud.sonic.common.services.AgentsClientService;
+import org.cloud.sonic.common.services.AgentsService;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.common.models.domain.Devices;
@@ -44,6 +50,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
@@ -56,13 +63,12 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 @DubboService
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
-    @Autowired
-    private DevicesMapper devicesMapper;
-
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired private DevicesMapper devicesMapper;
+    @Autowired private UsersService usersService;
+    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired private AgentsService agentsService;
+    @DubboReference(parameters = {"router","address"})
+    private AgentsClientService agentsClientService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -286,9 +292,44 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         return new RespModel<>(DELETE_OK);
     }
 
+    @Transactional
     @Override
-    public void correctionAllDevicesStatus() {
-
+    public CompletableFuture<Boolean> correctionAllDevicesStatus() {
+        List<Devices> devicesList = list();
+        return CompletableFuture.supplyAsync(() -> {
+            for (Devices devices : devicesList) {
+                Agents agent = agentsService.findById(devices.getAgentId());
+                Address address = new Address(agent.getHost()+"", agent.getRpcPort());
+                RpcContext.getContext().setObjectAttachment("address", address);
+                String status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
+                // agent收到的status
+                switch (status) {
+                    case DeviceStatus.OFFLINE:
+                        // 如果设备不在agent连接且出于这些状态，那么都更新成offline
+                        switch (devices.getStatus()) {
+                            case DeviceStatus.DEBUGGING:
+                            case DeviceStatus.TESTING:
+                            case DeviceStatus.ERROR:
+                            case DeviceStatus.ONLINE:
+                            case DeviceStatus.UNAUTHORIZED:
+                                devices.setStatus(DeviceStatus.OFFLINE);
+                                save(devices);
+                                break;
+                            case DeviceStatus.OFFLINE:
+                                break;
+                        }
+                        break;
+                     // 如果是下面这些状态，就直接更新
+                    case DeviceStatus.DEBUGGING:
+                    case DeviceStatus.TESTING:
+                    case DeviceStatus.ONLINE:
+                        devices.setStatus(status);
+                        save(devices);
+                }
+            }
+            return true;
+        });
     }
+
 
 }
