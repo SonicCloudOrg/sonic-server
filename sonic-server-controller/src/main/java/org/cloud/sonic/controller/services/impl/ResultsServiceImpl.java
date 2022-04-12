@@ -96,7 +96,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                 .list();
         cachedThreadPool.execute(() -> {
             for (Results results : resultsList) {
-                logger.info("清理测试报告id：" + results.getId());
+                logger.info("clear report id: " + results.getId());
                 delete(results.getId());
                 try {
                     Thread.sleep(500);

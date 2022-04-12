@@ -80,7 +80,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         return stepsService.listStepsByElementsId(elementsId).stream().map(e -> {
             StepsDTO stepsDTO = e.convertTo();
             if (0 == stepsDTO.getCaseId()) {
-                return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("无所属用例"));
+                return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("unknown"));
             }
             return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()).convertTo());
         }).collect(Collectors.toList());

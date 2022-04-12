@@ -43,7 +43,6 @@ import java.util.Locale;
 @Configuration
 @EnableSwagger2WebMvc
 public class APIDocumentConfig {
-    //从配置文档获取接口文档信息
     @Value("${spring.application.name}")
     private String name;
     @Value("${spring.application.des}")
@@ -130,7 +129,7 @@ public class APIDocumentConfig {
                 .termsOfServiceUrl("Please visit: https://github.com/SonicCloudOrg/sonic-server")
                 .contact(new Contact("ZhouYiXun  email: zyx291028775@qq.com", "", ""))
                 .version(version)
-                .description(name + " 服务开放API，注意不要频繁请求。")
+                .description(name + " service Open API.")
                 .build();
     }
 }

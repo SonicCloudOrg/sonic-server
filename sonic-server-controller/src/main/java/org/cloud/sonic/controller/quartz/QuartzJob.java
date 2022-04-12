@@ -60,34 +60,34 @@ public class QuartzJob extends QuartzJobBean implements Job {
                 if (jobs != null) {
                     RespModel<String> r = testSuitesService.runSuite(jobs.getSuiteId(), "SYSTEM");
                     if (r.getCode() == 3001) {
-                        logger.info("测试套件" + jobs.getSuiteId() + " 已删除" + r);
+                        logger.info("Test suite " + jobs.getSuiteId() + " deleted. " + r);
                         jobsService.delete(dataMap.getInt("id"));
                     } else {
-                        logger.info("定时任务开始执行：测试套件" + jobs.getSuiteId() + " " + r);
+                        logger.info("Job start: Test suite " + jobs.getSuiteId() + " " + r);
                     }
                 } else {
-                    logger.info("定时任务id:" + dataMap.getInt("id") + "不存在！");
+                    logger.info("Job id :" + dataMap.getInt("id") + " not found! ");
                 }
                 break;
             }
             case JobType.CLEAN_FILE_JOB: {
                 RespModel r = folderFeignClient.delete(filesKeepDay);
-                logger.info("清理文件任务开始：" + r);
+                logger.info("Clear file job..." + r);
                 break;
             }
             case JobType.CLEAN_RESULT_JOB: {
                 resultsService.clean(resultsKeepDay);
-                logger.info("清理测试结果任务开始");
+                logger.info("Clean result job...");
                 break;
             }
             case JobType.SEND_DAY_REPORT: {
                 resultsService.sendDayReport();
-                logger.info("发送日报任务开始");
+                logger.info("Send day report...");
                 break;
             }
             case JobType.SEND_WEEK_REPORT: {
                 resultsService.sendWeekReport();
-                logger.info("发送周报任务开始");
+                logger.info("Send week report...");
                 break;
             }
         }

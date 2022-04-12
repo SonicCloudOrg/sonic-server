@@ -58,7 +58,7 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
                 }
             }
         } catch (Exception e) {
-            log.error("删除数据库外键失败");
+            log.error("clear foreign key failed.");
             e.printStackTrace();
         }
     }
