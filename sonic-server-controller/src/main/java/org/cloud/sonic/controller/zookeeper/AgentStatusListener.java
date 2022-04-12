@@ -16,6 +16,7 @@
 package org.cloud.sonic.controller.zookeeper;
 
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/4/10 12:20 上午
  */
 @Configuration
+@Slf4j
 public class AgentStatusListener {
 
     @Bean
@@ -45,6 +47,7 @@ public class AgentStatusListener {
             agentsService.offLine(agents);
         });
         curatorCache.start();
+        log.info("start watch /sonic-agent");
         return true;
     }
 

@@ -18,6 +18,7 @@ package org.cloud.sonic.common.services;
 
 import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.common.models.domain.Results;
+import org.cloud.sonic.common.models.interfaces.DeviceStatus;
 import org.cloud.sonic.common.models.interfaces.PlatformType;
 
 /**
@@ -94,5 +95,16 @@ public interface AgentsClientService {
      */
     Boolean checkSuiteRunning(Integer rid);
 
+    /**
+     * 查询设备状态，不存在的设备只会返回 {@link DeviceStatus#OFFLINE}
+     * 设备正在被远控则返回 {@link DeviceStatus#DEBUGGING}
+     * 设备正在测试中则返回 {@link DeviceStatus#TESTING}
+     * 设备不处于以上状态，但在线，则返回 {@link DeviceStatus#ONLINE}
+     *
+     * @param udId       设备序列号
+     * @param platform   设备类型，参考 {@link PlatformType}
+     * @return           {@link DeviceStatus}
+     */
+    public String getDeviceStatus(String udId, Integer platform);
 
 }
