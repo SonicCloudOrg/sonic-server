@@ -96,14 +96,14 @@ public class RobotMsgTool {
                     jsonObject.put("sign", sign);
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
-                    logger.info("机器人发送结果：" + responseEntity.getBody());
+                    logger.info("robot result: " + responseEntity.getBody());
                     break;
                 }
                 case RobotType.YouSpace:
                     break;
             }
         } catch (Exception e) {
-            logger.info("机器人发送失败：" + e.getMessage());
+            logger.info("robot send failed, cause: " + e.getMessage());
         }
     }
 

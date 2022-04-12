@@ -215,7 +215,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (CollectionUtils.isEmpty(offLineAgentIds)) {
             return new RespModel<>(RespEnum.HANDLE_OK);
         }
-        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」不存在 or 不在线".formatted(offLineAgentIds));
+        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
     }
 
     /**

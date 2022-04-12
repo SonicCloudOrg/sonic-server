@@ -50,7 +50,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
@@ -148,15 +147,15 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public JSONObject getFilterOption() {
         JSONObject jsonObject = new JSONObject();
         List<String> cpuList = devicesMapper.findCpuList();
-        if (cpuList.contains("未知")) {
-            cpuList.remove("未知");
-            cpuList.add("未知");
+        if (cpuList.contains("unknown")) {
+            cpuList.remove("unknown");
+            cpuList.add("unknown");
         }
         jsonObject.put("cpu", cpuList);
         List<String> sizeList = devicesMapper.findSizeList();
-        if (sizeList.contains("未知")) {
-            sizeList.remove("未知");
-            sizeList.add("未知");
+        if (sizeList.contains("unknown")) {
+            sizeList.remove("unknown");
+            sizeList.add("unknown");
         }
         jsonObject.put("size", sizeList);
         return jsonObject;
@@ -194,12 +193,12 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         } else {
             devices.setAgentId(jsonMsg.getInteger("agentId"));
             if (jsonMsg.getString("name") != null) {
-                if (!jsonMsg.getString("name").equals("未知")) {
+                if (!jsonMsg.getString("name").equals("unknown")) {
                     devices.setName(jsonMsg.getString("name"));
                 }
             }
             if (jsonMsg.getString("model") != null) {
-                if (!jsonMsg.getString("model").equals("未知")) {
+                if (!jsonMsg.getString("model").equals("unknown")) {
                     devices.setModel(jsonMsg.getString("model"));
                     devices.setChiName(getName(jsonMsg.getString("model")));
                 }
@@ -279,7 +278,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public RespModel<String> delete(int id) {
         Devices devices = devicesMapper.selectById(id);
         if (ObjectUtils.isEmpty(devices)) {
-            return new RespModel<>(3004, "设备已被删除过");
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
         if (devices.getStatus().equals(DeviceStatus.OFFLINE) || devices.getStatus().equals(DeviceStatus.DISCONNECTED)) {
             devicesMapper.deleteById(id);
@@ -287,7 +286,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                     new LambdaQueryWrapper<TestSuitesDevices>().eq(TestSuitesDevices::getDevicesId, id)
             );
         } else {
-            return new RespModel<>(3005, "设备不处于离线状态");
+            return new RespModel<>(3005, "device.not.offline");
         }
         return new RespModel<>(DELETE_OK);
     }

@@ -63,11 +63,11 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
         if (id == 0) {
             Agents agents = new Agents();
             agents.setName(name);
-            agents.setHost("未知");
+            agents.setHost("unknown");
             agents.setStatus(AgentStatus.OFFLINE);
-            agents.setVersion("未知");
+            agents.setVersion("unknown");
             agents.setPort(0);
-            agents.setSystemType("未知");
+            agents.setSystemType("unknown");
             agents.setSecretKey(UUID.randomUUID().toString());
             save(agents);
         } else {

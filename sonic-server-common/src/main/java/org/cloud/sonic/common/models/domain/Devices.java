@@ -112,16 +112,16 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     Integer hubNum;
 
     public static Devices newDeletedDevice(int id) {
-        String tips = "设备已删除";
+        String tips = "Device does not exist.";
         return new Devices()
                 .setAgentId(0)
                 .setStatus("DISCONNECTED")
                 .setPlatform(0)
                 .setId(id)
-                .setVersion("未知")
-                .setSize("未知")
-                .setCpu("未知")
-                .setManufacturer("未知")
+                .setVersion("unknown")
+                .setSize("unknown")
+                .setCpu("unknown")
+                .setManufacturer("unknown")
                 .setName(tips)
                 .setModel(tips)
                 .setChiName(tips)

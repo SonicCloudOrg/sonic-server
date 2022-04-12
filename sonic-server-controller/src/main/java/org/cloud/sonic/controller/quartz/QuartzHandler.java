@@ -52,9 +52,9 @@ public class QuartzHandler {
                     .withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobs.getId() + "").withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
-            logger.info("创建定时任务成功");
+            logger.info("Create Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("创建定时任务出错：" + e.getMessage());
+            logger.error("Create Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -70,9 +70,9 @@ public class QuartzHandler {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.pauseJob(jobKey);
-            logger.info("暂停定时任务成功");
+            logger.info("Pause Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("暂停定时任务出错：" + e.getMessage());
+            logger.error("Pause Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -88,9 +88,9 @@ public class QuartzHandler {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.resumeJob(jobKey);
-            logger.info("重启定时任务成功");
+            logger.info("Resume Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("重启定时任务出错：" + e.getMessage());
+            logger.error("Resume Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -106,9 +106,9 @@ public class QuartzHandler {
         JobKey jobKey = JobKey.jobKey(jobs.getId() + "");
         try {
             scheduler.triggerJob(jobKey);
-            logger.info("运行一次定时任务成功");
+            logger.info("Run Once Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("运行一次定时任务出错：" + e.getMessage());
+            logger.error("Run Once Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -128,9 +128,9 @@ public class QuartzHandler {
                     .withMisfireHandlingInstructionDoNothing();
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
             scheduler.rescheduleJob(triggerKey, trigger);
-            logger.info("更新定时任务成功");
+            logger.info("Update Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("更新定时任务出错：" + e.getMessage());
+            logger.error("Update Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -149,9 +149,9 @@ public class QuartzHandler {
             scheduler.pauseTrigger(triggerKey);
             scheduler.unscheduleJob(triggerKey);
             scheduler.deleteJob(jobKey);
-            logger.info("删除定时任务成功");
+            logger.info("Delete Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("删除定时任务出错：" + e.getMessage());
+            logger.error("Delete Job failed, cause: " + e.getMessage());
             throw e;
         }
     }
@@ -179,16 +179,16 @@ public class QuartzHandler {
                         .withMisfireHandlingInstructionDoNothing();
                 CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(type).withSchedule(scheduleBuilder).build();
                 scheduler.scheduleJob(jobDetail, trigger);
-                logger.info("创建" + type + "系统定时任务成功");
+                logger.info("Create " + type + " System Job Successful!");
             } else {
                 CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
                         .withMisfireHandlingInstructionDoNothing();
                 hasTrigger = hasTrigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
                 scheduler.rescheduleJob(triggerKey, hasTrigger);
-                logger.info(type + "系统定时任务已存在");
+                logger.info(type + " System Job is exist.");
             }
         } catch (SchedulerException e) {
-            logger.error("创建" + type + "定时任务出错：" + e.getMessage());
+            logger.error("Create " + type + " System Job failed, cause: " + e.getMessage());
         }
     }
 }

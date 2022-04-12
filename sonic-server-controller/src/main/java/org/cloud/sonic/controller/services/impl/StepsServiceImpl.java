@@ -141,7 +141,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             if (publicSteps != null) {
                 stepsDTO.setContent(publicSteps.getName());
             } else {
-                stepsDTO.setContent("未知");
+                stepsDTO.setContent("unknown");
             }
         }
 

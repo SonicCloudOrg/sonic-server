@@ -113,11 +113,11 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         }else if (normalEnable && UserLoginType.LOCAL.equals(users.getSource()) && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
             token = jwtTokenTool.getToken(users.getUserName());
             users.setPassword("");
-            logger.info("用户：" + userInfo.getUserName() + "登入! token:" + token);
+            logger.info("user: " + userInfo.getUserName() + " login! token:" + token);
         } else {
             if (checkLdapAuthenticate(userInfo, false)) {
                 token = jwtTokenTool.getToken(users.getUserName());
-                logger.info("ldap 用户：" + userInfo.getUserName() + "登入! token:" + token);
+                logger.info("ldap user: " + userInfo.getUserName() + "login! token:" + token);
             }
         }
         return token;
@@ -137,7 +137,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
             }
             return authResult;
         } catch (Exception e) {
-            logger.error("ldap 登录异常，{}", e);
+            logger.error("ldap login failed, cause: {}", e);
             return false;
         }
     }

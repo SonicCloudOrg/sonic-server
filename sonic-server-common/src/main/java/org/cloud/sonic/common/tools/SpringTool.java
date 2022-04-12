@@ -39,7 +39,7 @@ public final class SpringTool implements ApplicationContextAware, EmbeddedValueR
 			name = "${" + name + "}";
 			return stringValueResolver.resolveStringValue(name);
 		} catch (Exception e) {
-			log.error("当前环境变量中没有{%s}的配置".formatted(name));
+			log.error("{%s} is not found.".formatted(name));
 			return null;
 		}
 	}
