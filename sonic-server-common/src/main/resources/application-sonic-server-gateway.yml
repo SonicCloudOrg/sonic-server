@@ -1,3 +1,4 @@
+# 一般不需要动，懂的可以自己定制
 server:
   port: 8094
 
@@ -10,12 +11,8 @@ spring:
       routes:
         - id: controller
           uri: lb://sonic-server-controller
-          predicates: Path=/api/controller/**
-          filters:
-            - StripPrefix=2
-        - id: transport
-          uri: lb://sonic-server-controller
-          predicates: Path=/api/transport/**
+          predicates:
+            - Path=/api/controller/**, /api/transport/**
           filters:
             - StripPrefix=2
         - id: folder

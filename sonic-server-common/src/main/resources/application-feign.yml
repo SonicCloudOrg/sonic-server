@@ -1,3 +1,4 @@
+# 一般不需要动，懂的可以自己定制
 feign:
   hystrix:
     enabled: true
