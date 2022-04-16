@@ -1,3 +1,4 @@
+# 一般不需要动，懂的可以自己定制
 server:
   port: 0
   quartz:
@@ -13,6 +14,7 @@ server:
     jdbc:
       initialize-schema: never
 
+# 不要默认的定时任务可以去掉
 sonic:
   jobs:
     fileCron: 0 0 12 * * ?
@@ -21,8 +23,6 @@ sonic:
     weekReportCron: 0 0 10 ? * Mon
     filesKeepDay: 60
     resultsKeepDay: 60
-  netty:
-    port: 8095
 
 robot:
   client:

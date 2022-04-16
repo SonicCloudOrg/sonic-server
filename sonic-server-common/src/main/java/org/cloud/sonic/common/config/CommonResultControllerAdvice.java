@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.common.config;
 
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.I18nTool;

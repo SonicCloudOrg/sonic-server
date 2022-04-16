@@ -312,7 +312,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                             case DeviceStatus.TESTING:
                             case DeviceStatus.ERROR:
                             case DeviceStatus.ONLINE:
-                            case DeviceStatus.UNAUTHORIZED:
                                 devices.setStatus(DeviceStatus.OFFLINE);
                                 save(devices);
                                 break;
@@ -326,6 +325,10 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                     case DeviceStatus.ONLINE:
                         devices.setStatus(status);
                         save(devices);
+                        break;
+                    // 如果是以下状态，什么都不需要做
+                    case DeviceStatus.UNAUTHORIZED:
+                        break;
                 }
             }
             return true;

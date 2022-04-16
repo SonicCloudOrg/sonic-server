@@ -1,7 +1,10 @@
+# 用户可能需要修改
+# zookeeper的ip:port
 zookeeper:
   host: 127.0.0.1
   port: 2181
 
+# 一般不需要动，懂的可以定制
 spring:
   cloud:
     zookeeper:
