@@ -145,7 +145,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suite.put("steps", steps);
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                suite.put("device", List.of(devices));
+                // 不要用List.of，它的实现ImmutableCollections无法被序列化
+                suite.put("device", new ArrayList<>(){{add(devices);}});
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -223,7 +224,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
      */
     @Transactional
     public void runSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
-        // todo 换成zk节点判断是否存在
         Agents agent = agentsService.findById(agentId);
         if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
             offLineAgentIds.add(agentId);
@@ -285,7 +285,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 JSONObject suite = new JSONObject();
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                suite.put("device", List.of(devices));
+                // 不要用List.of，它的实现ImmutableCollections无法被序列化
+                suite.put("device", new ArrayList<>(){{add(devices);}});
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {

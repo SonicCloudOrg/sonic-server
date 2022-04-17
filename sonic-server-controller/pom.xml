@@ -97,15 +97,6 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
-        <!-- marshalling编解码 -->
-        <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-serial</artifactId>
-        </dependency>
         <!--   定时任务     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

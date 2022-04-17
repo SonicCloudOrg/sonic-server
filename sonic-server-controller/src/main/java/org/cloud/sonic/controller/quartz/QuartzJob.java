@@ -71,7 +71,7 @@ public class QuartzJob extends QuartzJobBean implements Job {
                 break;
             }
             case JobType.CLEAN_FILE_JOB: {
-                RespModel r = folderFeignClient.delete(filesKeepDay);
+                RespModel<String> r = folderFeignClient.delete(filesKeepDay);
                 logger.info("Clear file job..." + r);
                 break;
             }

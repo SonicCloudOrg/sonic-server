@@ -39,7 +39,6 @@
         <java-jwt.version>3.10.3</java-jwt.version>
         <lombok.version>1.18.20</lombok.version>
         <netty-all.version>4.1.65.Final</netty-all.version>
-        <jboss-marshalling.version>2.0.10.Final</jboss-marshalling.version>
         <spring-context-support.version>1.0.11</spring-context-support.version>
         <zookeeper.version>3.6.3</zookeeper.version>
         <curator.version>5.2.1</curator.version>
@@ -235,17 +234,6 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty-all.version}</version>
-            </dependency>
-            <!--   marshalling解码     -->
-            <dependency>
-                <groupId>org.jboss.marshalling</groupId>
-                <artifactId>jboss-marshalling</artifactId>
-                <version>${jboss-marshalling.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.marshalling</groupId>
-                <artifactId>jboss-marshalling-serial</artifactId>
-                <version>${jboss-marshalling.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
