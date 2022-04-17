@@ -34,7 +34,7 @@ public class FilesController {
      */
     @WebAspect
     @DeleteMapping
-    public RespModel delete(@RequestParam(name = "day") int day) {
+    public RespModel<String> delete(@RequestParam(name = "day") int day) {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
         List<String> fileList = Arrays.asList("imageFiles", "recordFiles", "logFiles", "packageFiles");
@@ -55,6 +55,6 @@ public class FilesController {
                 }
             }
         });
-        return new RespModel(2000, "file.clean");
+        return new RespModel<>(2000, "file.clean");
     }
 }

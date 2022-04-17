@@ -16,15 +16,15 @@
  */
 package org.cloud.sonic.folder.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.folder.tools.FileTool;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +69,7 @@ public class UploadController {
             @ApiImplicitParam(name = "index", value = "当前index", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "total", value = "index总数", dataTypeClass = Integer.class),
     })
-    @PostMapping("/recordFiles")
+    @PostMapping(value = "/recordFiles")
     public RespModel<String> uploadRecord(@RequestParam(name = "file") MultipartFile file,
                                           @RequestParam(name = "uuid") String uuid,
                                           @RequestParam(name = "index") int index,
