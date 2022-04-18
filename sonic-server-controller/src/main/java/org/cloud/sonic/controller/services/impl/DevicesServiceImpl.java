@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -62,6 +63,7 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
  */
 @Service
 @DubboService
+@Slf4j
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
     @Autowired private DevicesMapper devicesMapper;
@@ -302,7 +304,13 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 Agents agent = agentsService.findById(devices.getAgentId());
                 Address address = new Address(agent.getHost()+"", agent.getRpcPort());
                 RpcContext.getContext().setObjectAttachment("address", address);
-                String status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
+                String status;
+                try {
+                    status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
+                } catch (Exception e) {
+                    agentsService.offLine(agent);
+                    continue;
+                }
                 // agent收到的status
                 switch (status) {
                     case DeviceStatus.OFFLINE:
