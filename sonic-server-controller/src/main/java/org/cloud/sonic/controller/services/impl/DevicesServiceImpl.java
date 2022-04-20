@@ -295,7 +295,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         return new RespModel<>(DELETE_OK);
     }
 
-    @Transactional
     @Override
     public CompletableFuture<Boolean> correctionAllDevicesStatus() {
         List<Devices> devicesList = list();

@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
 public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
 
     @Autowired private TestCasesMapper testCasesMapper;
-    @Autowired private ElementsMapper elementsMapper;
     @Autowired private DevicesMapper devicesMapper;
     @Autowired private ResultsService resultsService;
     @Autowired private GlobalParamsService globalParamsService;
@@ -69,7 +68,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired private PublicStepsService publicStepsService;
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
     @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired private TransportFeignClient transportFeignClient;
     @Autowired private AgentsService agentsService;
     @DubboReference(parameters = {"router","address"})
     private AgentsClientService agentsClientService;
@@ -222,7 +220,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     /**
      * 外部不应该使用这个接口
      */
-    @Transactional
     public void runSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
         Agents agent = agentsService.findById(agentId);
         if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
@@ -239,6 +236,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     public RespModel<String> forceStopSuite(int resultId, String strike) {
 
         Results results = resultsService.findById(resultId);
+        // 统计不在线的agent
+        List<Integer> offLineAgentIds = new ArrayList<>();
         if (ObjectUtils.isEmpty(results)) {
             return new RespModel<>(3001, "suite.empty.result");
         }
@@ -276,7 +275,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         results.setProjectId(testSuitesDTO.getProjectId());
         resultsService.save(results);
 
-
         int deviceIndex = 0;
         if (testSuitesDTO.getCover() == CoverType.CASE) {
             List<JSONObject> suiteDetail = new ArrayList<>();
@@ -301,7 +299,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                transportFeignClient.sendTestData(result);
+                forceStopSuite(id, offLineAgentIds, result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -323,10 +321,25 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                transportFeignClient.sendTestData(result);
+                forceStopSuite(id, offLineAgentIds, result);
             }
         }
-        return new RespModel<>(RespEnum.HANDLE_OK);
+        if (CollectionUtils.isEmpty(offLineAgentIds)) {
+            return new RespModel<>(RespEnum.HANDLE_OK);
+        }
+        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
+    }
+
+    public void forceStopSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
+        Agents agent = agentsService.findById(agentId);
+        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
+            offLineAgentIds.add(agentId);
+        } else {
+            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
+            RpcContext.getContext().setObjectAttachment("address", address);
+            agentsClientService.forceStopSuite(result);
+        }
+
     }
 
     @Override
