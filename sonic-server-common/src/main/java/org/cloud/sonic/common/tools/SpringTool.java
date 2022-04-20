@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
 @Component
@@ -48,5 +49,13 @@ public final class SpringTool implements ApplicationContextAware, EmbeddedValueR
 	@Override
 	public void setEmbeddedValueResolver(@NonNull StringValueResolver resolver) {
 		stringValueResolver = resolver;
+		setEnv();
+	}
+
+	private void setEnv() {
+		String instanceHost = getPropertiesValue("zookeeper.instance-host");
+		if (StringUtils.hasText(instanceHost)) {
+			System.setProperty("DUBBO_IP_TO_REGISTRY", instanceHost);
+		}
 	}
 }

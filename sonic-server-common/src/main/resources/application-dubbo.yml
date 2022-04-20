@@ -7,7 +7,7 @@ dubbo:
     # 所有服务都使用从 20880 开始的随机端口，最好不要更改，除非每个服务自己单独指定配置文件
     port: -1
   registry:
-    address: zookeeper://${zookeeper.host}:${zookeeper.port}
+    address: zookeeper://${zookeeper.registry-host}:${zookeeper.registry-port}
     timeout: 60000
     check: true
   consumer:
