@@ -14,7 +14,6 @@ import java.util.List;
 
 /**
  * 清除历史遗留的外键
- *
  * @author JayWenStar, Eason
  * @date 2021/12/26 1:39 上午
  */
@@ -29,6 +28,8 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
         String findFKSql = "SELECT CONCAT('ALTER TABLE ', TABLE_NAME,' DROP FOREIGN KEY ',CONSTRAINT_NAME) as ddl " +
                 "FROM information_schema.TABLE_CONSTRAINTS c " +
                 "WHERE c.TABLE_SCHEMA='%s' AND c.CONSTRAINT_TYPE='FOREIGN KEY'";
+        //兼容v1.3.0-beta1及以下版本className更改
+        String transSql1 = "UPDATE QRTZ_JOB_DETAILS set JOB_CLASS_NAME='org.cloud.sonic.task.quartz.QuartzJob'";
         List<String> deleteSqlList = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()) {
@@ -45,6 +46,12 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
                     deleteSqlList.add(resultSet2.getString("ddl"));
                 }
 
+                // 版本兼容sql
+                Boolean resultSet3 = statement.execute(String.format(transSql1, dataBase));
+                if (!resultSet3) {
+                    log.info(String.format("迁移数据sql执行失败，%s", transSql1));
+                }
+
                 // 执行删除外键sql
                 for (String deleteSql : deleteSqlList) {
                     statement.executeUpdate(deleteSql);
@@ -58,7 +65,7 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
                 }
             }
         } catch (Exception e) {
-            log.error("clear foreign key failed.");
+            log.error("删除数据库外键失败");
             e.printStackTrace();
         }
     }

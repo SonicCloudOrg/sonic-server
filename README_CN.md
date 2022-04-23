@@ -69,4 +69,4 @@ docker-compose up -d
 
 ## 开源许可协议
 
-[License](LICENSE)
+[MIT License](LICENSE)

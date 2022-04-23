@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:9090}
+
+spring:
+  version: @project.version@
+  application:
+    name: @project.artifactId@
+    des: "Sonic云真机测试平台 - 注册中心"
+  security:
+    basic:
+      enabled: true
+    user:
+      name: ${SEC_NAME:sonic}
+      password: ${SEC_PASSWORD:sonic}
+
+eureka:
+  datacenter: sonic-server
+  environment: prod
+  instance:
+    hostname: ${EUREKA_HOST:127.0.0.1}
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+  client:
+    #    单机部署的话以下为false
+    register-with-eureka: ${IS_CLUSTERED:false}
+    fetch-registry: ${IS_CLUSTERED:false}
+    service-url:
+      defaultZone: ${EUREKA_URL:http://sonic:sonic@127.0.0.1:9090/eureka/}
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      max-history: 3
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info

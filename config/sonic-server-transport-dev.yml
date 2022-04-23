@@ -1,0 +1,6 @@
+server:
+  port: 0
+
+sonic:
+  netty:
+    port: 8095

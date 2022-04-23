@@ -1,19 +1,3 @@
-/*
- *  Copyright (C) [SonicCloudOrg] Sonic Project
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSON;
@@ -22,30 +6,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.interfaces.AgentStatus;
-import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.feign.TransportFeignClient;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.*;
-import org.cloud.sonic.common.models.dto.*;
-import org.cloud.sonic.common.models.enums.ConditionEnum;
-import org.cloud.sonic.common.models.interfaces.CoverType;
-import org.cloud.sonic.common.models.interfaces.DeviceStatus;
-import org.cloud.sonic.common.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.*;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
+import org.cloud.sonic.controller.models.interfaces.CoverType;
+import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
@@ -57,10 +35,10 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
 
     @Autowired private TestCasesMapper testCasesMapper;
+    @Autowired private ElementsMapper elementsMapper;
     @Autowired private DevicesMapper devicesMapper;
     @Autowired private ResultsService resultsService;
     @Autowired private GlobalParamsService globalParamsService;
@@ -68,24 +46,20 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired private PublicStepsService publicStepsService;
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
     @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired private AgentsService agentsService;
-    @DubboReference(parameters = {"router","address"})
-    private AgentsClientService agentsClientService;
+    @Autowired private TransportFeignClient transportFeignClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> runSuite(int suiteId, String strike) {
         TestSuitesDTO testSuitesDTO;
-        // 统计不在线的agent
-        List<Integer> offLineAgentIds = new ArrayList<>();
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
-            return new RespModel<>(3001, "suite.deleted");
+            return new RespModel<>(3001, "测试套件已删除！");
         }
 
         if (testSuitesDTO.getTestCases().size() == 0) {
-            return new RespModel<>(3002, "suite.empty.cases");
+            return new RespModel<>(3002, "该测试套件内无测试用例！");
         }
 
         List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
@@ -95,7 +69,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
         if (devicesList.size() == 0) {
-            return new RespModel<>(3003, "suite.not.free.device");
+            return new RespModel<>(3003, "所选设备暂无可用！");
         }
 
         // 初始化部分结果状态信息
@@ -143,8 +117,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suite.put("steps", steps);
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                // 不要用List.of，它的实现ImmutableCollections无法被序列化
-                suite.put("device", new ArrayList<>(){{add(devices);}});
+                suite.put("device", List.of(devices));
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -170,7 +143,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                runSuite(id, offLineAgentIds, result);
+                result.put("msg", "suite");
+                transportFeignClient.sendTestData(result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -208,27 +182,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             for (Integer id : agentIds) {
                 result.put("id", id);
                 result.put("pf", testSuitesDTO.getPlatform());
-                runSuite(id, offLineAgentIds, result);
+                result.put("msg", "suite");
+                transportFeignClient.sendTestData(result);
             }
         }
-        if (CollectionUtils.isEmpty(offLineAgentIds)) {
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        }
-        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
-    }
-
-    /**
-     * 外部不应该使用这个接口
-     */
-    public void runSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
-        Agents agent = agentsService.findById(agentId);
-        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-            offLineAgentIds.add(agentId);
-        } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.runSuite(result);
-        }
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @Override
@@ -236,10 +194,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     public RespModel<String> forceStopSuite(int resultId, String strike) {
 
         Results results = resultsService.findById(resultId);
-        // 统计不在线的agent
-        List<Integer> offLineAgentIds = new ArrayList<>();
         if (ObjectUtils.isEmpty(results)) {
-            return new RespModel<>(3001, "suite.empty.result");
+            return new RespModel<>(3001, "测试结果模板不存在！");
         }
         int suiteId = results.getSuiteId();
 
@@ -247,11 +203,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
-            return new RespModel<>(3001, "suite.deleted");
+            return new RespModel<>(3001, "测试套件已删除！");
         }
 
         if (testSuitesDTO.getTestCases().size() == 0) {
-            return new RespModel<>(3002, "suite.empty.cases");
+            return new RespModel<>(3002, "该测试套件内无测试用例！");
         }
 
         List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
@@ -261,7 +217,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
         if (devicesList.size() == 0) {
-            return new RespModel<>(3003, "suite.can.not.connect.device");
+            return new RespModel<>(3003, "运行设备暂无法连接！");
         }
 
         results.setStatus(ResultStatus.FAIL);
@@ -275,6 +231,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         results.setProjectId(testSuitesDTO.getProjectId());
         resultsService.save(results);
 
+
         int deviceIndex = 0;
         if (testSuitesDTO.getCover() == CoverType.CASE) {
             List<JSONObject> suiteDetail = new ArrayList<>();
@@ -283,8 +240,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 JSONObject suite = new JSONObject();
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
-                // 不要用List.of，它的实现ImmutableCollections无法被序列化
-                suite.put("device", new ArrayList<>(){{add(devices);}});
+                suite.put("device", List.of(devices));
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -295,11 +251,12 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suiteDetail.add(suite);
             }
             JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                forceStopSuite(id, offLineAgentIds, result);
+                transportFeignClient.sendTestData(result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -321,25 +278,10 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
                 result.put("id", id);
-                forceStopSuite(id, offLineAgentIds, result);
+                transportFeignClient.sendTestData(result);
             }
         }
-        if (CollectionUtils.isEmpty(offLineAgentIds)) {
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        }
-        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
-    }
-
-    public void forceStopSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
-        Agents agent = agentsService.findById(agentId);
-        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-            offLineAgentIds.add(agentId);
-        } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.forceStopSuite(result);
-        }
-
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @Override
@@ -373,7 +315,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
      * @date 2021/8/20 17:50
      */
     @Transactional
-    @Override
     public JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
         if (steps.getStepType().equals("publicStep")) {
@@ -387,7 +328,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
 
-        JSONArray childStepJsonObjs = new JSONArray();
+        List<JSONObject> childStepJsonObjs = new ArrayList<>();
         JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
 
         // 如果是条件步骤则遍历子步骤
@@ -408,14 +349,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                                 put("step", stepsService.handleStep(childStep));
                             }
                         };
-                        // 添加转换后的公共步骤
                         childStepJsonObjs.add(childStepJsonObj);
                     }
-                } else {
-                    // 如果不是公共步骤，则直接添加
-                    childStepJsonObjs.add(childStep);
+                    // 改写子步骤为公共步骤
+                    stepsJsonObj.put("childSteps", childStepJsonObjs);
                 }
-                stepsJsonObj.put("childSteps", childStepJsonObjs);
             }
             step.put("step", stepsJsonObj);
             return step;

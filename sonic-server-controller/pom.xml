@@ -15,57 +15,20 @@
 
     <!-- 依赖列表   -->
     <dependencies>
+        <!--   配置中心客户端     -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
         <!--    服务调用    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <!-- zk服务发现-->
+        <!--     eureka客户端   -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-x-discovery</artifactId>
-        </dependency>
-
-        <!-- dubbo -->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.spring</groupId>
-            <artifactId>spring-context-support</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
         <!-- undertow服务器 -->
         <dependency>
@@ -82,25 +45,46 @@
         <dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-core</artifactId>
+            <version>2.3.3.RELEASE</version>
         </dependency>
         <!-- mybatis-plus依赖 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.4.3.4</version>
         </dependency>
         <!-- mybatis-自动生成数据库 -->
         <dependency>
             <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
             <artifactId>mybatis-enhance-actable</artifactId>
+            <version>1.5.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-annotation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-tx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mybatis.scripting</groupId>
+                    <artifactId>mybatis-velocity</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-        </dependency>
-        <!--   定时任务     -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
+            <version>2.6</version>
         </dependency>
         <!--     公共模块   -->
         <dependency>
