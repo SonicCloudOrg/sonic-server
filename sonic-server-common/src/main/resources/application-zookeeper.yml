@@ -3,7 +3,7 @@ zookeeper:
   registry-host: 127.0.0.1
   registry-port: 2181
   # 本机网卡ip地址，开发、生产都禁止填localhost、127.0.0.1之类的配置
-  instance-host: 10.76.101.106
+  instance-host: 192.168.0.2
 
 # 一般不需要动，懂的可以定制
 spring:

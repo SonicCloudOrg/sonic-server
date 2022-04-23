@@ -21,7 +21,7 @@ mybatis-plus:
     cache-enabled: false
     localCacheScope: STATEMENT
     # sql日志
-    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 非开发者不要动
 actable:
