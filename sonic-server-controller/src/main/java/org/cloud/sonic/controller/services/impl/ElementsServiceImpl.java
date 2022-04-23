@@ -1,17 +1,34 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.ElementsMapper;
-import org.cloud.sonic.controller.models.domain.Elements;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.dto.TestCasesDTO;
-import org.cloud.sonic.controller.services.ElementsService;
-import org.cloud.sonic.controller.services.StepsService;
-import org.cloud.sonic.controller.services.TestCasesService;
+import org.cloud.sonic.common.models.domain.Elements;
+import org.cloud.sonic.common.models.dto.StepsDTO;
+import org.cloud.sonic.common.models.dto.TestCasesDTO;
+import org.cloud.sonic.common.services.ElementsService;
+import org.cloud.sonic.common.services.StepsService;
+import org.cloud.sonic.common.services.TestCasesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@DubboService
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
     @Autowired
@@ -62,7 +80,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         return stepsService.listStepsByElementsId(elementsId).stream().map(e -> {
             StepsDTO stepsDTO = e.convertTo();
             if (0 == stepsDTO.getCaseId()) {
-                return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("无所属用例"));
+                return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("unknown"));
             }
             return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()).convertTo());
         }).collect(Collectors.toList());

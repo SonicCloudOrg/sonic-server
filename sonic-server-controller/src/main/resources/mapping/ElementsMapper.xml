@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.cloud.sonic.controller.mapper.ElementsMapper">
 
-    <select id="listElementsByStepsIds" resultType="org.cloud.sonic.controller.models.dto.ElementsDTO">
+    <select id="listElementsByStepsIds" resultType="org.cloud.sonic.common.models.dto.ElementsDTO">
         select se.steps_id, e.* from steps_elements se
             inner join elements e on e.id = se.elements_id
         where se.steps_id in

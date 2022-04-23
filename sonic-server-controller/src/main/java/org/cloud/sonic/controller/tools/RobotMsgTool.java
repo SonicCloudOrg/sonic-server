@@ -1,7 +1,23 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.tools;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.controller.models.interfaces.RobotType;
+import org.cloud.sonic.common.models.interfaces.RobotType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +96,14 @@ public class RobotMsgTool {
                     jsonObject.put("sign", sign);
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
-                    logger.info("机器人发送结果：" + responseEntity.getBody());
+                    logger.info("robot result: " + responseEntity.getBody());
                     break;
                 }
                 case RobotType.YouSpace:
                     break;
             }
         } catch (Exception e) {
-            logger.info("机器人发送失败：" + e.getMessage());
+            logger.info("robot send failed, cause: " + e.getMessage());
         }
     }
 

@@ -1,18 +1,35 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.controller.mapper.ResultsMapper;
-import org.cloud.sonic.controller.models.domain.Projects;
-import org.cloud.sonic.controller.models.domain.ResultDetail;
-import org.cloud.sonic.controller.models.domain.Results;
-import org.cloud.sonic.controller.models.domain.TestCases;
-import org.cloud.sonic.controller.models.dto.TestSuitesDTO;
-import org.cloud.sonic.controller.models.interfaces.ResultDetailStatus;
-import org.cloud.sonic.controller.models.interfaces.ResultStatus;
-import org.cloud.sonic.controller.services.*;
+import org.cloud.sonic.common.models.domain.Projects;
+import org.cloud.sonic.common.models.domain.ResultDetail;
+import org.cloud.sonic.common.models.domain.Results;
+import org.cloud.sonic.common.models.domain.TestCases;
+import org.cloud.sonic.common.models.dto.TestSuitesDTO;
+import org.cloud.sonic.common.models.interfaces.ResultDetailStatus;
+import org.cloud.sonic.common.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.RobotMsgTool;
 import org.slf4j.Logger;
@@ -32,6 +49,7 @@ import java.util.concurrent.Executors;
  * @date 2021/8/21 16:09
  */
 @Service
+@DubboService
 public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results> implements ResultsService {
 
     private final Logger logger = LoggerFactory.getLogger(ResultsServiceImpl.class);
@@ -78,7 +96,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                 .list();
         cachedThreadPool.execute(() -> {
             for (Results results : resultsList) {
-                logger.info("清理测试报告id：" + results.getId());
+                logger.info("clear report id: " + results.getId());
                 delete(results.getId());
                 try {
                     Thread.sleep(500);
