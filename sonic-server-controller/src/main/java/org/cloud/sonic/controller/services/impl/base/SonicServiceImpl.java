@@ -24,7 +24,7 @@ public class SonicServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M,
 
     protected boolean existsById(Serializable id) {
         Field idField = getIdField(getDomainClass());
-        Objects.requireNonNull(idField, "There is not @TableId field in Object");
+        Objects.requireNonNull(idField, "对象没有 @TableId 注解标注的字段");
         return baseMapper.selectCount(new QueryWrapper<T>().eq("id", id)) > 0;
     }
 
@@ -35,7 +35,7 @@ public class SonicServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M,
     public boolean save(T domain) {
         try {
             Field idField = getIdField(getDomainClass());
-            Objects.requireNonNull(idField, "There is not @TableId field in Object");
+            Objects.requireNonNull(idField, "对象没有 @TableId 注解标注的字段");
             Integer id = (Integer) idField.get(domain);
             // 如果id为0，则设置为null
             if (id == null || id.equals(0)) {
@@ -44,7 +44,7 @@ public class SonicServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M,
             }
             return baseMapper.updateById(domain) > 0;
         } catch (IllegalAccessException e) {
-            throw new ServerErrorException("Handle id in Object failed.");
+            throw new ServerErrorException("操作对象id属性失败");
         }
     }
 

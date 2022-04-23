@@ -1,34 +1,18 @@
-/*
- *  Copyright (C) [SonicCloudOrg] Sonic Project
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.PublicSteps;
-import org.cloud.sonic.common.models.domain.PublicStepsSteps;
-import org.cloud.sonic.common.models.domain.Steps;
-import org.cloud.sonic.common.models.dto.PublicStepsDTO;
-import org.cloud.sonic.common.models.dto.StepsDTO;
-import org.cloud.sonic.common.services.PublicStepsService;
-import org.cloud.sonic.common.services.StepsService;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.PublicSteps;
+import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
+import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
+import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.services.PublicStepsService;
+import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +28,6 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, PublicSteps> implements PublicStepsService {
 
     @Autowired private PublicStepsMapper publicStepsMapper;
@@ -94,10 +77,9 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         // 先删除旧的数据
         publicStepsStepsMapper.delete(new LambdaQueryWrapper<PublicStepsSteps>()
                 .eq(PublicStepsSteps::getPublicStepsId, publicStepsDTO.getId()));
-
         // 重新填充新数据
         for (StepsDTO step : steps) {
-            // 保存 public_step 与 最外层step 映射关系
+            // 保存 public_step 与 step 映射关系
             publicStepsStepsMapper.insert(
                     new PublicStepsSteps()
                             .setPublicStepsId(publicSteps.getId())

@@ -1,7 +1,0 @@
-spring:
-  version: @project.version@
-  application:
-    name: @project.artifactId@
-    des: "Sonic云真机测试平台 - 存储中心"
-  profiles:
-    active: @project.artifactId@,actuator,zookeeper,feign,logging,knife4j,user

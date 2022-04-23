@@ -34,7 +34,7 @@ public class FilesController {
      */
     @WebAspect
     @DeleteMapping
-    public RespModel<String> delete(@RequestParam(name = "day") int day) {
+    public RespModel delete(@RequestParam(name = "day") int day) {
         long timeMillis = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
         List<String> fileList = Arrays.asList("imageFiles", "recordFiles", "logFiles", "packageFiles");
@@ -45,16 +45,16 @@ public class FilesController {
                     try {
                         if (timeMillis - sf.parse(dateFile.getName()).getTime()
                                 > day * 86400000L) {
-                            logger.info("clean begin! " + dateFile.getPath());
+                            logger.info("开始清理：" + dateFile.getPath());
                             fileTool.deleteDir(dateFile);
                         }
                     } catch (ParseException e) {
-                        logger.info("Parse file name error, cause: " + dateFile.getPath());
+                        logger.info("文件名出错：" + dateFile.getPath());
                         logger.error(e.getMessage());
                     }
                 }
             }
         });
-        return new RespModel<>(2000, "file.clean");
+        return new RespModel(2000, "开始清理！");
     }
 }

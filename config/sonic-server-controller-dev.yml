@@ -1,0 +1,10 @@
+server:
+  port: 0
+
+robot:
+  client:
+    host: "http://localhost:3000"
+  img:
+    success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/suc.png"
+    warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/warn.png"
+    error: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/fail.png"
