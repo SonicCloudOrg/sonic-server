@@ -1,5 +1,22 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.common.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +44,6 @@ import java.util.Locale;
 @Configuration
 @EnableSwagger2WebMvc
 public class APIDocumentConfig {
-    //从配置文档获取接口文档信息
     @Value("${spring.application.name}")
     private String name;
     @Value("${spring.application.des}")
@@ -114,7 +130,7 @@ public class APIDocumentConfig {
                 .termsOfServiceUrl("Please visit: https://github.com/SonicCloudOrg/sonic-server")
                 .contact(new Contact("ZhouYiXun  email: zyx291028775@qq.com", "", ""))
                 .version(version)
-                .description(name + " 服务开放API，注意不要频繁请求。")
+                .description(name + " service Open API.")
                 .build();
     }
 }

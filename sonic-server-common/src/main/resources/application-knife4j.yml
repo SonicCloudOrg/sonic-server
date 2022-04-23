@@ -1,0 +1,9 @@
+# 一般不需要动，懂的可以自己定制
+knife4j:
+  enable: true
+  setting:
+    enableHost: true
+    enableHostText: "http://localhost:8094"
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: MIT License | Copyright 2021 - [SonicCloudOrg/sonic-server](https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE)

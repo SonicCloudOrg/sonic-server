@@ -1,0 +1,13 @@
+# 一般不需要动，懂的可以自己定制
+server:
+  port: 0
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: -1
+      maxRequestSize: -1
+
+# 网关的IP地址
+gateway:
+  host: "http://localhost:8094"

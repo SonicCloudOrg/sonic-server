@@ -1,25 +1,43 @@
+/*
+ *  Copyright (C) [SonicCloudOrg] Sonic Project
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.PublicSteps;
-import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.domain.StepsElements;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.enums.ConditionEnum;
-import org.cloud.sonic.controller.models.http.StepSort;
-import org.cloud.sonic.controller.services.StepsService;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.base.TypeConverter;
+import org.cloud.sonic.common.models.domain.PublicSteps;
+import org.cloud.sonic.common.models.domain.PublicStepsSteps;
+import org.cloud.sonic.common.models.domain.Steps;
+import org.cloud.sonic.common.models.domain.StepsElements;
+import org.cloud.sonic.common.models.dto.ElementsDTO;
+import org.cloud.sonic.common.models.dto.StepsDTO;
+import org.cloud.sonic.common.models.enums.ConditionEnum;
+import org.cloud.sonic.common.models.http.StepSort;
+import org.cloud.sonic.common.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +48,7 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
+@DubboService
 public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> implements StepsService {
 
     @Autowired private StepsMapper stepsMapper;
@@ -122,13 +141,18 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             if (publicSteps != null) {
                 stepsDTO.setContent(publicSteps.getName());
             } else {
-                stepsDTO.setContent("未知");
+                stepsDTO.setContent("unknown");
             }
         }
 
         // 设置排序为最后
         if (!existsById(stepsDTO.getId())) {
             stepsDTO.setSort(stepsMapper.findMaxSort() + 1);
+        }
+        // 子步骤的caseId跟随父步骤的
+        Steps parent = getById(stepsDTO.getParentId());
+        if (!ObjectUtils.isEmpty(parent)) {
+            stepsDTO.setCaseId(parent.getCaseId());
         }
         Steps steps = stepsDTO.convertTo();
         save(steps);

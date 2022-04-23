@@ -1,0 +1,9 @@
+# 一般不需要动，懂的可以自己定制
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info
