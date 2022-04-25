@@ -111,6 +111,10 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     @Column(defaultValue = "0", comment = "Hub接口")
     Integer hubNum;
 
+    @TableField
+    @Column(defaultValue = "0", comment = "Hub档位")
+    Integer gear;
+
     public static Devices newDeletedDevice(int id) {
         String tips = "Device does not exist.";
         return new Devices()
