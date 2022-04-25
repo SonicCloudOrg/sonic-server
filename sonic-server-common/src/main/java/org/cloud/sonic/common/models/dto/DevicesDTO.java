@@ -1,7 +1,9 @@
 package org.cloud.sonic.common.models.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
 import org.cloud.sonic.common.models.base.TypeConverter;
 import org.cloud.sonic.common.models.domain.Devices;
 import io.swagger.annotations.ApiModel;
@@ -79,6 +81,12 @@ public class DevicesDTO implements Serializable, TypeConverter<DevicesDTO, Devic
 
     @ApiModelProperty(value = "中文设备", example = "荣耀全网通")
     String chiName;
+
+    @ApiModelProperty(value = "Hub接口", example = "1")
+    Integer position;
+
+    @ApiModelProperty(value = "Hub档位", example = "1")
+    Integer gear;
 
     public float getTemperature() {
         if (temperature == null) {

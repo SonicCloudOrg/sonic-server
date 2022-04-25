@@ -1,7 +1,5 @@
 package org.cloud.sonic.common.models.dto;
 
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.Agents;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.common.models.base.TypeConverter;
+import org.cloud.sonic.common.models.domain.Agents;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -50,4 +50,10 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
 
     @ApiModelProperty(value = "Agent端密钥", example = "qwe")
     String secretKey;
+
+    @ApiModelProperty(value = "机柜id", example = "1")
+    private Integer cabinetId;
+
+    @ApiModelProperty(value = "机柜层数", example = "1-8")
+    private Integer storey;
 }

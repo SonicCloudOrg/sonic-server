@@ -13,38 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cloud.sonic.common.tools;
+package org.cloud.sonic.common.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * @author JayWenStar
+ * @author JayWenStar,Eason
  * @date 2022/4/11 1:32 上午
  */
 @Component
 @Slf4j
 @DependsOn(value = "springTool")
-public class I18nTool implements ApplicationContextAware {
+public class I18nConfig {
 
-    private static ResourceBundle resourceBundle;
-
-
-    public static String getString(String key) {
-        return resourceBundle.getString(key);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if (applicationContext != null) {
-            resourceBundle = ResourceBundle.getBundle("i18n/sonic", new Locale(SpringTool.getPropertiesValue("sonic.i18n")));
-        }
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource
+                = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:i18n/sonic");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
     }
 }

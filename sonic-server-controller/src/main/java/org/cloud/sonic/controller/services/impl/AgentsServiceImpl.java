@@ -24,7 +24,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.apache.dubbo.rpc.service.EchoService;
+import org.cloud.sonic.common.models.domain.Cabinet;
 import org.cloud.sonic.common.services.AgentsClientService;
+import org.cloud.sonic.common.services.CabinetService;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
 import org.cloud.sonic.common.models.domain.Agents;
 import org.cloud.sonic.common.models.domain.Devices;
@@ -44,13 +46,15 @@ import java.util.UUID;
 
 @Service
 @DubboService
-public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService  {
+public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService {
 
     @Autowired
     private DevicesService devicesService;
+    @Autowired
+    private CabinetService cabinetService;
     @Resource
     private AgentsMapper agentsMapper;
-    @DubboReference(parameters = {"router","address"})
+    @DubboReference(parameters = {"router", "address"})
     private AgentsClientService agentsClientService;
 
     @Override
@@ -69,6 +73,8 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setPort(0);
             agents.setSystemType("unknown");
             agents.setSecretKey(UUID.randomUUID().toString());
+            agents.setCabinetId(0);
+            agents.setStorey(0);
             save(agents);
         } else {
             Agents ag = findById(id);
@@ -100,6 +106,18 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 oldAgent.setPort(jsonObject.getInteger("port"));
                 oldAgent.setVersion(jsonObject.getString("version"));
                 oldAgent.setSystemType(jsonObject.getString("systemType"));
+                if (jsonObject.getString("cabinetKey") != null && jsonObject.getString("cabinetKey").length() > 0) {
+                    Cabinet cabinet = cabinetService.getIdByKey(jsonObject.getString("cabinetKey"));
+                    if (cabinet != null) {
+                        oldAgent.setCabinetId(cabinet.getId());
+                        if (jsonObject.getInteger("storey") != null && jsonObject.getInteger("storey") != 0) {
+                            Agents oldStorey = findByCabinetIdAndStorey(cabinet.getId(), jsonObject.getInteger("storey"));
+                            oldStorey.setStorey(0);
+                            save(oldStorey);
+                            oldAgent.setStorey(jsonObject.getInteger("storey"));
+                        }
+                    }
+                }
                 save(oldAgent);
             }
         }
@@ -202,5 +220,11 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public Agents findByCabinetIdAndStorey(int id, int storey) {
+        return lambdaQuery().eq(Agents::getCabinetId, id)
+                .eq(Agents::getStorey, storey).one();
     }
 }

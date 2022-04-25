@@ -52,7 +52,7 @@ public interface AgentsService extends IService<Agents> {
      * 会根据 {@link Agents#getLockVersion()} 更新Agent状态
      *
      * @param agents agent对象
-     * @return       是否更新成功
+     * @return 是否更新成功
      */
     boolean updateAgentsByLockVersion(Agents agents);
 
@@ -65,4 +65,5 @@ public interface AgentsService extends IService<Agents> {
 
     boolean checkOnline(Agents agents);
 
+    Agents findByCabinetIdAndStorey(int id, int storey);
 }

@@ -17,7 +17,8 @@
 package org.cloud.sonic.common.config;
 
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.tools.I18nTool;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -28,13 +29,17 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import javax.annotation.Resource;
+import java.util.Locale;
+
 /**
- * @author JayWenStar,Eason
+ * @author JayWenStar, Eason
  * @date 2022/4/11 1:59 上午
  */
-@ControllerAdvice({"org.cloud.sonic.controller.controller","org.cloud.sonic.folder.controller"})
+@ControllerAdvice({"org.cloud.sonic.controller.controller", "org.cloud.sonic.folder.controller"})
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
-
+    @Resource
+    private MessageSource messageSource;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -44,13 +49,15 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         MappingJacksonValue container = getOrCreateContainer(body);
-
+        String language = request.getHeaders().getFirst("Accept-Language");
+        String[] split = language.split("_");
+        Locale locale = new Locale(split[0], split[1]);
         // Get return body
         Object returnBody = container.getValue();
 
         if (returnBody instanceof RespModel) {
             RespModel<?> baseResponse = (RespModel) returnBody;
-            baseResponse.setMessage(I18nTool.getString(baseResponse.getMessage()));
+            baseResponse.setMessage(messageSource.getMessage(baseResponse.getMessage(), new Object[]{}, locale));
         }
         return container;
     }
