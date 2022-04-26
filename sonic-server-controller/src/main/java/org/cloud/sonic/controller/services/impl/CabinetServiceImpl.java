@@ -17,7 +17,10 @@
 package org.cloud.sonic.controller.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.models.domain.Cabinet;
+import org.cloud.sonic.common.services.AgentsClientService;
 import org.cloud.sonic.common.services.CabinetService;
 import org.cloud.sonic.controller.mapper.CabinetMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
@@ -25,8 +28,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@DubboService
 @Slf4j
 public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet> implements CabinetService {
     @Resource
@@ -39,6 +44,9 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
 
     @Override
     public void saveCabinet(Cabinet cabinet) {
+        if (cabinet.getId() == 0) {
+            cabinet.setSecretKey(UUID.randomUUID().toString());
+        }
         save(cabinet);
     }
 
