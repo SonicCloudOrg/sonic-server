@@ -106,18 +106,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 oldAgent.setPort(jsonObject.getInteger("port"));
                 oldAgent.setVersion(jsonObject.getString("version"));
                 oldAgent.setSystemType(jsonObject.getString("systemType"));
-                if (jsonObject.getString("cabinetKey") != null && jsonObject.getString("cabinetKey").length() > 0) {
-                    Cabinet cabinet = cabinetService.getIdByKey(jsonObject.getString("cabinetKey"));
-                    if (cabinet != null) {
-                        oldAgent.setCabinetId(cabinet.getId());
-                        if (jsonObject.getInteger("storey") != null && jsonObject.getInteger("storey") != 0) {
-                            Agents oldStorey = findByCabinetIdAndStorey(cabinet.getId(), jsonObject.getInteger("storey"));
-                            oldStorey.setStorey(0);
-                            save(oldStorey);
-                            oldAgent.setStorey(jsonObject.getInteger("storey"));
-                        }
-                    }
-                }
                 save(oldAgent);
             }
         }
@@ -131,6 +119,13 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     @Transactional
     public boolean updateAgentsByLockVersion(Agents agents) {
+        if (agents.getCabinetId() != 0 && agents.getStorey() != 0) {
+            Agents oldStorey = findByCabinetIdAndStorey(agents.getCabinetId(), agents.getStorey());
+            if (oldStorey != null && (oldStorey.getId() != agents.getId())) {
+                oldStorey.setStorey(0);
+                save(oldStorey);
+            }
+        }
         return lambdaUpdate()
                 .eq(Agents::getId, agents.getId())
                 .eq(Agents::getLockVersion, agents.getLockVersion())
