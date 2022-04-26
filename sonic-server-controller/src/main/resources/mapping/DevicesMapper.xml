@@ -17,7 +17,7 @@
                 </if>
                 <if test="params.iOSVersion != null">
                     and (
-                        d.platform = 1 and
+                        d.platform = 2 and
                         <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
                             d.version like "${iOSVersion}%"
                         </foreach>
