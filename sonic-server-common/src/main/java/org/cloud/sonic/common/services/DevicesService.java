@@ -50,6 +50,7 @@ public interface DevicesService extends IService<Devices> {
 
     Devices findByAgentIdAndUdId(int agentId, String udId);
 
+    Devices findByUdId(String udId);
 
     JSONObject getFilterOption();
 

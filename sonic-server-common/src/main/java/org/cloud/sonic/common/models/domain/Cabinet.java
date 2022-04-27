@@ -60,4 +60,40 @@ public class Cabinet implements Serializable, TypeConverter<Cabinet, CabinetDTO>
     @TableField
     @Column(value = "secret_key", isNull = false, comment = "机柜密钥")
     private String secretKey;
+
+    @TableField
+    @Column(value = "low_level", isNull = false, comment = "lowLevel", defaultValue = "40")
+    private Integer lowLevel;
+
+    @TableField
+    @Column(value = "low_gear", isNull = false, comment = "lowGear", defaultValue = "14")
+    private Integer lowGear;
+
+    @TableField
+    @Column(value = "high_level", isNull = false, comment = "highLevel", defaultValue = "90")
+    private Integer highLevel;
+
+    @TableField
+    @Column(value = "high_gear", isNull = false, comment = "highGear", defaultValue = "1")
+    private Integer highGear;
+
+    @TableField
+    @Column(value = "high_temp", isNull = false, comment = "highTemp", defaultValue = "45")
+    private Integer highTemp;
+
+    @TableField
+    @Column(value = "high_temp_time", isNull = false, comment = "highTempTime", defaultValue = "15")
+    private Integer highTempTime;
+
+    @TableField
+    @Column(value = "robot_secret", isNull = false, comment = "机器人秘钥")
+    private String robotSecret;
+
+    @TableField
+    @Column(value = "robot_token", isNull = false, comment = "机器人token")
+    private String robotToken;
+
+    @TableField
+    @Column(value = "robot_type", isNull = false, comment = "机器人类型")
+    private Integer robotType;
 }

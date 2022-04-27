@@ -152,6 +152,11 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     }
 
     @Override
+    public Devices findByUdId(String udId) {
+        return lambdaQuery().eq(Devices::getUdId, udId).one();
+    }
+
+    @Override
     public JSONObject getFilterOption() {
         JSONObject jsonObject = new JSONObject();
         List<String> cpuList = devicesMapper.findCpuList();
@@ -171,8 +176,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public void deviceStatus(JSONObject jsonMsg) {
-        Devices devices = findByAgentIdAndUdId(jsonMsg.getInteger("agentId")
-                , jsonMsg.getString("udId"));
+        Devices devices = findByUdId(jsonMsg.getString("udId"));
         if (devices == null) {
             devices = new Devices();
             devices.setUdId(jsonMsg.getString("udId"));

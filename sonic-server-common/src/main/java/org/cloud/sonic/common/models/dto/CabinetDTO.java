@@ -30,4 +30,31 @@ public class CabinetDTO implements Serializable, TypeConverter<CabinetDTO, Cabin
 
     @ApiModelProperty(value = "机柜密钥", example = "qwe")
     private String secretKey;
+
+    @ApiModelProperty(value = "lowLevel", example = "1")
+    private Integer lowLevel;
+
+    @ApiModelProperty(value = "lowGear", example = "1")
+    private Integer lowGear;
+
+    @ApiModelProperty(value = "highLevel", example = "1")
+    private Integer highLevel;
+
+    @ApiModelProperty(value = "highGear", example = "1")
+    private Integer highGear;
+
+    @ApiModelProperty(value = "highTemp", example = "1")
+    private Integer highTemp;
+
+    @ApiModelProperty(value = "highTempTime", example = "1")
+    private Integer highTempTime;
+
+    @ApiModelProperty(value = "机器人类型", required = true, example = "1")
+    Integer robotType;
+
+    @ApiModelProperty(value = "机器人token", required = true, example = "http://dingTalk.com?token=*****")
+    String robotToken;
+
+    @ApiModelProperty(value = "机器人加签密钥", required = true, example = "qwe***")
+    String robotSecret;
 }
