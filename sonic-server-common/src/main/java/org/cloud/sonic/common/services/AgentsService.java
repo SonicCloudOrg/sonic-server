@@ -66,4 +66,6 @@ public interface AgentsService extends IService<Agents> {
     boolean checkOnline(Agents agents);
 
     Agents findByCabinetIdAndStorey(int id, int storey);
+
+    List<JSONObject> findByCabinet(int id);
 }

@@ -66,7 +66,7 @@ public class Cabinet implements Serializable, TypeConverter<Cabinet, CabinetDTO>
     private Integer lowLevel;
 
     @TableField
-    @Column(value = "low_gear", isNull = false, comment = "lowGear", defaultValue = "14")
+    @Column(value = "low_gear", isNull = false, comment = "lowGear", defaultValue = "1")
     private Integer lowGear;
 
     @TableField
@@ -74,7 +74,7 @@ public class Cabinet implements Serializable, TypeConverter<Cabinet, CabinetDTO>
     private Integer highLevel;
 
     @TableField
-    @Column(value = "high_gear", isNull = false, comment = "highGear", defaultValue = "1")
+    @Column(value = "high_gear", isNull = false, comment = "highGear", defaultValue = "14")
     private Integer highGear;
 
     @TableField
