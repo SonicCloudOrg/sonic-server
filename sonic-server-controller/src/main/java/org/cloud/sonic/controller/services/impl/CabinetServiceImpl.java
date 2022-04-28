@@ -48,6 +48,7 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
             cabinet.setSecretKey(UUID.randomUUID().toString());
         }
         save(cabinet);
+        //Send to agent
     }
 
     @Override
