@@ -80,7 +80,9 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
     }
 
     @Override
-    public void errorCall(String udId, int tem, int type) {
-
+    public void errorCall(Cabinet cabinet, String udId, int tem, int type) {
+        if (cabinet.getRobotType() != 0 && cabinet.getRobotToken().length() > 0 && cabinet.getRobotSecret().length() > 0) {
+            robotMsgTool.sendErrorDevice(cabinet.getRobotToken(), cabinet.getRobotSecret(), cabinet.getRobotType(), type, tem, udId);
+        }
     }
 }

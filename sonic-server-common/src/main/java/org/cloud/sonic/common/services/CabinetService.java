@@ -33,5 +33,5 @@ public interface CabinetService extends IService<Cabinet> {
 
     Cabinet getIdByKey(String key);
 
-    void errorCall(String udId,int tem,int type);
+    void errorCall(Cabinet cabinet,String udId,int tem,int type);
 }

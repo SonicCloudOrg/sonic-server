@@ -94,6 +94,6 @@ public class Cabinet implements Serializable, TypeConverter<Cabinet, CabinetDTO>
     private String robotToken;
 
     @TableField
-    @Column(value = "robot_type", isNull = false, comment = "机器人类型")
+    @Column(value = "robot_type", isNull = false, comment = "机器人类型", defaultValue = "1")
     private Integer robotType;
 }

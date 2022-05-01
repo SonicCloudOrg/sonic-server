@@ -272,8 +272,23 @@ public class RobotMsgTool {
         signAndSend(token, secret, type, jsonObject);
     }
 
-    public void sendErrorDevice(String token, String secret,int type){
+    public void sendErrorDevice(String token, String secret, int type, int errorType, int tem, String udId) {
         JSONObject jsonObject = new JSONObject();
+        if (type == RobotType.DingTalk) {
+            JSONObject markdown = new JSONObject();
+            if (errorType == 1) {
+                markdown.put("text", "### 设备高温预警 \n" +
+                        "> ###### 设备序列号：" + udId + " \n" +
+                        "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
+            } else {
+                markdown.put("text", "### 设备高温超时，已关机！ \n" +
+                        "> ###### 设备序列号：" + udId + " \n" +
+                        "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
+            }
+            markdown.put("title", "设备温度异常通知");
+            jsonObject.put("msgtype", "markdown");
+            jsonObject.put("markdown", markdown);
+        }
         signAndSend(token, secret, type, jsonObject);
     }
 
