@@ -272,6 +272,11 @@ public class RobotMsgTool {
         signAndSend(token, secret, type, jsonObject);
     }
 
+    public void sendErrorDevice(String token, String secret,int type){
+        JSONObject jsonObject = new JSONObject();
+        signAndSend(token, secret, type, jsonObject);
+    }
+
     public void sendWeekReportMessage(String token, String secret, int projectId, String projectName,
                                       String yesterday, String today, int passCount, int warnCount, int failCount, int count, int type) {
         JSONObject jsonObject = new JSONObject();

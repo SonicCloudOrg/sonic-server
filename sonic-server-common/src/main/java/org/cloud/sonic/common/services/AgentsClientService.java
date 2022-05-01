@@ -17,6 +17,7 @@
 package org.cloud.sonic.common.services;
 
 import com.alibaba.fastjson.JSONObject;
+import org.cloud.sonic.common.models.domain.Cabinet;
 import org.cloud.sonic.common.models.domain.Results;
 import org.cloud.sonic.common.models.interfaces.DeviceStatus;
 import org.cloud.sonic.common.models.interfaces.PlatformType;
@@ -106,5 +107,7 @@ public interface AgentsClientService {
      * @return           {@link DeviceStatus}
      */
     public String getDeviceStatus(String udId, Integer platform);
+
+    void updateCabinetOption(Cabinet cabinet);
 
 }

@@ -19,11 +19,17 @@ package org.cloud.sonic.controller.services.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.cluster.router.address.Address;
+import org.cloud.sonic.common.models.domain.Agents;
 import org.cloud.sonic.common.models.domain.Cabinet;
 import org.cloud.sonic.common.services.AgentsClientService;
+import org.cloud.sonic.common.services.AgentsService;
 import org.cloud.sonic.common.services.CabinetService;
 import org.cloud.sonic.controller.mapper.CabinetMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.controller.tools.RobotMsgTool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +42,12 @@ import java.util.UUID;
 public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet> implements CabinetService {
     @Resource
     private CabinetMapper cabinetMapper;
+    @Autowired
+    private AgentsService agentsService;
+    @Autowired
+    private RobotMsgTool robotMsgTool;
+    @DubboReference(parameters = {"router", "address"})
+    private AgentsClientService agentsClientService;
 
     @Override
     public List<Cabinet> findCabinets() {
@@ -48,11 +60,27 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
             cabinet.setSecretKey(UUID.randomUUID().toString());
         }
         save(cabinet);
-        //Send to agent
+        if (cabinet.getId() != 0) {
+            List<Agents> agentsList = agentsService.findByCabinetId(cabinet.getId());
+            for (Agents agent : agentsList) {
+                Address address = new Address(agent.getHost() + "", agent.getRpcPort());
+                RpcContext.getContext().setObjectAttachment("address", address);
+                try {
+                    agentsClientService.updateCabinetOption(cabinet);
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+        }
     }
 
     @Override
     public Cabinet getIdByKey(String key) {
         return lambdaQuery().eq(Cabinet::getSecretKey, key).one();
+    }
+
+    @Override
+    public void errorCall(String udId, int tem, int type) {
+
     }
 }

@@ -67,5 +67,7 @@ public interface AgentsService extends IService<Agents> {
 
     Agents findByCabinetIdAndStorey(int id, int storey);
 
-    List<JSONObject> findByCabinet(int id);
+    List<JSONObject> findByCabinetForDetail(int id);
+
+    List<Agents> findByCabinetId(int id);
 }

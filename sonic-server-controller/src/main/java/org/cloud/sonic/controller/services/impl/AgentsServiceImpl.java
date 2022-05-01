@@ -223,7 +223,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
-    public List<JSONObject> findByCabinet(int id) {
+    public List<JSONObject> findByCabinetForDetail(int id) {
         List<Agents> agentsList = lambdaQuery().eq(Agents::getCabinetId, id)
                 .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
         List<JSONObject> result = new ArrayList<>();
@@ -234,5 +234,11 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             result.add(jsonObject);
         }
         return result;
+    }
+
+    @Override
+    public List<Agents> findByCabinetId(int id) {
+        return lambdaQuery().eq(Agents::getCabinetId, id)
+                .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
     }
 }
