@@ -74,4 +74,6 @@ public interface DevicesService extends IService<Devices> {
     CompletableFuture<Boolean> correctionAllDevicesStatus();
 
     List<Devices> findByAgentForCabinet(int agentId);
+
+    void updatePosition(JSONObject jsonObject);
 }

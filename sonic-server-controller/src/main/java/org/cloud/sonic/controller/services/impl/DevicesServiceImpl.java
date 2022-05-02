@@ -341,4 +341,25 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 .ne(Devices::getPosition, 0).orderByAsc(Devices::getPosition).list();
     }
 
+    @Override
+    public void updatePosition(JSONObject jsonObject) {
+        int agentId = jsonObject.getInteger("agentId");
+        Devices devices = findByAgentIdAndUdId(agentId, jsonObject.getString("udId"));
+        if (devices != null) {
+            if (jsonObject.getInteger("position") != null) {
+                Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, agentId)
+                        .eq(Devices::getPosition, jsonObject.getInteger("position")).one();
+                if (oldPosition != null) {
+                    oldPosition.setPosition(0);
+                    save(oldPosition);
+                }
+                devices.setPosition(jsonObject.getInteger("position"));
+            }
+            if (jsonObject.getInteger("gear") != null) {
+                devices.setGear(jsonObject.getInteger("gear"));
+            }
+            save(devices);
+        }
+    }
+
 }
