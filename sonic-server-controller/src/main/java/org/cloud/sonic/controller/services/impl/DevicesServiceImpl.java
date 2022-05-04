@@ -189,6 +189,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setPosition(0);
             devices.setGear(0);
         }
+        if (devices.getAgentId() != jsonMsg.getInteger("agentId")) {
+            devices.setPosition(0);
+        }
         devices.setAgentId(jsonMsg.getInteger("agentId"));
         if (jsonMsg.getString("name") != null) {
             if (!jsonMsg.getString("name").equals("unknown")) {
@@ -346,17 +349,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         int agentId = jsonObject.getInteger("agentId");
         String udId = jsonObject.getString("udId");
         Integer position = jsonObject.getInteger("position");
-        if (udId.equals("unknown")) {
-            if (position != null) {
-                Devices off = lambdaQuery().eq(Devices::getAgentId, agentId)
-                        .eq(Devices::getPosition, jsonObject.getInteger("position")).one();
-                if (off != null) {
-                    off.setPosition(0);
-                    save(off);
-                }
-            }
-            return;
-        }
         Devices devices = findByUdId(udId);
         if (devices != null) {
             if (position != null) {
