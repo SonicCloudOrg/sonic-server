@@ -75,5 +75,4 @@ public interface DevicesService extends IService<Devices> {
 
     List<Devices> findByAgentForCabinet(int agentId);
 
-    void updatePosition(JSONObject jsonObject);
 }

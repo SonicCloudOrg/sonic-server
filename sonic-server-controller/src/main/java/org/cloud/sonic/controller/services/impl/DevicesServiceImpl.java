@@ -189,8 +189,20 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setPosition(0);
             devices.setGear(0);
         }
-        if (devices.getAgentId() != jsonMsg.getInteger("agentId")) {
+        Integer position = jsonMsg.getInteger("position");
+        if (position != null) {
+            Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, jsonMsg.getInteger("agentId"))
+                    .eq(Devices::getPosition, position).one();
+            if (oldPosition != null) {
+                oldPosition.setPosition(0);
+                save(oldPosition);
+            }
+            devices.setPosition(position);
+        } else if (devices.getAgentId() != null && devices.getAgentId() != jsonMsg.getInteger("agentId")) {
             devices.setPosition(0);
+        }
+        if (jsonMsg.getInteger("gear") != null) {
+            devices.setGear(jsonMsg.getInteger("gear"));
         }
         devices.setAgentId(jsonMsg.getInteger("agentId"));
         if (jsonMsg.getString("name") != null) {
@@ -342,30 +354,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public List<Devices> findByAgentForCabinet(int agentId) {
         return lambdaQuery().eq(Devices::getAgentId, agentId)
                 .ne(Devices::getPosition, 0).orderByAsc(Devices::getPosition).list();
-    }
-
-    @Override
-    public void updatePosition(JSONObject jsonObject) {
-        int agentId = jsonObject.getInteger("agentId");
-        String udId = jsonObject.getString("udId");
-        Integer position = jsonObject.getInteger("position");
-        Devices devices = findByUdId(udId);
-        if (devices != null) {
-            if (position != null) {
-                Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, agentId)
-                        .eq(Devices::getPosition, position).one();
-                if (oldPosition != null) {
-                    oldPosition.setPosition(0);
-                    save(oldPosition);
-                }
-                devices.setPosition(position);
-            }
-            if (jsonObject.getInteger("gear") != null) {
-                devices.setGear(jsonObject.getInteger("gear"));
-            }
-            devices.setAgentId(agentId);
-            save(devices);
-        }
     }
 
 }
