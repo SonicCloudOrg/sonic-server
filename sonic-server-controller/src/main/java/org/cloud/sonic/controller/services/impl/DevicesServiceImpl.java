@@ -344,20 +344,34 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     @Override
     public void updatePosition(JSONObject jsonObject) {
         int agentId = jsonObject.getInteger("agentId");
-        Devices devices = findByAgentIdAndUdId(agentId, jsonObject.getString("udId"));
-        if (devices != null) {
-            if (jsonObject.getInteger("position") != null) {
-                Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, agentId)
+        String udId = jsonObject.getString("udId");
+        Integer position = jsonObject.getInteger("position");
+        if (udId.equals("unknown")) {
+            if (position != null) {
+                Devices off = lambdaQuery().eq(Devices::getAgentId, agentId)
                         .eq(Devices::getPosition, jsonObject.getInteger("position")).one();
+                if (off != null) {
+                    off.setPosition(0);
+                    save(off);
+                }
+            }
+            return;
+        }
+        Devices devices = findByUdId(udId);
+        if (devices != null) {
+            if (position != null) {
+                Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, agentId)
+                        .eq(Devices::getPosition, position).one();
                 if (oldPosition != null) {
                     oldPosition.setPosition(0);
                     save(oldPosition);
                 }
-                devices.setPosition(jsonObject.getInteger("position"));
+                devices.setPosition(position);
             }
             if (jsonObject.getInteger("gear") != null) {
                 devices.setGear(jsonObject.getInteger("gear"));
             }
+            devices.setAgentId(agentId);
             save(devices);
         }
     }
