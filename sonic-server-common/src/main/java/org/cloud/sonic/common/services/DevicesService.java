@@ -50,6 +50,7 @@ public interface DevicesService extends IService<Devices> {
 
     Devices findByAgentIdAndUdId(int agentId, String udId);
 
+    Devices findByUdId(String udId);
 
     JSONObject getFilterOption();
 
@@ -71,4 +72,7 @@ public interface DevicesService extends IService<Devices> {
      * 校准所有设备的离线状态（如果设备不在）
      */
     CompletableFuture<Boolean> correctionAllDevicesStatus();
+
+    List<Devices> findByAgentForCabinet(int agentId);
+
 }

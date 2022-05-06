@@ -80,16 +80,4 @@ public class WebAspectConfig {
         logger.info("error : " + ex.getMessage());
     }
 
-    /**
-     * @param jp
-     * @return void
-     * @author ZhouYiXun
-     * @des 方法结束后给出标识
-     * @date 2021/8/15 23:11
-     */
-    @After("webAspect()")
-    public void after(JoinPoint jp) {
-        logger.info("handle end");
-    }
-
 }

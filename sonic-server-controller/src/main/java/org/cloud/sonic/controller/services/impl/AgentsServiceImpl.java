@@ -17,7 +17,6 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -25,6 +24,7 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.apache.dubbo.rpc.service.EchoService;
 import org.cloud.sonic.common.services.AgentsClientService;
+import org.cloud.sonic.common.services.CabinetService;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
 import org.cloud.sonic.common.models.domain.Agents;
 import org.cloud.sonic.common.models.domain.Devices;
@@ -38,19 +38,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @DubboService
-public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService  {
+public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService {
 
     @Autowired
     private DevicesService devicesService;
+    @Autowired
+    private CabinetService cabinetService;
     @Resource
     private AgentsMapper agentsMapper;
-    @DubboReference(parameters = {"router","address"})
+    @DubboReference(parameters = {"router", "address"})
     private AgentsClientService agentsClientService;
 
     @Override
@@ -69,6 +72,8 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setPort(0);
             agents.setSystemType("unknown");
             agents.setSecretKey(UUID.randomUUID().toString());
+            agents.setCabinetId(0);
+            agents.setStorey(0);
             save(agents);
         } else {
             Agents ag = findById(id);
@@ -113,6 +118,13 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     @Transactional
     public boolean updateAgentsByLockVersion(Agents agents) {
+        if (agents.getCabinetId() != 0 && agents.getStorey() != 0) {
+            Agents oldStorey = findByCabinetIdAndStorey(agents.getCabinetId(), agents.getStorey());
+            if (oldStorey != null && (oldStorey.getId() != agents.getId())) {
+                oldStorey.setStorey(0);
+                save(oldStorey);
+            }
+        }
         return lambdaUpdate()
                 .eq(Agents::getId, agents.getId())
                 .eq(Agents::getLockVersion, agents.getLockVersion())
@@ -202,5 +214,31 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public Agents findByCabinetIdAndStorey(int id, int storey) {
+        return lambdaQuery().eq(Agents::getCabinetId, id)
+                .eq(Agents::getStorey, storey).one();
+    }
+
+    @Override
+    public List<JSONObject> findByCabinetForDetail(int id) {
+        List<Agents> agentsList = lambdaQuery().eq(Agents::getCabinetId, id)
+                .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
+        List<JSONObject> result = new ArrayList<>();
+        for (Agents agents : agentsList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("agent", agents);
+            jsonObject.put("devices", devicesService.findByAgentForCabinet(agents.getId()));
+            result.add(jsonObject);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Agents> findByCabinetId(int id) {
+        return lambdaQuery().eq(Agents::getCabinetId, id)
+                .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
     }
 }

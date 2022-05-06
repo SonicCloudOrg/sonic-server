@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @author JayWenStar,Eason
+ * @author JayWenStar, Eason
  * @since 2021-12-17
  */
 @ApiModel(value = "Agents对象", description = "")
@@ -73,4 +73,12 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     @TableField
     @Column(value = "lock_version", isNull = false, defaultValue = "0", comment = "乐观锁，优先保证上下线状态落库")
     private Long lockVersion;
+
+    @TableField
+    @Column(value = "cabinet_id", isNull = false, comment = "机柜Id", defaultValue = "0")
+    private Integer cabinetId;
+
+    @TableField
+    @Column(isNull = false, comment = "机柜层数", defaultValue = "0")
+    private Integer storey;
 }
