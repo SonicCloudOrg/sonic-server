@@ -10,4 +10,4 @@ spring:
 
 # 网关的IP地址
 gateway:
-  host: "http://localhost:8094"
+  host: http://${SERVER_HOST:localhost}:${SONIC_API_PORT:8094}

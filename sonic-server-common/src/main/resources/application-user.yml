@@ -1,22 +1,21 @@
-# 一般除了修改语言、ldap配置之外，不需要动，懂的可以定制修改
+# 一般除了修改语言、ldap配置之外，不需要动
 sonic:
-  i18n: zh_CN
   token:
-    secret: sonic
-    expireDay: 14
+    secret: ${SECRET_KEY:sonic}
+    expireDay: ${EXPIRE_DAY:14}
   user:
     register:
-      enable: true
+      enable: ${REGISTER_ENABLE:true}
     normal:
-      enable: true
+      enable: ${NORMAL_USER_ENABLE:true}
     ldap:
-      enable: true
-      userId: cn
-      userBaseDN: ou=users
+      enable: ${LDAP_USER_ENABLE:true}
+      userId: ${LDAP_USER_ID:cn}
+      userBaseDN: ${LDAP_BASE_DN:ou=users}
 
 spring:
   ldap:
-    base: ou=system
-    username: 'uid=admin,ou=system'
-    password: 'password'
-    urls: ldap://127.0.0.1:10389
+    base: ${LDAP_BASE:ou=system}
+    username: ${LDAP_USERNAME:uid=admin,ou=system}
+    password: ${LDAP_PASSWORD:Sonic!@#123}
+    urls: ${LDAP_URL:ldap://127.0.0.1:10389}
