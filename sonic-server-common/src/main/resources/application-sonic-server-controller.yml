@@ -1,6 +1,8 @@
 # 一般不需要动，懂的可以自己定制
 server:
   port: 0
+
+spring:
   quartz:
     properties:
       org:
@@ -17,16 +19,16 @@ server:
 # 不要默认的定时任务可以去掉
 sonic:
   jobs:
-    fileCron: 0 0 12 * * ?
-    resultCron: 0 0 12 * * ?
-    dayReportCron: 0 0 10 * * ?
-    weekReportCron: 0 0 10 ? * Mon
-    filesKeepDay: 60
-    resultsKeepDay: 60
+    fileCron: ${FILE_CRON:0 0 12 * * ?}
+    resultCron: ${RESULT_CRON:0 0 12 * * ?}
+    dayReportCron: ${DAY_CRON:0 0 10 * * ?}
+    weekReportCron: ${WEEK_CRON:0 0 10 ? * Mon}
+    filesKeepDay: ${FILE_KEEP_DAY:60}
+    resultsKeepDay: ${RESULT_KEEP_DAY:60}
 
 robot:
   client:
-    host: "http://localhost:3000"
+    host: ${CLIENT_HOST:http://localhost:3000}
   img:
     success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/suc.png"
     warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/warn.png"

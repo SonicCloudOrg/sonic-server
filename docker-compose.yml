@@ -1,65 +1,69 @@
 version: '3'
 services:
-  sonic-server-eureka:
-    image: "sonicorg/sonic-server-eureka:v1.3.2-release"
-    hostname: sonic-server-eureka
+  sonic-server-zookeeper:
+    image: "zookeeper:latest"
     environment:
-      - SEC_NAME=sonic #eureka用户名
-      - SEC_PASSWORD=sonic #eureka密码
-      - EUREKA_HOST=sonic-server-eureka
-    volumes:
-      - ./logs/:/logs/
+      - JVMFLAGS="-Xmx1024m"
     networks:
       - sonic-network
     ports:
-      - "9090:9090"
-  sonic-server-bus:
-    image: "sonicorg/sonic-server-bus:v1.3.2-release"
-    environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
-    networks:
-      - sonic-network
-    volumes:
-      - ./config:/config
-      - ./logs/:/logs/
-    depends_on:
-      - sonic-server-eureka
-    restart: on-failure
+      - "2181:2181"
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.3.2-release"
+    image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
     environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
+      - SONIC_API_PORT=8094
+      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_PORT=2181
+      - SECRET_KEY=sonic
+      - EXPIRE_DAY=14
     networks:
       - sonic-network
     volumes:
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-bus
-      - sonic-server-eureka
+      - sonic-server-zookeeper
     ports:
       - "8094:8094"
     restart: on-failure
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.3.2-release"
+    image: "sonicorg/sonic-server-controller:v1.4.0-beta"
     environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
+      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_PORT=2181
+      - MYSQL_HOST=192.168.1.1
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=sonic
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=Sonic!@#123
+      - SERVER_HOST=192.168.1.1
+      - SONIC_API_PORT=8094
+      - SECRET_KEY=sonic
+      - EXPIRE_DAY=14
+      - REGISTER_ENABLE=true
+      - NORMAL_USER_ENABLE=true
+      - LDAP_USER_ENABLE=true
+      - LDAP_USER_ID=cn
+      - LDAP_BASE_DN=ou=users
+      - LDAP_BASE=ou=system
+      - LDAP_USERNAME=uid=admin,ou=system
+      - LDAP_PASSWORD=Sonic!@#123
+      - LDAP_URL=ldap://127.0.0.1:10389
     networks:
       - sonic-network
     volumes:
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-bus
-      - sonic-server-eureka
-      - sonic-server-gateway
+      - sonic-server-zookeeper
     restart: on-failure
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.3.2-release"
+    image: "sonicorg/sonic-server-folder:v1.4.0-beta"
     environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
+      - SERVER_HOST=192.168.1.1
+      - SONIC_API_PORT=8094
+      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_PORT=2181
+      - SECRET_KEY=sonic
+      - EXPIRE_DAY=14
     networks:
       - sonic-network
     volumes:
@@ -69,39 +73,7 @@ services:
       - ./packageFiles/:/packageFiles/
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-bus
-      - sonic-server-eureka
-      - sonic-server-gateway
-    restart: on-failure
-  sonic-server-task:
-    image: "sonicorg/sonic-server-task:v1.3.2-release"
-    environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
-    networks:
-      - sonic-network
-    volumes:
-      - ./logs/:/logs/
-    depends_on:
-      - sonic-server-bus
-      - sonic-server-eureka
-      - sonic-server-gateway
-    restart: on-failure
-  sonic-server-transport:
-    image: "sonicorg/sonic-server-transport:v1.3.2-release"
-    environment:
-      - PROFILE=prod
-      - EUREKA_URL=http://sonic:sonic@sonic-server-eureka:9090/eureka/
-    networks:
-      - sonic-network
-    volumes:
-      - ./logs/:/logs/
-    depends_on:
-      - sonic-server-bus
-      - sonic-server-eureka
-      - sonic-server-gateway
-    ports:
-      - "8095:8095"
+      - sonic-server-zookeeper
     restart: on-failure
 
 networks:

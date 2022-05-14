@@ -3,16 +3,16 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 格式 jdbc:mysql://{mysql ip地址}:{mysql 端口}/{数据库名}
-    url: jdbc:mysql://localhost:3306/sonic?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:sonic}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
     # mysql账号
-    username: root
+    username: ${MYSQL_USERNAME:root}
     # mysql，密码
-    password: Sonic!@#123
+    password: ${MYSQL_PASSWORD:Sonic!@#123}
     initialization-mode: always
     schema:
       - classpath:data.sql
 
-# 一般不需要动，懂的可以自己定制
+# 一般不需要动
 mybatis-plus:
   mapper-locations: classpath:mapping/*.xml, classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
   global-config:
