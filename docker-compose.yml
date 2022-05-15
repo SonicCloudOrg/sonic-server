@@ -2,8 +2,6 @@ version: '3'
 services:
   sonic-server-zookeeper:
     image: "zookeeper:latest"
-    environment:
-      - JVMFLAGS="-Xmx1024m"
     networks:
       - sonic-network
     ports:
@@ -37,6 +35,7 @@ services:
       - MYSQL_PASSWORD=Sonic!@#123
       - SERVER_HOST=192.168.1.1
       - SONIC_API_PORT=8094
+      - DUBBO_PORT=20888
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
       - REGISTER_ENABLE=true
@@ -54,6 +53,8 @@ services:
       - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
+    ports:
+      - "20888:20888"
     restart: on-failure
   sonic-server-folder:
     image: "sonicorg/sonic-server-folder:v1.4.0-beta"
