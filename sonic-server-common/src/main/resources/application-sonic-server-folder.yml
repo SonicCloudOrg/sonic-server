@@ -1,6 +1,5 @@
-# 一般不需要动，懂的可以自己定制
 server:
-  port: 0
+  port: ${SONIC_FOLDER_PORT:0}
 
 spring:
   servlet:
@@ -10,4 +9,4 @@ spring:
 
 # 网关的IP地址
 gateway:
-  host: http://${SERVER_HOST:localhost}:${SONIC_API_PORT:8094}
+  host: http://${SERVER_HOST:localhost}:${SONIC_GATEWAY_PORT:8094}

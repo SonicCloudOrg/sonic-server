@@ -2,26 +2,21 @@ version: '3'
 services:
   sonic-server-zookeeper:
     image: "zookeeper:latest"
-    networks:
-      - sonic-network
-    ports:
-      - "2181:2181"
+    network_mode: "host"
   sonic-server-gateway:
     image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
     environment:
-      - SONIC_API_PORT=8094
+      - SONIC_GATEWAY_PORT=8094
+      - SONIC_CONTROLLER_PORT=0
       - ZOOKEEPER_HOST=192.168.1.1
       - ZOOKEEPER_PORT=2181
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
-    networks:
-      - sonic-network
     volumes:
       - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
-    ports:
-      - "8094:8094"
+    network_mode: "host"
     restart: on-failure
   sonic-server-controller:
     image: "sonicorg/sonic-server-controller:v1.4.0-beta"
@@ -34,7 +29,7 @@ services:
       - MYSQL_USERNAME=root
       - MYSQL_PASSWORD=Sonic!@#123
       - SERVER_HOST=192.168.1.1
-      - SONIC_API_PORT=8094
+      - SONIC_GATEWAY_PORT=8094
       - DUBBO_PORT=20888
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
@@ -47,26 +42,23 @@ services:
       - LDAP_USERNAME=uid=admin,ou=system
       - LDAP_PASSWORD=Sonic!@#123
       - LDAP_URL=ldap://127.0.0.1:10389
-    networks:
-      - sonic-network
+    network_mode: "host"
     volumes:
       - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
-    ports:
-      - "20888:20888"
     restart: on-failure
   sonic-server-folder:
     image: "sonicorg/sonic-server-folder:v1.4.0-beta"
     environment:
       - SERVER_HOST=192.168.1.1
-      - SONIC_API_PORT=8094
+      - SONIC_GATEWAY_PORT=8094
+      - SONIC_FOLDER_PORT=0
       - ZOOKEEPER_HOST=192.168.1.1
       - ZOOKEEPER_PORT=2181
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
-    networks:
-      - sonic-network
+    network_mode: "host"
     volumes:
       - ./keepFiles/:/keepFiles/
       - ./imageFiles/:/imageFiles/
@@ -76,7 +68,3 @@ services:
     depends_on:
       - sonic-server-zookeeper
     restart: on-failure
-
-networks:
-  sonic-network:
-    driver: bridge
