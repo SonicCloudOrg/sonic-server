@@ -49,7 +49,11 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         MappingJacksonValue container = getOrCreateContainer(body);
-        String language = request.getHeaders().getFirst("Accept-Language");
+        String language = "zh_CN";
+        String l = request.getHeaders().getFirst("Accept-Language");
+        if (l != null) {
+            language = l;
+        }
         String[] split = language.split("_");
         Locale locale = new Locale(split[0], split[1]);
         // Get return body
