@@ -7,8 +7,7 @@ services:
     image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
     environment:
       - SONIC_GATEWAY_PORT=8094
-      - SONIC_CONTROLLER_PORT=0
-      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_HOST=localhost
       - ZOOKEEPER_PORT=2181
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
@@ -21,7 +20,7 @@ services:
   sonic-server-controller:
     image: "sonicorg/sonic-server-controller:v1.4.0-beta"
     environment:
-      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_HOST=localhost
       - ZOOKEEPER_PORT=2181
       - MYSQL_HOST=192.168.1.1
       - MYSQL_PORT=3306
@@ -30,6 +29,7 @@ services:
       - MYSQL_PASSWORD=Sonic!@#123
       - SERVER_HOST=192.168.1.1
       - SONIC_GATEWAY_PORT=8094
+      - SONIC_CONTROLLER_PORT=0
       - DUBBO_PORT=20888
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
@@ -54,7 +54,7 @@ services:
       - SERVER_HOST=192.168.1.1
       - SONIC_GATEWAY_PORT=8094
       - SONIC_FOLDER_PORT=0
-      - ZOOKEEPER_HOST=192.168.1.1
+      - ZOOKEEPER_HOST=localhost
       - ZOOKEEPER_PORT=2181
       - SECRET_KEY=sonic
       - EXPIRE_DAY=14
