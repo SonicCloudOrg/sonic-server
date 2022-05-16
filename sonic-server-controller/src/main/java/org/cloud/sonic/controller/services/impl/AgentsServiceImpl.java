@@ -18,6 +18,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.rpc.RpcContext;
@@ -45,6 +46,7 @@ import java.util.UUID;
 
 @Service
 @DubboService
+@Slf4j
 public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService {
 
     @Autowired
@@ -191,6 +193,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             try {
                 res = ((EchoService) agentsClientService).$echo(msg) + "";
             } catch (Exception e) {
+                log.error("调用异常",e);
                 offLine(agents);
                 continue;
             }

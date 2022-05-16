@@ -315,6 +315,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 try {
                     status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
                 } catch (Exception e) {
+                    log.error("调用异常",e);
                     agentsService.offLine(agent);
                     continue;
                 }
