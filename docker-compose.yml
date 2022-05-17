@@ -2,6 +2,9 @@ version: '3'
 services:
   sonic-server-zookeeper:
     image: "zookeeper:latest"
+    environment:
+      - ZOO_TICK_TIME=100
+      - ZOO_ADMINSERVER_ENABLED=false
     network_mode: "host"
   sonic-server-gateway:
     image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
