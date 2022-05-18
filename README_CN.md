@@ -5,7 +5,7 @@
 </p>
 <p align="center">🎉Sonic云真机测试平台</p>
 <p align="center">
-  <a href="https://github.com/SonicCloudOrg/sonic-server/blob/main/README.md">  
+  <a href="https://github.com/SonicCloudOrg/sonic-server-simple/blob/main/README.md">  
     English
   </a>
   <span>| 简体中文</span>
