@@ -29,6 +29,7 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
         String findFKSql = "SELECT CONCAT('ALTER TABLE ', TABLE_NAME,' DROP FOREIGN KEY ',CONSTRAINT_NAME) as ddl " +
                 "FROM information_schema.TABLE_CONSTRAINTS c " +
                 "WHERE c.TABLE_SCHEMA='%s' AND c.CONSTRAINT_TYPE='FOREIGN KEY'";
+        String transSql = "UPDATE QRTZ_JOB_DETAILS set JOB_CLASS_NAME='org.cloud.sonic.controller.quartz.QuartzJob'";
         List<String> deleteSqlList = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()) {
@@ -43,6 +44,12 @@ public class ClearForeignKey implements ApplicationListener<DataSourceSchemaCrea
                 ResultSet resultSet2 = statement.executeQuery(String.format(findFKSql, dataBase));
                 while (resultSet2.next()) {
                     deleteSqlList.add(resultSet2.getString("ddl"));
+                }
+
+                // 版本兼容sql
+                Boolean resultSet3 = statement.execute(String.format(transSql, dataBase));
+                if (!resultSet3) {
+                    log.info(String.format("transfer sql %s failed, ignore...", transSql));
                 }
 
                 // 执行删除外键sql
