@@ -25,4 +25,4 @@ jobs:
     - name: git Actions
       uses: srt32/git-actions@v0.0.3
     - name: get agent
-      run: git clone https://github.com/SonicCloudOrg/sonic-agent.git && cd sonic-agent && mvn package && docker build -t registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta -f src/main/docker/Dockerfile .
+      run: git clone https://github.com/SonicCloudOrg/sonic-agent.git && cd sonic-agent && mvn package -Plinux-x86_64 && docker build -t registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta -f src/main/docker/Dockerfile .
