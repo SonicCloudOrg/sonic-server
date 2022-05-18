@@ -2,15 +2,18 @@ version: '3'
 services:
   sonic-server-zookeeper:
     image: "zookeeper:latest"
+    environment:
+      - ZOO_TICK_TIME=100
+      - ZOO_ADMINSERVER_ENABLED=false
     network_mode: "host"
   sonic-server-gateway:
     image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
     environment:
-      - SONIC_GATEWAY_PORT=8094
-      - ZOOKEEPER_HOST=localhost
-      - ZOOKEEPER_PORT=2181
-      - SECRET_KEY=sonic
-      - EXPIRE_DAY=14
+      - SONIC_GATEWAY_PORT
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
     volumes:
       - ./logs/:/logs/
     depends_on:
@@ -20,28 +23,29 @@ services:
   sonic-server-controller:
     image: "sonicorg/sonic-server-controller:v1.4.0-beta"
     environment:
-      - ZOOKEEPER_HOST=localhost
-      - ZOOKEEPER_PORT=2181
-      - MYSQL_HOST=192.168.1.1
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=sonic
-      - MYSQL_USERNAME=root
-      - MYSQL_PASSWORD=Sonic!@#123
-      - SERVER_HOST=192.168.1.1
-      - SONIC_GATEWAY_PORT=8094
-      - SONIC_CONTROLLER_PORT=0
-      - DUBBO_PORT=20888
-      - SECRET_KEY=sonic
-      - EXPIRE_DAY=14
-      - REGISTER_ENABLE=true
-      - NORMAL_USER_ENABLE=true
-      - LDAP_USER_ENABLE=true
-      - LDAP_USER_ID=cn
-      - LDAP_BASE_DN=ou=users
-      - LDAP_BASE=ou=system
-      - LDAP_USERNAME=uid=admin,ou=system
-      - LDAP_PASSWORD=Sonic!@#123
-      - LDAP_URL=ldap://127.0.0.1:10389
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - MYSQL_HOST
+      - MYSQL_PORT
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+      - SONIC_CONTROLLER_PORT
+      - CLIENT_HOST
+      - DUBBO_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
+      - REGISTER_ENABLE
+      - NORMAL_USER_ENABLE
+      - LDAP_USER_ENABLE
+      - LDAP_USER_ID
+      - LDAP_BASE_DN
+      - LDAP_BASE
+      - LDAP_USERNAME
+      - LDAP_PASSWORD
+      - LDAP_URL
     network_mode: "host"
     volumes:
       - ./logs/:/logs/
@@ -51,13 +55,13 @@ services:
   sonic-server-folder:
     image: "sonicorg/sonic-server-folder:v1.4.0-beta"
     environment:
-      - SERVER_HOST=192.168.1.1
-      - SONIC_GATEWAY_PORT=8094
-      - SONIC_FOLDER_PORT=0
-      - ZOOKEEPER_HOST=localhost
-      - ZOOKEEPER_PORT=2181
-      - SECRET_KEY=sonic
-      - EXPIRE_DAY=14
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+      - SONIC_FOLDER_PORT
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
     network_mode: "host"
     volumes:
       - ./keepFiles/:/keepFiles/
@@ -68,3 +72,11 @@ services:
     depends_on:
       - sonic-server-zookeeper
     restart: on-failure
+  sonic-client-web:
+    image: "sonicorg/sonic-client-web:v1.4.0-beta"
+    environment:
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+    ports:
+      - "3000:80"
+
