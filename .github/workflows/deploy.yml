@@ -29,6 +29,6 @@ jobs:
     - name: login docker hub
       run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
     - name: tag
-      run: docker tag sonicorg/sonic-agent-linux:v1.4.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta
+      run: docker tag sonicorg/sonic-agent-linux:v1.4.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta && docker tag sonicorg/sonic-server-controller:v1.4.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-beta && docker tag sonicorg/sonic-server-folder:v1.4.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-beta && docker tag sonicorg/sonic-server-gateway:v1.4.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-beta
     - name: push
-      run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta
+      run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-beta

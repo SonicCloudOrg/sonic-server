@@ -7,7 +7,7 @@ services:
       - ZOO_ADMINSERVER_ENABLED=false
     network_mode: "host"
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-beta"
     environment:
       - SONIC_GATEWAY_PORT
       - ZOOKEEPER_HOST
@@ -21,7 +21,7 @@ services:
     network_mode: "host"
     restart: on-failure
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-beta"
     environment:
       - ZOOKEEPER_HOST
       - ZOOKEEPER_PORT
@@ -53,7 +53,7 @@ services:
       - sonic-server-zookeeper
     restart: on-failure
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-beta"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
@@ -73,7 +73,7 @@ services:
       - sonic-server-zookeeper
     restart: on-failure
   sonic-client-web:
-    image: "sonicorg/sonic-client-web:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-beta"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
