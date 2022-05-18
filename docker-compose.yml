@@ -75,8 +75,8 @@ services:
   sonic-client-web:
     image: "sonicorg/sonic-client-web:v1.4.0-beta"
     environment:
-      - SERVER_HOST=192.168.1.1
-      - SONIC_GATEWAY_PORT=8094
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
     ports:
       - "3000:80"
 
