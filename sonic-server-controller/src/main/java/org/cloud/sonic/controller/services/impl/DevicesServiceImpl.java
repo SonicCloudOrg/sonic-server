@@ -39,6 +39,7 @@ import org.cloud.sonic.common.services.AgentsClientService;
 import org.cloud.sonic.common.services.AgentsService;
 import org.cloud.sonic.common.services.DevicesService;
 import org.cloud.sonic.common.services.UsersService;
+import org.cloud.sonic.common.tools.DubboThreadPool;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
@@ -315,7 +316,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 try {
                     status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
                 } catch (Exception e) {
-                    log.error("调用异常",e);
+                    // log.error("调用异常",e);
                     agentsService.offLine(agent);
                     continue;
                 }
@@ -348,7 +349,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 }
             }
             return true;
-        });
+        }, DubboThreadPool.get());
     }
 
     @Override
