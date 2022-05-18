@@ -1,3 +1,5 @@
+# 从1.4.0-beta版本开始单机版与集群版合并，本仓库不再维护，后续版本请访问[sonic-server](https://github.com/SonicCloudOrg/sonic-server)。
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
