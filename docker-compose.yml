@@ -8,7 +8,7 @@ services:
       - ZOO_TICK_TIME=100
       - ZOO_ADMINSERVER_ENABLED=false
     ports:
-      - "2181:2181"
+      - "${ZOOKEEPER_PORT}:2181"
   sonic-server-gateway:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-beta"
     environment:
