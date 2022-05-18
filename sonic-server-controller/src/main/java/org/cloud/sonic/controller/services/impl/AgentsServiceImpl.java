@@ -193,7 +193,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             try {
                 res = ((EchoService) agentsClientService).$echo(msg) + "";
             } catch (Exception e) {
-                log.error("调用异常",e);
+                // log.error("调用异常",e);
                 offLine(agents);
                 continue;
             }
