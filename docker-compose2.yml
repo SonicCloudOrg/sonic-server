@@ -1,0 +1,103 @@
+version: '3'
+services:
+  sonic-server-zookeeper:
+    image: "zookeeper:latest"
+    networks:
+      - sonic-network
+    environment:
+      - ZOO_TICK_TIME=100
+      - ZOO_ADMINSERVER_ENABLED=false
+    ports:
+      - "${ZOOKEEPER_PORT}:2181"
+  sonic-server-gateway:
+    image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
+    environment:
+      - SONIC_GATEWAY_PORT
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
+    volumes:
+      - files:/logs/
+    depends_on:
+      - sonic-server-zookeeper
+    networks:
+      - sonic-network
+    ports:
+      - "${SONIC_GATEWAY_PORT}:${SONIC_GATEWAY_PORT}"
+    restart: on-failure
+  sonic-server-controller:
+    image: "sonicorg/sonic-server-controller:v1.4.0-beta"
+    environment:
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - MYSQL_HOST
+      - MYSQL_PORT
+      - MYSQL_DATABASE
+      - MYSQL_USERNAME
+      - MYSQL_PASSWORD
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+      - SONIC_CONTROLLER_PORT
+      - CLIENT_HOST
+      - DUBBO_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
+      - REGISTER_ENABLE
+      - NORMAL_USER_ENABLE
+      - LDAP_USER_ENABLE
+      - LDAP_USER_ID
+      - LDAP_BASE_DN
+      - LDAP_BASE
+      - LDAP_USERNAME
+      - LDAP_PASSWORD
+      - LDAP_URL
+    networks:
+      - sonic-network
+    volumes:
+      - files:/logs/
+    depends_on:
+      - sonic-server-zookeeper
+    ports:
+      - "${SONIC_CONTROLLER_PORT}:${SONIC_CONTROLLER_PORT}"
+      - "${DUBBO_PORT}:${DUBBO_PORT}"
+    restart: on-failure
+  sonic-server-folder:
+    image: "sonicorg/sonic-server-folder:v1.4.0-beta"
+    environment:
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+      - SONIC_FOLDER_PORT
+      - ZOOKEEPER_HOST
+      - ZOOKEEPER_PORT
+      - SECRET_KEY
+      - EXPIRE_DAY
+    networks:
+      - sonic-network
+    volumes:
+      - files:/keepFiles/
+      - files:/imageFiles/
+      - files:/recordFiles/
+      - files:/packageFiles/
+      - files:/logs/
+    depends_on:
+      - sonic-server-zookeeper
+    restart: on-failure
+    ports:
+      - "${SONIC_FOLDER_PORT}:${SONIC_FOLDER_PORT}"
+  sonic-client-web:
+    image: "sonicorg/sonic-client-web:v1.4.0-beta"
+    environment:
+      - SERVER_HOST
+      - SONIC_GATEWAY_PORT
+    networks:
+      - sonic-network
+    ports:
+      - "${SONIC_CLIENT_PORT}:80"
+
+volumes:
+  files:
+
+networks:
+  sonic-network:
+    driver: bridge
