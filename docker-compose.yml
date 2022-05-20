@@ -18,7 +18,7 @@ services:
       - SECRET_KEY
       - EXPIRE_DAY
     volumes:
-      - files:/logs/
+      - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
     networks:
@@ -55,7 +55,7 @@ services:
     networks:
       - sonic-network
     volumes:
-      - files:/logs/
+      - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
     ports:
@@ -75,11 +75,11 @@ services:
     networks:
       - sonic-network
     volumes:
-      - files:/keepFiles/
-      - files:/imageFiles/
-      - files:/recordFiles/
-      - files:/packageFiles/
-      - files:/logs/
+      - ./keepFiles/:/keepFiles/
+      - ./imageFiles/:/imageFiles/
+      - ./recordFiles/:/recordFiles/
+      - ./packageFiles/:/packageFiles/
+      - ./logs/:/logs/
     depends_on:
       - sonic-server-zookeeper
     restart: on-failure
@@ -94,9 +94,6 @@ services:
       - sonic-network
     ports:
       - "${SONIC_CLIENT_PORT}:80"
-
-volumes:
-  files:
 
 networks:
   sonic-network:
