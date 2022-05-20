@@ -18,7 +18,7 @@ services:
       - SECRET_KEY
       - EXPIRE_DAY
     volumes:
-      - ./logs/:/logs/
+      - files:/logs/
     depends_on:
       - sonic-server-zookeeper
     networks:
@@ -55,11 +55,12 @@ services:
     networks:
       - sonic-network
     volumes:
-      - ./logs/:/logs/
+      - files:/logs/
     depends_on:
       - sonic-server-zookeeper
     ports:
       - "${SONIC_CONTROLLER_PORT}:${SONIC_CONTROLLER_PORT}"
+      - "${DUBBO_PORT}:${DUBBO_PORT}"
     restart: on-failure
   sonic-server-folder:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-beta"
@@ -74,11 +75,11 @@ services:
     networks:
       - sonic-network
     volumes:
-      - ./keepFiles/:/keepFiles/
-      - ./imageFiles/:/imageFiles/
-      - ./recordFiles/:/recordFiles/
-      - ./packageFiles/:/packageFiles/
-      - ./logs/:/logs/
+      - files:/keepFiles/
+      - files:/imageFiles/
+      - files:/recordFiles/
+      - files:/packageFiles/
+      - files:/logs/
     depends_on:
       - sonic-server-zookeeper
     restart: on-failure
@@ -93,6 +94,9 @@ services:
       - sonic-network
     ports:
       - "${SONIC_CLIENT_PORT}:80"
+
+volumes:
+  files:
 
 networks:
   sonic-network:
