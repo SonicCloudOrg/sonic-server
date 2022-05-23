@@ -26,4 +26,9 @@ public interface PublicStepsService extends IService<PublicSteps> {
     PublicStepsDTO findById(int id);
 
     boolean deleteByProjectId(int projectId);
+
+    /**
+     * 复制公共用例
+     */
+    void copyPublicSetpsIds(int id);
 }

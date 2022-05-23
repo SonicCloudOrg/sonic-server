@@ -149,4 +149,28 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         }
         return true;
     }
+
+
+    /**
+     * 复制公共步骤步骤
+     * @param id
+     * @return
+     */
+    @Override
+    public void copyPublicSetpsIds(int id) {
+        PublicSteps ps = publicStepsMapper.selectPublicSteps(id);
+
+        //现插入要复制的公共步骤，在获取最后一个公共步骤的Id，这个ID用来关联子步骤
+        publicStepsMapper.InsertPublicSteps(ps.getName(), ps.getPlatform(), ps.getProjectId());
+        Integer copyPublicStepsId = publicStepsMapper.selectLastPublicSteps();
+
+        //查询公共步骤的子步骤
+        List<Integer> publicStepsStepIds = publicStepsMapper.selectPublicStepsStepsId(ps.getId());
+
+        //用for循环 插入公共步骤和子步骤， （返回的结果是否会按照自己创建的循序 待确定！！！！）
+        for(int stepsId : publicStepsStepIds){
+            publicStepsMapper.InsertPublicStepsSteps(copyPublicStepsId,stepsId);
+        }
+    }
+
 }

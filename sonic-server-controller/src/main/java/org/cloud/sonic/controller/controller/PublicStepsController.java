@@ -117,4 +117,14 @@ public class PublicStepsController {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
+
+    @WebAspect
+    @ApiOperation(value="复制公共步骤",notes="复制对应公共步骤，步骤也会同步")
+    @ApiImplicitParam(name="id",value="公共步骤Id",dataTypeClass = Integer.class)
+    @GetMapping("/copy")
+    public  RespModel<String> copyPublicSteps(@RequestParam(name="id") int id) {
+        //第一步根据传入Id，查询公共步骤
+        publicStepsService.copyPublicSetpsIds(id);
+        return new RespModel<>(RespEnum.COPY_OK);
+    }
 }
