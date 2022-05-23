@@ -123,7 +123,6 @@ public class PublicStepsController {
     @ApiImplicitParam(name="id",value="公共步骤Id",dataTypeClass = Integer.class)
     @GetMapping("/copy")
     public  RespModel<String> copyPublicSteps(@RequestParam(name="id") int id) {
-        //第一步根据传入Id，查询公共步骤
         publicStepsService.copyPublicSetpsIds(id);
         return new RespModel<>(RespEnum.COPY_OK);
     }
