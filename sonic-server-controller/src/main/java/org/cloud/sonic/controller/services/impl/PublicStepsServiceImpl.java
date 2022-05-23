@@ -157,6 +157,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
      * @return
      */
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public void copyPublicSetpsIds(int id) {
         //第一步根据传入Id，查询公共步骤
         PublicSteps ps = publicStepsMapper.selectPublicSteps(id);
