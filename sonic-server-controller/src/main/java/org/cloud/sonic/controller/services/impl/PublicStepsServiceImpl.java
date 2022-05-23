@@ -165,11 +165,11 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         Integer copyPublicStepsId = publicStepsMapper.selectLastPublicSteps();
 
         //查询公共步骤的子步骤
-        List<Integer> publicStepsStepIds = publicStepsMapper.selectPublicStepsStepsId(ps.getId());
+        List<Integer> publicStepsStepIds = publicStepsStepsMapper.selectPublicStepsStepsId(ps.getId());
 
         //用for循环 插入公共步骤和子步骤， （返回的结果是否会按照自己创建的循序 待确定！！！！）
         for(int stepsId : publicStepsStepIds){
-            publicStepsMapper.InsertPublicStepsSteps(copyPublicStepsId,stepsId);
+            publicStepsStepsMapper.InsertPublicStepsSteps(copyPublicStepsId,stepsId);
         }
     }
 
