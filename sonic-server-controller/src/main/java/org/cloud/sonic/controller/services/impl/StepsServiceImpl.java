@@ -18,6 +18,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.*;
@@ -235,5 +236,23 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                 // 填充elements
                 .stream().map(e -> e.convertTo().setElements(elementsMapper.listElementsByStepsId(e.getId())))
                 .collect(Collectors.toList());
+    }
+    /**
+     * 步骤列表:搜索
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform,int page ,int pageSize,
+                                                                  String searchContent){
+        Page<Steps> pageList = new Page<>(page,pageSize);
+        //分页返回数据
+        IPage<Steps> steps = stepsMapper.sreachByEleName(pageList,searchContent);
+        //取出页面里面的数据，转为List<StepDTO>
+        List<StepsDTO> stepsDTOList = steps.getRecords()
+                .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
+
+        handleSteps(stepsDTOList);
+
+        return CommentPage.convertFrom(pageList, stepsDTOList);
     }
 }

@@ -46,4 +46,17 @@ public interface StepsService extends IService<Steps> {
      * 获取公共步骤里面的步骤
      */
     List<StepsDTO> listByPublicStepsId(int publicStepsId);
+
+    /**
+     * 公共步骤信息页，搜索步骤
+     * @param projectId
+     * @param platform
+     * @param page              页码
+     * @param pageSize          页面大小
+     * @param searchContent     搜索的文案；elements表中名字， steps表中的Content
+     * @return                  返回Steps表中步骤；
+     */
+    CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform, int page ,int pageSize,
+                                                           String searchContent);
+
 }

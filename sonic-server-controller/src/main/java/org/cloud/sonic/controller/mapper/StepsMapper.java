@@ -1,6 +1,8 @@
 package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.models.domain.Steps;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,5 +28,19 @@ public interface StepsMapper extends BaseMapper<Steps> {
                 "inner join steps s on pss.steps_id = s.id " +
             "where pss.public_steps_id = #{publicStepsId}")
     List<Steps> listByPublicStepsId(@Param("publicStepsId") int publicStepsId);
+
+
+    @Select("SELECT t.* FROM(" +
+            "SELECT steps.*  FROM  " +
+            "steps," +
+            "steps_elements," +
+            "elements " +
+            "WHERE " +
+            "steps.id = steps_elements.steps_id  " +
+            "AND steps_elements.elements_id = elements.id  " +
+            "AND elements.ele_name LIKE '%${ele_name}%'  " +
+            "union  " +
+            "SELECT * FROM steps WHERE content LIKE '%${ele_name}%') t ORDER BY id DESC")
+    IPage<Steps> sreachByEleName(Page<?> page , @Param("ele_name") String eleName);
 
 }
