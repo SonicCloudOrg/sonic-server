@@ -108,4 +108,12 @@ public class ElementsController {
             return new RespModel<>(RespEnum.UPDATE_FAIL);
         }
     }
+
+    @WebAspect
+    @ApiOperation(value = "复制控件元素",notes ="复制空间元素，按照元素ID")
+    @ApiImplicitParam(name ="id",value = "元素id",dataTypeClass = Integer.class)
+    @GetMapping("/copyEle")
+    public RespModel<String> copy(@RequestParam(name ="id") int id){
+        return elementsService.copy(id);
+    }
 }

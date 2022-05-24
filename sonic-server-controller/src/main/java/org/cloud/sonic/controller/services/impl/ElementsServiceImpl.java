@@ -110,4 +110,15 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     public boolean deleteByProjectId(int projectId) {
         return baseMapper.delete(new LambdaQueryWrapper<Elements>().eq(Elements::getProjectId, projectId)) > 0;
     }
+
+
+    /**
+     * 复制控件元素
+     * @param id 元素id
+     */
+    @Override
+    public RespModel copy(int id) {
+        elementsMapper.insetById(id);
+        return new RespModel<>(RespEnum.COPY_OK);
+    }
 }
