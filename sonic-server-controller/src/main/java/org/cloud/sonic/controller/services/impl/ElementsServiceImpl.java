@@ -117,8 +117,16 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
      * @param id 元素id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public RespModel copy(int id) {
-        elementsMapper.insetById(id);
+        elementsMapper.insetSelectById(id);
+
+        Elements elements = elementsMapper.selectById(id);
+        String eleName = elements.getEleName();
+
+        int copyEleId = elementsMapper.selectByEleName(eleName);
+        elementsMapper.updateName(copyEleId,eleName);
+
         return new RespModel<>(RespEnum.COPY_OK);
     }
 }

@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.cloud.sonic.controller.mapper.PublicStepsMapper;
-import org.cloud.sonic.controller.mapper.TestCasesMapper;
-import org.cloud.sonic.controller.mapper.TestSuitesTestCasesMapper;
+import org.cloud.sonic.common.http.RespEnum;
+import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.common.models.domain.*;
 import org.cloud.sonic.common.models.dto.StepsDTO;
 import org.cloud.sonic.common.services.GlobalParamsService;
@@ -49,11 +49,24 @@ import java.util.stream.Collectors;
 @DubboService
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
-    @Autowired private StepsService stepsService;
-    @Autowired private PublicStepsMapper publicStepsMapper;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired private TestSuitesService testSuitesService;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private PublicStepsMapper publicStepsMapper;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesMapper testCasesMapper;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private ElementsMapper elementsMapper;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
 
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
@@ -169,5 +182,44 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         }
         Set<Integer> caseIdSet = steps.stream().map(Steps::getCaseId).collect(Collectors.toSet());
         return lambdaQuery().in(TestCases::getId, caseIdSet).list();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean copyTestById(int id) {
+        // testcase 复制用例， id自增
+        testCasesMapper.insertTestById(id);
+
+        TestCases testCases = testCasesMapper.selectById(id);
+        String tcName = testCases.getName();
+
+        Integer copyCaseId = testCasesMapper.testCopyCaseId(tcName);
+
+        TestCases copytc = testCasesMapper.selectById(copyCaseId);
+        String name = copytc.getName();
+        testCasesMapper.updateCaseNameAndTimeById(copyCaseId,name);
+
+        int stepsMidId = stepsMapper.maxStepId();
+        stepsMapper.insertCopyCaseSteps(id);
+
+        List<Integer> copyCaseStepsList = stepsMapper.selectCopyCaseIdList(id);
+        for (int copyStepId : copyCaseStepsList) {
+            if (copyStepId > stepsMidId) {
+                stepsMapper.updateCopyStepCaseId(copyCaseId, copyStepId);
+            }
+        }
+
+        List<Integer> needInsertElementId = elementsMapper.selectNeedCopyEleId(id);
+        List<Integer> stepsIdNeedInertElementId = stepsMapper.selectNeedInsertElementsSteps(copyCaseId);
+
+        for (int elementStepsId : stepsIdNeedInertElementId) {
+            stepsElementsMapper.insertByStepsId(elementStepsId);
+        }
+        for (int i = 0; i < stepsIdNeedInertElementId.size(); i++){
+            int stepsId = stepsIdNeedInertElementId.get(i);
+            int elementId = needInsertElementId.get(i);
+            stepsElementsMapper.updateElementById(elementId,stepsId);
+        }
+        return true;
     }
 }
