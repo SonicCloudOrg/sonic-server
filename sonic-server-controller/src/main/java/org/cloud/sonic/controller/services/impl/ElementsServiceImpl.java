@@ -41,12 +41,9 @@ import java.util.stream.Collectors;
 @DubboService
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
-    @Autowired
-    private ElementsMapper elementsMapper;
-    @Autowired
-    private StepsService stepsService;
-    @Autowired
-    private TestCasesService testCasesService;
+    @Autowired private ElementsMapper elementsMapper;
+    @Autowired private StepsService stepsService;
+    @Autowired private TestCasesService testCasesService;
 
     @Override
     public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Page<Elements> pageable) {
@@ -118,14 +115,10 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RespModel copy(int id) {
-        elementsMapper.insetSelectById(id);
-
-        Elements elements = elementsMapper.selectById(id);
-        String eleName = elements.getEleName();
-
-        int copyEleId = elementsMapper.selectByEleName(eleName);
-        elementsMapper.updateName(copyEleId,eleName);
+    public RespModel<String> copy(int id) {
+        Elements element = elementsMapper.selectById(id);
+        element.setId(null).setEleName(element.getEleName()+"_copy");
+        save(element);
 
         return new RespModel<>(RespEnum.COPY_OK);
     }

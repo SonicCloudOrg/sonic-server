@@ -159,20 +159,21 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     @Override
     @Transactional(rollbackFor=Exception.class)
     public void copyPublicSetpsIds(int id) {
-        //第一步根据传入Id，查询公共步骤
-        PublicSteps ps = publicStepsMapper.selectPublicSteps(id);
+        PublicSteps ps = publicStepsMapper.selectById(id);
+        ps.setId(null).setName(ps.getName() + "_copy");
+        save(ps);
 
-        //现插入要复制的公共步骤，在获取最后一个公共步骤的Id，这个ID用来关联子步骤
-        publicStepsMapper.InsertPublicSteps(ps.getName(), ps.getPlatform(), ps.getProjectId());
-        Integer copyPublicStepsId = publicStepsMapper.selectLastPublicSteps();
+        LambdaQueryWrapper<PublicStepsSteps> queryWrapper = new LambdaQueryWrapper<>();
+        List<PublicStepsSteps> list = publicStepsStepsMapper.selectList(
+                                                queryWrapper.eq(PublicStepsSteps::getPublicStepsId, id));
 
-        //查询公共步骤的子步骤
-        List<Integer> publicStepsStepIds = publicStepsStepsMapper.selectPublicStepsStepsId(ps.getId());
-
-        //用for循环 插入公共步骤和子步骤
-        for(int stepsId : publicStepsStepIds){
-            publicStepsStepsMapper.InsertPublicStepsSteps(copyPublicStepsId,stepsId);
+        for (PublicStepsSteps publicStepsSteps : list) {
+            // 保存 public_step 与 最外层step 映射关系
+            publicStepsStepsMapper.insert(
+                    new PublicStepsSteps()
+                            .setPublicStepsId(ps.getId())
+                            .setStepsId(publicStepsSteps.getStepsId())
+            );
         }
     }
-
 }

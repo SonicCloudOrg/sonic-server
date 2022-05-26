@@ -23,17 +23,7 @@ public interface ElementsMapper extends BaseMapper<Elements> {
             "where se.steps_id = #{stepId}")
     List<ElementsDTO> listElementsByStepsId(@Param("stepId") Integer stepId);
 
-    @Insert("INSERT INTO elements(ele_name,ele_type,ele_value,project_id) " +
-            "SELECT ele_name,ele_type,ele_value,project_id FROM elements WHERE id =${id}")
-    void insetSelectById(@Param("id")Integer id);
 
-    @Select("SELECT steps_elements.elements_id FROM  steps,steps_elements WHERE steps.id = steps_elements.steps_id " +
-            "AND steps.case_id = ${id} ;")
 
-    List<Integer>  selectNeedCopyEleId(@Param("id") int id);
-    @Select("SELECT id FROM elements WHERE ele_name ='${name}' Order BY id DESC LIMIT 1")
-    int selectByEleName(@Param("name") String name );
 
-    @Update("UPDATE elements set ele_name='${name}_copy' WHERE id =${id} ")
-    void updateName(@Param("id") Integer id,@Param("name") String name);
 }

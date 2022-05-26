@@ -30,27 +30,6 @@ public interface PublicStepsMapper extends BaseMapper<PublicSteps> {
     @Select("select id,name from public_steps where project_id=#{projectId} and platform=#{platform} order by id desc")
     List<Map<Integer, String>> findByProjectIdAndPlatform(@Param("projectId") int projectId, @Param("platform") int platform);
 
-    /**
-     * 查询公共步骤
-     * @param id
-     * @return
-     */
-    @Select("select * from public_steps where id =${id}")
-    PublicSteps selectPublicSteps(@Param("id") Integer id);
-
-    //查询公共步骤最后一个（ID最大值）
-    @Select("select Max(id) from public_steps ")
-    Integer selectLastPublicSteps();
 
 
-
-    /**
-     * 插入公共步骤
-     * @param name
-     * @param platForm
-     * @param projectId
-     */
-    @Insert("Insert INTO public_steps(name,platform,project_id) VALUES('${name}_copy',${platform},${project_id}) ")
-    Integer InsertPublicSteps(@Param("name")String name,
-                              @Param("platform") int platForm,@Param("project_id") int projectId);
 }

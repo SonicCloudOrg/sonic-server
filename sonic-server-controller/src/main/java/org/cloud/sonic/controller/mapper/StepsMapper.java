@@ -41,21 +41,7 @@ public interface StepsMapper extends BaseMapper<Steps> {
             "SELECT * FROM steps WHERE content LIKE '%${ele_name}%') t ORDER BY id DESC")
     IPage<Steps> sreachByEleName(Page<?> page , @Param("ele_name") String eleName);
 
-    @Select("SELECT max(id) from steps")
-    int maxStepId();
 
-    @Insert("INSERT INTO steps( `parent_id`, `case_id`, `content`, `error`, `platform`, `project_id`, `sort`, `step_type`, `text`, `condition_type`) \n" +
-            "SELECT  `parent_id`, `case_id`, `content`, `error`, `platform`, `project_id`, `sort`, `step_type`, `text`, `condition_type`\n" +
-            "FROM steps WHERE case_id = ${id}")
-    void insertCopyCaseSteps(@Param("id") int id);
 
-    @Select("select id from steps where case_id = ${id}")
-    List<Integer> selectCopyCaseIdList(@Param("id") int id);
-
-    @Update("UPDATE steps set case_id = ${case_id} where id = ${id}")
-    void updateCopyStepCaseId(@Param("case_id")Integer caseId,@Param("id") Integer stepsId);
-
-    @Select("select * FROM steps WHERE  content = '' AND case_id = ${id}")
-    List<Integer> selectNeedInsertElementsSteps(@Param("id")int Id);
 
 }

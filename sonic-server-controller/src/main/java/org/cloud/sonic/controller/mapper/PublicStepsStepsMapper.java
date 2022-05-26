@@ -16,21 +16,4 @@ import java.util.List;
  */
 @Mapper
 public interface PublicStepsStepsMapper extends BaseMapper<PublicStepsSteps> {
-
-    /**
-     * 插入公共步骤关联的Id
-     * @param publicStepsId
-     * @param stepsId
-     */
-    @Insert("INSERT INTO public_steps_steps (public_steps_id,steps_id) VALUES (${public_steps_id},${steps_id})")
-    Integer InsertPublicStepsSteps(@Param("public_steps_id")Integer publicStepsId, @Param("steps_id")Integer stepsId);
-
-    /**
-     *查找公共步骤的子步骤
-     * @param publicStepsId
-     * @return
-     */
-    @Select("SELECT steps_id FROM public_steps_steps WHERE public_steps_id = ${public_steps_id}")
-    List<Integer> selectPublicStepsStepsId(@Param("public_steps_id")Integer publicStepsId);
-
 }
