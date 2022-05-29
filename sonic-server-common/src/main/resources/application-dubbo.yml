@@ -12,3 +12,6 @@ dubbo:
     check: true
   consumer:
     check: false
+    timeout: 3000
+  provider:
+    timeout: 3000
