@@ -36,7 +36,21 @@ public interface AgentsService extends IService<Agents> {
     @Deprecated
     boolean offLine(int id);
 
+    /**
+     * 下线agent的所有设备，并且agent也下线
+     * 注意：依赖乐观锁，防止zk下线通知跟网络请求乱序导致的状态错乱
+     *
+     * @param agents agent对象
+     */
     void offLine(Agents agents);
+
+    /**
+     * 下线agent的所有设备，并且agent状态设置成agentStatus（禁止设置成在线状态）
+     *
+     * @param agents        agent对象
+     * @param agentStatus   agent状态 {@link org.cloud.sonic.common.models.interfaces.AgentStatus}
+     */
+    void offLine(Agents agents, int agentStatus);
 
     int auth(String key);
 
