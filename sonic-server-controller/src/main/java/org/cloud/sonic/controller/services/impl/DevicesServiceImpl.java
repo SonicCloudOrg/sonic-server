@@ -33,6 +33,7 @@ import org.cloud.sonic.common.models.domain.TestSuitesDevices;
 import org.cloud.sonic.common.models.domain.Users;
 import org.cloud.sonic.common.models.http.DeviceDetailChange;
 import org.cloud.sonic.common.models.http.UpdateDeviceImg;
+import org.cloud.sonic.common.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.models.interfaces.DeviceStatus;
 import org.cloud.sonic.common.models.params.DevicesSearchParams;
 import org.cloud.sonic.common.services.AgentsClientService;
@@ -317,7 +318,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                     status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
                 } catch (Exception e) {
                     // log.error("调用异常",e);
-                    agentsService.offLine(agent);
+                    agentsService.offLine(agent, AgentStatus.S2AE);
                     continue;
                 }
                 // agent收到的status

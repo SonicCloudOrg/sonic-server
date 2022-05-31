@@ -7,4 +7,6 @@ package org.cloud.sonic.common.models.interfaces;
 public interface AgentStatus {
     int ONLINE = 1;
     int OFFLINE = 2;
+    // Server to agent error.
+    int S2AE = 3;
 }

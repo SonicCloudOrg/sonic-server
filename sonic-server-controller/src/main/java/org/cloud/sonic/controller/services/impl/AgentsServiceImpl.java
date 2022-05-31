@@ -150,9 +150,14 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
 
     @Override
     public void offLine(Agents agentOffLine) {
-        agentOffLine.setStatus(AgentStatus.OFFLINE);
-        updateAgentsByLockVersion(agentOffLine);
-        resetDevice(agentOffLine.getId());
+        offLine(agentOffLine, AgentStatus.OFFLINE);
+    }
+
+    @Override
+    public void offLine(Agents agents, int agentStatus) {
+        agents.setStatus(agentStatus);
+        updateAgentsByLockVersion(agents);
+        resetDevice(agents.getId());
     }
 
     @Override
