@@ -31,7 +31,6 @@ import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.common.tools.BeanTool;
-import org.cloud.sonic.controller.feign.TransportFeignClient;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.common.models.base.CommentPage;
 import org.cloud.sonic.common.models.base.TypeConverter;
