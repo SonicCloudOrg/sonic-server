@@ -2,8 +2,8 @@ package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.cloud.sonic.common.models.domain.Devices;
-import org.cloud.sonic.common.models.params.DevicesSearchParams;
+import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.params.DevicesSearchParams;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

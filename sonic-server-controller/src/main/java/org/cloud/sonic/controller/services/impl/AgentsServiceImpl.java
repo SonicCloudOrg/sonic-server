@@ -19,20 +19,14 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
-import org.apache.dubbo.rpc.service.EchoService;
-import org.cloud.sonic.common.services.AgentsClientService;
-import org.cloud.sonic.common.services.CabinetService;
+import org.cloud.sonic.controller.services.CabinetService;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
-import org.cloud.sonic.common.models.domain.Agents;
-import org.cloud.sonic.common.models.domain.Devices;
-import org.cloud.sonic.common.models.interfaces.AgentStatus;
-import org.cloud.sonic.common.models.interfaces.DeviceStatus;
-import org.cloud.sonic.common.services.AgentsService;
-import org.cloud.sonic.common.services.DevicesService;
+import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.interfaces.AgentStatus;
+import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.services.AgentsService;
+import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +39,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@DubboService
 @Slf4j
 public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> implements AgentsService {
 
@@ -55,8 +48,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     private CabinetService cabinetService;
     @Resource
     private AgentsMapper agentsMapper;
-    @DubboReference(parameters = {"router", "address"})
-    private AgentsClientService agentsClientService;
 
     @Override
     public List<Agents> findAgents() {
@@ -150,14 +141,9 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
 
     @Override
     public void offLine(Agents agentOffLine) {
-        offLine(agentOffLine, AgentStatus.OFFLINE);
-    }
-
-    @Override
-    public void offLine(Agents agents, int agentStatus) {
-        agents.setStatus(agentStatus);
-        updateAgentsByLockVersion(agents);
-        resetDevice(agents.getId());
+        agentOffLine.setStatus(AgentStatus.OFFLINE);
+        updateAgentsByLockVersion(agentOffLine);
+        resetDevice(agentOffLine.getId());
     }
 
     @Override
@@ -185,43 +171,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     public Agents findBySecretKey(String secretKey) {
         return lambdaQuery().eq(Agents::getSecretKey, secretKey).one();
-    }
-
-    @Override
-    public void correctionStatus() {
-        List<Agents> agentsList = findAgents();
-        String msg = "OK";
-        String res = "";
-        for (Agents agents : agentsList) {
-            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            try {
-                res = ((EchoService) agentsClientService).$echo(msg) + "";
-            } catch (Exception e) {
-                // log.error("调用异常",e);
-                offLine(agents);
-                continue;
-            }
-            if (!msg.equals(res)) {
-                offLine(agents);
-            }
-        }
-    }
-
-    @Override
-    public boolean checkOnline(Agents agents) {
-        if (ObjectUtils.isEmpty(agents)) {
-            return false;
-        }
-        try {
-            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            String msg = "OK";
-            String res = ((EchoService) agentsClientService).$echo(msg) + "";
-            return msg.equals(res);
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     @Override

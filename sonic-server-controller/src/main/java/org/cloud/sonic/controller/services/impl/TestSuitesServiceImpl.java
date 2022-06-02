@@ -22,24 +22,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.interfaces.AgentStatus;
-import org.cloud.sonic.common.services.*;
+import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.*;
-import org.cloud.sonic.common.models.dto.*;
-import org.cloud.sonic.common.models.enums.ConditionEnum;
-import org.cloud.sonic.common.models.interfaces.CoverType;
-import org.cloud.sonic.common.models.interfaces.DeviceStatus;
-import org.cloud.sonic.common.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.*;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
+import org.cloud.sonic.controller.models.interfaces.CoverType;
+import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +52,6 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
 
     @Autowired private TestCasesMapper testCasesMapper;
@@ -68,8 +63,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
     @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired private AgentsService agentsService;
-    @DubboReference(parameters = {"router","address"})
-    private AgentsClientService agentsClientService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -224,9 +217,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
             offLineAgentIds.add(agentId);
         } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.runSuite(result);
+//            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
+//            RpcContext.getContext().setObjectAttachment("address", address);
+//            agentsClientService.runSuite(result);
         }
     }
 
@@ -334,9 +327,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
             offLineAgentIds.add(agentId);
         } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.forceStopSuite(result);
+//            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
+//            RpcContext.getContext().setObjectAttachment("address", address);
+//            agentsClientService.forceStopSuite(result);
         }
 
     }

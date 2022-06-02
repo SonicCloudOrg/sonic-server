@@ -21,13 +21,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.ResultDetailMapper;
-import org.cloud.sonic.common.models.domain.Devices;
-import org.cloud.sonic.common.models.domain.ResultDetail;
-import org.cloud.sonic.common.services.DevicesService;
-import org.cloud.sonic.common.services.ResultDetailService;
-import org.cloud.sonic.common.services.ResultsService;
+import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.domain.ResultDetail;
+import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.controller.services.ResultDetailService;
+import org.cloud.sonic.controller.services.ResultsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,6 @@ import java.util.List;
  * @date 2021/8/21 20:55
  */
 @Service
-@DubboService
 public class ResultDetailServiceImpl extends SonicServiceImpl<ResultDetailMapper, ResultDetail> implements ResultDetailService {
 
     @Autowired private ResultDetailMapper resultDetailMapper;

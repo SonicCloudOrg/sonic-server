@@ -21,10 +21,10 @@ import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.Cabinet;
-import org.cloud.sonic.common.models.dto.CabinetDTO;
-import org.cloud.sonic.common.services.CabinetService;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Cabinet;
+import org.cloud.sonic.controller.models.dto.CabinetDTO;
+import org.cloud.sonic.controller.services.CabinetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

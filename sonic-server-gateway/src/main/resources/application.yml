@@ -6,4 +6,4 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: @project.artifactId@,actuator,zookeeper,logging,user
+    active: @project.artifactId@,actuator,eureka,logging,user
