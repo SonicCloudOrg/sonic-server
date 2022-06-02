@@ -1,4 +1,4 @@
-package org.cloud.sonic.common.models.base;
+package org.cloud.sonic.controller.models.base;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.AllArgsConstructor;
