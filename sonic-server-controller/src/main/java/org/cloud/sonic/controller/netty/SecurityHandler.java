@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.cloud.sonic.controller.models.domain.Cabinet;
 import org.cloud.sonic.controller.services.AgentsService;
+import org.cloud.sonic.controller.services.CabinetService;
 import org.cloud.sonic.controller.tools.SpringTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 public class SecurityHandler extends ChannelInboundHandlerAdapter {
     private final Logger logger = LoggerFactory.getLogger(SecurityHandler.class);
     private AgentsService agentsService = SpringTool.getBean(AgentsService.class);
+    private CabinetService cabinetService = SpringTool.getBean(CabinetService.class);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -22,7 +25,7 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         JSONObject jsonMsg = JSON.parseObject((String) msg);
         logger.info("服务器收到Agent: {} 认证消息: {}", ctx.channel().remoteAddress(), jsonMsg);
-        Integer i = agentsService.auth(jsonMsg.getString("key"));
+        Integer i = agentsService.auth(jsonMsg.getString("agentKey"));
         if (i != null && i != 0) {
             logger.info("服务器收到Agent: {} 认证通过！", ctx.channel().remoteAddress());
             ctx.pipeline().remove(SecurityHandler.class);
@@ -31,6 +34,15 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
             auth.put("msg", "auth");
             auth.put("result", "pass");
             auth.put("id", i);
+            if (jsonMsg.getString("cabinetKey") != null) {
+                Cabinet cabinet = cabinetService.getIdByKey(jsonMsg.getString("cabinetKey"));
+                if (cabinet != null) {
+                    auth.put("cabinetAuth", "pass");
+                    auth.put("cabinet", JSON.toJSONString(cabinet));
+                } else {
+                    auth.put("cabinetAuth", "fail");
+                }
+            }
             ctx.channel().writeAndFlush(auth.toJSONString());
         } else {
             logger.info("服务器收到Agent: {} 认证不通过！", ctx.channel().remoteAddress());
