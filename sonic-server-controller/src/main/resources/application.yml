@@ -4,4 +4,4 @@ spring:
     name: @project.artifactId@
     des: "Sonic云真机测试平台 - 控制中心"
   profiles:
-    active: @project.artifactId@,eureka,dubbo,actuator,jdbc,feign,logging,knife4j,user
+    active: @project.artifactId@,eureka,actuator,jdbc,feign,logging,knife4j,user

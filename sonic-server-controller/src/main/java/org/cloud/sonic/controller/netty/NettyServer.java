@@ -51,10 +51,10 @@ public class NettyServer implements ApplicationRunner {
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
         try {
-            logger.info("Netty服务启动: {}", socketAddress);
+            logger.info("Netty Server launch: {}", socketAddress);
             ChannelFuture future = bootstrap.bind(socketAddress).sync();
             if (future.isSuccess()) {
-                logger.info("Netty服务启动成功！");
+                logger.info("Netty Server Start successful!");
             }
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
