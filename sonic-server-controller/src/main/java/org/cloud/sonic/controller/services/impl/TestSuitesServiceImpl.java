@@ -22,24 +22,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.interfaces.AgentStatus;
-import org.cloud.sonic.common.services.*;
+import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.*;
-import org.cloud.sonic.common.models.dto.*;
-import org.cloud.sonic.common.models.enums.ConditionEnum;
-import org.cloud.sonic.common.models.interfaces.CoverType;
-import org.cloud.sonic.common.models.interfaces.DeviceStatus;
-import org.cloud.sonic.common.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.*;
+import org.cloud.sonic.controller.models.enums.ConditionEnum;
+import org.cloud.sonic.controller.models.interfaces.CoverType;
+import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.interfaces.ResultStatus;
+import org.cloud.sonic.controller.netty.NettyServer;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,20 +53,26 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, TestSuites> implements TestSuitesService {
 
-    @Autowired private TestCasesMapper testCasesMapper;
-    @Autowired private DevicesMapper devicesMapper;
-    @Autowired private ResultsService resultsService;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private StepsService stepsService;
-    @Autowired private PublicStepsService publicStepsService;
-    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired private AgentsService agentsService;
-    @DubboReference(parameters = {"router","address"})
-    private AgentsClientService agentsClientService;
+    @Autowired
+    private TestCasesMapper testCasesMapper;
+    @Autowired
+    private DevicesMapper devicesMapper;
+    @Autowired
+    private ResultsService resultsService;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private PublicStepsService publicStepsService;
+    @Autowired
+    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired
+    private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired
+    private AgentsService agentsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -143,7 +146,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
                 // 不要用List.of，它的实现ImmutableCollections无法被序列化
-                suite.put("device", new ArrayList<>(){{add(devices);}});
+                suite.put("device", new ArrayList<>() {{
+                    add(devices);
+                }});
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -165,11 +170,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suiteDetail.add(suite);
             }
             JSONObject result = new JSONObject();
+            result.put("msg", "suite");
+            result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                result.put("id", id);
-                result.put("pf", testSuitesDTO.getPlatform());
-                runSuite(id, offLineAgentIds, result);
+                if (NettyServer.getMap().get(id) != null) {
+                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                }
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -203,31 +210,16 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suiteDetail.add(suite);
             }
             JSONObject result = new JSONObject();
+            result.put("msg", "suite");
+            result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                result.put("id", id);
-                result.put("pf", testSuitesDTO.getPlatform());
-                runSuite(id, offLineAgentIds, result);
+                if (NettyServer.getMap().get(id) != null) {
+                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                }
             }
         }
-        if (CollectionUtils.isEmpty(offLineAgentIds)) {
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        }
-        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
-    }
-
-    /**
-     * 外部不应该使用这个接口
-     */
-    public void runSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
-        Agents agent = agentsService.findById(agentId);
-        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-            offLineAgentIds.add(agentId);
-        } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.runSuite(result);
-        }
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @Override
@@ -283,7 +275,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suite.put("cid", testCases.getId());
                 Devices devices = devicesList.get(deviceIndex);
                 // 不要用List.of，它的实现ImmutableCollections无法被序列化
-                suite.put("device", new ArrayList<>(){{add(devices);}});
+                suite.put("device", new ArrayList<>() {{
+                    add(devices);
+                }});
                 if (deviceIndex == devicesList.size() - 1) {
                     deviceIndex = 0;
                 } else {
@@ -294,11 +288,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 suiteDetail.add(suite);
             }
             JSONObject result = new JSONObject();
+            result.put("msg", "forceStopSuite");
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                result.put("id", id);
-                forceStopSuite(id, offLineAgentIds, result);
+                if (NettyServer.getMap().get(id) != null) {
+                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                }
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -319,27 +315,14 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                result.put("id", id);
-                forceStopSuite(id, offLineAgentIds, result);
+                if (NettyServer.getMap().get(id) != null) {
+                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                }
             }
         }
-        if (CollectionUtils.isEmpty(offLineAgentIds)) {
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        }
-        return new RespModel<>(RespEnum.AGENT_NOT_ONLINE, "agents:「%s」not found or offline".formatted(offLineAgentIds));
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
-    public void forceStopSuite(int agentId, List<Integer> offLineAgentIds, JSONObject result) {
-        Agents agent = agentsService.findById(agentId);
-        if (ObjectUtils.isEmpty(agent) || AgentStatus.OFFLINE == agent.getStatus()) {
-            offLineAgentIds.add(agentId);
-        } else {
-            Address address = new Address(agent.getHost()+"", agent.getRpcPort());
-            RpcContext.getContext().setObjectAttachment("address", address);
-            agentsClientService.forceStopSuite(result);
-        }
-
-    }
 
     @Override
     @Transactional

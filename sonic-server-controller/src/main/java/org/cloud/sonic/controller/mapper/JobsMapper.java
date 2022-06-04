@@ -2,7 +2,7 @@ package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.cloud.sonic.common.models.domain.Jobs;
+import org.cloud.sonic.controller.models.domain.Jobs;
 
 /**
  *  Mapper 接口
