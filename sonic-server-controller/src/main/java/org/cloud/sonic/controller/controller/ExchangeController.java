@@ -15,6 +15,7 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -22,6 +23,7 @@ import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
+import org.cloud.sonic.controller.netty.NettyServer;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/exchange")
@@ -53,30 +57,16 @@ public class ExchangeController {
         if (ObjectUtils.isEmpty(devices)) {
             return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
-
-//        Address address = new Address(agents.getHost() + "", agents.getRpcPort());
-//        RpcContext.getContext().setObjectAttachment("address", address);
-//        boolean deviceOnline;
-//        try {
-//            deviceOnline = agentsClientService.checkDeviceOnline(devices.getUdId(), devices.getPlatform());
-//        } catch (Exception e) {
-//            deviceOnline = false;
-//        }
-//        if (!deviceOnline) {
-//            return new RespModel<>(2001, "reboot.not.online");
-//        }
-//
-//        RpcContext.getContext().setObjectAttachment("address", address);
-//        try {
-//            Boolean reboot = agentsClientService.reboot(devices.getUdId(), devices.getPlatform());
-//            if (reboot) {
-//                return new RespModel<>(RespEnum.HANDLE_OK);
-//            }
-//            return new RespModel<>(2001, "reboot.device.not.found");
-//        } catch (Exception e) {
-//            log.error("Reboot device fail, cause :", e);
-        return new RespModel<>(2001, "reboot.error.unknown");
-//        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg", "reboot");
+        jsonObject.put("udId", devices.getUdId());
+        jsonObject.put("platform", devices.getPlatform());
+        if (NettyServer.getMap().get(agents.getId()) != null) {
+            NettyServer.getMap().get(agents.getId()).writeAndFlush(jsonObject.toJSONString());
+            return new RespModel<>(RespEnum.HANDLE_OK);
+        } else {
+            return new RespModel<>(2001, "reboot.error.unknown");
+        }
     }
 
     @WebAspect
@@ -86,14 +76,13 @@ public class ExchangeController {
         if (agents.getStatus() != AgentStatus.ONLINE) {
             return new RespModel<>(2000, "stop.agent.not.online");
         }
-//        try {
-//            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
-//            RpcContext.getContext().setObjectAttachment("address", address);
-//            agentsClientService.stop();
-//        } catch (Exception e) {
-//            log.error("Stop agent fail, cause :", e);
-//            return new RespModel<>(RespEnum.UNKNOWN_ERROR);
-//        }
-        return new RespModel<>(RespEnum.HANDLE_OK);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("msg", "shutdown");
+        if (NettyServer.getMap().get(agents.getId()) != null) {
+            NettyServer.getMap().get(agents.getId()).writeAndFlush(jsonObject.toJSONString());
+            return new RespModel<>(RespEnum.HANDLE_OK);
+        } else {
+            return new RespModel<>(RespEnum.AGENT_NOT_ONLINE);
+        }
     }
 }
