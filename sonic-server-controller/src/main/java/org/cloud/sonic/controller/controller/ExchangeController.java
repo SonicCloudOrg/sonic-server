@@ -1,18 +1,17 @@
 /**
- *  Copyright (C) [SonicCloudOrg] Sonic Project
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Copyright (C) [SonicCloudOrg] Sonic Project
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.cloud.sonic.controller.controller;
 
@@ -22,6 +21,7 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ExchangeController {
 
-    @Autowired private AgentsService agentsService;
-    @Autowired private DevicesService devicesService;
+    @Autowired
+    private AgentsService agentsService;
+    @Autowired
+    private DevicesService devicesService;
 
     @WebAspect
     @GetMapping("/reboot")
@@ -73,18 +75,17 @@ public class ExchangeController {
 //            return new RespModel<>(2001, "reboot.device.not.found");
 //        } catch (Exception e) {
 //            log.error("Reboot device fail, cause :", e);
-            return new RespModel<>(2001, "reboot.error.unknown");
+        return new RespModel<>(2001, "reboot.error.unknown");
 //        }
     }
 
     @WebAspect
     @GetMapping("/stop")
     public RespModel<String> stop(@RequestParam(name = "id") int id) {
-//        Agents agents = agentsService.findById(id);
-//        boolean online = agentsService.checkOnline(agents);
-//        if (!online) {
-//            return new RespModel<>(2000, "stop.agent.not.online");
-//        }
+        Agents agents = agentsService.findById(id);
+        if (agents.getStatus() != AgentStatus.ONLINE) {
+            return new RespModel<>(2000, "stop.agent.not.online");
+        }
 //        try {
 //            Address address = new Address(agents.getHost() + "", agents.getRpcPort());
 //            RpcContext.getContext().setObjectAttachment("address", address);

@@ -8,18 +8,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.services.AgentsService;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.services.ResultDetailService;
-import org.cloud.sonic.controller.services.ResultsService;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.tools.SpringTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ChannelHandler.Sharable
@@ -29,6 +24,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private AgentsService agentsService = SpringTool.getBean(AgentsService.class);
     private ResultsService resultsService = SpringTool.getBean(ResultsService.class);
     private ResultDetailService resultDetailService = SpringTool.getBean(ResultDetailService.class);
+    private TestCasesService testCasesService = SpringTool.getBean(TestCasesService.class);
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -89,7 +85,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @return          步骤对象
      */
     private JSONObject findSteps(JSONObject jsonMsg, String msg) {
-        LinkedHashMap j = (LinkedHashMap) controllerFeignClient.findSteps(jsonMsg.getInteger("caseId")).getData();
+        JSONObject j = testCasesService.findSteps(jsonMsg.getInteger("caseId"));
         JSONObject steps = new JSONObject();
         steps.put("cid", jsonMsg.getInteger("caseId"));
         steps.put("msg", msg);
@@ -113,7 +109,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         for (Map.Entry<Integer, Channel> entry : NettyServer.getMap().entrySet()) {
             if (entry.getValue().equals(ctx.channel())) {
                 int agentId = entry.getKey();
-                controllerFeignClient.offLine(agentId);
+                agentsService.offLine(agentId);
             }
         }
         ctx.close();
@@ -129,7 +125,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 for (Map.Entry<Integer, Channel> entry : NettyServer.getMap().entrySet()) {
                     if (entry.getValue().equals(ctx.channel())) {
                         int agentId = entry.getKey();
-                        controllerFeignClient.offLine(agentId);
+                        agentsService.offLine(agentId);
                     }
                 }
                 ctx.close();

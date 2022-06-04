@@ -33,7 +33,7 @@ public interface AgentsService extends IService<Agents> {
     void updateName(int id, String name);
 
     // todo 删除
-    @Deprecated
+
     boolean offLine(int id);
 
     void offLine(Agents agents);
