@@ -73,7 +73,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 break;
             case "findSteps":
                 JSONObject steps = findSteps(jsonMsg, "runStep");
-                NettyServer.getMap().get(jsonMsg.getInteger("agentId")).writeAndFlush(steps.toJSONString());
+                if (NettyServer.getMap().get(jsonMsg.getInteger("agentId")) != null) {
+                    NettyServer.getMap().get(jsonMsg.getInteger("agentId")).writeAndFlush(steps.toJSONString());
+                }
                 break;
         }
     }
@@ -81,8 +83,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 查找 & 封装步骤对象
      *
-     * @param jsonMsg   websocket消息
-     * @return          步骤对象
+     * @param jsonMsg websocket消息
+     * @return 步骤对象
      */
     private JSONObject findSteps(JSONObject jsonMsg, String msg) {
         JSONObject j = testCasesService.findSteps(jsonMsg.getInteger("caseId"));
