@@ -232,7 +232,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             JSONObject positionJson = new JSONObject();
             positionJson.put("msg", "position");
             positionJson.put("udId", devices.getUdId());
-            positionJson.put("position", position);
+            positionJson.put("position", devices.getPosition());
             NettyServer.getMap().get(devices.getAgentId()).writeAndFlush(positionJson.toJSONString());
         }
     }

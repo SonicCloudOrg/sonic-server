@@ -3,7 +3,5 @@ spring:
   application:
     name: @project.artifactId@
     des: "Sonic云真机测试平台 - 注册中心"
-  main:
-    allow-bean-definition-overriding: true
   profiles:
     active: @project.artifactId@,actuator,logging
