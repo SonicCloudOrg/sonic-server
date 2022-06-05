@@ -62,7 +62,7 @@ public class NettyServer implements ApplicationRunner {
         } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
-            logger.info("Netty服务器关闭！");
+            logger.info("Netty server shutdown...");
         }
     }
 

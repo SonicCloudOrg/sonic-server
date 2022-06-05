@@ -30,13 +30,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Agent：{} 连接到服务器!", ctx.channel().remoteAddress());
+        logger.info("Agent：{} connect to sonic server!", ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         JSONObject jsonMsg = JSON.parseObject((String) msg);
-        logger.info("服务器收到Agent: {} 消息: {}", ctx.channel().remoteAddress(), jsonMsg);
+        logger.info("Agent {} -> Server message: {}", ctx.channel().remoteAddress(), jsonMsg);
         switch (jsonMsg.getString("msg")) {
             case "battery": {
                 devicesService.refreshDevicesBattery(jsonMsg);
@@ -109,12 +109,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.info("Agent: {} 发生异常 {}", ctx.channel().remoteAddress(), cause.fillInStackTrace());
+        logger.info("Agent: {} error,cause", ctx.channel().remoteAddress());
+        cause.fillInStackTrace();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Agent: {} 连接断开", ctx.channel().remoteAddress());
+        logger.info("Agent: {} disconnected.", ctx.channel().remoteAddress());
         for (Map.Entry<Integer, Channel> entry : NettyServer.getMap().entrySet()) {
             if (entry.getValue().equals(ctx.channel())) {
                 int agentId = entry.getKey();
@@ -130,7 +131,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state().equals(IdleState.READER_IDLE)) {
-                logger.info("Agent: {} 无心跳！关闭连接...", ctx.channel().remoteAddress());
+                logger.info("Agent: {} lose heartbeat! closing connection...", ctx.channel().remoteAddress());
                 for (Map.Entry<Integer, Channel> entry : NettyServer.getMap().entrySet()) {
                     if (entry.getValue().equals(ctx.channel())) {
                         int agentId = entry.getKey();
@@ -140,7 +141,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 ctx.close();
             }
             if (event.state().equals(IdleState.ALL_IDLE)) {
-                logger.info("Agent: {} 读写空闲，发送心跳检测...", ctx.channel().remoteAddress());
+                logger.info("Agent: {} is idle, send heartbeat for activity check...", ctx.channel().remoteAddress());
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("msg", "heartBeat");
                 ctx.channel().writeAndFlush(jsonObject.toJSONString());

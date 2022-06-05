@@ -18,16 +18,16 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Agent：{} 请求连接到服务器!", ctx.channel().remoteAddress());
+        logger.info("Agent：{} request connection to server.", ctx.channel().remoteAddress());
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         JSONObject jsonMsg = JSON.parseObject((String) msg);
-        logger.info("服务器收到Agent: {} 认证消息: {}", ctx.channel().remoteAddress(), jsonMsg);
+        logger.info("Agent: {} -> Server auth: {}", ctx.channel().remoteAddress(), jsonMsg);
         Integer i = agentsService.auth(jsonMsg.getString("agentKey"));
         if (i != null && i != 0) {
-            logger.info("服务器收到Agent: {} 认证通过！", ctx.channel().remoteAddress());
+            logger.info("Agent: {} auth pass!", ctx.channel().remoteAddress());
             ctx.pipeline().remove(SecurityHandler.class);
             ctx.pipeline().addLast(new NettyServerHandler());
             JSONObject auth = new JSONObject();
@@ -45,7 +45,7 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
             }
             ctx.channel().writeAndFlush(auth.toJSONString());
         } else {
-            logger.info("服务器收到Agent: {} 认证不通过！", ctx.channel().remoteAddress());
+            logger.info("Agent: {} auth failed!", ctx.channel().remoteAddress());
             JSONObject result = new JSONObject();
             result.put("msg", "auth");
             result.put("result", "fail");
@@ -56,12 +56,13 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.info("Agent: {} 发生异常 {}", ctx.channel().remoteAddress(), cause.getMessage());
+        logger.info("Agent: {} error,cause", ctx.channel().remoteAddress());
+        cause.fillInStackTrace();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Agent: {} 连接断开", ctx.channel().remoteAddress());
+        logger.info("Agent: {} disconnected.", ctx.channel().remoteAddress());
         ctx.close();
     }
 }
