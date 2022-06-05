@@ -9,6 +9,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.controller.models.domain.Cabinet;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.tools.SpringTool;
@@ -25,6 +26,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private ResultsService resultsService = SpringTool.getBean(ResultsService.class);
     private ResultDetailService resultDetailService = SpringTool.getBean(ResultDetailService.class);
     private TestCasesService testCasesService = SpringTool.getBean(TestCasesService.class);
+    private CabinetService cabinetService = SpringTool.getBean(CabinetService.class);
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -76,6 +78,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 if (NettyServer.getMap().get(jsonMsg.getInteger("agentId")) != null) {
                     NettyServer.getMap().get(jsonMsg.getInteger("agentId")).writeAndFlush(steps.toJSONString());
                 }
+                break;
+            case "errCall":
+                cabinetService.errorCall(
+                        JSON.parseObject(jsonMsg.getString("cabinet"), Cabinet.class)
+                ,jsonMsg.getString("udId"),jsonMsg.getInteger("tem"),jsonMsg.getInteger("type"));
                 break;
         }
     }
