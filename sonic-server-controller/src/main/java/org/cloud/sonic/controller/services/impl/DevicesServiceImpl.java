@@ -31,6 +31,7 @@ import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.models.params.DevicesSearchParams;
+import org.cloud.sonic.controller.netty.NettyServer;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.UsersService;
@@ -227,6 +228,13 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setStatus(jsonMsg.getString("status"));
         }
         save(devices);
+        if (NettyServer.getMap().get(devices.getAgentId()) != null) {
+            JSONObject positionJson = new JSONObject();
+            positionJson.put("msg", "position");
+            positionJson.put("udId", devices.getUdId());
+            positionJson.put("position", position);
+            NettyServer.getMap().get(devices.getAgentId()).writeAndFlush(positionJson.toJSONString());
+        }
     }
 
     @Override
