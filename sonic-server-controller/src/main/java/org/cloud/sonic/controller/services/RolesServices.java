@@ -1,10 +1,10 @@
-package org.cloud.sonic.common.services;
+package org.cloud.sonic.controller.services;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.domain.Roles;
-import org.cloud.sonic.common.models.dto.RolesDTO;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.Roles;
+import org.cloud.sonic.controller.models.dto.RolesDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -10,10 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.domain.Roles;
-import org.cloud.sonic.common.models.dto.RolesDTO;
-import org.cloud.sonic.common.services.RolesServices;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.Roles;
+import org.cloud.sonic.controller.models.dto.RolesDTO;
+import org.cloud.sonic.controller.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

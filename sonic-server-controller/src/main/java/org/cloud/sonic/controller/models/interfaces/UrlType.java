@@ -1,4 +1,4 @@
-package org.cloud.sonic.common.models.interfaces;
+package org.cloud.sonic.controller.models.interfaces;
 
 public interface UrlType {
     int WHITE = 0;

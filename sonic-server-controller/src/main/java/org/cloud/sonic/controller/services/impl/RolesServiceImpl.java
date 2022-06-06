@@ -1,14 +1,14 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.RoleResources;
-import org.cloud.sonic.common.models.domain.Roles;
-import org.cloud.sonic.common.models.dto.RolesDTO;
-import org.cloud.sonic.common.services.RolesServices;
 import org.cloud.sonic.controller.mapper.RoleResourcesMapper;
 import org.cloud.sonic.controller.mapper.RolesMapper;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.RoleResources;
+import org.cloud.sonic.controller.models.domain.Roles;
+import org.cloud.sonic.controller.models.dto.RolesDTO;
+import org.cloud.sonic.controller.services.RolesServices;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

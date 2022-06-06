@@ -1,4 +1,4 @@
-package org.cloud.sonic.common.models.params;
+package org.cloud.sonic.controller.models.params;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

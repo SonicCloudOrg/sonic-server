@@ -21,16 +21,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.domain.Roles;
-import org.cloud.sonic.common.models.dto.UsersDTO;
-import org.cloud.sonic.common.services.RolesServices;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.mapper.UsersMapper;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.Roles;
 import org.cloud.sonic.controller.models.domain.Users;
+import org.cloud.sonic.controller.models.dto.UsersDTO;
 import org.cloud.sonic.controller.models.http.ChangePwd;
 import org.cloud.sonic.controller.models.http.UserInfo;
 import org.cloud.sonic.controller.models.interfaces.UserLoginType;
+import org.cloud.sonic.controller.services.RolesServices;
 import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
@@ -160,7 +160,6 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         Users users = new Users();
         users.setUserName(userInfo.getUserName());
         users.setPassword("");
-        users.setRole(2);
         users.setSource(UserLoginType.LDAP);
         return users;
     }

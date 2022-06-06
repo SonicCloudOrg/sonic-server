@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.domain.Resources;
-import org.cloud.sonic.common.models.dto.ResourcesDTO;
-import org.cloud.sonic.common.models.params.ResourceParam;
-import org.cloud.sonic.common.services.ResourcesService;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.Resources;
+import org.cloud.sonic.controller.models.dto.ResourcesDTO;
+import org.cloud.sonic.controller.models.params.ResourceParam;
+import org.cloud.sonic.controller.services.ResourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

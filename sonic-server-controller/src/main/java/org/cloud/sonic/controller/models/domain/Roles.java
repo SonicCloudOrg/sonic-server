@@ -1,4 +1,4 @@
-package org.cloud.sonic.common.models.domain;
+package org.cloud.sonic.controller.models.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,8 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.dto.RolesDTO;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.dto.RolesDTO;
 
 import java.io.Serializable;
 import java.util.Date;

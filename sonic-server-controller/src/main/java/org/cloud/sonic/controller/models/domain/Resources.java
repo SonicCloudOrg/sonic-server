@@ -1,5 +1,4 @@
-package org.cloud.sonic.common.models.domain;
-
+package org.cloud.sonic.controller.models.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,6 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.dto.ResourcesDTO;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,22 +23,41 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("resource_roles")
-@TableComment("角色资源表表")
+@TableName("resources")
+@TableComment("资源信息表")
 @TableCharset(MySqlCharsetConstant.DEFAULT)
 @TableEngine(MySqlEngineConstant.InnoDB)
-public class RoleResources implements Serializable{
+public class Resources implements Serializable, TypeConverter<Resources, ResourcesDTO> {
+
     @TableId(value = "id", type = IdType.AUTO)
     @IsAutoIncrement
     private Integer id;
 
-    @TableField("role_id")
-    @Column(value = "role_id", isNull = false, comment = "描述")
-    private Integer roleId;
+    @TableField("`desc`")
+    @Column(value = "desc", isNull = false, comment = "描述")
+    private String desc;
 
-    @TableField("res_id")
-    @Column(value = "res_id", isNull = false, comment = "描述")
-    private Integer resId;
+    @TableField
+    @Column(value = "parent_id", isNull = false,defaultValue = "0", comment = "父级 id")
+    private Integer parentId;
+
+    @TableField
+    @Column(value = "method", isNull = false, comment = "请求方法")
+    @Index
+    private String method;
+
+    @TableField
+    @Column(value = "path", isNull = false, comment = "资源路径")
+    @Index
+    private String path;
+
+    @TableField
+    @Column(value = "white", isNull = false,defaultValue = "1", comment = "是否是白名单 url，0是 1 不是")
+    private Integer white;
+
+    @TableField
+    @Column(value = "need_auth", isNull = false,defaultValue = "1", comment = "是否需要鉴权，0 不需要 1 需要")
+    private Integer needAuth;
 
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -50,4 +70,6 @@ public class RoleResources implements Serializable{
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @Column(value = "update_time", type = MySqlTypeConstant.DATETIME, comment = "更新时间")
     Date updateTime;
+
+
 }
