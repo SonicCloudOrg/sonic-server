@@ -1,0 +1,106 @@
+package org.cloud.sonic.controller.services.impl;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.base.TypeConverter;
+import org.cloud.sonic.common.models.domain.RoleResources;
+import org.cloud.sonic.common.models.domain.Roles;
+import org.cloud.sonic.common.models.dto.RolesDTO;
+import org.cloud.sonic.common.services.RolesServices;
+import org.cloud.sonic.controller.mapper.RoleResourcesMapper;
+import org.cloud.sonic.controller.mapper.RolesMapper;
+import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Service
+public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> implements RolesServices {
+
+    @Resource
+    private RoleResourcesMapper roleResourcesMapper;
+
+    @Override
+    @Transactional
+    public void save(RolesDTO rolesDTO) {
+        Roles roles = rolesDTO.convertTo();
+        if (rolesDTO.getId() == null) {
+            save(roles);
+        }else {
+            lambdaUpdate().eq(Roles::getId, roles.getId())
+                    .update(roles);
+        }
+
+    }
+
+    @Override
+    public CommentPage<RolesDTO> listRoles(Page<Roles> page, String roleName) {
+        Page<Roles> roles = lambdaQuery()
+                .like(!StringUtils.isEmpty(roleName), Roles::getRoleName, roleName)
+                .orderByDesc(Roles::getId)
+                .page(page);
+        List<RolesDTO> rolesDTOList = roles.getRecords().stream()
+                .map(TypeConverter::convertTo).collect(Collectors.toList());
+        return CommentPage.convertFrom(page, rolesDTOList);
+    }
+
+    @Override
+    public Map<Integer, Roles> mapRoles(){
+        return lambdaQuery()
+                .orderByDesc(Roles::getId)
+                .list()
+                .stream()
+                .collect(Collectors.toMap(Roles::getId, Function.identity(), (a, b) -> a));
+    }
+
+    @Override
+    public Roles findById(Integer roleId) {
+        return getById(roleId);
+    }
+
+    @Transactional
+    public void editResourceRoles(Integer roleId,Integer resId, boolean hasAuth) {
+        if (hasAuth) {
+            roleResourcesMapper.insert(RoleResources.builder().roleId(roleId).resId(resId).build());
+        }else {
+            roleResourcesMapper.delete(lambdaQuery(roleResourcesMapper)
+                    .eq(RoleResources::getRoleId, roleId)
+                    .eq(RoleResources::getResId, resId));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void saveResourceRoles(Integer roleId, List<Integer> resId) {
+        // 先查询目前角色下所有权限
+        List<RoleResources> roleResourcesList = lambdaQuery(roleResourcesMapper).eq(RoleResources::getRoleId, roleId).list();
+
+        List<Integer> roleResourceIds = roleResourcesList.stream().map(RoleResources::getResId).collect(Collectors.toList());
+        List<Integer> roleResourceCopyIds = roleResourceIds.stream().collect(Collectors.toList());
+        //移除当前角色不需要资源
+        roleResourceIds.removeAll(resId);
+        roleResourcesMapper.delete(lambdaQuery(roleResourcesMapper).eq(RoleResources::getRoleId, roleId).in(RoleResources::getResId, roleResourceIds));
+        //添加当前角色下新权限
+        resId.removeAll(roleResourceCopyIds);
+        resId.stream().map(id -> RoleResources.builder().roleId(roleId).resId(id).build())
+                .forEach(e -> roleResourcesMapper.insert(e));
+    }
+
+    @Transactional
+    @Override
+    public void delete(Integer roleId) {
+        getBaseMapper().deleteById(roleId);
+    }
+
+    @Override
+    public boolean checkUserHasResourceAuthorize(String userName, String path, String method) {
+        int count = roleResourcesMapper.checkUserHasResourceAuthorize(userName, path, method);
+        return count > 0;
+    }
+}

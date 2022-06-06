@@ -44,8 +44,8 @@ public class Users implements Serializable, TypeConverter<Users, UsersDTO> {
     private String password;
 
     @TableField
-    @Column(isNull = false, comment = "角色")
-    private Integer role;
+    @Column(comment = "角色")
+    private Integer userRole;
 
     @TableField
     @Column(value = "user_name", isNull = false, comment = "用户名")

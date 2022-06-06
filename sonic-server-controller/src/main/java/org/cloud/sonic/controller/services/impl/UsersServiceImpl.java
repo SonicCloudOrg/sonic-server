@@ -17,10 +17,15 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.models.base.CommentPage;
+import org.cloud.sonic.common.models.domain.Roles;
+import org.cloud.sonic.common.models.dto.UsersDTO;
+import org.cloud.sonic.common.services.RolesServices;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.mapper.UsersMapper;
 import org.cloud.sonic.common.models.domain.Users;
@@ -41,6 +46,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
+import springfox.documentation.annotations.Cacheable;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -57,6 +70,9 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private RolesServices rolesServices;
 
     @Value("${sonic.user.ldap.enable}")
     private boolean ldapEnable;
@@ -146,7 +162,6 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         Users users = new Users();
         users.setUserName(userInfo.getUserName());
         users.setPassword("");
-        users.setRole(2);
         users.setSource(UserLoginType.LDAP);
         return users;
     }
@@ -189,4 +204,35 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         Assert.hasText(userName, "userName must not be null");
         return lambdaQuery().eq(Users::getUserName, userName).one();
     }
+
+    @Override
+    public CommentPage<UsersDTO> listUsers(Page<Users> page, String userName) {
+
+        Page<Users> users = lambdaQuery()
+                .like(!StringUtils.isEmpty(userName), Users::getUserName, userName)
+                .orderByDesc(Users::getId)
+                .page(page);
+
+        Map<Integer, Roles> rolesMap = rolesServices.mapRoles();
+        final Roles emptyRole = new Roles();
+        List<UsersDTO> rolesDTOList = users.getRecords().stream()
+                .map( e -> {
+                    UsersDTO usersDTO = e.convertTo();
+                    Roles role = rolesMap.getOrDefault(e.getUserRole(), emptyRole);
+                    usersDTO.setRole(role.getId())
+                            .setRoleName(role.getRoleName());
+                    usersDTO.setPassword("");
+                    return usersDTO;
+                }).collect(Collectors.toList());
+        return CommentPage.convertFrom(page, rolesDTOList);
+    }
+
+    @Override
+    public boolean updateUserRole(Integer userId, Integer roleId) {
+        return lambdaUpdate().eq(Users::getId, userId)
+                .set(Users::getUserRole, roleId)
+                .update();
+    }
+
+
 }
