@@ -1,1 +1,0 @@
-loadbalance=org.apache.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance

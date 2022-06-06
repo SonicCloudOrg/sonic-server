@@ -20,10 +20,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.Agents;
-import org.cloud.sonic.common.models.dto.AgentsDTO;
-import org.cloud.sonic.common.services.AgentsService;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.controller.models.dto.AgentsDTO;
+import org.cloud.sonic.controller.services.AgentsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,14 +103,6 @@ public class AgentsController {
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
-    }
-
-    @WebAspect
-    @ApiOperation(value = "校准agent的在线状态", notes = "等心跳中断可能有20s延迟（取决于zk配置），这个接口某些情况能更快速更新状态")
-    @GetMapping("/correction/status")
-    public RespModel<String> correctionStatus() {
-        agentsService.correctionStatus();
-        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @WebAspect

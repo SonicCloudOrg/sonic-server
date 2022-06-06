@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
  */
 @Component
 @Slf4j
-@DependsOn(value = "springTool")
 public class I18nConfig {
 
     @Bean

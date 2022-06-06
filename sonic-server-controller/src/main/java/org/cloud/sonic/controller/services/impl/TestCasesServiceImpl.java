@@ -21,16 +21,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.PublicStepsMapper;
 import org.cloud.sonic.controller.mapper.TestCasesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesTestCasesMapper;
-import org.cloud.sonic.common.models.domain.*;
-import org.cloud.sonic.common.models.dto.StepsDTO;
-import org.cloud.sonic.common.services.GlobalParamsService;
-import org.cloud.sonic.common.services.StepsService;
-import org.cloud.sonic.common.services.TestCasesService;
-import org.cloud.sonic.common.services.TestSuitesService;
+import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.services.GlobalParamsService;
+import org.cloud.sonic.controller.services.StepsService;
+import org.cloud.sonic.controller.services.TestCasesService;
+import org.cloud.sonic.controller.services.TestSuitesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +45,6 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
     @Autowired private StepsService stepsService;
