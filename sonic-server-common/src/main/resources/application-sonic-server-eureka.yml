@@ -20,4 +20,4 @@ eureka:
     register-with-eureka: ${IS_CLUSTERED:false}
     fetch-registry: ${IS_CLUSTERED:false}
     service-url:
-      defaultZone: ${EUREKA_URL:http://sonic:sonic@127.0.0.1:9090/eureka/}
+      defaultZone: http://${SEC_NAME:sonic}:${SEC_PASSWORD:sonic}@${EUREKA_HOST:127.0.0.1}:${EUREKA_PORT:9090}/eureka/

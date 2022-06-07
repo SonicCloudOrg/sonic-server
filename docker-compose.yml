@@ -1,14 +1,18 @@
 version: '3'
 services:
-  sonic-server-zookeeper:
-    image: "zookeeper:latest"
+  sonic-server-eureka:
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.0-release"
+    hostname: sonic-server-eureka
+    environment:
+      - SEC_NAME
+      - SEC_PASSWORD
+      - EUREKA_HOST=sonic-server-eureka
+    volumes:
+      - ./logs/:/logs/
     networks:
       - sonic-network
-    environment:
-      - ZOO_TICK_TIME=100
-      - ZOO_ADMINSERVER_ENABLED=false
     ports:
-      - "${ZOOKEEPER_PORT}:2181"
+      - "9090:9090"
   sonic-server-gateway:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-release"
     environment:
