@@ -81,8 +81,12 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     }
 
     @Override
-    public List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform) {
-        return publicStepsMapper.findByProjectIdAndPlatform(projectId, platform);
+    public List<Map<String, Object>> findByProjectIdAndPlatform(int projectId, int platform) {
+        LambdaQueryWrapper<PublicSteps> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(PublicSteps::getProjectId,projectId)
+                .eq(PublicSteps::getPlatform,platform)
+                .select(PublicSteps::getId,PublicSteps::getName);
+        return publicStepsMapper.selectMaps(lqw);
     }
 
     @Override

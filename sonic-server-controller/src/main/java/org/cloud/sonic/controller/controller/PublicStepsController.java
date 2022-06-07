@@ -72,7 +72,7 @@ public class PublicStepsController {
             @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class),
     })
     @GetMapping("/findNameByProjectId")
-    public RespModel<List<Map<Integer, String>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
+    public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
                                                                  @RequestParam(name = "platform") int platform) {
         return new RespModel<>(RespEnum.SEARCH_OK, publicStepsService.findByProjectIdAndPlatform(projectId, platform));
     }

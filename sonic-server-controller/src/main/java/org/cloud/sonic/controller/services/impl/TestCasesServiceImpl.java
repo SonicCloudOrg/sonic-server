@@ -19,9 +19,11 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.cloud.sonic.common.models.base.TypeConverter;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.common.models.domain.*;
 import org.cloud.sonic.common.models.dto.StepsDTO;
@@ -47,13 +49,20 @@ import java.util.stream.Collectors;
 @DubboService
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
-    @Autowired private StepsService stepsService;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private TestCasesMapper testCasesMapper;
-    @Autowired private StepsMapper stepsMapper;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesMapper testCasesMapper;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
 
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
@@ -171,43 +180,40 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         return lambdaQuery().in(TestCases::getId, caseIdSet).list();
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public  boolean copyTestById(int oldId) {
-        TestCases testCase = testCasesMapper.selectById(oldId);
-        testCase.setId(null).setEditTime(null).setName(testCase.getName()+"_copy");
-        save(testCase);
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public boolean copyTestById(int oldId) {
+//        TestCases testCase = testCasesMapper.selectById(oldId);
+//        testCase.setId(null).setEditTime(null).setName(testCase.getName() + "_copy");
+//        save(testCase);
+//        List<StepsElements> stEleId = stepsElementsMapper.selectCopyElements(oldId);
+//
+//        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
+//        List<Steps> steps = stepsMapper.selectList(lqw.eq(Steps::getCaseId, oldId));
+//
+//        for (int i = 0 ;i < steps.size() ; i++) {
+//            Steps step = steps.get(i);
+//            //找出该步骤的子步骤
+//            List<Steps> stepsList = stepsMapper.selectList(lqw.eq(Steps::getParentId, step.getId()));
+//            //插入该步骤
+//            step.setId(null).setCaseId(testCase.getId());
+//            stepsMapper.insert(step);
+//            //判断该步骤是否有子步骤，有就插入  TODO 重复插入问题
+//            if (stepsList != null) {
+//                for (Steps stepsChild : stepsList) {
+//                    stepsChild.setId(null).setCaseId(testCase.getId()).setParentId(step.getId());
+//                    stepsMapper.insert(stepsChild);
+//                }
+//            }
+//            //插入控件元素
+//            if (stEleId.get(i).getElementsId() != null) {
+//                stepsElementsMapper.insert(new StepsElements()
+//                        .setStepsId(step.getId())
+//                        .setElementsId(stEleId.get(i).getElementsId()));
+//            }
+//        }
+//        return true;
+//    }
 
-        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
-        List<Steps> steps = stepsMapper.selectList(lqw.eq(Steps::getCaseId, oldId));
-        List<Steps> stepsNeedEleList = stepsMapper.selectList(lqw.eq(Steps::getContent, ""));
 
-        for (Steps step : steps) {
-            step.setId(null).setCaseId(testCase.getId());
-            stepsMapper.insert(step);
-        }
-        //steps_elements 表没有需要关联的数据就直接返回成功
-        if (stepsNeedEleList == null || stepsNeedEleList.size() == 0) {
-            return  true;
-        }
-
-        List<StepsElements> stepsElements = new ArrayList<>();
-        for (Steps value : stepsNeedEleList) {
-            LambdaQueryWrapper<StepsElements> lm = new LambdaQueryWrapper<>();
-            List<StepsElements> st = stepsElementsMapper.selectList(lm.eq(StepsElements::getStepsId, value.getId()));
-            stepsElements.add(st.get(0));
-        }
-
-        LambdaQueryWrapper<Steps> lqwNewCaseId = new LambdaQueryWrapper<>();
-        List<Steps> newStepsEleId =stepsMapper.selectList(lqwNewCaseId
-                            .eq(Steps::getContent, "")
-                            .eq(Steps::getCaseId,testCase.getId()));
-        for (int i = 0; i < newStepsEleId.size(); i++) {
-            stepsElementsMapper.insert(
-                    new StepsElements()
-                            .setStepsId(newStepsEleId.get(i).getId())
-                            .setElementsId(stepsElements.get(i).getElementsId()));
-        }
-        return true;
-    }
 }
