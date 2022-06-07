@@ -31,8 +31,7 @@ public class NettyServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws UnknownHostException {
-        InetAddress inetAddress = InetAddress.getLocalHost();
-        InetSocketAddress socketAddress = new InetSocketAddress(inetAddress.getHostAddress(), serverPort);
+        InetSocketAddress socketAddress = new InetSocketAddress(serverPort);
         bossGroup = new NioEventLoopGroup(1);
         workGroup = new NioEventLoopGroup(200);
         ServerBootstrap bootstrap = new ServerBootstrap()
