@@ -141,12 +141,22 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public Devices findByAgentIdAndUdId(int agentId, String udId) {
-        return lambdaQuery().eq(Devices::getAgentId, agentId).eq(Devices::getUdId, udId).one();
+        List<Devices> devicesList = lambdaQuery().eq(Devices::getAgentId, agentId).eq(Devices::getUdId, udId).list();
+        if (devicesList.size() > 0) {
+            return devicesList.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Devices findByUdId(String udId) {
-        return lambdaQuery().eq(Devices::getUdId, udId).one();
+        List<Devices> devicesList = lambdaQuery().eq(Devices::getUdId, udId).list();
+        if (devicesList.size() > 0) {
+            return devicesList.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Override
