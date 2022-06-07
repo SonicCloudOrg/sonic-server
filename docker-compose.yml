@@ -1,16 +1,20 @@
 version: '3'
 services:
-  sonic-server-zookeeper:
-    image: "zookeeper:latest"
+  sonic-server-eureka:
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.0-release"
+    hostname: sonic-server-eureka
+    environment:
+      - SEC_NAME
+      - SEC_PASSWORD
+      - EUREKA_HOST=sonic-server-eureka
+    volumes:
+      - ./logs/:/logs/
     networks:
       - sonic-network
-    environment:
-      - ZOO_TICK_TIME=100
-      - ZOO_ADMINSERVER_ENABLED=false
     ports:
-      - "${ZOOKEEPER_PORT}:2181"
+      - "9090:9090"
   sonic-server-gateway:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-release"
     environment:
       - SONIC_GATEWAY_PORT
       - ZOOKEEPER_HOST
@@ -27,7 +31,7 @@ services:
       - "${SONIC_GATEWAY_PORT}:${SONIC_GATEWAY_PORT}"
     restart: on-failure
   sonic-server-controller:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-release"
     environment:
       - ZOOKEEPER_HOST
       - ZOOKEEPER_PORT
@@ -63,7 +67,7 @@ services:
       - "${DUBBO_PORT}:${DUBBO_PORT}"
     restart: on-failure
   sonic-server-folder:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-release"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
@@ -86,7 +90,7 @@ services:
     ports:
       - "${SONIC_FOLDER_PORT}:${SONIC_FOLDER_PORT}"
   sonic-client-web:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-release"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT

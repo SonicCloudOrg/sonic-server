@@ -1,0 +1,23 @@
+server:
+  port: ${EUREKA_PORT:9090}
+
+spring:
+  security:
+    basic:
+      enabled: true
+    user:
+      name: ${SEC_NAME:sonic}
+      password: ${SEC_PASSWORD:sonic}
+
+eureka:
+  datacenter: sonic-server
+  environment: prod
+  instance:
+    hostname: ${EUREKA_HOST:127.0.0.1}
+    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+  client:
+    #    单机部署的话以下为false
+    register-with-eureka: ${IS_CLUSTERED:false}
+    fetch-registry: ${IS_CLUSTERED:false}
+    service-url:
+      defaultZone: http://${SEC_NAME:sonic}:${SEC_PASSWORD:sonic}@${EUREKA_HOST:127.0.0.1}:${EUREKA_PORT:9090}/eureka/

@@ -19,16 +19,15 @@ package org.cloud.sonic.controller.services.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.ElementsMapper;
-import org.cloud.sonic.common.models.domain.Elements;
-import org.cloud.sonic.common.models.dto.StepsDTO;
-import org.cloud.sonic.common.models.dto.TestCasesDTO;
-import org.cloud.sonic.common.services.ElementsService;
-import org.cloud.sonic.common.services.StepsService;
-import org.cloud.sonic.common.services.TestCasesService;
+import org.cloud.sonic.controller.models.domain.Elements;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.models.dto.TestCasesDTO;
+import org.cloud.sonic.controller.services.ElementsService;
+import org.cloud.sonic.controller.services.StepsService;
+import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@DubboService
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
     @Autowired private ElementsMapper elementsMapper;

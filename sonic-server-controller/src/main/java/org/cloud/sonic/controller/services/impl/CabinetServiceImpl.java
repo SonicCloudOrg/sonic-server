@@ -17,15 +17,10 @@
 package org.cloud.sonic.controller.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
-import org.cloud.sonic.common.models.domain.Agents;
-import org.cloud.sonic.common.models.domain.Cabinet;
-import org.cloud.sonic.common.services.AgentsClientService;
-import org.cloud.sonic.common.services.AgentsService;
-import org.cloud.sonic.common.services.CabinetService;
+import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.controller.models.domain.Cabinet;
+import org.cloud.sonic.controller.services.AgentsService;
+import org.cloud.sonic.controller.services.CabinetService;
 import org.cloud.sonic.controller.mapper.CabinetMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.RobotMsgTool;
@@ -37,7 +32,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@DubboService
 @Slf4j
 public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet> implements CabinetService {
     @Resource
@@ -46,8 +40,6 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
     private AgentsService agentsService;
     @Autowired
     private RobotMsgTool robotMsgTool;
-    @DubboReference(parameters = {"router", "address"})
-    private AgentsClientService agentsClientService;
 
     @Override
     public List<Cabinet> findCabinets() {
@@ -63,13 +55,13 @@ public class CabinetServiceImpl extends SonicServiceImpl<CabinetMapper, Cabinet>
         if (cabinet.getId() != 0) {
             List<Agents> agentsList = agentsService.findByCabinetId(cabinet.getId());
             for (Agents agent : agentsList) {
-                Address address = new Address(agent.getHost() + "", agent.getRpcPort());
-                RpcContext.getContext().setObjectAttachment("address", address);
-                try {
-                    agentsClientService.updateCabinetOption(cabinet);
-                } catch (Exception e) {
-                    continue;
-                }
+//                Address address = new Address(agent.getHost() + "", agent.getRpcPort());
+//                RpcContext.getContext().setObjectAttachment("address", address);
+//                try {
+//                    agentsClientService.updateCabinetOption(cabinet);
+//                } catch (Exception e) {
+//                    continue;
+//                }
             }
         }
     }

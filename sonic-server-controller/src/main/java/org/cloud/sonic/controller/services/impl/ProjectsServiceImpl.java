@@ -16,12 +16,11 @@
  */
 package org.cloud.sonic.controller.services.impl;
 
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.common.services.*;
 import org.cloud.sonic.controller.mapper.ProjectsMapper;
-import org.cloud.sonic.common.models.domain.Projects;
-import org.cloud.sonic.common.models.domain.Results;
+import org.cloud.sonic.controller.models.domain.Projects;
+import org.cloud.sonic.controller.models.domain.Results;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,6 @@ import java.util.List;
  * @date 2021/8/21 20:57
  */
 @Service
-@DubboService
 public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projects> implements ProjectsService {
 
     @Autowired private ElementsService elementsService;

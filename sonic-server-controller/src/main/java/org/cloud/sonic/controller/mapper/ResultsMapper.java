@@ -2,7 +2,7 @@ package org.cloud.sonic.controller.mapper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.cloud.sonic.common.models.domain.Results;
+import org.cloud.sonic.controller.models.domain.Results;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

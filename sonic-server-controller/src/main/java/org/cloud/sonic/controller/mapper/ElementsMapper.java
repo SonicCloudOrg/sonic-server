@@ -1,9 +1,11 @@
 package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.*;
-import org.cloud.sonic.common.models.domain.Elements;
-import org.cloud.sonic.common.models.dto.ElementsDTO;
+import org.cloud.sonic.controller.models.domain.Elements;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Set;
@@ -22,8 +24,4 @@ public interface ElementsMapper extends BaseMapper<Elements> {
                 "inner join elements e on se.elements_id = e.id " +
             "where se.steps_id = #{stepId}")
     List<ElementsDTO> listElementsByStepsId(@Param("stepId") Integer stepId);
-
-
-
-
 }

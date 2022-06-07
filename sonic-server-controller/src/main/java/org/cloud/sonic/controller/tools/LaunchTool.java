@@ -1,6 +1,6 @@
 package org.cloud.sonic.controller.tools;
 
-import org.cloud.sonic.common.models.interfaces.JobType;
+import org.cloud.sonic.controller.models.interfaces.JobType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

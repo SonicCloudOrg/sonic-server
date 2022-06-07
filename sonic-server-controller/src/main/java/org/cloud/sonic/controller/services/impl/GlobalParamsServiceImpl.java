@@ -17,10 +17,9 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.GlobalParamsMapper;
-import org.cloud.sonic.common.models.domain.GlobalParams;
-import org.cloud.sonic.common.services.GlobalParamsService;
+import org.cloud.sonic.controller.models.domain.GlobalParams;
+import org.cloud.sonic.controller.services.GlobalParamsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,6 @@ import java.util.List;
  * @date 2021/10/9 23:28
  */
 @Service
-@DubboService
 public class GlobalParamsServiceImpl extends SonicServiceImpl<GlobalParamsMapper, GlobalParams> implements GlobalParamsService {
 
     @Autowired

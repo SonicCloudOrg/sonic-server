@@ -22,6 +22,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.cloud.sonic.controller.mapper.PublicStepsMapper;
+import org.cloud.sonic.controller.mapper.TestCasesMapper;
+import org.cloud.sonic.controller.mapper.TestSuitesTestCasesMapper;
+import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.services.GlobalParamsService;
+import org.cloud.sonic.controller.services.StepsService;
+import org.cloud.sonic.controller.services.TestCasesService;
+import org.cloud.sonic.controller.services.TestSuitesService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.models.base.TypeConverter;
 import org.cloud.sonic.controller.mapper.*;
@@ -46,23 +55,13 @@ import java.util.stream.Collectors;
  * @date 2021/8/20 17:51
  */
 @Service
-@DubboService
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
-    @Autowired
-    private StepsService stepsService;
-    @Autowired
-    private GlobalParamsService globalParamsService;
-    @Autowired
-    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired
-    private TestSuitesService testSuitesService;
-    @Autowired
-    private TestCasesMapper testCasesMapper;
-    @Autowired
-    private StepsMapper stepsMapper;
-    @Autowired
-    private StepsElementsMapper stepsElementsMapper;
+    @Autowired private StepsService stepsService;
+    @Autowired private PublicStepsMapper publicStepsMapper;
+    @Autowired private GlobalParamsService globalParamsService;
+    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired private TestSuitesService testSuitesService;
 
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
@@ -215,5 +214,3 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 //        return true;
 //    }
 
-
-}

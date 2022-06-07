@@ -1,6 +1,8 @@
 package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.cloud.sonic.controller.models.domain.PublicSteps;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.cloud.sonic.common.models.domain.PublicSteps;
 import org.cloud.sonic.common.models.dto.StepsDTO;
@@ -29,7 +31,4 @@ public interface PublicStepsMapper extends BaseMapper<PublicSteps> {
 
     @Select("select id,name from public_steps where project_id=#{projectId} and platform=#{platform} order by id desc")
     List<Map<Integer, String>> findByProjectIdAndPlatform(@Param("projectId") int projectId, @Param("platform") int platform);
-
-
-
 }

@@ -10,7 +10,7 @@ services:
     ports:
       - "${ZOOKEEPER_PORT}:2181"
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.4.0-beta"
+    image: "sonicorg/sonic-server-gateway:v1.4.0-release"
     environment:
       - SONIC_GATEWAY_PORT
       - ZOOKEEPER_HOST
@@ -27,7 +27,7 @@ services:
       - "${SONIC_GATEWAY_PORT}:${SONIC_GATEWAY_PORT}"
     restart: on-failure
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.4.0-beta"
+    image: "sonicorg/sonic-server-controller:v1.4.0-release"
     environment:
       - ZOOKEEPER_HOST
       - ZOOKEEPER_PORT
@@ -63,7 +63,7 @@ services:
       - "${DUBBO_PORT}:${DUBBO_PORT}"
     restart: on-failure
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.4.0-beta"
+    image: "sonicorg/sonic-server-folder:v1.4.0-release"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
@@ -86,7 +86,7 @@ services:
     ports:
       - "${SONIC_FOLDER_PORT}:${SONIC_FOLDER_PORT}"
   sonic-client-web:
-    image: "sonicorg/sonic-client-web:v1.4.0-beta"
+    image: "sonicorg/sonic-client-web:v1.4.0-release"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
