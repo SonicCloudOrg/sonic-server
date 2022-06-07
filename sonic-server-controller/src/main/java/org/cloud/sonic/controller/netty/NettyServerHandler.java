@@ -110,7 +110,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.info("Agent: {} error,cause", ctx.channel().remoteAddress());
-        cause.fillInStackTrace();
+        cause.printStackTrace();
     }
 
     @Override
