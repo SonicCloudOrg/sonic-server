@@ -124,6 +124,7 @@ public class PublicStepsController {
     @GetMapping("/copy")
     public  RespModel<String> copyPublicSteps(@RequestParam(name="id") int id) {
         publicStepsService.copyPublicSetpsIds(id);
+
         return new RespModel<>(RespEnum.COPY_OK);
     }
 }
