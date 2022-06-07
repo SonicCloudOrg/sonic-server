@@ -6,6 +6,7 @@ services:
     environment:
       - SEC_NAME
       - SEC_PASSWORD
+      - EUREKA_PORT
       - EUREKA_HOST=sonic-server-eureka
     volumes:
       - ./logs/:/logs/
@@ -17,14 +18,16 @@ services:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.0-release"
     environment:
       - SONIC_GATEWAY_PORT
-      - ZOOKEEPER_HOST
-      - ZOOKEEPER_PORT
+      - SEC_NAME
+      - SEC_PASSWORD
+      - EUREKA_PORT
+      - EUREKA_HOST=sonic-server-eureka
       - SECRET_KEY
       - EXPIRE_DAY
     volumes:
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-zookeeper
+      - sonic-server-eureka
     networks:
       - sonic-network
     ports:
@@ -33,8 +36,10 @@ services:
   sonic-server-controller:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.0-release"
     environment:
-      - ZOOKEEPER_HOST
-      - ZOOKEEPER_PORT
+      - SEC_NAME
+      - SEC_PASSWORD
+      - EUREKA_PORT
+      - EUREKA_HOST=sonic-server-eureka
       - MYSQL_HOST
       - MYSQL_PORT
       - MYSQL_DATABASE
@@ -42,9 +47,7 @@ services:
       - MYSQL_PASSWORD
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
-      - SONIC_CONTROLLER_PORT
       - CLIENT_HOST
-      - DUBBO_PORT
       - SECRET_KEY
       - EXPIRE_DAY
       - REGISTER_ENABLE
@@ -61,19 +64,19 @@ services:
     volumes:
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-zookeeper
-    ports:
-      - "${SONIC_CONTROLLER_PORT}:${SONIC_CONTROLLER_PORT}"
-      - "${DUBBO_PORT}:${DUBBO_PORT}"
+      - sonic-server-eureka
     restart: on-failure
+    ports:
+      - "${SONIC_TRANSPORT_PORT}:${SONIC_TRANSPORT_PORT}"
   sonic-server-folder:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.0-release"
     environment:
+      - SEC_NAME
+      - SEC_PASSWORD
+      - EUREKA_HOST=sonic-server-eureka
+      - EUREKA_PORT
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
-      - SONIC_FOLDER_PORT
-      - ZOOKEEPER_HOST
-      - ZOOKEEPER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
     networks:
@@ -85,10 +88,8 @@ services:
       - ./packageFiles/:/packageFiles/
       - ./logs/:/logs/
     depends_on:
-      - sonic-server-zookeeper
+      - sonic-server-eureka
     restart: on-failure
-    ports:
-      - "${SONIC_FOLDER_PORT}:${SONIC_FOLDER_PORT}"
   sonic-client-web:
     image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.0-release"
     environment:
