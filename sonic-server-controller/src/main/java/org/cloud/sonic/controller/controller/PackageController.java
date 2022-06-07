@@ -23,10 +23,10 @@ import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.domain.Packages;
-import org.cloud.sonic.common.models.dto.PackageDTO;
-import org.cloud.sonic.common.services.PackagesService;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.Packages;
+import org.cloud.sonic.controller.models.dto.PackageDTO;
+import org.cloud.sonic.controller.services.PackagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +61,8 @@ public class PackageController {
     public RespModel<CommentPage<PackageDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                       @RequestParam(name = "branch", required = false) String branch,
                                                       @RequestParam(name = "platform", required = false) String platform,
-                                                   @RequestParam(name = "page") int page,
-                                                   @RequestParam(name = "pageSize") int pageSize) {
+                                                      @RequestParam(name = "page") int page,
+                                                      @RequestParam(name = "pageSize") int pageSize) {
 
         Page<Packages> pageable = new Page<>(page, pageSize);
 

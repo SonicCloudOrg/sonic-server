@@ -19,13 +19,12 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.cloud.sonic.common.models.base.CommentPage;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.Packages;
-import org.cloud.sonic.common.models.dto.PackageDTO;
-import org.cloud.sonic.common.services.PackagesService;
 import org.cloud.sonic.controller.mapper.PackagesMapper;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Packages;
+import org.cloud.sonic.controller.models.dto.PackageDTO;
+import org.cloud.sonic.controller.services.PackagesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,6 @@ import java.util.stream.Collectors;
  */
 
 @Service
-@DubboService
 public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packages> implements PackagesService {
 
     @Override

@@ -1,4 +1,4 @@
-package org.cloud.sonic.common.models.dto;
+package org.cloud.sonic.controller.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.common.models.domain.Packages;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Packages;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
