@@ -4,4 +4,4 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: http://${SEC_NAME:sonic}:${SEC_PASSWORD:sonic}@${EUREKA_HOST:127.0.0.1}:${EUREKA_PORT:9090}/eureka/
+      defaultZone: http://${SONIC_EUREKA_USERNAME:sonic}:${SONIC_EUREKA_PASSWORD:sonic}@${SONIC_EUREKA_HOST:127.0.0.1}:${SONIC_EUREKA_PORT:9090}/eureka/
