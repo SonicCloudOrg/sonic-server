@@ -17,17 +17,16 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.mapper.UsersMapper;
-import org.cloud.sonic.common.models.domain.Users;
-import org.cloud.sonic.common.models.http.ChangePwd;
-import org.cloud.sonic.common.models.http.UserInfo;
-import org.cloud.sonic.common.models.interfaces.UserLoginType;
-import org.cloud.sonic.common.services.UsersService;
+import org.cloud.sonic.controller.models.domain.Users;
+import org.cloud.sonic.controller.models.http.ChangePwd;
+import org.cloud.sonic.controller.models.http.UserInfo;
+import org.cloud.sonic.controller.models.interfaces.UserLoginType;
+import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,6 @@ import org.springframework.util.DigestUtils;
  * @date 2021/10/13 11:26
  */
 @Service
-@DubboService
 public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> implements UsersService {
     private final Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
 

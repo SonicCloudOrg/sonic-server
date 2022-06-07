@@ -16,13 +16,13 @@
  */
 package org.cloud.sonic.controller.quartz;
 
-import org.cloud.sonic.common.feign.FolderFeignClient;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.domain.Jobs;
-import org.cloud.sonic.common.models.interfaces.JobType;
-import org.cloud.sonic.common.services.JobsService;
-import org.cloud.sonic.common.services.ResultsService;
-import org.cloud.sonic.common.services.TestSuitesService;
+import org.cloud.sonic.controller.feign.FolderFeignClient;
+import org.cloud.sonic.controller.models.domain.Jobs;
+import org.cloud.sonic.controller.models.interfaces.JobType;
+import org.cloud.sonic.controller.services.JobsService;
+import org.cloud.sonic.controller.services.ResultsService;
+import org.cloud.sonic.controller.services.TestSuitesService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

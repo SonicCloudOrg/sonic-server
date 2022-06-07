@@ -128,7 +128,7 @@ public class APIDocumentConfig {
         return new ApiInfoBuilder()
                 .title(title + " Open API")
                 .termsOfServiceUrl("Please visit: https://github.com/SonicCloudOrg/sonic-server")
-                .contact(new Contact("ZhouYiXun  email: zyx291028775@qq.com", "", ""))
+                .contact(new Contact("SonicCloudOrg  https://github.com/SonicCloudOrg", "", ""))
                 .version(version)
                 .description(name + " service Open API.")
                 .build();

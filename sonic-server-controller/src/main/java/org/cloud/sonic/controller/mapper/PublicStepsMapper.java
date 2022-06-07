@@ -1,8 +1,8 @@
 package org.cloud.sonic.controller.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.cloud.sonic.common.models.domain.PublicSteps;
-import org.cloud.sonic.common.models.dto.StepsDTO;
+import org.cloud.sonic.controller.models.domain.PublicSteps;
+import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
