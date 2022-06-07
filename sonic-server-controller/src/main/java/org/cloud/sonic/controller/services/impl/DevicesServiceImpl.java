@@ -21,25 +21,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.cluster.router.address.Address;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.models.domain.Agents;
-import org.cloud.sonic.common.models.domain.Devices;
-import org.cloud.sonic.common.models.domain.TestSuitesDevices;
-import org.cloud.sonic.common.models.domain.Users;
-import org.cloud.sonic.common.models.http.DeviceDetailChange;
-import org.cloud.sonic.common.models.http.UpdateDeviceImg;
-import org.cloud.sonic.common.models.interfaces.DeviceStatus;
-import org.cloud.sonic.common.models.params.DevicesSearchParams;
-import org.cloud.sonic.common.services.AgentsClientService;
-import org.cloud.sonic.common.services.AgentsService;
-import org.cloud.sonic.common.services.DevicesService;
-import org.cloud.sonic.common.services.UsersService;
-import org.cloud.sonic.common.tools.DubboThreadPool;
+import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.controller.models.domain.Devices;
+import org.cloud.sonic.controller.models.domain.TestSuitesDevices;
+import org.cloud.sonic.controller.models.domain.Users;
+import org.cloud.sonic.controller.models.http.DeviceDetailChange;
+import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
+import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.params.DevicesSearchParams;
+import org.cloud.sonic.controller.netty.NettyServer;
+import org.cloud.sonic.controller.services.AgentsService;
+import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
@@ -63,7 +58,6 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
  * @date 2021/8/16 22:51
  */
 @Service
-@DubboService
 @Slf4j
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
@@ -75,8 +69,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired
     private AgentsService agentsService;
-    @DubboReference(parameters = {"router", "address"})
-    private AgentsClientService agentsClientService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -236,6 +228,13 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setStatus(jsonMsg.getString("status"));
         }
         save(devices);
+        if (NettyServer.getMap().get(devices.getAgentId()) != null) {
+            JSONObject positionJson = new JSONObject();
+            positionJson.put("msg", "position");
+            positionJson.put("udId", devices.getUdId());
+            positionJson.put("position", devices.getPosition());
+            NettyServer.getMap().get(devices.getAgentId()).writeAndFlush(positionJson.toJSONString());
+        }
     }
 
     @Override
@@ -302,54 +301,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             return new RespModel<>(3005, "device.not.offline");
         }
         return new RespModel<>(DELETE_OK);
-    }
-
-    @Override
-    public CompletableFuture<Boolean> correctionAllDevicesStatus() {
-        List<Devices> devicesList = list();
-        return CompletableFuture.supplyAsync(() -> {
-            for (Devices devices : devicesList) {
-                Agents agent = agentsService.findById(devices.getAgentId());
-                Address address = new Address(agent.getHost() + "", agent.getRpcPort());
-                RpcContext.getContext().setObjectAttachment("address", address);
-                String status;
-                try {
-                    status = agentsClientService.getDeviceStatus(devices.getUdId(), devices.getPlatform());
-                } catch (Exception e) {
-                    // log.error("调用异常",e);
-                    agentsService.offLine(agent);
-                    continue;
-                }
-                // agent收到的status
-                switch (status) {
-                    case DeviceStatus.OFFLINE:
-                        // 如果设备不在agent连接且出于这些状态，那么都更新成offline
-                        switch (devices.getStatus()) {
-                            case DeviceStatus.DEBUGGING:
-                            case DeviceStatus.TESTING:
-                            case DeviceStatus.ERROR:
-                            case DeviceStatus.ONLINE:
-                                devices.setStatus(DeviceStatus.OFFLINE);
-                                save(devices);
-                                break;
-                            case DeviceStatus.OFFLINE:
-                                break;
-                        }
-                        break;
-                    // 如果是下面这些状态，就直接更新
-                    case DeviceStatus.DEBUGGING:
-                    case DeviceStatus.TESTING:
-                    case DeviceStatus.ONLINE:
-                        devices.setStatus(status);
-                        save(devices);
-                        break;
-                    // 如果是以下状态，什么都不需要做
-                    case DeviceStatus.UNAUTHORIZED:
-                        break;
-                }
-            }
-            return true;
-        }, DubboThreadPool.get());
     }
 
     @Override

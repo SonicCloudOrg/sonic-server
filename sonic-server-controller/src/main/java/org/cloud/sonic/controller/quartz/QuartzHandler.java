@@ -16,8 +16,8 @@
  */
 package org.cloud.sonic.controller.quartz;
 
-import org.cloud.sonic.common.models.domain.Jobs;
-import org.cloud.sonic.common.models.interfaces.JobType;
+import org.cloud.sonic.controller.models.domain.Jobs;
+import org.cloud.sonic.controller.models.interfaces.JobType;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

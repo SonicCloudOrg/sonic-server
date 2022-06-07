@@ -61,9 +61,8 @@ public class FileTool {
         }
         //防止文件重名
         File local = new File(folder.getPath() + File.separator +
-                UUID.randomUUID() + (file.getOriginalFilename().lastIndexOf(".")==-1?
-                file.getOriginalFilename():file.getOriginalFilename().substring(
-                        file.getOriginalFilename().lastIndexOf("."))));
+                UUID.randomUUID() + file.getOriginalFilename()
+                .substring(file.getOriginalFilename().lastIndexOf(".")));
         try {
             file.transferTo(local.getAbsoluteFile());
         } catch (FileAlreadyExistsException e) {

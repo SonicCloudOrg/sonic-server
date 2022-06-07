@@ -17,10 +17,9 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.cloud.sonic.controller.mapper.ModulesMapper;
-import org.cloud.sonic.common.models.domain.Modules;
-import org.cloud.sonic.common.services.ModulesService;
+import org.cloud.sonic.controller.models.domain.Modules;
+import org.cloud.sonic.controller.services.ModulesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@DubboService
 public class ModulesServiceImpl extends SonicServiceImpl<ModulesMapper, Modules> implements ModulesService {
 
     @Autowired

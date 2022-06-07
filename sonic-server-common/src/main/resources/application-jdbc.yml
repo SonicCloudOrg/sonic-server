@@ -26,7 +26,7 @@ mybatis-plus:
 # 非开发者不要动
 actable:
   model:
-    pack: org.cloud.sonic.common.models.domain
+    pack: org.cloud.sonic.controller.models.domain
   table:
     auto: update
   database:

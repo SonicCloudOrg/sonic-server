@@ -17,7 +17,7 @@
 package org.cloud.sonic.controller.tools;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.common.models.interfaces.RobotType;
+import org.cloud.sonic.controller.models.interfaces.RobotType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
