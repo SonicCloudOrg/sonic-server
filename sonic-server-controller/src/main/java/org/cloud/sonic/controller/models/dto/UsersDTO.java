@@ -34,6 +34,9 @@ public class UsersDTO implements Serializable, TypeConverter<UsersDTO, Users> {
     String password;
 
     @Positive
-    @ApiModelProperty(value = "角色", required = true, example = "1")
+    @ApiModelProperty(value = "角色", required = false, example = "1")
     Integer role;
+
+    @ApiModelProperty(value = "角色名称", required = false, example = "tester")
+    String roleName;
 }
