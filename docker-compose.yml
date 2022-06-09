@@ -47,6 +47,7 @@ services:
       - MYSQL_PASSWORD
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
+      - SONIC_TRANSPORT_PORT
       - CLIENT_HOST
       - SECRET_KEY
       - EXPIRE_DAY
