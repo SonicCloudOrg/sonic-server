@@ -16,6 +16,8 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -33,8 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
 
+@Api(tags = "设备管理相关")
 @RestController
 @RequestMapping("/exchange")
 @Slf4j
@@ -46,6 +48,7 @@ public class ExchangeController {
     private DevicesService devicesService;
 
     @WebAspect
+    @ApiOperation(value = "重启设备", notes = "根据 id 重启特定设备")
     @GetMapping("/reboot")
     public RespModel<String> reboot(@RequestParam(name = "id") int id) {
 
@@ -70,6 +73,7 @@ public class ExchangeController {
     }
 
     @WebAspect
+    @ApiOperation(value = "下线agent", notes = "下线指定的 agent")
     @GetMapping("/stop")
     public RespModel<String> stop(@RequestParam(name = "id") int id) {
         Agents agents = agentsService.findById(id);

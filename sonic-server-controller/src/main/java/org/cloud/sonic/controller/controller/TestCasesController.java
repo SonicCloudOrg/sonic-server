@@ -134,6 +134,7 @@ public class TestCasesController {
     }
 
     @WebAspect
+    @ApiOperation(value = "查找特定步骤信息", notes = "查找id的用例信息")
     @GetMapping("/findSteps")
     public RespModel<JSONObject> findSteps(@RequestParam(name = "id") int id) {
         JSONObject jsonObject = testCasesService.findSteps(id);

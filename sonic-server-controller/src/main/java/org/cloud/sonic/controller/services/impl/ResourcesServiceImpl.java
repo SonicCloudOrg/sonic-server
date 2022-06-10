@@ -18,6 +18,9 @@ import org.cloud.sonic.controller.services.ResourcesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.SpringTool;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,7 +41,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Resources> implements ResourcesService, InitializingBean {
+@Component
+public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Resources> implements ResourcesService {
 
     @Resource
     private RoleResourcesMapper roleResourcesMapper;
@@ -223,15 +227,4 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         return parentListResource;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        //第一次启动，初始化一下全部资源数据
-        if (count() == 0) {
-            try {
-                init();
-            }catch (Exception e) {
-                log.error("初始化资源表异常", e);
-            }
-        }
-    }
 }

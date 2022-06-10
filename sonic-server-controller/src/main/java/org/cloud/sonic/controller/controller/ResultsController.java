@@ -78,6 +78,7 @@ public class ResultsController {
     }
 
     @WebAspect
+    @ApiOperation(value = "清理测试结果", notes = "按照指定天数前的测试结果")
     @GetMapping("/clean")
     public RespModel<String> clean(@RequestParam(name = "day") int day) {
         resultsService.clean(day);
@@ -85,6 +86,7 @@ public class ResultsController {
     }
 
     @WebAspect
+    @ApiOperation(value = "统计测试结果", notes = "统计测试结果")
     @GetMapping("/subResultCount")
     public RespModel<String> subResultCount(@RequestParam(name = "id") int id) {
         resultsService.subResultCount(id);
