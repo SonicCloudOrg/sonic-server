@@ -47,6 +47,7 @@ public class ResultDetailController {
     private ResultDetailService resultDetailService;
 
     @WebAspect
+    @ApiOperation(value = "保存测试结果", notes = "保存测试结果")
     @PostMapping
     public RespModel<String> save(@RequestBody JSONObject jsonObject) {
         resultDetailService.saveByTransport(jsonObject);
