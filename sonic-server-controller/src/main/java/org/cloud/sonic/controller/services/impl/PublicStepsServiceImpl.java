@@ -79,8 +79,12 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     }
 
     @Override
-    public List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform) {
-        return publicStepsMapper.findByProjectIdAndPlatform(projectId, platform);
+    public List<Map<String, Object>> findByProjectIdAndPlatform(int projectId, int platform) {
+        LambdaQueryWrapper<PublicSteps> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(PublicSteps::getProjectId,projectId)
+                .eq(PublicSteps::getPlatform,platform)
+                .select(PublicSteps::getId,PublicSteps::getName);
+        return publicStepsMapper.selectMaps(lqw);
     }
 
     @Override
@@ -146,5 +150,32 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
             }
         }
         return true;
+    }
+
+
+    /**
+     * 复制公共步骤步骤
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public void copyPublicSetpsIds(int id) {
+        PublicSteps ps = publicStepsMapper.selectById(id);
+        ps.setId(null).setName(ps.getName() + "_copy");
+        save(ps);
+
+        LambdaQueryWrapper<PublicStepsSteps> queryWrapper = new LambdaQueryWrapper<>();
+        List<PublicStepsSteps> list = publicStepsStepsMapper.selectList(
+                                                queryWrapper.eq(PublicStepsSteps::getPublicStepsId, id));
+
+        for (PublicStepsSteps publicStepsSteps : list) {
+            // 保存 public_step 与 最外层step 映射关系
+            publicStepsStepsMapper.insert(
+                    new PublicStepsSteps()
+                            .setPublicStepsId(ps.getId())
+                            .setStepsId(publicStepsSteps.getStepsId())
+            );
+        }
     }
 }

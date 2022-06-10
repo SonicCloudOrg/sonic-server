@@ -19,6 +19,7 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.PublicStepsMapper;
@@ -30,6 +31,15 @@ import org.cloud.sonic.controller.services.GlobalParamsService;
 import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.TestSuitesService;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.cloud.sonic.common.models.base.TypeConverter;
+import org.cloud.sonic.controller.mapper.*;
+import org.cloud.sonic.common.models.domain.*;
+import org.cloud.sonic.common.models.dto.StepsDTO;
+import org.cloud.sonic.common.services.GlobalParamsService;
+import org.cloud.sonic.common.services.StepsService;
+import org.cloud.sonic.common.services.TestCasesService;
+import org.cloud.sonic.common.services.TestSuitesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -168,4 +178,39 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         Set<Integer> caseIdSet = steps.stream().map(Steps::getCaseId).collect(Collectors.toSet());
         return lambdaQuery().in(TestCases::getId, caseIdSet).list();
     }
-}
+
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public boolean copyTestById(int oldId) {
+//        TestCases testCase = testCasesMapper.selectById(oldId);
+//        testCase.setId(null).setEditTime(null).setName(testCase.getName() + "_copy");
+//        save(testCase);
+//        List<StepsElements> stEleId = stepsElementsMapper.selectCopyElements(oldId);
+//
+//        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
+//        List<Steps> steps = stepsMapper.selectList(lqw.eq(Steps::getCaseId, oldId));
+//
+//        for (int i = 0 ;i < steps.size() ; i++) {
+//            Steps step = steps.get(i);
+//            //找出该步骤的子步骤
+//            List<Steps> stepsList = stepsMapper.selectList(lqw.eq(Steps::getParentId, step.getId()));
+//            //插入该步骤
+//            step.setId(null).setCaseId(testCase.getId());
+//            stepsMapper.insert(step);
+//            //判断该步骤是否有子步骤，有就插入  TODO 重复插入问题
+//            if (stepsList != null) {
+//                for (Steps stepsChild : stepsList) {
+//                    stepsChild.setId(null).setCaseId(testCase.getId()).setParentId(step.getId());
+//                    stepsMapper.insert(stepsChild);
+//                }
+//            }
+//            //插入控件元素
+//            if (stEleId.get(i).getElementsId() != null) {
+//                stepsElementsMapper.insert(new StepsElements()
+//                        .setStepsId(step.getId())
+//                        .setElementsId(stEleId.get(i).getElementsId()));
+//            }
+//        }
+//        return true;
+//    }
+

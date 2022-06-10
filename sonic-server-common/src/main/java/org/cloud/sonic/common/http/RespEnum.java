@@ -28,6 +28,7 @@ public enum RespEnum {
     DELETE_OK(2000, "ok.delete"),
     UPLOAD_OK(2000, "ok.upload"),
     SEND_OK(2000, "ok.send"),
+    COPY_OK(2000,"ok.copy"),
     SEARCH_FAIL(3005,"fail.search"),
     UPDATE_FAIL(3004,"fail.update"),
     DELETE_FAIL(3002, "fail.delete"),

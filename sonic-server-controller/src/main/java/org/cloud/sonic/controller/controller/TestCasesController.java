@@ -153,4 +153,13 @@ public class TestCasesController {
         return new RespModel<>(RespEnum.SEARCH_OK,
                 testCasesService.findByIdIn(ids));
     }
+    //记得翻译
+//    @WebAspect
+//    @ApiOperation(value = "复制测试用例", notes = "复制对应用例id的用例详情")
+//    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+//    @GetMapping("/copy")
+//    public RespModel<String> copyTestById(@RequestParam(name = "id") Integer id){
+//        testCasesService.copyTestById(id);
+//        return new RespModel<>(RespEnum.COPY_OK);
+//    }
 }

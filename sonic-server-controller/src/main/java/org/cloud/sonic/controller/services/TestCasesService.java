@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.controller.models.domain.TestCases;
+import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.models.domain.TestCases;
 
 import java.util.List;
 
@@ -28,4 +30,11 @@ public interface TestCasesService extends IService<TestCases> {
     boolean deleteByProjectId(int projectId);
 
     List<TestCases> listByPublicStepsId(int publicStepsId);
+
+//    /**
+//     * 复制测试用例
+//     * @param id    测试用例id  （test_cases，步骤表 steps case_id字段）
+//     * @return
+//     */
+//     boolean copyTestById(int id);
 }

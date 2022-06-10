@@ -17,7 +17,7 @@ import java.util.Map;
 public interface PublicStepsService extends IService<PublicSteps> {
     CommentPage<PublicStepsDTO> findByProjectId(int projectId, Page<PublicSteps> pageable);
 
-    List<Map<Integer, String>> findByProjectIdAndPlatform(int projectId, int platform);
+    List<Map<String, Object>> findByProjectIdAndPlatform(int projectId, int platform);
 
     PublicStepsDTO savePublicSteps(PublicStepsDTO publicStepsDTO);
 
@@ -26,4 +26,9 @@ public interface PublicStepsService extends IService<PublicSteps> {
     PublicStepsDTO findById(int id);
 
     boolean deleteByProjectId(int projectId);
+
+    /**
+     * 复制公共用例
+     */
+    void copyPublicSetpsIds(int id);
 }
