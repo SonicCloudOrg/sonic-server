@@ -23,6 +23,7 @@ public class SecurityHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        logger.info("test");
         JSONObject jsonMsg = JSON.parseObject((String) msg);
         logger.info("Agent: {} -> Server auth: {}", ctx.channel().remoteAddress(), jsonMsg);
         Integer i = agentsService.auth(jsonMsg.getString("agentKey"));

@@ -5,7 +5,13 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.cloud.sonic.controller.tools.PortTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +37,9 @@ public class NettyServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws UnknownHostException {
+        if (serverPort == 0) {
+            serverPort = PortTool.getPort();
+        }
         InetSocketAddress socketAddress = new InetSocketAddress(serverPort);
         bossGroup = new NioEventLoopGroup(1);
         workGroup = new NioEventLoopGroup(200);
@@ -40,10 +49,15 @@ public class NettyServer implements ApplicationRunner {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
-                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+                        socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024*1024,0,2));
+                        socketChannel.pipeline().addLast("http-codec",new HttpServerCodec());//设置解码器
+                        socketChannel.pipeline().addLast("aggregator",new HttpObjectAggregator(65536));//聚合器，使用websocket会用到
+                        socketChannel.pipeline().addLast("http-chunked",new ChunkedWriteHandler());//用于大数据的分区传输
+//                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
+//                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
                         socketChannel.pipeline().addLast(new SecurityHandler());
                         socketChannel.pipeline().addLast(new IdleStateHandler(8, 4, 4, TimeUnit.MINUTES));
+                        socketChannel.pipeline().addLast(new WebSocketServerProtocolHandler("/test",null,true,65535));
                     }
                 })
                 .localAddress(socketAddress)

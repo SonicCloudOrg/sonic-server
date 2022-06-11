@@ -2,6 +2,8 @@ eureka:
   instance:
     instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
     prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
   client:
+    registry-fetch-interval-seconds: 10
     service-url:
       defaultZone: http://${SONIC_EUREKA_USERNAME:sonic}:${SONIC_EUREKA_PASSWORD:sonic}@${SONIC_EUREKA_HOST:127.0.0.1}:${SONIC_EUREKA_PORT:9090}/eureka/
