@@ -24,7 +24,6 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
@@ -35,15 +34,15 @@ import org.cloud.sonic.controller.models.enums.ConditionEnum;
 import org.cloud.sonic.controller.models.interfaces.CoverType;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.models.interfaces.ResultStatus;
-import org.cloud.sonic.controller.netty.NettyServer;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.controller.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.websocket.Session;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -174,8 +173,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                if (NettyServer.getMap().get(id) != null) {
-                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                Session agentSession = BytesTool.agentSessionMap.get(id);
+                if (agentSession != null) {
+                    BytesTool.sendText(agentSession,result.toJSONString());
                 }
             }
         }
@@ -214,8 +214,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                if (NettyServer.getMap().get(id) != null) {
-                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                Session agentSession = BytesTool.agentSessionMap.get(id);
+                if (agentSession != null) {
+                    BytesTool.sendText(agentSession,result.toJSONString());
                 }
             }
         }
@@ -292,8 +293,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                if (NettyServer.getMap().get(id) != null) {
-                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                Session agentSession = BytesTool.agentSessionMap.get(id);
+                if (agentSession != null) {
+                    BytesTool.sendText(agentSession,result.toJSONString());
                 }
             }
         }
@@ -315,8 +317,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                if (NettyServer.getMap().get(id) != null) {
-                    NettyServer.getMap().get(id).writeAndFlush(result.toJSONString());
+                Session agentSession = BytesTool.agentSessionMap.get(id);
+                if (agentSession != null) {
+                    BytesTool.sendText(agentSession,result.toJSONString());
                 }
             }
         }
