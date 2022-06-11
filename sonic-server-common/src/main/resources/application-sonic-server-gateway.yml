@@ -3,7 +3,7 @@ server:
   port: ${SONIC_GATEWAY_PORT:8094}
 
 filter:
-  white-list: /test,/users/login,/users/register,/users/loginConfig,/swagger-resources,/v2/api-docs,/folder/upload,/folder/upload/recordFiles,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
+  white-list: /websockets,/users/login,/users/register,/users/loginConfig,/swagger-resources,/v2/api-docs,/folder/upload,/folder/upload/recordFiles,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
 
 spring:
   cloud:
@@ -21,6 +21,8 @@ spring:
           filters:
             - StripPrefix=2
         - id: transport
-          uri: lb:ws://sonic-server-transport
+          uri: lb:ws://sonic-server-controller
           predicates:
-            - Path=/test/**
+            - Path=/websockets/**
+          filters:
+            - StripPrefix=1

@@ -37,46 +37,46 @@ public class NettyServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws UnknownHostException {
-        if (serverPort == 0) {
-            serverPort = PortTool.getPort();
-        }
-        InetSocketAddress socketAddress = new InetSocketAddress(serverPort);
-        bossGroup = new NioEventLoopGroup(1);
-        workGroup = new NioEventLoopGroup(200);
-        ServerBootstrap bootstrap = new ServerBootstrap()
-                .group(bossGroup, workGroup)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024*1024,0,2));
-                        socketChannel.pipeline().addLast("http-codec",new HttpServerCodec());//设置解码器
-                        socketChannel.pipeline().addLast("aggregator",new HttpObjectAggregator(65536));//聚合器，使用websocket会用到
-                        socketChannel.pipeline().addLast("http-chunked",new ChunkedWriteHandler());//用于大数据的分区传输
-//                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
-//                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
-                        socketChannel.pipeline().addLast(new SecurityHandler());
-                        socketChannel.pipeline().addLast(new IdleStateHandler(8, 4, 4, TimeUnit.MINUTES));
-                        socketChannel.pipeline().addLast(new WebSocketServerProtocolHandler("/test",null,true,65535));
-                    }
-                })
-                .localAddress(socketAddress)
-                .option(ChannelOption.SO_BACKLOG, 1024)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
-        try {
-            logger.info("Netty Server launch: {}", socketAddress);
-            ChannelFuture future = bootstrap.bind(socketAddress).sync();
-            if (future.isSuccess()) {
-                logger.info("Netty Server Start successful!");
-            }
-            future.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            bossGroup.shutdownGracefully();
-            workGroup.shutdownGracefully();
-            logger.info("Netty server shutdown...");
-        }
+//        if (serverPort == 0) {
+//            serverPort = PortTool.getPort();
+//        }
+//        InetSocketAddress socketAddress = new InetSocketAddress(serverPort);
+//        bossGroup = new NioEventLoopGroup(1);
+//        workGroup = new NioEventLoopGroup(200);
+//        ServerBootstrap bootstrap = new ServerBootstrap()
+//                .group(bossGroup, workGroup)
+//                .channel(NioServerSocketChannel.class)
+//                .childHandler(new ChannelInitializer<SocketChannel>() {
+//                    @Override
+//                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+//                        socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024*1024,0,2));
+//                        socketChannel.pipeline().addLast("http-codec",new HttpServerCodec());//设置解码器
+//                        socketChannel.pipeline().addLast("aggregator",new HttpObjectAggregator(65536));//聚合器，使用websocket会用到
+//                        socketChannel.pipeline().addLast("http-chunked",new ChunkedWriteHandler());//用于大数据的分区传输
+////                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
+////                        socketChannel.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+//                        socketChannel.pipeline().addLast(new SecurityHandler());
+//                        socketChannel.pipeline().addLast(new IdleStateHandler(8, 4, 4, TimeUnit.MINUTES));
+//                        socketChannel.pipeline().addLast(new WebSocketServerProtocolHandler("/test",null,true,65535));
+//                    }
+//                })
+//                .localAddress(socketAddress)
+//                .option(ChannelOption.SO_BACKLOG, 1024)
+//                .childOption(ChannelOption.SO_KEEPALIVE, true);
+//        try {
+//            logger.info("Netty Server launch: {}", socketAddress);
+//            ChannelFuture future = bootstrap.bind(socketAddress).sync();
+//            if (future.isSuccess()) {
+//                logger.info("Netty Server Start successful!");
+//            }
+//            future.channel().closeFuture().sync();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } finally {
+//            bossGroup.shutdownGracefully();
+//            workGroup.shutdownGracefully();
+//            logger.info("Netty server shutdown...");
+//        }
     }
 
     public static Map<Integer, Channel> getMap() {
