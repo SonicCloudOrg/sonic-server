@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.cloud.sonic.controller.models.domain.StepsElements;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.cloud.sonic.common.models.domain.StepsElements;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

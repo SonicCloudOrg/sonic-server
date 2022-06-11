@@ -19,7 +19,6 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.PublicStepsMapper;
@@ -31,15 +30,6 @@ import org.cloud.sonic.controller.services.GlobalParamsService;
 import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.TestSuitesService;
-import org.apache.dubbo.config.annotation.DubboService;
-import org.cloud.sonic.common.models.base.TypeConverter;
-import org.cloud.sonic.controller.mapper.*;
-import org.cloud.sonic.common.models.domain.*;
-import org.cloud.sonic.common.models.dto.StepsDTO;
-import org.cloud.sonic.common.services.GlobalParamsService;
-import org.cloud.sonic.common.services.StepsService;
-import org.cloud.sonic.common.services.TestCasesService;
-import org.cloud.sonic.common.services.TestSuitesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -212,5 +202,5 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 //            }
 //        }
 //        return true;
-//    }
+}
 

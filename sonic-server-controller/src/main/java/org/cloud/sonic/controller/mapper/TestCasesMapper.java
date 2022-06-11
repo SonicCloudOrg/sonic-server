@@ -5,8 +5,6 @@ import org.cloud.sonic.controller.models.domain.TestCases;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.*;
-import org.cloud.sonic.common.models.domain.TestCases;
 
 import java.util.List;
 
