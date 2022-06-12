@@ -3,7 +3,10 @@ package org.cloud.sonic.controller.services.impl.base;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import org.cloud.sonic.common.exception.ServerErrorException;
 import org.cloud.sonic.common.tools.ReflectionTool;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,14 @@ public class SonicServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M,
         } catch (IllegalAccessException e) {
             throw new ServerErrorException("Handle id in Object failed.");
         }
+    }
+
+    protected <T> LambdaUpdateChainWrapper<T> lambdaUpdate(BaseMapper<T> baseMapper) {
+        return ChainWrappers.lambdaUpdateChain(baseMapper);
+    }
+
+    protected <T> LambdaQueryChainWrapper<T> lambdaQuery(BaseMapper<T> baseMapper) {
+        return ChainWrappers.lambdaQueryChain(baseMapper);
     }
 
     @SuppressWarnings("unchecked")

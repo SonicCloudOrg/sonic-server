@@ -72,7 +72,7 @@ public class PublicStepsController {
             @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class),
     })
     @GetMapping("/findNameByProjectId")
-    public RespModel<List<Map<Integer, String>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
+    public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
                                                                  @RequestParam(name = "platform") int platform) {
         return new RespModel<>(RespEnum.SEARCH_OK, publicStepsService.findByProjectIdAndPlatform(projectId, platform));
     }
@@ -116,5 +116,15 @@ public class PublicStepsController {
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value="复制公共步骤",notes="复制对应公共步骤，步骤也会同步")
+    @ApiImplicitParam(name="id",value="公共步骤Id",dataTypeClass = Integer.class)
+    @GetMapping("/copy")
+    public  RespModel<String> copyPublicSteps(@RequestParam(name="id") int id) {
+        publicStepsService.copyPublicSetpsIds(id);
+
+        return new RespModel<>(RespEnum.COPY_OK);
     }
 }

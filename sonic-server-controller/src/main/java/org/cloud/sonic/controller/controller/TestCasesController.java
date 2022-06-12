@@ -134,17 +134,6 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @GetMapping("/findSteps")
-    public RespModel<JSONObject> findSteps(@RequestParam(name = "id") int id) {
-        JSONObject jsonObject = testCasesService.findSteps(id);
-        if (jsonObject != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, jsonObject);
-        } else {
-            return new RespModel<>(RespEnum.SEARCH_FAIL);
-        }
-    }
-
-    @WebAspect
     @ApiOperation(value = "批量查询用例", notes = "查找id列表的用例信息，可以传多个ids[]")
     @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
     @GetMapping("/findByIdIn")
@@ -152,4 +141,13 @@ public class TestCasesController {
         return new RespModel<>(RespEnum.SEARCH_OK,
                 testCasesService.findByIdIn(ids));
     }
+    //记得翻译
+//    @WebAspect
+//    @ApiOperation(value = "复制测试用例", notes = "复制对应用例id的用例详情")
+//    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+//    @GetMapping("/copy")
+//    public RespModel<String> copyTestById(@RequestParam(name = "id") Integer id){
+//        testCasesService.copyTestById(id);
+//        return new RespModel<>(RespEnum.COPY_OK);
+//    }
 }

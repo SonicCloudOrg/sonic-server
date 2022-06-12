@@ -168,4 +168,39 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         Set<Integer> caseIdSet = steps.stream().map(Steps::getCaseId).collect(Collectors.toSet());
         return lambdaQuery().in(TestCases::getId, caseIdSet).list();
     }
+
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public boolean copyTestById(int oldId) {
+//        TestCases testCase = testCasesMapper.selectById(oldId);
+//        testCase.setId(null).setEditTime(null).setName(testCase.getName() + "_copy");
+//        save(testCase);
+//        List<StepsElements> stEleId = stepsElementsMapper.selectCopyElements(oldId);
+//
+//        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
+//        List<Steps> steps = stepsMapper.selectList(lqw.eq(Steps::getCaseId, oldId));
+//
+//        for (int i = 0 ;i < steps.size() ; i++) {
+//            Steps step = steps.get(i);
+//            //找出该步骤的子步骤
+//            List<Steps> stepsList = stepsMapper.selectList(lqw.eq(Steps::getParentId, step.getId()));
+//            //插入该步骤
+//            step.setId(null).setCaseId(testCase.getId());
+//            stepsMapper.insert(step);
+//            //判断该步骤是否有子步骤，有就插入  TODO 重复插入问题
+//            if (stepsList != null) {
+//                for (Steps stepsChild : stepsList) {
+//                    stepsChild.setId(null).setCaseId(testCase.getId()).setParentId(step.getId());
+//                    stepsMapper.insert(stepsChild);
+//                }
+//            }
+//            //插入控件元素
+//            if (stEleId.get(i).getElementsId() != null) {
+//                stepsElementsMapper.insert(new StepsElements()
+//                        .setStepsId(step.getId())
+//                        .setElementsId(stEleId.get(i).getElementsId()));
+//            }
+//        }
+//        return true;
 }
+

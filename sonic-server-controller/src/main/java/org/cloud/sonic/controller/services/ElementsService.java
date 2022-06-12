@@ -18,4 +18,12 @@ public interface ElementsService extends IService<Elements> {
     Elements findById(int id);
 
     boolean deleteByProjectId(int projectId);
+
+
+    /**
+     * 复制元素 按照元素id
+     * @param id 元素id
+     * @return
+     */
+    RespModel<String> copy(int id);
 }

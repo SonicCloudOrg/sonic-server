@@ -28,4 +28,11 @@ public interface TestCasesService extends IService<TestCases> {
     boolean deleteByProjectId(int projectId);
 
     List<TestCases> listByPublicStepsId(int publicStepsId);
+
+//    /**
+//     * 复制测试用例
+//     * @param id    测试用例id  （test_cases，步骤表 steps case_id字段）
+//     * @return
+//     */
+//     boolean copyTestById(int id);
 }

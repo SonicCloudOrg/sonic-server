@@ -18,8 +18,6 @@ spring:
 
 # 不要默认的定时任务可以去掉
 sonic:
-  netty:
-    port: ${SONIC_TRANSPORT_PORT:8095}
   jobs:
     fileCron: ${FILE_CRON:0 0 12 * * ?}
     resultCron: ${RESULT_CRON:0 0 12 * * ?}

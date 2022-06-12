@@ -55,18 +55,6 @@ public class DevicesController {
         }
     }
 
-    @PutMapping("/updateDevicesUser")
-    public RespModel<String> updateDevicesUser(@RequestBody JSONObject jsonObject) {
-        devicesService.updateDevicesUser(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
-
-    @PutMapping("/refreshDevicesBattery")
-    public RespModel<String> refreshDevicesBattery(@RequestBody JSONObject jsonObject) {
-        devicesService.refreshDevicesBattery(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
-
     @WebAspect
     @ApiOperation(value = "修改设备图片", notes = "修改对应设备id的图片")
     @PutMapping("/updateImg")
@@ -149,13 +137,7 @@ public class DevicesController {
 //    }
 
     @WebAspect
-    @PutMapping("/deviceStatus")
-    public RespModel<String> deviceStatus(@RequestBody JSONObject jsonObject) {
-        devicesService.deviceStatus(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
-
-    @WebAspect
+    @ApiOperation(value = "设备信息", notes = "获取指定设备信息")
     @GetMapping
     public RespModel<Devices> findById(@RequestParam(name = "id") int id) {
         Devices devices = devicesService.findById(id);

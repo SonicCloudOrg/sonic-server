@@ -16,25 +16,28 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
+import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.netty.NettyServer;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.controller.tools.BytesTool;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
+import javax.websocket.Session;
 
+
+@Api(tags = "设备管理相关")
 @RestController
 @RequestMapping("/exchange")
 @Slf4j
@@ -46,6 +49,7 @@ public class ExchangeController {
     private DevicesService devicesService;
 
     @WebAspect
+    @ApiOperation(value = "重启设备", notes = "根据 id 重启特定设备")
     @GetMapping("/reboot")
     public RespModel<String> reboot(@RequestParam(name = "id") int id) {
 
@@ -61,15 +65,12 @@ public class ExchangeController {
         jsonObject.put("msg", "reboot");
         jsonObject.put("udId", devices.getUdId());
         jsonObject.put("platform", devices.getPlatform());
-        if (NettyServer.getMap().get(agents.getId()) != null) {
-            NettyServer.getMap().get(agents.getId()).writeAndFlush(jsonObject.toJSONString());
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        } else {
-            return new RespModel<>(2001, "reboot.error.unknown");
-        }
+        TransportWorker.send(agents.getId(), jsonObject);
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
     @WebAspect
+    @ApiOperation(value = "下线agent", notes = "下线指定的 agent")
     @GetMapping("/stop")
     public RespModel<String> stop(@RequestParam(name = "id") int id) {
         Agents agents = agentsService.findById(id);
@@ -78,11 +79,18 @@ public class ExchangeController {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("msg", "shutdown");
-        if (NettyServer.getMap().get(agents.getId()) != null) {
-            NettyServer.getMap().get(agents.getId()).writeAndFlush(jsonObject.toJSONString());
-            return new RespModel<>(RespEnum.HANDLE_OK);
-        } else {
-            return new RespModel<>(RespEnum.AGENT_NOT_ONLINE);
+        TransportWorker.send(agents.getId(), jsonObject);
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
+    @WhiteUrl
+    @PostMapping("/send")
+    public RespModel<String> send(@RequestParam(name = "id") int id, @RequestBody JSONObject jsonObject) {
+        Session agentSession = BytesTool.agentSessionMap.get(id);
+        if (agentSession != null) {
+            BytesTool.sendText(agentSession, jsonObject.toJSONString());
         }
+        return new RespModel<>(RespEnum.SEND_OK);
     }
 }

@@ -39,12 +39,9 @@ import java.util.stream.Collectors;
 @Service
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
-    @Autowired
-    private ElementsMapper elementsMapper;
-    @Autowired
-    private StepsService stepsService;
-    @Autowired
-    private TestCasesService testCasesService;
+    @Autowired private ElementsMapper elementsMapper;
+    @Autowired private StepsService stepsService;
+    @Autowired private TestCasesService testCasesService;
 
     @Override
     public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Page<Elements> pageable) {
@@ -107,5 +104,20 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Override
     public boolean deleteByProjectId(int projectId) {
         return baseMapper.delete(new LambdaQueryWrapper<Elements>().eq(Elements::getProjectId, projectId)) > 0;
+    }
+
+
+    /**
+     * 复制控件元素
+     * @param id 元素id
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public RespModel<String> copy(int id) {
+        Elements element = elementsMapper.selectById(id);
+        element.setId(null).setEleName(element.getEleName()+"_copy");
+        save(element);
+
+        return new RespModel<>(RespEnum.COPY_OK);
     }
 }

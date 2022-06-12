@@ -56,6 +56,7 @@ public class AgentsController {
     }
 
     @WebAspect
+    @ApiOperation(value = "修改agent信息", notes = "修改agent信息")
     @PutMapping
     public RespModel<String> save(@RequestBody JSONObject jsonObject) {
         agentsService.saveAgents(jsonObject);
@@ -63,6 +64,7 @@ public class AgentsController {
     }
 
     @WebAspect
+    @ApiOperation(value = "修改agent名称", notes = "修改agent名称")
     @PutMapping("/updateName")
     public RespModel<String> updateName(@RequestBody JSONObject jsonObject) {
         agentsService.updateName(jsonObject.getInteger("id"), jsonObject.getString("name"));
@@ -70,27 +72,11 @@ public class AgentsController {
     }
 
     @WebAspect
+    @ApiOperation(value = "agent下线", notes = "agent下线")
     @GetMapping("/offLine")
     public RespModel<String> offLine(@RequestParam(name = "id") int id) {
         agentsService.offLine(id);
         return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @GetMapping("/auth")
-    public RespModel<Integer> auth(@RequestParam(name = "key") String key) {
-        return new RespModel<>(RespEnum.SEARCH_OK, agentsService.auth(key));
-    }
-
-    @WebAspect
-    @GetMapping("/findKeyById")
-    public RespModel<String> findKeyById(@RequestParam(name = "id") int id) {
-        String key = agentsService.findKeyById(id);
-        if (key != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, key);
-        } else {
-            return new RespModel<>(RespEnum.ID_NOT_FOUND);
-        }
     }
 
     @WebAspect

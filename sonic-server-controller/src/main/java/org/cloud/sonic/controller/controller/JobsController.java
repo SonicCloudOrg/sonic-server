@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
  * @des 定时任务控制器
  * @date 2021/8/22 17:58
  */
-@Api(tags = "定时任务")
+@Api(tags = "定时任务相关")
 @RestController
 @RequestMapping("/jobs")
 public class JobsController {

@@ -12,6 +12,9 @@ sonic:
       enable: ${LDAP_USER_ENABLE:true}
       userId: ${LDAP_USER_ID:cn}
       userBaseDN: ${LDAP_BASE_DN:ou=users}
+  permission:
+    enable: ${PERMISSION_ENABLE:true}
+    superAdmin: ${PERMISSION_SUPER_ADMIN:sonic}
 
 spring:
   ldap:
