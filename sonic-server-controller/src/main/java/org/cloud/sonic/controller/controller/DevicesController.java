@@ -55,20 +55,6 @@ public class DevicesController {
         }
     }
 
-    @ApiOperation(value = "批量查询用例", notes = "查找id列表的用例信息，可以传多个ids[]")
-    @PutMapping("/updateDevicesUser")
-    public RespModel<String> updateDevicesUser(@RequestBody JSONObject jsonObject) {
-        devicesService.updateDevicesUser(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
-
-    @ApiOperation(value = "刷新电量", notes = "刷新指定设备电量")
-    @PutMapping("/refreshDevicesBattery")
-    public RespModel<String> refreshDevicesBattery(@RequestBody JSONObject jsonObject) {
-        devicesService.refreshDevicesBattery(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
-
     @WebAspect
     @ApiOperation(value = "修改设备图片", notes = "修改对应设备id的图片")
     @PutMapping("/updateImg")
@@ -149,14 +135,6 @@ public class DevicesController {
 //            return new RespModel(3000, "设备不存在！");
 //        }
 //    }
-
-    @WebAspect
-    @ApiOperation(value = "更新设备状态", notes = "更新设备状态")
-    @PutMapping("/deviceStatus")
-    public RespModel<String> deviceStatus(@RequestBody JSONObject jsonObject) {
-        devicesService.deviceStatus(jsonObject);
-        return new RespModel<>(RespEnum.UPDATE_OK);
-    }
 
     @WebAspect
     @ApiOperation(value = "设备信息", notes = "获取指定设备信息")

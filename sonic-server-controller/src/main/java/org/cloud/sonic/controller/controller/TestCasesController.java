@@ -134,18 +134,6 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找特定步骤信息", notes = "查找id的用例信息")
-    @GetMapping("/findSteps")
-    public RespModel<JSONObject> findSteps(@RequestParam(name = "id") int id) {
-        JSONObject jsonObject = testCasesService.findSteps(id);
-        if (jsonObject != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, jsonObject);
-        } else {
-            return new RespModel<>(RespEnum.SEARCH_FAIL);
-        }
-    }
-
-    @WebAspect
     @ApiOperation(value = "批量查询用例", notes = "查找id列表的用例信息，可以传多个ids[]")
     @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
     @GetMapping("/findByIdIn")

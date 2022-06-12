@@ -80,25 +80,6 @@ public class AgentsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "agent认证", notes = "agent认证")
-    @GetMapping("/auth")
-    public RespModel<Integer> auth(@RequestParam(name = "key") String key) {
-        return new RespModel<>(RespEnum.SEARCH_OK, agentsService.auth(key));
-    }
-
-    @WebAspect
-    @ApiOperation(value = "查找 agent", notes = "根据agent id 查找")
-    @GetMapping("/findKeyById")
-    public RespModel<String> findKeyById(@RequestParam(name = "id") int id) {
-        String key = agentsService.findKeyById(id);
-        if (key != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, key);
-        } else {
-            return new RespModel<>(RespEnum.ID_NOT_FOUND);
-        }
-    }
-
-    @WebAspect
     @ApiOperation(value = "查询Agent端信息", notes = "获取对应id的Agent信息")
     @GetMapping
     public RespModel<?> findOne(@RequestParam(name = "id") int id) {
