@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "sonicorg/sonic-server-eureka:v1.4.0-release"
+    image: "sonicorg/sonic-server-eureka:v1.4.0-alpha1"
     hostname: sonic-server-eureka
     environment:
       - SONIC_EUREKA_USERNAME
@@ -15,7 +15,7 @@ services:
     ports:
       - "${SONIC_EUREKA_PORT}:${SONIC_EUREKA_PORT}"
   sonic-server-gateway:
-    image: "sonicorg/sonic-server-gateway:v1.4.0-release"
+    image: "sonicorg/sonic-server-gateway:v1.4.0-alpha1"
     environment:
       - SONIC_GATEWAY_PORT
       - SONIC_EUREKA_USERNAME
@@ -34,7 +34,7 @@ services:
       - "${SONIC_GATEWAY_PORT}:${SONIC_GATEWAY_PORT}"
     restart: on-failure
   sonic-server-controller:
-    image: "sonicorg/sonic-server-controller:v1.4.0-release"
+    image: "sonicorg/sonic-server-controller:v1.4.0-alpha1"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -70,7 +70,7 @@ services:
     ports:
       - "${SONIC_TRANSPORT_PORT}:${SONIC_TRANSPORT_PORT}"
   sonic-server-folder:
-    image: "sonicorg/sonic-server-folder:v1.4.0-release"
+    image: "sonicorg/sonic-server-folder:v1.4.0-alpha1"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -92,7 +92,7 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-client-web:
-    image: "sonicorg/sonic-client-web:v1.4.0-release"
+    image: "sonicorg/sonic-client-web:v1.4.0-alpha1"
     environment:
       - SERVER_HOST
       - SONIC_GATEWAY_PORT
