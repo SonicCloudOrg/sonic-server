@@ -35,7 +35,7 @@ public enum RespEnum {
     UPLOAD_FAIL(3003, "fail.upload"),
     UNAUTHORIZED(1001, "unauthorized"),
     SERVICE_NOT_FOUND(1002, "not.found.service"),
-    UN_PERMISSION(1003, "unpermission"),
+    UN_PERMISSION(1003, "permission.denied"),
     RESOURCE_NOT_FOUND(1004, "not.found.resource"),
     ID_NOT_FOUND(3001, "not.found.id"),
     DEVICE_NOT_FOUND(3002,"not.found.device"),
