@@ -26,13 +26,13 @@ public class SonicRunner implements ApplicationRunner {
         try {
             if (resourcesService.count() == 0) {
                 resourcesService.init();
-                log.info("资源初始化完成");
+                log.info("resource init finish!");
             }else {
-                log.info("不是首次启动，不需要初始化");
+                log.info("resource has been init...");
             }
 
         }catch (Exception e) {
-            log.error("初始化资源表异常", e);
+            log.error("init resource error", e);
         }
     }
 }

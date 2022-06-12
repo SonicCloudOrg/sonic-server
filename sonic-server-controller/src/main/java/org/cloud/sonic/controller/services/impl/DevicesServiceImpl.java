@@ -23,7 +23,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.domain.TestSuitesDevices;
 import org.cloud.sonic.controller.models.domain.Users;
@@ -31,24 +30,24 @@ import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.models.params.DevicesSearchParams;
-import org.cloud.sonic.controller.netty.NettyServer;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.controller.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.websocket.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
@@ -238,12 +237,13 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setStatus(jsonMsg.getString("status"));
         }
         save(devices);
-        if (NettyServer.getMap().get(devices.getAgentId()) != null) {
+        Session agentSession = BytesTool.agentSessionMap.get(devices.getAgentId());
+        if (agentSession != null) {
             JSONObject positionJson = new JSONObject();
             positionJson.put("msg", "position");
             positionJson.put("udId", devices.getUdId());
             positionJson.put("position", devices.getPosition());
-            NettyServer.getMap().get(devices.getAgentId()).writeAndFlush(positionJson.toJSONString());
+            BytesTool.sendText(agentSession,positionJson.toJSONString());
         }
     }
 
