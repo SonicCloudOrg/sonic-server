@@ -65,8 +65,9 @@ public class PermissionFilter extends OncePerRequestFilter {
             Resources resources = resourcesService.search(resourceName, method);
 
             if (resources == null) {
-                response.setContentType("application/json;UTF-8");
-                response.getWriter().println(JSONObject.toJSON(new RespModel(RespEnum.RESOURCE_NOT_FOUND)));
+                response.setContentType("text/plain;charset=UTF-8");
+                JSONObject re = (JSONObject) JSONObject.toJSON(new RespModel(RespEnum.RESOURCE_NOT_FOUND));
+                response.getWriter().write(re.toJSONString());
                 return;
             }
 
@@ -77,8 +78,9 @@ public class PermissionFilter extends OncePerRequestFilter {
 
             if (!rolesServices.checkUserHasResourceAuthorize(userName, resourceName, method)) {
 
-                response.setContentType("application/json;UTF-8");
-                response.getWriter().println(JSONObject.toJSON(new RespModel(RespEnum.UN_PERMISSION)));
+                response.setContentType("text/plain;charset=UTF-8");
+                JSONObject re = (JSONObject) JSONObject.toJSON(new RespModel(RespEnum.PERMISSION_DENIED));
+                response.getWriter().write(re.toJSONString());
                 return;
             }
         }
