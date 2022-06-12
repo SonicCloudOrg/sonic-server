@@ -1,6 +1,6 @@
 eureka:
   instance:
-    instance-id: ${spring.application.name}(v${spring.version})-${spring.cloud.client.ip-address}
+    instance-id: ${random.uuid}
     prefer-ip-address: true
     lease-renewal-interval-in-seconds: 10
   client:
