@@ -37,6 +37,7 @@ import org.cloud.sonic.controller.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.BytesTool;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,10 +174,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                Session agentSession = BytesTool.agentSessionMap.get(id);
-                if (agentSession != null) {
-                    BytesTool.sendText(agentSession,result.toJSONString());
-                }
+                TransportWorker.send(id, result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -214,10 +212,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                Session agentSession = BytesTool.agentSessionMap.get(id);
-                if (agentSession != null) {
-                    BytesTool.sendText(agentSession,result.toJSONString());
-                }
+                TransportWorker.send(id, result);
             }
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
@@ -293,10 +288,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                Session agentSession = BytesTool.agentSessionMap.get(id);
-                if (agentSession != null) {
-                    BytesTool.sendText(agentSession,result.toJSONString());
-                }
+                TransportWorker.send(id, result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -317,10 +309,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                Session agentSession = BytesTool.agentSessionMap.get(id);
-                if (agentSession != null) {
-                    BytesTool.sendText(agentSession,result.toJSONString());
-                }
+                TransportWorker.send(id, result);
             }
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
