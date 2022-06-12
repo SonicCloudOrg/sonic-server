@@ -21,12 +21,12 @@ jobs:
       - name: git Actions
         uses: srt32/git-actions@v0.0.3
       - name: get agent
-        run: git clone https://github.com/SonicCloudOrg/sonic-agent.git && cd sonic-agent && mvn package -Plinux-x86_64 && docker build -t sonicorg/sonic-agent-linux:v1.4.0-alpha1 -f src/main/docker/Dockerfile .
+        run: git clone https://github.com/SonicCloudOrg/sonic-agent.git && cd sonic-agent && mvn package -Plinux-x86_64 && docker build -t sonicorg/sonic-agent-linux:v1.4.1-alpha1 -f src/main/docker/Dockerfile .
       - name: push
-        run: docker push sonicorg/sonic-agent-linux:v1.4.0-alpha1
+        run: docker push sonicorg/sonic-agent-linux:v1.4.1-alpha1
       - name: login docker hub
         run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
       - name: tag
-        run: docker tag sonicorg/sonic-agent-linux:v1.4.0-alpha1 registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-alpha1
+        run: docker tag sonicorg/sonic-agent-linux:v1.4.1-alpha1 registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.1-alpha1
       - name: push
-        run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.0-alpha1
+        run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-agent-linux:v1.4.1-alpha1
