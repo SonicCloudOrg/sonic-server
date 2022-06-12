@@ -113,6 +113,8 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
 
         if (resource == null) {
             resource = new Resources();
+            //初始化说有资源不需要鉴权
+            resource.setNeedAuth(0);
             needInsert = true;
         }
         resource.setParentId(parentResource.getId());
