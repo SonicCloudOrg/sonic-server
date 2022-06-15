@@ -92,6 +92,9 @@ services:
       - SERVER_PORT
     networks:
       - sonic-network
+    depends_on:
+      - sonic-server-gateway
+    restart: on-failure
     ports:
       - "${SERVER_PORT}:80"
 
