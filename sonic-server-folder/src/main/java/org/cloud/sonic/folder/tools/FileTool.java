@@ -68,6 +68,7 @@ public class FileTool {
         } catch (FileAlreadyExistsException e) {
             logger.error(e.getMessage());
         }
+        host = host.replace(":80/", "/");
         return host + "/api/folder/" + local.getPath().replaceAll("\\\\", "/");
     }
 
@@ -160,6 +161,7 @@ public class FileTool {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        host = host.replace(":80/", "/");
         return host + "/api/folder/" + file.getPath();
     }
 }

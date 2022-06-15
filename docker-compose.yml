@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.1-alpha1"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.1-alpha2"
     hostname: sonic-server-eureka
     environment:
       - SONIC_EUREKA_USERNAME
@@ -15,9 +15,9 @@ services:
     ports:
       - "${SONIC_EUREKA_PORT}:${SONIC_EUREKA_PORT}"
   sonic-server-gateway:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.1-alpha1"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.1-alpha2"
+    hostname: sonic-server-gateway
     environment:
-      - SONIC_GATEWAY_PORT
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
       - SONIC_EUREKA_PORT
@@ -30,11 +30,9 @@ services:
       - sonic-server-eureka
     networks:
       - sonic-network
-    ports:
-      - "${SONIC_GATEWAY_PORT}:${SONIC_GATEWAY_PORT}"
     restart: on-failure
   sonic-server-controller:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.1-alpha1"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.1-alpha2"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -46,9 +44,7 @@ services:
       - MYSQL_USERNAME
       - MYSQL_PASSWORD
       - SERVER_HOST
-      - SONIC_GATEWAY_PORT
-      - SONIC_TRANSPORT_PORT
-      - CLIENT_HOST
+      - SERVER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
       - REGISTER_ENABLE
@@ -67,17 +63,15 @@ services:
     depends_on:
       - sonic-server-eureka
     restart: on-failure
-    ports:
-      - "${SONIC_TRANSPORT_PORT}:${SONIC_TRANSPORT_PORT}"
   sonic-server-folder:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.1-alpha1"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.1-alpha2"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
       - SONIC_EUREKA_HOST=sonic-server-eureka
       - SONIC_EUREKA_PORT
       - SERVER_HOST
-      - SONIC_GATEWAY_PORT
+      - SERVER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
     networks:
@@ -92,14 +86,14 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-client-web:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.1-alpha1"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.1-alpha2"
     environment:
       - SERVER_HOST
-      - SONIC_GATEWAY_PORT
+      - SERVER_PORT
     networks:
       - sonic-network
     ports:
-      - "${SONIC_CLIENT_PORT}:80"
+      - "${SERVER_PORT}:80"
 
 networks:
   sonic-network:

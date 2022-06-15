@@ -68,6 +68,7 @@ public class RobotMsgTool {
      * @date 2021/8/20 18:20
      */
     private void signAndSend(String token, String secret, int type, JSONObject jsonObject) {
+        clientHost = clientHost.replace(":80/", "/");
         try {
             switch (type) {
                 case RobotType.DingTalk: {

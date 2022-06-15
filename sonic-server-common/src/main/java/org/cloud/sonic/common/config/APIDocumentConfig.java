@@ -75,6 +75,7 @@ public class APIDocumentConfig {
      */
     @Bean
     public Docket createRestAPIDocket() {
+        host = host.replace(":80/", "/");
         return new Docket(DocumentationType.SWAGGER_2)
                 .host(host)
                 .apiInfo(apiInfo())

@@ -3,7 +3,7 @@ knife4j:
   enable: true
   setting:
     enableHost: true
-    enableHostText: http://${SERVER_HOST:localhost}:${SONIC_GATEWAY_PORT:8094}
+    enableHostText: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server
     enableFooter: false
     enableFooterCustom: true
     footerCustomContent: Apache License | Copyright 2021 - [SonicCloudOrg/sonic-server](https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE)

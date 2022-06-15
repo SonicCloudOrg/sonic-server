@@ -1,6 +1,6 @@
 # 一般不需要动
 server:
-  port: ${SONIC_CONTROLLER_PORT:0}
+  port: 0
 
 spring:
   quartz:
@@ -28,7 +28,7 @@ sonic:
 
 robot:
   client:
-    host: ${CLIENT_HOST:http://localhost:3000}
+    host: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server
   img:
     success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/suc.png"
     warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/warn.png"
