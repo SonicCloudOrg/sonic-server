@@ -1,5 +1,5 @@
 server:
-  port: ${SONIC_FOLDER_PORT:0}
+  port: 0
 
 spring:
   servlet:
@@ -9,4 +9,4 @@ spring:
 
 # 网关的IP地址
 gateway:
-  host: http://${SERVER_HOST:localhost}:${SONIC_GATEWAY_PORT:8094}
+  host: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server
