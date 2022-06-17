@@ -16,6 +16,7 @@
  */
 package org.cloud.sonic.controller.quartz;
 
+import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.interfaces.JobType;
 import org.quartz.*;
@@ -23,6 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author ZhouYiXun
@@ -34,6 +39,7 @@ public class QuartzHandler {
     private final Logger logger = LoggerFactory.getLogger(QuartzHandler.class);
     @Autowired
     private Scheduler scheduler;
+    private List<String> typeList = Arrays.asList("cleanFile", "cleanResult", "sendDayReport", "sendWeekReport");
 
     /**
      * @param jobs
@@ -167,28 +173,79 @@ public class QuartzHandler {
         return trigger;
     }
 
-    public void createTrigger(String type, int typeCode, String cron) {
-        try {
+    public List<JSONObject> findSysJobs() {
+        List<JSONObject> result = new ArrayList<>();
+        for (String type : typeList) {
             TriggerKey triggerKey = TriggerKey.triggerKey(type);
-            CronTrigger hasTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-            if (hasTrigger == null) {
-                Class<? extends Job> jobClass = QuartzJob.class;
-                JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(type).build();
-                jobDetail.getJobDataMap().put("type", typeCode);
-                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
-                        .withMisfireHandlingInstructionDoNothing();
-                CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(type).withSchedule(scheduleBuilder).build();
-                scheduler.scheduleJob(jobDetail, trigger);
-                logger.info("Create " + type + " System Job Successful!");
-            } else {
-                CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
-                        .withMisfireHandlingInstructionDoNothing();
-                hasTrigger = hasTrigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
-                scheduler.rescheduleJob(triggerKey, hasTrigger);
-                logger.info(type + " System Job is exist.");
+            CronTrigger hasTrigger;
+            try {
+                hasTrigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+                if (hasTrigger != null) {
+                    JSONObject r = new JSONObject();
+                    r.put("type", type);
+                    r.put("cron", hasTrigger.getCronExpression());
+                    result.add(r);
+                }
+            } catch (SchedulerException e) {
+                e.printStackTrace();
             }
+        }
+        return result;
+    }
+
+    public void updateSysScheduleJob(String type, String cron) {
+        JobKey jobKey = JobKey.jobKey(type);
+        TriggerKey triggerKey = TriggerKey.triggerKey(type);
+        try {
+            scheduler.pauseTrigger(triggerKey);
+            scheduler.unscheduleJob(triggerKey);
+            scheduler.deleteJob(jobKey);
+            logger.info("Delete Job Successful!");
         } catch (SchedulerException e) {
-            logger.error("Create " + type + " System Job failed, cause: " + e.getMessage());
+            logger.error("Delete Job failed, cause: " + e.getMessage());
+        }
+        try {
+            Class<? extends Job> jobClass = QuartzJob.class;
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(type).build();
+            switch (type) {
+                case "cleanFile":
+                    jobDetail.getJobDataMap().put("type", JobType.CLEAN_FILE_JOB);
+                    if (cron.length() == 0) {
+                        cron = "0 0 12 15 * ?";
+                    }
+                    break;
+                case "cleanResult":
+                    jobDetail.getJobDataMap().put("type", JobType.CLEAN_RESULT_JOB);
+                    if (cron.length() == 0) {
+                        cron = "0 0 12 15 * ?";
+                    }
+                    break;
+                case "sendDayReport":
+                    jobDetail.getJobDataMap().put("type", JobType.SEND_DAY_REPORT);
+                    if (cron.length() == 0) {
+                        cron = "0 0 10 * * ?";
+                    }
+                    break;
+                case "sendWeekReport":
+                    jobDetail.getJobDataMap().put("type", JobType.SEND_WEEK_REPORT);
+                    if (cron.length() == 0) {
+                        cron = "0 0 10 ? * Mon";
+                    }
+                    break;
+            }
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
+                    .withMisfireHandlingInstructionDoNothing();
+            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(type).withSchedule(scheduleBuilder).build();
+            scheduler.scheduleJob(jobDetail, trigger);
+            logger.info("Create " + type + " System Job Successful!");
+        } catch (SchedulerException e) {
+            logger.error("Create Job failed, cause: " + e.getMessage());
+        }
+    }
+
+    public void createSysTrigger() {
+        for (String type : typeList) {
+            updateSysScheduleJob(type, "");
         }
     }
 }

@@ -50,10 +50,4 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
 
     @ApiModelProperty(value = "Agent端密钥", example = "qwe")
     String secretKey;
-
-    @ApiModelProperty(value = "机柜id", example = "1")
-    private Integer cabinetId;
-
-    @ApiModelProperty(value = "机柜层数", example = "1-8")
-    private Integer storey;
 }

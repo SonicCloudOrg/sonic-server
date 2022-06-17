@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 /**
  * @author ZhouYiXun
  * @des 任务实现类
@@ -41,14 +43,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuartzJob extends QuartzJobBean implements Job {
     private final Logger logger = LoggerFactory.getLogger(QuartzJob.class);
-    @Autowired private JobsService jobsService;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private ResultsService resultsService;
-    @Autowired private FolderFeignClient folderFeignClient;
-    @Value("${sonic.jobs.filesKeepDay}")
-    private int filesKeepDay;
-    @Value("${sonic.jobs.resultsKeepDay}")
-    private int resultsKeepDay;
+    @Autowired
+    private JobsService jobsService;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private ResultsService resultsService;
+    @Autowired
+    private FolderFeignClient folderFeignClient;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
@@ -71,12 +73,16 @@ public class QuartzJob extends QuartzJobBean implements Job {
                 break;
             }
             case JobType.CLEAN_FILE_JOB: {
-                RespModel<String> r = folderFeignClient.delete(filesKeepDay);
+                int day = Math.abs((int) ((jobExecutionContext.getNextFireTime().getTime() -
+                        new Date().getTime()) / (1000 * 3600 * 24))) + 1;
+                RespModel<String> r = folderFeignClient.delete(day);
                 logger.info("Clear file job..." + r);
                 break;
             }
             case JobType.CLEAN_RESULT_JOB: {
-                resultsService.clean(resultsKeepDay);
+                int day = Math.abs((int) ((jobExecutionContext.getNextFireTime().getTime() -
+                        new Date().getTime()) / (1000 * 3600 * 24))) + 1;
+                resultsService.clean(day);
                 logger.info("Clean result job...");
                 break;
             }

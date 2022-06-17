@@ -16,16 +16,6 @@ spring:
     jdbc:
       initialize-schema: never
 
-# 不要默认的定时任务可以去掉
-sonic:
-  jobs:
-    fileCron: ${FILE_CRON:0 0 12 * * ?}
-    resultCron: ${RESULT_CRON:0 0 12 * * ?}
-    dayReportCron: ${DAY_CRON:0 0 10 * * ?}
-    weekReportCron: ${WEEK_CRON:0 0 10 ? * Mon}
-    filesKeepDay: ${FILE_KEEP_DAY:60}
-    resultsKeepDay: ${RESULT_KEEP_DAY:60}
-
 robot:
   client:
     host: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server

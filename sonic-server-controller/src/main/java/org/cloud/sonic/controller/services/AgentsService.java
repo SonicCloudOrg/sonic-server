@@ -57,10 +57,4 @@ public interface AgentsService extends IService<Agents> {
     boolean updateAgentsByLockVersion(Agents agents);
 
     Agents findBySecretKey(String secretKey);
-
-    Agents findByCabinetIdAndStorey(int id, int storey);
-
-    List<JSONObject> findByCabinetForDetail(int id);
-
-    List<Agents> findByCabinetId(int id);
 }
