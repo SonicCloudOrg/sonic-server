@@ -21,7 +21,6 @@ import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.dto.AgentsDTO;
 import org.cloud.sonic.controller.services.AgentsService;
 import io.swagger.annotations.Api;
@@ -57,37 +56,12 @@ public class AgentsController {
 
     @WebAspect
     @ApiOperation(value = "修改agent信息", notes = "修改agent信息")
-    @PutMapping
-    public RespModel<String> save(@RequestBody JSONObject jsonObject) {
-        agentsService.saveAgents(jsonObject);
+    @PutMapping("/update")
+    public RespModel<String> update(@RequestBody JSONObject jsonObject) {
+        agentsService.update(jsonObject.getInteger("id"),
+                jsonObject.getString("name"), jsonObject.getInteger("highTemp"),
+                jsonObject.getInteger("highTempTime"), jsonObject.getInteger("robotType"),
+                jsonObject.getString("robotToken"), jsonObject.getString("robotToken"));
         return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @ApiOperation(value = "修改agent名称", notes = "修改agent名称")
-    @PutMapping("/updateName")
-    public RespModel<String> updateName(@RequestBody JSONObject jsonObject) {
-        agentsService.updateName(jsonObject.getInteger("id"), jsonObject.getString("name"));
-        return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @ApiOperation(value = "agent下线", notes = "agent下线")
-    @GetMapping("/offLine")
-    public RespModel<String> offLine(@RequestParam(name = "id") int id) {
-        agentsService.offLine(id);
-        return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @ApiOperation(value = "查询Agent端信息", notes = "获取对应id的Agent信息")
-    @GetMapping
-    public RespModel<?> findOne(@RequestParam(name = "id") int id) {
-        Agents agents = agentsService.findById(id);
-        if (agents != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, agents);
-        } else {
-            return new RespModel<>(RespEnum.ID_NOT_FOUND);
-        }
     }
 }

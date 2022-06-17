@@ -128,9 +128,7 @@ public class TransportServer {
                 }
                 break;
             case "errCall":
-//                errorCall(
-//                        JSON.parseObject(
-//                        , jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
+                agentsService.errCall(jsonMsg.getInteger("agentId"), jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
                 break;
         }
     }
@@ -157,7 +155,7 @@ public class TransportServer {
 
     @OnClose
     public void onClose(Session session) {
-        log.info("Agent: {} disconnected.",session.getId());
+        log.info("Agent: {} disconnected.", session.getId());
         for (Map.Entry<Integer, Session> entry : BytesTool.agentSessionMap.entrySet()) {
             if (entry.getValue().equals(session)) {
                 int agentId = entry.getKey();
@@ -169,7 +167,7 @@ public class TransportServer {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.info("Agent: {},on error",session.getId());
+        log.info("Agent: {},on error", session.getId());
         log.error(error.getMessage());
     }
 }
