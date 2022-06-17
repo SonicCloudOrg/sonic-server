@@ -184,6 +184,7 @@ public class QuartzHandler {
                     JSONObject r = new JSONObject();
                     r.put("type", type);
                     r.put("cron", hasTrigger.getCronExpression());
+                    r.put("cronNext", hasTrigger.getNextFireTime());
                     result.add(r);
                 }
             } catch (SchedulerException e) {
