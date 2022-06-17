@@ -21,7 +21,6 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.config.WsEndpointConfigure;
 import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.domain.Cabinet;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.tools.BytesTool;
@@ -36,12 +35,10 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@ServerEndpoint(value = "/agent/{agentKey}/{cabinetKey}", configurator = WsEndpointConfigure.class)
+@ServerEndpoint(value = "/agent/{agentKey}", configurator = WsEndpointConfigure.class)
 public class TransportServer {
     @Autowired
     private AgentsService agentsService;
-    @Autowired
-    private CabinetService cabinetService;
     @Autowired
     private DevicesService devicesService;
     @Autowired
@@ -52,7 +49,7 @@ public class TransportServer {
     private TestCasesService testCasesService;
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("agentKey") String agentKey, @PathParam("cabinetKey") String cabinetKey) throws IOException {
+    public void onOpen(Session session, @PathParam("agentKey") String agentKey) throws IOException {
         log.info("Session: {} is requesting auth server.", session.getId());
         if (agentKey == null || agentKey.length() == 0) {
             log.info("Session: {} missing key.", session.getId());
@@ -73,15 +70,6 @@ public class TransportServer {
             auth.put("msg", "auth");
             auth.put("result", "pass");
             auth.put("id", authResult);
-            if (cabinetKey != null && cabinetKey.length() != 0) {
-                Cabinet cabinet = cabinetService.getIdByKey(cabinetKey);
-                if (cabinet != null) {
-                    auth.put("cabinetAuth", "pass");
-                    auth.put("cabinet", JSON.toJSONString(cabinet));
-                } else {
-                    auth.put("cabinetAuth", "fail");
-                }
-            }
             BytesTool.sendText(session, auth.toJSONString());
         }
     }
@@ -140,9 +128,9 @@ public class TransportServer {
                 }
                 break;
             case "errCall":
-                cabinetService.errorCall(
-                        JSON.parseObject(jsonMsg.getString("cabinet"), Cabinet.class)
-                        , jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
+//                errorCall(
+//                        JSON.parseObject(
+//                        , jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
                 break;
         }
     }

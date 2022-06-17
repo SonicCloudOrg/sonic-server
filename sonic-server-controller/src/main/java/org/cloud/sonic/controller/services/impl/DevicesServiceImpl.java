@@ -313,10 +313,4 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         return new RespModel<>(DELETE_OK);
     }
 
-    @Override
-    public List<Devices> findByAgentForCabinet(int agentId) {
-        return lambdaQuery().eq(Devices::getAgentId, agentId)
-                .ne(Devices::getPosition, 0).orderByAsc(Devices::getPosition).list();
-    }
-
 }

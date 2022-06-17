@@ -73,12 +73,4 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     @TableField
     @Column(value = "lock_version", isNull = false, defaultValue = "0", comment = "乐观锁，优先保证上下线状态落库")
     private Long lockVersion;
-
-    @TableField
-    @Column(value = "cabinet_id", isNull = false, comment = "机柜Id", defaultValue = "0")
-    private Integer cabinetId;
-
-    @TableField
-    @Column(isNull = false, comment = "机柜层数", defaultValue = "0")
-    private Integer storey;
 }

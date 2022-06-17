@@ -90,12 +90,4 @@ public class AgentsController {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
-
-    @WebAspect
-    @ApiOperation(value = "查询机柜的Agents", notes = "获取机柜下所有Agent")
-    @GetMapping("/findByCabinet")
-    public RespModel<List<JSONObject>> findByCabinet(@RequestParam(name = "cabinetId") int cabinetId) {
-        return new RespModel<List<JSONObject>>(RespEnum.SEARCH_OK, agentsService.findByCabinetForDetail(cabinetId));
-    }
-
 }

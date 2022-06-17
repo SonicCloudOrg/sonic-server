@@ -19,7 +19,6 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.services.CabinetService;
 import org.cloud.sonic.controller.mapper.AgentsMapper;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
@@ -44,8 +43,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
 
     @Autowired
     private DevicesService devicesService;
-    @Autowired
-    private CabinetService cabinetService;
     @Resource
     private AgentsMapper agentsMapper;
 
@@ -65,8 +62,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setPort(0);
             agents.setSystemType("unknown");
             agents.setSecretKey(UUID.randomUUID().toString());
-            agents.setCabinetId(0);
-            agents.setStorey(0);
             save(agents);
         } else {
             Agents ag = findById(id);
@@ -111,13 +106,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     @Transactional
     public boolean updateAgentsByLockVersion(Agents agents) {
-        if (agents.getCabinetId() != 0 && agents.getStorey() != 0) {
-            Agents oldStorey = findByCabinetIdAndStorey(agents.getCabinetId(), agents.getStorey());
-            if (oldStorey != null && (oldStorey.getId() != agents.getId())) {
-                oldStorey.setStorey(0);
-                save(oldStorey);
-            }
-        }
         return lambdaUpdate()
                 .eq(Agents::getId, agents.getId())
                 .eq(Agents::getLockVersion, agents.getLockVersion())
@@ -171,31 +159,5 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     public Agents findBySecretKey(String secretKey) {
         return lambdaQuery().eq(Agents::getSecretKey, secretKey).one();
-    }
-
-    @Override
-    public Agents findByCabinetIdAndStorey(int id, int storey) {
-        return lambdaQuery().eq(Agents::getCabinetId, id)
-                .eq(Agents::getStorey, storey).one();
-    }
-
-    @Override
-    public List<JSONObject> findByCabinetForDetail(int id) {
-        List<Agents> agentsList = lambdaQuery().eq(Agents::getCabinetId, id)
-                .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
-        List<JSONObject> result = new ArrayList<>();
-        for (Agents agents : agentsList) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("agent", agents);
-            jsonObject.put("devices", devicesService.findByAgentForCabinet(agents.getId()));
-            result.add(jsonObject);
-        }
-        return result;
-    }
-
-    @Override
-    public List<Agents> findByCabinetId(int id) {
-        return lambdaQuery().eq(Agents::getCabinetId, id)
-                .ne(Agents::getStorey, 0).orderByAsc(Agents::getStorey).list();
     }
 }
