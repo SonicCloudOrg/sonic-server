@@ -36,7 +36,7 @@ public interface AgentsService extends IService<Agents> {
 
     boolean offLine(int id);
 
-    int auth(String key);
+    Agents auth(String key);
 
     Agents findById(int id);
 

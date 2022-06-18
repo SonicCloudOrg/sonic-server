@@ -56,8 +56,8 @@ public class TransportServer {
             session.close();
             return;
         }
-        int authResult = agentsService.auth(agentKey);
-        if (authResult == 0) {
+        Agents authResult = agentsService.auth(agentKey);
+        if (authResult == null) {
             log.info("Session: {} auth failed...", session.getId());
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
@@ -69,7 +69,9 @@ public class TransportServer {
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
             auth.put("result", "pass");
-            auth.put("id", authResult);
+            auth.put("id", authResult.getId());
+            auth.put("highTemp", authResult.getHighTemp());
+            auth.put("highTempTime", authResult.getHighTempTime());
             BytesTool.sendText(session, auth.toJSONString());
         }
     }

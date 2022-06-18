@@ -139,14 +139,12 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
-    public int auth(String key) {
+    public Agents auth(String key) {
         Agents agents = findBySecretKey(key);
-        if (agents == null) {
-            return 0;
-        } else {
+        if (agents != null) {
             resetDevice(agents.getId());
-            return agents.getId();
         }
+        return agents;
     }
 
     @Override

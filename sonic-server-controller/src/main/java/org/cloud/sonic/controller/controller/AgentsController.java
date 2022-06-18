@@ -21,6 +21,7 @@ import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.dto.AgentsDTO;
 import org.cloud.sonic.controller.services.AgentsService;
 import io.swagger.annotations.Api;
@@ -63,5 +64,17 @@ public class AgentsController {
                 jsonObject.getInteger("highTempTime"), jsonObject.getInteger("robotType"),
                 jsonObject.getString("robotToken"), jsonObject.getString("robotToken"));
         return new RespModel<>(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查询Agent端信息", notes = "获取对应id的Agent信息")
+    @GetMapping
+    public RespModel<?> findOne(@RequestParam(name = "id") int id) {
+        Agents agents = agentsService.findById(id);
+        if (agents != null) {
+            return new RespModel<>(RespEnum.SEARCH_OK, agents);
+        } else {
+            return new RespModel<>(RespEnum.ID_NOT_FOUND);
+        }
     }
 }
