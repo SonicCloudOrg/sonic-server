@@ -51,9 +51,11 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             switch (type) {
                 case "normal" -> lambdaQuery.and(
                         l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image")
+                                .ne(Elements::getEleType, "activity")
                 );
                 case "point" -> lambdaQuery.eq(Elements::getEleType, "point");
                 case "image" -> lambdaQuery.eq(Elements::getEleType, "image");
+                case "activity" -> lambdaQuery.eq(Elements::getEleType, "activity");
             }
         }
 
