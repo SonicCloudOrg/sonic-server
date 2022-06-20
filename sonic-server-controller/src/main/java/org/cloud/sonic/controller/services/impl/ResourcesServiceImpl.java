@@ -80,7 +80,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         Resources parentResource = searchByPath(res, UrlType.PARENT);
         if (parentResource == null) {
             parentResource = new Resources();
-            parentResource.setNeedAuth(0);
+            parentResource.setNeedAuth(UrlType.PARENT);
             parentResource.setMethod("parent");
             parentMap.put(beanName, parentResource);
             needInsert = true;
@@ -114,7 +114,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         if (resource == null) {
             resource = new Resources();
             //初始化说有资源不需要鉴权
-            resource.setNeedAuth(0);
+            resource.setNeedAuth(UrlType.WHITE);
             needInsert = true;
         }
         resource.setParentId(parentResource.getId());
@@ -166,7 +166,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
     @Override
     public void updateResourceAuth(Integer id, Boolean needAuth) {
         lambdaUpdate().eq(Resources::getId, id)
-                .set(Resources::getNeedAuth, needAuth ? 1 : 0)
+                .set(Resources::getNeedAuth, needAuth ? UrlType.NORMAL : UrlType.WHITE)
                 .update();
     }
 
