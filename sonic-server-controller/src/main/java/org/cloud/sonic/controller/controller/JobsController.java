@@ -120,9 +120,8 @@ public class JobsController {
             @ApiImplicitParam(name = "cron", value = "cron表达式", dataTypeClass = String.class)
     })
     @PutMapping("/updateSysJob")
-    public RespModel updateSysJob(@RequestParam(name = "type") String type
-            , @RequestParam(name = "cron") String cron) {
-        jobsService.updateSysJob(type, cron);
+    public RespModel updateSysJob(@RequestBody JSONObject jsonObject) {
+        jobsService.updateSysJob(jsonObject.getString("type"), jsonObject.getString("cron"));
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 }

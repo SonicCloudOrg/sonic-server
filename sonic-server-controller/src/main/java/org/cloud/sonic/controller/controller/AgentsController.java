@@ -57,25 +57,12 @@ public class AgentsController {
 
     @WebAspect
     @ApiOperation(value = "修改agent信息", notes = "修改agent信息")
-    @PutMapping
-    public RespModel<String> save(@RequestBody JSONObject jsonObject) {
-        agentsService.saveAgents(jsonObject);
-        return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @ApiOperation(value = "修改agent名称", notes = "修改agent名称")
-    @PutMapping("/updateName")
-    public RespModel<String> updateName(@RequestBody JSONObject jsonObject) {
-        agentsService.updateName(jsonObject.getInteger("id"), jsonObject.getString("name"));
-        return new RespModel<>(RespEnum.HANDLE_OK);
-    }
-
-    @WebAspect
-    @ApiOperation(value = "agent下线", notes = "agent下线")
-    @GetMapping("/offLine")
-    public RespModel<String> offLine(@RequestParam(name = "id") int id) {
-        agentsService.offLine(id);
+    @PutMapping("/update")
+    public RespModel<String> update(@RequestBody JSONObject jsonObject) {
+        agentsService.update(jsonObject.getInteger("id"),
+                jsonObject.getString("name"), jsonObject.getInteger("highTemp"),
+                jsonObject.getInteger("highTempTime"), jsonObject.getInteger("robotType"),
+                jsonObject.getString("robotToken"), jsonObject.getString("robotToken"));
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 

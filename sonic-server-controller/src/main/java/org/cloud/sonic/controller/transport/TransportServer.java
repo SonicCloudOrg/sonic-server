@@ -56,8 +56,8 @@ public class TransportServer {
             session.close();
             return;
         }
-        int authResult = agentsService.auth(agentKey);
-        if (authResult == 0) {
+        Agents authResult = agentsService.auth(agentKey);
+        if (authResult == null) {
             log.info("Session: {} auth failed...", session.getId());
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
@@ -69,7 +69,9 @@ public class TransportServer {
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
             auth.put("result", "pass");
-            auth.put("id", authResult);
+            auth.put("id", authResult.getId());
+            auth.put("highTemp", authResult.getHighTemp());
+            auth.put("highTempTime", authResult.getHighTempTime());
             BytesTool.sendText(session, auth.toJSONString());
         }
     }
@@ -128,9 +130,7 @@ public class TransportServer {
                 }
                 break;
             case "errCall":
-//                errorCall(
-//                        JSON.parseObject(
-//                        , jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
+                agentsService.errCall(jsonMsg.getInteger("agentId"), jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
                 break;
         }
     }
@@ -157,7 +157,7 @@ public class TransportServer {
 
     @OnClose
     public void onClose(Session session) {
-        log.info("Agent: {} disconnected.",session.getId());
+        log.info("Agent: {} disconnected.", session.getId());
         for (Map.Entry<Integer, Session> entry : BytesTool.agentSessionMap.entrySet()) {
             if (entry.getValue().equals(session)) {
                 int agentId = entry.getKey();
@@ -169,7 +169,7 @@ public class TransportServer {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.info("Agent: {},on error",session.getId());
+        log.info("Agent: {},on error", session.getId());
         log.error(error.getMessage());
     }
 }

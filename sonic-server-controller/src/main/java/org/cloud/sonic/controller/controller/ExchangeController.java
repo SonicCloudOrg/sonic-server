@@ -83,6 +83,7 @@ public class ExchangeController {
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
+    //eureka调度用
     @WebAspect
     @WhiteUrl
     @PostMapping("/send")

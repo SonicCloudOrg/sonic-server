@@ -188,23 +188,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setImgUrl("");
             devices.setTemperature(0);
             devices.setLevel(0);
-            devices.setPosition(0);
-            devices.setGear(0);
-        }
-        Integer position = jsonMsg.getInteger("position");
-        if (position != null) {
-            Devices oldPosition = lambdaQuery().eq(Devices::getAgentId, jsonMsg.getInteger("agentId"))
-                    .eq(Devices::getPosition, position).one();
-            if (oldPosition != null) {
-                oldPosition.setPosition(0);
-                save(oldPosition);
-            }
-            devices.setPosition(position);
-        } else if (devices.getAgentId() != null && devices.getAgentId() != jsonMsg.getInteger("agentId")) {
-            devices.setPosition(0);
-        }
-        if (jsonMsg.getInteger("gear") != null) {
-            devices.setGear(jsonMsg.getInteger("gear"));
         }
         devices.setAgentId(jsonMsg.getInteger("agentId"));
         if (jsonMsg.getString("name") != null) {
@@ -237,14 +220,6 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setStatus(jsonMsg.getString("status"));
         }
         save(devices);
-        Session agentSession = BytesTool.agentSessionMap.get(devices.getAgentId());
-        if (agentSession != null) {
-            JSONObject positionJson = new JSONObject();
-            positionJson.put("msg", "position");
-            positionJson.put("udId", devices.getUdId());
-            positionJson.put("position", devices.getPosition());
-            BytesTool.sendText(agentSession,positionJson.toJSONString());
-        }
     }
 
     @Override

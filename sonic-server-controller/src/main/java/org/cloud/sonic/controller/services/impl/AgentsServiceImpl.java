@@ -27,14 +27,13 @@ import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.controller.tools.RobotMsgTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -43,6 +42,8 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
 
     @Autowired
     private DevicesService devicesService;
+    @Autowired
+    private RobotMsgTool robotMsgTool;
     @Resource
     private AgentsMapper agentsMapper;
 
@@ -52,7 +53,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
-    public void updateName(int id, String name) {
+    public void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret) {
         if (id == 0) {
             Agents agents = new Agents();
             agents.setName(name);
@@ -61,12 +62,22 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setVersion("unknown");
             agents.setPort(0);
             agents.setSystemType("unknown");
+            agents.setHighTemp(highTemp);
+            agents.setHighTempTime(highTempTime);
+            agents.setRobotType(robotType);
+            agents.setRobotToken(robotToken);
+            agents.setRobotSecret(robotSecret);
             agents.setSecretKey(UUID.randomUUID().toString());
             save(agents);
         } else {
             Agents ag = findById(id);
             if (ObjectUtils.isNotEmpty(ag)) {
                 ag.setName(name);
+                ag.setHighTemp(highTemp);
+                ag.setHighTempTime(highTempTime);
+                ag.setRobotType(robotType);
+                ag.setRobotToken(robotToken);
+                ag.setRobotSecret(robotSecret);
                 save(ag);
             }
         }
@@ -128,27 +139,12 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
-    public void offLine(Agents agentOffLine) {
-        agentOffLine.setStatus(AgentStatus.OFFLINE);
-        updateAgentsByLockVersion(agentOffLine);
-        resetDevice(agentOffLine.getId());
-    }
-
-    @Override
-    public int auth(String key) {
+    public Agents auth(String key) {
         Agents agents = findBySecretKey(key);
-        if (agents == null) {
-            return 0;
-        } else {
+        if (agents != null) {
             resetDevice(agents.getId());
-            return agents.getId();
         }
-    }
-
-    @Override
-    public String findKeyById(int id) {
-        Optional<Agents> agents = lambdaQuery().eq(Agents::getId, id).select(Agents::getSecretKey).oneOpt();
-        return agents.map(Agents::getSecretKey).orElse(null);
+        return agents;
     }
 
     @Override
@@ -159,5 +155,13 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     public Agents findBySecretKey(String secretKey) {
         return lambdaQuery().eq(Agents::getSecretKey, secretKey).one();
+    }
+
+    @Override
+    public void errCall(int id, String udId, int tem, int type) {
+        Agents agents = findById(id);
+        if (agents != null && agents.getRobotType() != 0 && agents.getRobotToken().length() > 0 && agents.getRobotSecret().length() > 0) {
+            robotMsgTool.sendErrorDevice(agents.getRobotToken(), agents.getRobotSecret(), agents.getRobotType(), type, tem, udId);
+        }
     }
 }
