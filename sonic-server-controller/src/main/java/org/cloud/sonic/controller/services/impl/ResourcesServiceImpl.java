@@ -17,9 +17,7 @@ import org.cloud.sonic.controller.models.interfaces.UrlType;
 import org.cloud.sonic.controller.services.ResourcesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.SpringTool;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +45,9 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
     @Resource
     private RoleResourcesMapper roleResourcesMapper;
 
+    @Value("${spring.version}")
+    private String version;
+
     @Override
     @Transactional
     public void init() {
@@ -64,6 +65,15 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
             processResource(parentResource, key, value);
         });
 
+        processUnusedResource();
+
+    }
+
+    private void processUnusedResource() {
+        // 将不需要的 url 全部标记为 white
+        lambdaUpdate().ne(Resources::getVersion, version)
+                .set(Resources::getWhite, UrlType.WHITE)
+                .update();
     }
 
     private Resources processParent(String beanName, Map<String, Resources> parentMap) {
@@ -88,6 +98,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         String tag = api.tags()[0];
         parentResource.setDesc(tag);
         parentResource.setPath(res);
+        parentResource.setVersion(version);
 
         if (needInsert) {
             insert(parentResource);
@@ -120,6 +131,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         resource.setParentId(parentResource.getId());
         resource.setMethod(method);
         resource.setPath(path);
+        resource.setVersion(version);
 
         ApiOperation apiOperation = value.getMethodAnnotation(ApiOperation.class);
         WhiteUrl whiteUrl = value.getMethodAnnotation(WhiteUrl.class);
