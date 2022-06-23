@@ -18,7 +18,7 @@ spring:
 
 robot:
   client:
-    host: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server
+    host: http://${SONIC_SERVER_HOST:localhost}:${SONIC_SERVER_PORT:3000}/server
   img:
     success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/suc.png"
     warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/master/src/assets/warn.png"
