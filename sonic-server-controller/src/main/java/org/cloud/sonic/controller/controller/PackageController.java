@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author yaming116
+ * @author yaming116, Eason
  * @des
  * @date 2022/5/26 1:22
  */
@@ -66,6 +66,16 @@ public class PackageController {
 
         Page<Packages> pageable = new Page<>(page, pageSize);
 
-        return new RespModel<>(RespEnum.SEARCH_OK, packagesService.findByProjectId(projectId,branch, platform ,pageable));
+        return new RespModel<>(RespEnum.SEARCH_OK, packagesService.findByProjectId(projectId, branch, platform, pageable));
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查找安装包下载地址", notes = "查找安装包下载地址")
+    @GetMapping
+    public RespModel<String> find(@RequestParam(name = "id", required = false) int id,
+                                  @RequestParam(name = "projectId", required = false) int projectId,
+                                  @RequestParam(name = "branch", required = false) String branch,
+                                  @RequestParam(name = "platform", required = false) String platform) {
+        return new RespModel<>(RespEnum.SEARCH_OK, packagesService.findOne(id, projectId, branch, platform));
     }
 }

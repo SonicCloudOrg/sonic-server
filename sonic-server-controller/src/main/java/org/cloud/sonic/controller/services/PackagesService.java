@@ -14,8 +14,11 @@ import org.cloud.sonic.controller.models.dto.PackageDTO;
  */
 public interface PackagesService extends IService<Packages> {
 
+    String findOne(Integer id, Integer projectId, String branch, String platform);
+
     /**
      * 根据项目获取所有安装包
+     *
      * @return
      */
     CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, Page<Packages> pageable);

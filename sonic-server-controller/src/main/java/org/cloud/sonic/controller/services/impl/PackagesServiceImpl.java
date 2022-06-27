@@ -41,9 +41,23 @@ import java.util.stream.Collectors;
 public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packages> implements PackagesService {
 
     @Override
+    public String findOne(Integer id, Integer projectId, String branch, String platform) {
+        Packages packages = lambdaQuery().eq(id != null, Packages::getId, id)
+                .eq(projectId != null, Packages::getProjectId, projectId)
+                .eq(StringUtils.isNotBlank(platform), Packages::getPlatform, platform)
+                .like(StringUtils.isNotBlank(branch), Packages::getBranch, branch)
+                .orderByDesc(Packages::getId).one();
+        if (packages != null) {
+            return packages.getUrl();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
     public CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, Page<Packages> pageable) {
         Page<Packages> page = lambdaQuery().eq(Packages::getProjectId, projectId)
-                .eq(StringUtils.isNotBlank(platform), Packages::getPlatform , platform)
+                .eq(StringUtils.isNotBlank(platform), Packages::getPlatform, platform)
                 .like(StringUtils.isNotBlank(branch), Packages::getBranch, branch)
                 .orderByDesc(Packages::getId)
                 .page(pageable);

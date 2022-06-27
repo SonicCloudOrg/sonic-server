@@ -16,7 +16,7 @@ import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel("模块模型")
+@ApiModel("安装包模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -46,6 +46,10 @@ public class PackageDTO implements Serializable, TypeConverter<PackageDTO, Packa
     @NotBlank
     @ApiModelProperty(value = "下载地址", required = true, example = "http://xxx.com/xx.apk")
     String url;
+
+    @NotBlank
+    @ApiModelProperty(value = "来源地址", required = true, example = "http://xxx.com/xx.apk")
+    String buildUrl;
 
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

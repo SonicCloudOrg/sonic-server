@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author yaming116
+ * @author yaming116,Eason
  * @date 2022/5/26 1:22
  */
 @ApiModel(value = "Packages对象", description = "")
@@ -58,6 +58,10 @@ public class Packages implements Serializable, TypeConverter<Packages, PackageDT
     @TableField
     @Column(value = "url", isNull = false, comment = "下载地址")
     private String url;
+
+    @TableField
+    @Column(value = "build_url", isNull = false, comment = "来源地址")
+    private String buildUrl;
 
     @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
