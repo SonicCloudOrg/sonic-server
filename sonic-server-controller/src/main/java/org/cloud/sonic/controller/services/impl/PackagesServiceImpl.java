@@ -41,9 +41,8 @@ import java.util.stream.Collectors;
 public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packages> implements PackagesService {
 
     @Override
-    public String findOne(Integer id, Integer projectId, String branch, String platform) {
-        Packages packages = lambdaQuery().eq(id != null, Packages::getId, id)
-                .eq(projectId != null, Packages::getProjectId, projectId)
+    public String findOne(int projectId, String branch, String platform) {
+        Packages packages = lambdaQuery().eq(Packages::getProjectId, projectId)
                 .eq(StringUtils.isNotBlank(platform), Packages::getPlatform, platform)
                 .like(StringUtils.isNotBlank(branch), Packages::getBranch, branch)
                 .orderByDesc(Packages::getId).one();
