@@ -353,12 +353,12 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Override
     public JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
-        if (steps.getStepType().equals("install")&&steps.getContent().equals("2")) {
+        if (steps.getStepType().equals("install") && steps.getContent().equals("2")) {
             String plat = "unknown";
-            if(steps.getPlatform()== PlatformType.ANDROID){
+            if (steps.getPlatform() == PlatformType.ANDROID) {
                 plat = "Android";
             }
-            if(steps.getPlatform()== PlatformType.IOS){
+            if (steps.getPlatform() == PlatformType.IOS) {
                 plat = "iOS";
             }
             steps.setText(packagesService.findOne(steps.getProjectId(), steps.getText(), plat));
@@ -399,6 +399,15 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                         // 添加转换后的公共步骤
                         childStepJsonObjs.add(childStepJsonObj);
                     }
+                } else if (childStep.getStepType().equals("install") && childStep.getContent().equals("2")) {
+                    String plat = "unknown";
+                    if (childStep.getPlatform() == PlatformType.ANDROID) {
+                        plat = "Android";
+                    }
+                    if (childStep.getPlatform() == PlatformType.IOS) {
+                        plat = "iOS";
+                    }
+                    childStep.setText(packagesService.findOne(childStep.getProjectId(), childStep.getText(), plat));
                 } else {
                     // 如果不是公共步骤，则直接添加
                     childStepJsonObjs.add(childStep);

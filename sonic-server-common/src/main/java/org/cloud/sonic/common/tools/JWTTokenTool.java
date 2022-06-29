@@ -55,6 +55,15 @@ public class JWTTokenTool {
                 .sign(Algorithm.HMAC256(TOKEN_SECRET));
     }
 
+    public String getToken(String username, int day) {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DATE, day);
+        Date nowTime = now.getTime();
+        return JWT.create().withAudience(username, UUID.randomUUID().toString())
+                .withExpiresAt(nowTime)
+                .sign(Algorithm.HMAC256(TOKEN_SECRET));
+    }
+
     /**
      * @param token
      * @return java.lang.String
