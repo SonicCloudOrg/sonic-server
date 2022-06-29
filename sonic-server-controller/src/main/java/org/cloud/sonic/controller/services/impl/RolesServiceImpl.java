@@ -1,5 +1,6 @@
 package org.cloud.sonic.controller.services.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.RoleResourcesMapper;
 import org.cloud.sonic.controller.mapper.RolesMapper;
@@ -69,7 +70,7 @@ public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> imple
         if (hasAuth) {
             roleResourcesMapper.insert(RoleResources.builder().roleId(roleId).resId(resId).build());
         }else {
-            roleResourcesMapper.delete(lambdaQuery(roleResourcesMapper)
+            roleResourcesMapper.delete(new LambdaQueryWrapper<RoleResources>()
                     .eq(RoleResources::getRoleId, roleId)
                     .eq(RoleResources::getResId, resId));
         }
@@ -85,7 +86,7 @@ public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> imple
         List<Integer> roleResourceCopyIds = roleResourceIds.stream().collect(Collectors.toList());
         //移除当前角色不需要资源
         roleResourceIds.removeAll(resId);
-        roleResourcesMapper.delete(lambdaQuery(roleResourcesMapper).eq(RoleResources::getRoleId, roleId).in(RoleResources::getResId, roleResourceIds));
+        roleResourcesMapper.delete(new LambdaQueryWrapper<RoleResources>().eq(RoleResources::getRoleId, roleId).in(RoleResources::getResId, roleResourceIds));
         //添加当前角色下新权限
         resId.removeAll(roleResourceCopyIds);
         resId.stream().map(id -> RoleResources.builder().roleId(roleId).resId(id).build())
