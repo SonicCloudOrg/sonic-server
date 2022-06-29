@@ -408,6 +408,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                         plat = "iOS";
                     }
                     childStep.setText(packagesService.findOne(childStep.getProjectId(), childStep.getText(), plat));
+                    childStepJsonObjs.add(childStep);
                 } else {
                     // 如果不是公共步骤，则直接添加
                     childStepJsonObjs.add(childStep);
