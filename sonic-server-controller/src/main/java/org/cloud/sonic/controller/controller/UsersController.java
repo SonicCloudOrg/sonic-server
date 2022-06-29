@@ -70,7 +70,7 @@ public class UsersController {
 
     @WebAspect
     @ApiOperation(value = "生成用户对外Token", notes = "生成用户对外Token")
-    @PostMapping("/generateToken")
+    @GetMapping("/generateToken")
     public RespModel<String> generateToken(@RequestParam(name = "day") int day, HttpServletRequest request) {
         String token = request.getHeader("SonicToken");
         if (token != null) {
