@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.1-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.4.1-rc"
     hostname: sonic-server-eureka
     environment:
       - SONIC_EUREKA_USERNAME
@@ -15,7 +15,7 @@ services:
     ports:
       - "${SONIC_EUREKA_PORT}:${SONIC_EUREKA_PORT}"
   sonic-server-gateway:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.1-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.4.1-rc"
     hostname: sonic-server-gateway
     environment:
       - SONIC_EUREKA_USERNAME
@@ -32,7 +32,7 @@ services:
       - sonic-network
     restart: on-failure
   sonic-server-controller:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.1-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.4.1-rc"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -43,8 +43,8 @@ services:
       - MYSQL_DATABASE
       - MYSQL_USERNAME
       - MYSQL_PASSWORD
-      - SERVER_HOST
-      - SERVER_PORT
+      - SONIC_SERVER_HOST
+      - SONIC_SERVER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
       - REGISTER_ENABLE
@@ -64,14 +64,14 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-server-folder:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.1-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.4.1-rc"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
       - SONIC_EUREKA_HOST=sonic-server-eureka
       - SONIC_EUREKA_PORT
-      - SERVER_HOST
-      - SERVER_PORT
+      - SONIC_SERVER_HOST
+      - SONIC_SERVER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
     networks:
@@ -86,17 +86,17 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-client-web:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.1-beta"
+    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:v1.4.1-rc"
     environment:
-      - SERVER_HOST
-      - SERVER_PORT
+      - SONIC_SERVER_HOST
+      - SONIC_SERVER_PORT
     networks:
       - sonic-network
     depends_on:
       - sonic-server-gateway
     restart: on-failure
     ports:
-      - "${SERVER_PORT}:80"
+      - "${SONIC_SERVER_PORT}:80"
 
 networks:
   sonic-network:

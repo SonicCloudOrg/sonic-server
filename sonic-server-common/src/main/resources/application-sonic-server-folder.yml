@@ -9,4 +9,4 @@ spring:
 
 # 网关的IP地址
 gateway:
-  host: http://${SERVER_HOST:localhost}:${SERVER_PORT:3000}/server
+  host: http://${SONIC_SERVER_HOST:localhost}:${SONIC_SERVER_PORT:3000}/server

@@ -33,6 +33,7 @@ import org.cloud.sonic.controller.models.dto.*;
 import org.cloud.sonic.controller.models.enums.ConditionEnum;
 import org.cloud.sonic.controller.models.interfaces.CoverType;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.interfaces.PlatformType;
 import org.cloud.sonic.controller.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
@@ -73,6 +74,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired
     private AgentsService agentsService;
+    @Autowired
+    private PackagesService packagesService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -350,6 +353,17 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Override
     public JSONObject getStep(StepsDTO steps) {
         JSONObject step = new JSONObject();
+        if (steps.getStepType().equals("install") && steps.getContent().equals("2")) {
+            String plat = "unknown";
+            if (steps.getPlatform() == PlatformType.ANDROID) {
+                plat = "Android";
+            }
+            if (steps.getPlatform() == PlatformType.IOS) {
+                plat = "iOS";
+            }
+            steps.setText(packagesService.findOne(steps.getProjectId(), steps.getText(), plat));
+        }
+
         if (steps.getStepType().equals("publicStep")) {
             PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(steps.getText()));
             if (publicStepsDTO != null) {
@@ -385,6 +399,16 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                         // 添加转换后的公共步骤
                         childStepJsonObjs.add(childStepJsonObj);
                     }
+                } else if (childStep.getStepType().equals("install") && childStep.getContent().equals("2")) {
+                    String plat = "unknown";
+                    if (childStep.getPlatform() == PlatformType.ANDROID) {
+                        plat = "Android";
+                    }
+                    if (childStep.getPlatform() == PlatformType.IOS) {
+                        plat = "iOS";
+                    }
+                    childStep.setText(packagesService.findOne(childStep.getProjectId(), childStep.getText(), plat));
+                    childStepJsonObjs.add(childStep);
                 } else {
                     // 如果不是公共步骤，则直接添加
                     childStepJsonObjs.add(childStep);
