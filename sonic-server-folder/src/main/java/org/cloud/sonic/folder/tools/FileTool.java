@@ -41,8 +41,6 @@ import java.util.UUID;
 @RefreshScope
 public class FileTool {
     private final Logger logger = LoggerFactory.getLogger(FileTool.class);
-    @Value("${gateway.host}")
-    private String host;
 
     /**
      * @param folderName 文件夹
@@ -68,8 +66,7 @@ public class FileTool {
         } catch (FileAlreadyExistsException e) {
             logger.error(e.getMessage());
         }
-        host = host.replace(":80/", "/");
-        return host + "/api/folder/" + local.getPath().replaceAll("\\\\", "/");
+        return "/folder/" + local.getPath().replaceAll("\\\\", "/");
     }
 
     /**
@@ -161,7 +158,6 @@ public class FileTool {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-        host = host.replace(":80/", "/");
-        return host + "/api/folder/" + file.getPath();
+        return "/folder/" + file.getPath();
     }
 }

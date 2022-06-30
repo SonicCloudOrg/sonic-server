@@ -70,8 +70,6 @@ services:
       - SONIC_EUREKA_PASSWORD
       - SONIC_EUREKA_HOST=sonic-server-eureka
       - SONIC_EUREKA_PORT
-      - SONIC_SERVER_HOST
-      - SONIC_SERVER_PORT
       - SECRET_KEY
       - EXPIRE_DAY
     networks:
