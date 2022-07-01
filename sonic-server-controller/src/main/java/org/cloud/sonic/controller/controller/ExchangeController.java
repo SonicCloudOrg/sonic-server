@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.websocket.Session;
 
 
-@Api(tags = "设备管理相关")
+@Api(tags = "调度相关")
 @RestController
 @RequestMapping("/exchange")
 @Slf4j
