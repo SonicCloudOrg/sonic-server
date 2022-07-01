@@ -6,3 +6,7 @@ spring:
     multipart:
       maxFileSize: -1
       maxRequestSize: -1
+
+# 网关的IP地址
+gateway:
+  host: http://${SONIC_SERVER_HOST:localhost}:${SONIC_SERVER_PORT:3000}/server
