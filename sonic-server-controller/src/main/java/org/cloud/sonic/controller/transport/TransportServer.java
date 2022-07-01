@@ -21,7 +21,6 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.config.WsEndpointConfigure;
 import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.domain.Cabinet;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.tools.BytesTool;
@@ -36,12 +35,10 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@ServerEndpoint(value = "/agent/{agentKey}/{cabinetKey}", configurator = WsEndpointConfigure.class)
+@ServerEndpoint(value = "/agent/{agentKey}", configurator = WsEndpointConfigure.class)
 public class TransportServer {
     @Autowired
     private AgentsService agentsService;
-    @Autowired
-    private CabinetService cabinetService;
     @Autowired
     private DevicesService devicesService;
     @Autowired
@@ -52,15 +49,15 @@ public class TransportServer {
     private TestCasesService testCasesService;
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("agentKey") String agentKey, @PathParam("cabinetKey") String cabinetKey) throws IOException {
+    public void onOpen(Session session, @PathParam("agentKey") String agentKey) throws IOException {
         log.info("Session: {} is requesting auth server.", session.getId());
         if (agentKey == null || agentKey.length() == 0) {
             log.info("Session: {} missing key.", session.getId());
             session.close();
             return;
         }
-        int authResult = agentsService.auth(agentKey);
-        if (authResult == 0) {
+        Agents authResult = agentsService.auth(agentKey);
+        if (authResult == null) {
             log.info("Session: {} auth failed...", session.getId());
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
@@ -72,16 +69,9 @@ public class TransportServer {
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
             auth.put("result", "pass");
-            auth.put("id", authResult);
-            if (cabinetKey != null && cabinetKey.length() != 0) {
-                Cabinet cabinet = cabinetService.getIdByKey(cabinetKey);
-                if (cabinet != null) {
-                    auth.put("cabinetAuth", "pass");
-                    auth.put("cabinet", JSON.toJSONString(cabinet));
-                } else {
-                    auth.put("cabinetAuth", "fail");
-                }
-            }
+            auth.put("id", authResult.getId());
+            auth.put("highTemp", authResult.getHighTemp());
+            auth.put("highTempTime", authResult.getHighTempTime());
             BytesTool.sendText(session, auth.toJSONString());
         }
     }
@@ -91,6 +81,15 @@ public class TransportServer {
         JSONObject jsonMsg = JSON.parseObject(message);
         log.info("Session :{} send message: {}", session.getId(), jsonMsg);
         switch (jsonMsg.getString("msg")) {
+            case "ping": {
+                Session agentSession = BytesTool.agentSessionMap.get(jsonMsg.getInteger("agentId"));
+                if (agentSession != null) {
+                    JSONObject pong = new JSONObject();
+                    pong.put("msg", "pong");
+                    BytesTool.sendText(agentSession, pong.toJSONString());
+                }
+                break;
+            }
             case "battery": {
                 devicesService.refreshDevicesBattery(jsonMsg);
                 break;
@@ -140,9 +139,7 @@ public class TransportServer {
                 }
                 break;
             case "errCall":
-                cabinetService.errorCall(
-                        JSON.parseObject(jsonMsg.getString("cabinet"), Cabinet.class)
-                        , jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
+                agentsService.errCall(jsonMsg.getInteger("agentId"), jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
                 break;
         }
     }
@@ -169,7 +166,7 @@ public class TransportServer {
 
     @OnClose
     public void onClose(Session session) {
-        log.info("Agent: {} disconnected.",session.getId());
+        log.info("Agent: {} disconnected.", session.getId());
         for (Map.Entry<Integer, Session> entry : BytesTool.agentSessionMap.entrySet()) {
             if (entry.getValue().equals(session)) {
                 int agentId = entry.getKey();
@@ -181,7 +178,7 @@ public class TransportServer {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.info("Agent: {},on error",session.getId());
+        log.info("Agent: {},on error", session.getId());
         log.error(error.getMessage());
     }
 }

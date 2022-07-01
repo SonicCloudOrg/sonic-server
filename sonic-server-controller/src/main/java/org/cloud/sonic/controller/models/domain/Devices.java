@@ -98,12 +98,6 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     @TableField
     Integer level;
 
-    @TableField
-    Integer position;
-
-    @TableField
-    Integer gear;
-
     public static Devices newDeletedDevice(int id) {
         String tips = "Device does not exist.";
         return new Devices()
@@ -123,8 +117,6 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
                 .setUser(tips)
                 .setUdId(tips)
                 .setTemperature(0)
-                .setGear(0)
-                .setPosition(0)
                 .setLevel(0);
     }
 }

@@ -51,9 +51,18 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     @ApiModelProperty(value = "Agent端密钥", example = "qwe")
     String secretKey;
 
-    @ApiModelProperty(value = "机柜id", example = "1")
-    private Integer cabinetId;
+    @ApiModelProperty(value = "highTemp", example = "1")
+    private Integer highTemp;
 
-    @ApiModelProperty(value = "机柜层数", example = "1-8")
-    private Integer storey;
+    @ApiModelProperty(value = "highTempTime", example = "1")
+    private Integer highTempTime;
+
+    @ApiModelProperty(value = "机器人类型", required = true, example = "1")
+    Integer robotType;
+
+    @ApiModelProperty(value = "机器人token", required = true, example = "http://dingTalk.com?token=*****")
+    String robotToken;
+
+    @ApiModelProperty(value = "机器人加签密钥", required = true, example = "qwe***")
+    String robotSecret;
 }

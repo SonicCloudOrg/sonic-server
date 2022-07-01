@@ -16,6 +16,7 @@ eureka:
     hostname: ${SONIC_EUREKA_HOST:127.0.0.1}
     instance-id: ${random.uuid}
   server:
+    enable-self-preservation: false
     eviction-interval-timer-in-ms: 5000
   client:
     #    单机部署的话以下为false

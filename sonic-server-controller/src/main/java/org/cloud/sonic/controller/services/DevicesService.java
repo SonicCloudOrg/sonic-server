@@ -68,6 +68,4 @@ public interface DevicesService extends IService<Devices> {
 
     RespModel<String> delete(int id);
 
-    List<Devices> findByAgentForCabinet(int agentId);
-
 }

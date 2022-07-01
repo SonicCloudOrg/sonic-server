@@ -16,6 +16,7 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.exception.SonicException;
@@ -32,6 +33,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author ZhouYiXun
@@ -101,5 +104,24 @@ public class JobsController {
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
+    }
+
+    @WebAspect
+    @ApiOperation(value = "查询系统定时任务详细信息", notes = "查找系统定时任务详细信息")
+    @GetMapping("/findSysJobs")
+    public RespModel<List<JSONObject>> findSysJobs() {
+        return new RespModel<>(RespEnum.SEARCH_OK, jobsService.findSysJobs());
+    }
+
+    @WebAspect
+    @ApiOperation(value = "更新系统定时任务", notes = "更新系统定时任务")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "cron", value = "cron表达式", dataTypeClass = String.class)
+    })
+    @PutMapping("/updateSysJob")
+    public RespModel updateSysJob(@RequestBody JSONObject jsonObject) {
+        jobsService.updateSysJob(jsonObject.getString("type"), jsonObject.getString("cron"));
+        return new RespModel<>(RespEnum.HANDLE_OK);
     }
 }

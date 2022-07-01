@@ -30,17 +30,13 @@ import java.util.List;
 public interface AgentsService extends IService<Agents> {
     List<Agents> findAgents();
 
-    void updateName(int id, String name);
+    void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret);
 
     // todo 删除
 
     boolean offLine(int id);
 
-    void offLine(Agents agents);
-
-    int auth(String key);
-
-    String findKeyById(int id);
+    Agents auth(String key);
 
     Agents findById(int id);
 
@@ -58,9 +54,5 @@ public interface AgentsService extends IService<Agents> {
 
     Agents findBySecretKey(String secretKey);
 
-    Agents findByCabinetIdAndStorey(int id, int storey);
-
-    List<JSONObject> findByCabinetForDetail(int id);
-
-    List<Agents> findByCabinetId(int id);
+    void errCall(int id,String udId,int tem,int type);
 }

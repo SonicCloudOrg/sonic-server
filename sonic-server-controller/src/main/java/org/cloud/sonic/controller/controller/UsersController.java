@@ -24,6 +24,7 @@ import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Roles;
 import org.cloud.sonic.controller.models.domain.Users;
@@ -56,12 +57,27 @@ public class UsersController {
     @Autowired
     private RolesServices rolesServices;
 
+    @Autowired
+    private JWTTokenTool jwtTokenTool;
+
     @WebAspect
     @WhiteUrl
     @ApiOperation(value = "获取登录配置", notes = "获取登录信息配置")
     @GetMapping("/loginConfig")
     public RespModel<?> getLoginConfig() {
         return new RespModel(RespEnum.SEARCH_OK, usersService.getLoginConfig());
+    }
+
+    @WebAspect
+    @ApiOperation(value = "生成用户对外Token", notes = "生成用户对外Token")
+    @GetMapping("/generateToken")
+    public RespModel<String> generateToken(@RequestParam(name = "day") int day, HttpServletRequest request) {
+        String token = request.getHeader("SonicToken");
+        if (token != null) {
+            return new RespModel(RespEnum.HANDLE_OK, jwtTokenTool.getToken(jwtTokenTool.getUserName(token), day));
+        } else {
+            return new RespModel(RespEnum.UPDATE_FAIL);
+        }
     }
 
     @WebAspect
@@ -130,7 +146,7 @@ public class UsersController {
 
     })
     public RespModel<CommentPage<UsersDTO>> listResources(@RequestParam(name = "page") int page
-            , @RequestParam(name = "userName", required = false)  String userName) {
+            , @RequestParam(name = "userName", required = false) String userName) {
         Page<Users> pageable = new Page<>(page, 20);
 
         return RespModel.result(RespEnum.SEARCH_OK, usersService.listUsers(pageable, userName));
@@ -144,8 +160,8 @@ public class UsersController {
             @ApiImplicitParam(name = "userId", value = "用户 id", dataTypeClass = Integer.class),
 
     })
-    public RespModel<Boolean> changeRole(@RequestParam(name = "roleId")  Integer roleId,
-                                        @RequestParam(name = "userId")  Integer userId ) {
+    public RespModel<Boolean> changeRole(@RequestParam(name = "roleId") Integer roleId,
+                                         @RequestParam(name = "userId") Integer userId) {
 
         return RespModel.result(RespEnum.UPDATE_OK, usersService.updateUserRole(userId, roleId));
     }

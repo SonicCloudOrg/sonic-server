@@ -16,6 +16,7 @@
  */
 package org.cloud.sonic.controller.services.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.cloud.sonic.controller.quartz.QuartzHandler;
 
+import java.util.List;
+
 /**
  * @author ZhouYiXun
  * @des 定时任务逻辑层实现
@@ -40,8 +43,10 @@ import org.cloud.sonic.controller.quartz.QuartzHandler;
 @Service
 public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implements JobsService {
 
-    @Autowired private QuartzHandler quartzHandler;
-    @Autowired private JobsMapper jobsMapper;
+    @Autowired
+    private QuartzHandler quartzHandler;
+    @Autowired
+    private JobsMapper jobsMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -120,5 +125,15 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     @Override
     public Jobs findById(int id) {
         return baseMapper.selectById(id);
+    }
+
+    @Override
+    public void updateSysJob(String type, String cron) {
+        quartzHandler.updateSysScheduleJob(type, cron);
+    }
+
+    @Override
+    public List<JSONObject> findSysJobs() {
+        return quartzHandler.findSysJobs();
     }
 }

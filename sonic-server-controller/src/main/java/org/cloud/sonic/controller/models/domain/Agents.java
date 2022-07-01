@@ -59,8 +59,17 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     private Long lockVersion;
 
     @TableField
-    private Integer cabinetId;
+    private Integer highTemp;
 
     @TableField
-    private Integer storey;
+    private Integer highTempTime;
+
+    @TableField
+    private String robotSecret;
+
+    @TableField
+    private String robotToken;
+
+    @TableField
+    private Integer robotType;
 }

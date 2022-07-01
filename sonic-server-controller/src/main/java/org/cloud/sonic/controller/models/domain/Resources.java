@@ -42,6 +42,11 @@ public class Resources implements Serializable, TypeConverter<Resources, Resourc
     @TableField
     private Integer white;
 
+    @Index
+    @TableField
+    @Column(value = "version", isNull = false,defaultValue = "", comment = "url 资源的版本，每次新增接口需要更新，当接口版本不一致时标记为white")
+    private String version;
+
     @TableField
     private Integer needAuth;
 

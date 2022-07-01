@@ -6,6 +6,7 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.models.domain.Resources;
+import org.cloud.sonic.controller.models.interfaces.UrlType;
 import org.cloud.sonic.controller.services.ResourcesService;
 import org.cloud.sonic.controller.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class PermissionFilter extends OncePerRequestFilter {
                 return;
             }
 
-            if (resources.getWhite() == 0) {
+            if (resources.getWhite() == UrlType.WHITE || resources.getNeedAuth() == UrlType.WHITE) {
                 filterChain.doFilter(request, response);
                 return;
             }

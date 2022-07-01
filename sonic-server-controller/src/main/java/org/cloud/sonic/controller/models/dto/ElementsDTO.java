@@ -35,11 +35,9 @@ public class ElementsDTO implements Serializable, TypeConverter<ElementsDTO, Ele
     @ApiModelProperty(value = "控件名称", required = true, example = "首页底部按钮")
     String eleName;
 
-    @NotBlank
     @ApiModelProperty(value = "控件类型", required = true, example = "xpath")
     String eleType;
 
-    @NotBlank
     @ApiModelProperty(value = "控件值", required = true, example = "//@[text()='home']")
     String eleValue;
 
