@@ -32,12 +32,12 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 @MapperScan(basePackages = {
-        "org.cloud.sonic.controller.mapper",
-        "com.gitee.sunchenbin.mybatis.actable.dao.*"
+        "org.cloud.sonic.controller.mapper"
+//        "com.gitee.sunchenbin.mybatis.actable.dao.*"
 })
 @ComponentScan(basePackages = {
         "org.cloud.sonic.controller.*",
-        "com.gitee.sunchenbin.mybatis.actable.manager.*",
+//        "com.gitee.sunchenbin.mybatis.actable.manager.*",
         "org.cloud.sonic.common.*"
 })
 @EnableFeignClients
