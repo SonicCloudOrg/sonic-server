@@ -55,7 +55,12 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
             language = l;
         }
         String[] split = language.split("_");
-        Locale locale = new Locale(split[0], split[1]);
+        Locale locale;
+        if (split.length >= 2) {
+            locale = new Locale(split[0], split[1]);
+        } else {
+            locale = new Locale("zh", "CN");
+        }
         // Get return body
         Object returnBody = container.getValue();
 
