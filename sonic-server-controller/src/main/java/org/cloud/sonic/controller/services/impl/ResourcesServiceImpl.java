@@ -99,6 +99,8 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         parentResource.setDesc(tag);
         parentResource.setPath(res);
         parentResource.setVersion(version);
+        // 每次扫描都把parent 设置为正常资源
+        parentResource.setWhite(UrlType.NORMAL );
 
         if (needInsert) {
             insert(parentResource);
@@ -202,6 +204,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
 
     private List<ResourcesDTO> listParentResource() {
         return lambdaQuery().eq(Resources::getParentId, UrlType.PARENT)
+                .eq(Resources::getWhite, UrlType.NORMAL)
                 .orderByDesc(Resources::getId)
                 .list().stream()
                 .map(TypeConverter::convertTo).collect(Collectors.toList());
