@@ -62,7 +62,7 @@ public class AgentsController {
         agentsService.update(jsonObject.getInteger("id"),
                 jsonObject.getString("name"), jsonObject.getInteger("highTemp"),
                 jsonObject.getInteger("highTempTime"), jsonObject.getInteger("robotType"),
-                jsonObject.getString("robotToken"), jsonObject.getString("robotToken"));
+                jsonObject.getString("robotToken"), jsonObject.getString("robotSecret"));
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
