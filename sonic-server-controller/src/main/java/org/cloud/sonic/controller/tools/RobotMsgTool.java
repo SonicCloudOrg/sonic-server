@@ -81,11 +81,16 @@ public class RobotMsgTool {
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token + "&timestamp=" + timestamp + "&sign=" + sign
                                     , jsonObject, JSONObject.class);
-                    logger.info("机器人发送结果：" + responseEntity.getBody());
+                    logger.info("robot result: " + responseEntity.getBody());
                     break;
                 }
-                case RobotType.WeChat:
+                case RobotType.WeChat: {
+                    ResponseEntity<JSONObject> responseEntity =
+                            restTemplate.postForEntity(token + "?key=" + secret
+                                    , jsonObject, JSONObject.class);
+                    logger.info("robot result: " + responseEntity.getBody());
                     break;
+                }
                 case RobotType.FeiShu: {
                     String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
                     String stringToSign = timestamp + "\n" + secret;
