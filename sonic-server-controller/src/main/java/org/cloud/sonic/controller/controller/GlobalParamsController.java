@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "公共参数相关")
+@Api(tags = "全局参数相关")
 @RestController
 @RequestMapping("/globalParams")
 public class GlobalParamsController {
@@ -40,7 +40,7 @@ public class GlobalParamsController {
     private GlobalParamsService globalParamsService;
 
     @WebAspect
-    @ApiOperation(value = "更新公共参数", notes = "新增或更新对应的公共参数")
+    @ApiOperation(value = "更新全局参数", notes = "新增或更新对应的全局参数")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody GlobalParamsDTO globalParamsDTO) {
         globalParamsService.save(globalParamsDTO.convertTo());
@@ -48,7 +48,7 @@ public class GlobalParamsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找公共参数", notes = "查找对应项目id的公共参数列表")
+    @ApiOperation(value = "查找全局参数", notes = "查找对应项目id的全局参数列表")
     @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
     @GetMapping("/list")
     public RespModel<List<GlobalParams>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
@@ -56,7 +56,7 @@ public class GlobalParamsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除公共参数", notes = "删除对应id的公共参数")
+    @ApiOperation(value = "删除全局参数", notes = "删除对应id的全局参数")
     @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class)
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
@@ -68,7 +68,7 @@ public class GlobalParamsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查看公共参数信息", notes = "查看对应id的公共参数")
+    @ApiOperation(value = "查看全局参数信息", notes = "查看对应id的全局参数")
     @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class)
     @GetMapping
     public RespModel<GlobalParams> findById(@RequestParam(name = "id") int id) {

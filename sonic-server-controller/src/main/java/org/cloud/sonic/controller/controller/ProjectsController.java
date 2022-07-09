@@ -17,6 +17,7 @@
 package org.cloud.sonic.controller.controller;
 
 import org.cloud.sonic.common.config.WebAspect;
+import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -56,6 +57,7 @@ public class ProjectsController {
     }
 
     @WebAspect
+    @WhiteUrl
     @ApiOperation(value = "查找所有项目", notes = "查找所有项目列表")
     @GetMapping("/list")
     public RespModel<List<ProjectsDTO>> findAll() {

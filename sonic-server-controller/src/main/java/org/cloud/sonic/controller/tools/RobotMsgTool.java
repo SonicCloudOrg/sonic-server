@@ -84,12 +84,7 @@ public class RobotMsgTool {
                     logger.info("机器人发送结果：" + responseEntity.getBody());
                     break;
                 }
-                case RobotType.WeChat: {
-                    ResponseEntity<JSONObject> responseEntity =
-                            restTemplate.postForEntity(token , jsonObject, JSONObject.class);
-                    logger.info("机器人发送结果：" + responseEntity.getBody());
-                }
-
+                case RobotType.WeChat:
                     break;
                 case RobotType.FeiShu: {
                     String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
@@ -147,17 +142,6 @@ public class RobotMsgTool {
             }
             jsonObject.put("msgtype", "link");
             jsonObject.put("link", link);
-        }
-        if (type == RobotType.WeChat) {
-            jsonObject.put("msgtype", "markdown");
-            JSONObject markdown = new JSONObject();
-            markdown.put("content",  "**测试套件: " + suiteName + " 运行完毕！**\n" +
-                    "通过数：" + pass + " \n" +
-                    "异常数：" + warn + " \n" +
-                    "失败数：" + fail + "\n" +
-                    "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
-            jsonObject.put("markdown", markdown);
-
         }
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
@@ -261,33 +245,6 @@ public class RobotMsgTool {
                     "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             markdown.put("title", "Sonic云真机测试平台日报");
             jsonObject.put("msgtype", "markdown");
-            jsonObject.put("markdown", markdown);
-        }
-        if (type == RobotType.WeChat) {
-            String warnColorString;
-            if (warnCount == 0) {
-                warnColorString = "<font color=\"info\">" + warnCount + "</font>";
-            } else {
-                warnColorString = "<font color=\"warning\">" + warnCount + "</font>";
-            }
-            String failColorString;
-            if (failCount == 0) {
-                failColorString = "<font color=\"info\">" + failCount + "</font>";
-            } else {
-                failColorString = "<font color=\"warning\">" + failCount + "</font>";
-            }
-            int total = passCount + warnCount + failCount;
-            jsonObject.put("msgtype", "markdown");
-            JSONObject markdown = new JSONObject();
-            markdown.put("content", "### Sonic云真机测试平台日报 \n" +
-                            "> ###### 项目：" + projectName + " \n" +
-                            "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
-                            "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
-                            "> ###### 异常数：" + warnColorString + " \n" +
-                            "> ###### 失败数：" + failColorString + " \n" +
-                            "> ###### 测试通过率：" + (total > 0 ?
-                            new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
-                            "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             jsonObject.put("markdown", markdown);
         }
         if (type == RobotType.FeiShu) {
@@ -409,35 +366,6 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             jsonObject.put("markdown", markdown);
         }
-        if (type == RobotType.WeChat) {
-            String warnColorString;
-            if (warnCount == 0) {
-                warnColorString = "<font color=\"info\">" + warnCount + "</font>";
-            } else {
-                warnColorString = "<font color=\"warning\">" + warnCount + "</font>";
-            }
-            String failColorString;
-            if (failCount == 0) {
-                failColorString = "<font color=\"info\">" + failCount + "</font>";
-            } else {
-                failColorString = "<font color=\"warning\">" + failCount + "</font>";
-            }
-            int total = passCount + warnCount + failCount;
-            jsonObject.put("msgtype", "markdown");
-            JSONObject markdown = new JSONObject();
-            markdown.put("content", "### Sonic云真机测试平台周报 \n" +
-                    "> ###### 项目：" + projectName + " \n" +
-                    "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
-                    "> ###### 共测试：" + count + " 次\n" +
-                    "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
-                    "> ###### 异常数：" + warnColorString + " \n" +
-                    "> ###### 失败数：" + failColorString + " \n" +
-                    "> ###### 测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
-                    "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
-            jsonObject.put("markdown", markdown);
-        }
-
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
             JSONObject card = new JSONObject();

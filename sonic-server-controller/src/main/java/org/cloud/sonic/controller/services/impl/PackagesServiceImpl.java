@@ -45,7 +45,7 @@ public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packag
         Packages packages = lambdaQuery().eq(Packages::getProjectId, projectId)
                 .eq(StringUtils.isNotBlank(platform), Packages::getPlatform, platform)
                 .like(StringUtils.isNotBlank(branch), Packages::getBranch, branch)
-                .orderByDesc(Packages::getId).one();
+                .orderByDesc(Packages::getId).last("LIMIT 1").one();
         if (packages != null) {
             return packages.getUrl();
         } else {

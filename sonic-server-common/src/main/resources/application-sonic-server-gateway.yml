@@ -8,6 +8,9 @@ filter:
 spring:
   cloud:
     gateway:
+      httpclient:
+        websocket:
+          max-frame-payload-length: 314572800
       routes:
         - id: controller
           uri: lb://sonic-server-controller
