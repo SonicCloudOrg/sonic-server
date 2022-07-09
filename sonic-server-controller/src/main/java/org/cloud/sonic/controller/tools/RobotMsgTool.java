@@ -290,6 +290,28 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             jsonObject.put("markdown", markdown);
         }
+        if (type == RobotType.FeiShu) {
+            jsonObject.put("msg_type", "interactive");
+            JSONObject card = new JSONObject();
+            JSONObject config = new JSONObject();
+            config.put("wide_screen_mode", true);
+            card.put("config", config);
+            JSONObject element = new JSONObject();
+            element.put("tag", "markdown");
+            List<JSONObject> elementList = new ArrayList<>();
+            if (errorType == 1) {
+                element.put("content", "**设备高温预警**\n" +
+                        "设备序列号：" + udId + " \n" +
+                        "电池温度：" + (tem / 10) + " ℃");
+            } else {
+                element.put("content", "**设备高温超时，已关机！**\n" +
+                        "设备序列号：" + udId + " \n" +
+                        "电池温度：" + (tem / 10) + " ℃");
+            }
+            elementList.add(element);
+            card.put("elements", elementList);
+            jsonObject.put("card", card);
+        }
         signAndSend(token, secret, type, jsonObject);
     }
 
@@ -340,7 +362,7 @@ public class RobotMsgTool {
                     "项目：" + projectName + " \n" +
                     "时间：" + yesterday + " ～ " + today + " \n" +
                     "共测试：" + count + " 次\n" +
-                    "通过数：" + passCount + "</font> \n" +
+                    "通过数：" + passCount + " \n" +
                     "异常数：" + warnCount + " \n" +
                     "失败数：" + failCount + " \n" +
                     "测试通过率：" + (total > 0 ?
