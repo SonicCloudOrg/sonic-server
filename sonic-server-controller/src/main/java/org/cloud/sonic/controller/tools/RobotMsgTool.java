@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -72,14 +73,19 @@ public class RobotMsgTool {
         try {
             switch (type) {
                 case RobotType.DingTalk: {
-                    Long timestamp = System.currentTimeMillis();
-                    String stringToSign = timestamp + "\n" + secret;
-                    Mac mac = Mac.getInstance("HmacSHA256");
-                    mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
-                    byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-                    String sign = URLEncoder.encode(new String(Base64Utils.encode(signData)), "UTF-8");
+                    String path = "";
+                    if (!StringUtils.isEmpty(secret)) {
+                        Long timestamp = System.currentTimeMillis();
+                        String stringToSign = timestamp + "\n" + secret;
+                        Mac mac = Mac.getInstance("HmacSHA256");
+                        mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
+                        byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
+                        String sign = URLEncoder.encode(new String(Base64Utils.encode(signData)), "UTF-8");
+                        path = "&timestamp=" + timestamp + "&sign=" + sign;
+                    }
+
                     ResponseEntity<JSONObject> responseEntity =
-                            restTemplate.postForEntity(token + "&timestamp=" + timestamp + "&sign=" + sign
+                            restTemplate.postForEntity(token + path
                                     , jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
                     break;
@@ -92,14 +98,18 @@ public class RobotMsgTool {
 
                     break;
                 case RobotType.FeiShu: {
-                    String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-                    String stringToSign = timestamp + "\n" + secret;
-                    Mac mac = Mac.getInstance("HmacSHA256");
-                    mac.init(new SecretKeySpec(stringToSign.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-                    byte[] signData = mac.doFinal(new byte[]{});
-                    String sign = new String(Base64Utils.encode(signData));
-                    jsonObject.put("timestamp", timestamp);
-                    jsonObject.put("sign", sign);
+
+                    if (!StringUtils.isEmpty(secret)) {
+                        String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+                        String stringToSign = timestamp + "\n" + secret;
+                        Mac mac = Mac.getInstance("HmacSHA256");
+                        mac.init(new SecretKeySpec(stringToSign.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+                        byte[] signData = mac.doFinal(new byte[]{});
+                        String sign = new String(Base64Utils.encode(signData));
+                        jsonObject.put("timestamp", timestamp);
+                        jsonObject.put("sign", sign);
+                    }
+
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
@@ -321,11 +331,11 @@ public class RobotMsgTool {
         if (type == RobotType.DingTalk) {
             JSONObject markdown = new JSONObject();
             if (errorType == 1) {
-                markdown.put("text", "### 设备高温预警 \n" +
+                markdown.put("text", "### Sonic设备高温预警 \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
             } else {
-                markdown.put("text", "### 设备高温超时，已关机！ \n" +
+                markdown.put("text", "### Sonic设备高温超时，已关机！ \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
             }
@@ -337,11 +347,11 @@ public class RobotMsgTool {
         if (type == RobotType.WeChat) {
             JSONObject markdown = new JSONObject();
             if (errorType == 1) {
-                markdown.put("content", "### 设备高温预警 \n" +
+                markdown.put("content", "### Sonic设备高温预警 \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
             } else {
-                markdown.put("text", "### 设备高温超时，已关机！ \n" +
+                markdown.put("text", "### Sonic设备高温超时，已关机！ \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
             }
@@ -360,11 +370,11 @@ public class RobotMsgTool {
             List<JSONObject> elementList = new ArrayList<>();
 
             if (errorType == 1) {
-                element.put("content", "**设备高温预警** \n" +
+                element.put("content", "**Sonic设备高温预警** \n" +
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             } else {
-                element.put("text", "### 设备高温超时，已关机！ \n" +
+                element.put("text", "**Sonic设备高温超时，已关机！** \n" +
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             }

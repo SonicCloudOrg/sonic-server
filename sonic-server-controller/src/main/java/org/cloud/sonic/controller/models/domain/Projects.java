@@ -56,7 +56,7 @@ public class Projects implements Serializable, TypeConverter<Projects, ProjectsD
     private String projectName;
 
     @TableField
-    @Column(value = "robot_secret", isNull = false, comment = "机器人秘钥")
+    @Column(value = "robot_secret", isNull = true, comment = "机器人秘钥")
     private String robotSecret;
 
     @TableField
