@@ -39,7 +39,7 @@ public class ProjectsDTO implements Serializable, TypeConverter<ProjectsDTO, Pro
     @ApiModelProperty(value = "机器人token", required = true, example = "http://dingTalk.com?token=*****")
     String robotToken;
 
-    @ApiModelProperty(value = "机器人加签密钥", required = true, example = "qwe***")
+    @ApiModelProperty(value = "机器人加签密钥", required = false, example = "qwe***")
     String robotSecret;
 
     @ApiModelProperty(value = "项目图标", required = true, example = "http://img.jpg")

@@ -33,12 +33,17 @@ public class RolesController {
     @GetMapping("/list")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "isAll", value = "是否全部", dataTypeClass = Boolean.class),
             @ApiImplicitParam(name = "roleName", value = "角色名称", dataTypeClass = String.class),
 
     })
-    public RespModel<CommentPage<RolesDTO>> listResources(@RequestParam(name = "page") int page
-            , @RequestParam(name = "roleName", required = false)  String roleName) {
+    public RespModel<CommentPage<RolesDTO>> listResources(@RequestParam(name = "page") int page,
+                                                          @RequestParam(name = "isAll", required = false) boolean isAll,
+            @RequestParam(name = "roleName", required = false)  String roleName) {
         Page<Roles> pageable = new Page<>(page, 20);
+        if (isAll) {
+            pageable.setSize(1000L);
+        }
 
         return RespModel.result(RespEnum.SEARCH_OK, rolesServices.listRoles(pageable, roleName));
     }
