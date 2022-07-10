@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -72,34 +73,43 @@ public class RobotMsgTool {
         try {
             switch (type) {
                 case RobotType.DingTalk: {
-                    Long timestamp = System.currentTimeMillis();
-                    String stringToSign = timestamp + "\n" + secret;
-                    Mac mac = Mac.getInstance("HmacSHA256");
-                    mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
-                    byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-                    String sign = URLEncoder.encode(new String(Base64Utils.encode(signData)), "UTF-8");
+                    String path = "";
+                    if (!StringUtils.isEmpty(secret)) {
+                        Long timestamp = System.currentTimeMillis();
+                        String stringToSign = timestamp + "\n" + secret;
+                        Mac mac = Mac.getInstance("HmacSHA256");
+                        mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
+                        byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
+                        String sign = URLEncoder.encode(new String(Base64Utils.encode(signData)), "UTF-8");
+                        path = "&timestamp=" + timestamp + "&sign=" + sign;
+                    }
+
                     ResponseEntity<JSONObject> responseEntity =
-                            restTemplate.postForEntity(token + "&timestamp=" + timestamp + "&sign=" + sign
+                            restTemplate.postForEntity(token + path
                                     , jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
                     break;
                 }
                 case RobotType.WeChat: {
                     ResponseEntity<JSONObject> responseEntity =
-                            restTemplate.postForEntity(token + "?key=" + secret
-                                    , jsonObject, JSONObject.class);
+                            restTemplate.postForEntity(token , jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
-                    break;
                 }
+
+                    break;
                 case RobotType.FeiShu: {
-                    String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
-                    String stringToSign = timestamp + "\n" + secret;
-                    Mac mac = Mac.getInstance("HmacSHA256");
-                    mac.init(new SecretKeySpec(stringToSign.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-                    byte[] signData = mac.doFinal(new byte[]{});
-                    String sign = new String(Base64Utils.encode(signData));
-                    jsonObject.put("timestamp", timestamp);
-                    jsonObject.put("sign", sign);
+
+                    if (!StringUtils.isEmpty(secret)) {
+                        String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+                        String stringToSign = timestamp + "\n" + secret;
+                        Mac mac = Mac.getInstance("HmacSHA256");
+                        mac.init(new SecretKeySpec(stringToSign.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+                        byte[] signData = mac.doFinal(new byte[]{});
+                        String sign = new String(Base64Utils.encode(signData));
+                        jsonObject.put("timestamp", timestamp);
+                        jsonObject.put("sign", sign);
+                    }
+
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
@@ -147,6 +157,17 @@ public class RobotMsgTool {
             }
             jsonObject.put("msgtype", "link");
             jsonObject.put("link", link);
+        }
+        if (type == RobotType.WeChat) {
+            jsonObject.put("msgtype", "markdown");
+            JSONObject markdown = new JSONObject();
+            markdown.put("content",  "**测试套件: " + suiteName + " 运行完毕！**\n" +
+                    "通过数：" + pass + " \n" +
+                    "异常数：" + warn + " \n" +
+                    "失败数：" + fail + "\n" +
+                    "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
+            jsonObject.put("markdown", markdown);
+
         }
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
@@ -252,6 +273,33 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             jsonObject.put("markdown", markdown);
         }
+        if (type == RobotType.WeChat) {
+            String warnColorString;
+            if (warnCount == 0) {
+                warnColorString = "<font color=\"info\">" + warnCount + "</font>";
+            } else {
+                warnColorString = "<font color=\"warning\">" + warnCount + "</font>";
+            }
+            String failColorString;
+            if (failCount == 0) {
+                failColorString = "<font color=\"info\">" + failCount + "</font>";
+            } else {
+                failColorString = "<font color=\"warning\">" + failCount + "</font>";
+            }
+            int total = passCount + warnCount + failCount;
+            jsonObject.put("msgtype", "markdown");
+            JSONObject markdown = new JSONObject();
+            markdown.put("content", "### Sonic云真机测试平台日报 \n" +
+                            "> ###### 项目：" + projectName + " \n" +
+                            "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
+                            "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
+                            "> ###### 异常数：" + warnColorString + " \n" +
+                            "> ###### 失败数：" + failColorString + " \n" +
+                            "> ###### 测试通过率：" + (total > 0 ?
+                            new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                            "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
+            jsonObject.put("markdown", markdown);
+        }
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
             JSONObject card = new JSONObject();
@@ -283,11 +331,11 @@ public class RobotMsgTool {
         if (type == RobotType.DingTalk) {
             JSONObject markdown = new JSONObject();
             if (errorType == 1) {
-                markdown.put("text", "### 设备高温预警 \n" +
+                markdown.put("text", "### Sonic设备高温预警 \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
             } else {
-                markdown.put("text", "### 设备高温超时，已关机！ \n" +
+                markdown.put("text", "### Sonic设备高温超时，已关机！ \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=#F56C6C>" + (tem / 10) + " ℃</font>");
             }
@@ -295,6 +343,22 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             jsonObject.put("markdown", markdown);
         }
+
+        if (type == RobotType.WeChat) {
+            JSONObject markdown = new JSONObject();
+            if (errorType == 1) {
+                markdown.put("content", "### Sonic设备高温预警 \n" +
+                        "> ###### 设备序列号：" + udId + " \n" +
+                        "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
+            } else {
+                markdown.put("content", "### Sonic设备高温超时，已关机！ \n" +
+                        "> ###### 设备序列号：" + udId + " \n" +
+                        "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
+            }
+            jsonObject.put("msgtype", "markdown");
+            jsonObject.put("markdown", markdown);
+        }
+
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
             JSONObject card = new JSONObject();
@@ -304,12 +368,13 @@ public class RobotMsgTool {
             JSONObject element = new JSONObject();
             element.put("tag", "markdown");
             List<JSONObject> elementList = new ArrayList<>();
+
             if (errorType == 1) {
-                element.put("content", "**设备高温预警**\n" +
+                element.put("content", "**Sonic设备高温预警** \n" +
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             } else {
-                element.put("content", "**设备高温超时，已关机！**\n" +
+                element.put("content", "**Sonic设备高温超时，已关机！** \n" +
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             }
@@ -317,6 +382,7 @@ public class RobotMsgTool {
             card.put("elements", elementList);
             jsonObject.put("card", card);
         }
+
         signAndSend(token, secret, type, jsonObject);
     }
 
@@ -353,6 +419,35 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             jsonObject.put("markdown", markdown);
         }
+        if (type == RobotType.WeChat) {
+            String warnColorString;
+            if (warnCount == 0) {
+                warnColorString = "<font color=\"info\">" + warnCount + "</font>";
+            } else {
+                warnColorString = "<font color=\"warning\">" + warnCount + "</font>";
+            }
+            String failColorString;
+            if (failCount == 0) {
+                failColorString = "<font color=\"info\">" + failCount + "</font>";
+            } else {
+                failColorString = "<font color=\"warning\">" + failCount + "</font>";
+            }
+            int total = passCount + warnCount + failCount;
+            jsonObject.put("msgtype", "markdown");
+            JSONObject markdown = new JSONObject();
+            markdown.put("content", "### Sonic云真机测试平台周报 \n" +
+                    "> ###### 项目：" + projectName + " \n" +
+                    "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
+                    "> ###### 共测试：" + count + " 次\n" +
+                    "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
+                    "> ###### 异常数：" + warnColorString + " \n" +
+                    "> ###### 失败数：" + failColorString + " \n" +
+                    "> ###### 测试通过率：" + (total > 0 ?
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
+            jsonObject.put("markdown", markdown);
+        }
+
         if (type == RobotType.FeiShu) {
             jsonObject.put("msg_type", "interactive");
             JSONObject card = new JSONObject();
