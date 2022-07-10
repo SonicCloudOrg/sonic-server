@@ -26,19 +26,26 @@ public class RobotTest extends BaseUnit {
     }
 
     @Test
-    public void testSendErrorDevice() {
+    public void testSendErrorDevice1() {
         robotMsgTool.sendErrorDevice(wechatToken, "", RobotType.WeChat, 1, 80,"111");
     }
 
-
-    public void testSendErrorDeviceFeishu() {
-        robotMsgTool.sendErrorDevice(feishuToken, "", RobotType.FeiShu, 1, 80,"测试");
-    }
 
     @Test
     public void testSendErrorDevice2() {
         robotMsgTool.sendErrorDevice(wechatToken, "", RobotType.WeChat, 2, 80,"111");
     }
+
+    @Test
+    public void testSendErrorDeviceFeishu() {
+        robotMsgTool.sendErrorDevice(feishuToken, "", RobotType.FeiShu, 1, 80,"测试");
+    }
+
+    @Test
+    public void testSendErrorDeviceFeishu2() {
+        robotMsgTool.sendErrorDevice(feishuToken, "", RobotType.FeiShu, 2, 80,"测试");
+    }
+
 
     @Test
     public void sendWeekReportMessage() {

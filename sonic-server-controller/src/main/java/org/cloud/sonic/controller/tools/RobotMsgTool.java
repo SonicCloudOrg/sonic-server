@@ -351,7 +351,7 @@ public class RobotMsgTool {
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
             } else {
-                markdown.put("text", "### Sonic设备高温超时，已关机！ \n" +
+                markdown.put("content", "### Sonic设备高温超时，已关机！ \n" +
                         "> ###### 设备序列号：" + udId + " \n" +
                         "> ###### 电池温度：<font color=\"warning\">" + (tem / 10) + " ℃</font>");
             }
@@ -374,7 +374,7 @@ public class RobotMsgTool {
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             } else {
-                element.put("text", "**Sonic设备高温超时，已关机！** \n" +
+                element.put("content", "**Sonic设备高温超时，已关机！** \n" +
                         "设备序列号：" + udId + " \n" +
                         "电池温度：" + (tem / 10) + " ℃");
             }
