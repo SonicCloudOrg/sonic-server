@@ -1,3 +1,6 @@
+<p align="center">
+  <img width="80px" src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
+</p>
 <p align="center">🎉Sonic Cloud Real Machine Testing Platform</p>
 <p align="center">
   <span>English |</span>
