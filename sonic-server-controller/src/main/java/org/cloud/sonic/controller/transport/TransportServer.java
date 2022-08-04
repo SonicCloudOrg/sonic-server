@@ -79,17 +79,17 @@ public class TransportServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         JSONObject jsonMsg = JSON.parseObject(message);
+        if (jsonMsg.getString("msg").equals("ping")) {
+            Session agentSession = BytesTool.agentSessionMap.get(jsonMsg.getInteger("agentId"));
+            if (agentSession != null) {
+                JSONObject pong = new JSONObject();
+                pong.put("msg", "pong");
+                BytesTool.sendText(agentSession, pong.toJSONString());
+            }
+            return;
+        }
         log.info("Session :{} send message: {}", session.getId(), jsonMsg);
         switch (jsonMsg.getString("msg")) {
-            case "ping": {
-                Session agentSession = BytesTool.agentSessionMap.get(jsonMsg.getInteger("agentId"));
-                if (agentSession != null) {
-                    JSONObject pong = new JSONObject();
-                    pong.put("msg", "pong");
-                    BytesTool.sendText(agentSession, pong.toJSONString());
-                }
-                break;
-            }
             case "battery": {
                 devicesService.refreshDevicesBattery(jsonMsg);
                 break;
