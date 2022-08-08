@@ -12,12 +12,12 @@
                         and ((
                         d.platform = 1 and
                         <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
-                            d.version like "${androidVersion}%"
+                            d.version like concat( #{androidVersion}, '%')
                         </foreach>
                         )
-                        or(d.platform = 2 and
+                        or (d.platform = 2 and
                         <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
-                            d.version like "${iOSVersion}%"
+                            d.version like concat( #{iOSVersion}, '%')
                         </foreach>))
                     </when>
                     <otherwise>
@@ -25,7 +25,7 @@
                             and (
                             d.platform = 1 and
                             <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
-                                d.version like "${androidVersion}%"
+                                d.version like concat( #{androidVersion}, '%')
                             </foreach>
                             )
                         </if>
@@ -33,7 +33,7 @@
                             and (
                             d.platform = 2 and
                             <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
-                                d.version like "${iOSVersion}%"
+                                d.version like concat( #{iOSVersion}, '%')
                             </foreach>
                             )
                         </if>
