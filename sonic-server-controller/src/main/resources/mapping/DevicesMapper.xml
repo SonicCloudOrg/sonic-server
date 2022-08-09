@@ -7,22 +7,38 @@
         <where>
         1 = 1
             <if test="params.androidVersion != null or params.iOSVersion != null">
-                <if test="params.androidVersion != null">
-                    and (
+                <choose>
+                    <when test="params.androidVersion != null and params.iOSVersion != null">
+                        and ((
                         d.platform = 1 and
                         <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
-                            d.version like "${androidVersion}%"
+                            d.version like concat( #{androidVersion}, '%')
                         </foreach>
-                    )
-                </if>
-                <if test="params.iOSVersion != null">
-                    and (
-                        d.platform = 2 and
+                        )
+                        or (d.platform = 2 and
                         <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
-                            d.version like "${iOSVersion}%"
-                        </foreach>
-                    )
-                </if>
+                            d.version like concat( #{iOSVersion}, '%')
+                        </foreach>))
+                    </when>
+                    <otherwise>
+                        <if test="params.androidVersion != null">
+                            and (
+                            d.platform = 1 and
+                            <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
+                                d.version like concat( #{androidVersion}, '%')
+                            </foreach>
+                            )
+                        </if>
+                        <if test="params.iOSVersion != null">
+                            and (
+                            d.platform = 2 and
+                            <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
+                                d.version like concat( #{iOSVersion}, '%')
+                            </foreach>
+                            )
+                        </if>
+                    </otherwise>
+                </choose>
             </if>
             <if test="params.manufacturer != null and params.manufacturer.size() > 0">
                 and d.manufacturer in

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
+  <img width="80px" src="https://raw.githubusercontent.com/SonicCloudOrg/sonic-server/main/logo.png">
 </p>
 <p align="center">🎉Sonic云真机测试平台</p>
 <p align="center">
