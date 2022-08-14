@@ -32,6 +32,7 @@ import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Autowired private TestCasesService testCasesService;
 
     @Override
-    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Page<Elements> pageable) {
+    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -57,12 +58,10 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             }
         }
 
-        if (eleTypes != null) {
-            lambdaQuery.in(Elements::getEleType, eleTypes);
-        }
-        if (name != null && name.length() > 0) {
-            lambdaQuery.like(Elements::getEleName, name);
-        }
+
+        lambdaQuery.in(eleTypes != null, Elements::getEleType, eleTypes)
+                .like(!StringUtils.isEmpty(name), Elements::getEleName, name)
+                .like(!StringUtils.isEmpty(value), Elements::getEleValue, value);
 
         lambdaQuery.eq(Elements::getProjectId, projectId);
         lambdaQuery.orderByDesc(Elements::getId);

@@ -49,6 +49,7 @@ public class ElementsController {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "eleTypes[]", value = "类型(多个)", dataTypeClass = String.class),
             @ApiImplicitParam(name = "name", value = "控件名称", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "value", value = "控件值", dataTypeClass = String.class),
             @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
@@ -58,13 +59,14 @@ public class ElementsController {
                                                     @RequestParam(name = "type", required = false) String type,
                                                     @RequestParam(name = "eleTypes[]", required = false) List<String> eleTypes,
                                                     @RequestParam(name = "name", required = false) String name,
+                                                    @RequestParam(name = "value", required = false) String value,
                                                     @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "pageSize") int pageSize) {
         Page<Elements> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                 CommentPage.convertFrom(
-                        elementsService.findAll(projectId, type, eleTypes, name, pageable)
+                        elementsService.findAll(projectId, type, eleTypes, name, value, pageable)
                 )
         );
     }
