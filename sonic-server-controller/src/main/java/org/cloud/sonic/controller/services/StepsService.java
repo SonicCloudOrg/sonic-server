@@ -19,6 +19,11 @@ public interface StepsService extends IService<Steps> {
 
     List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS);
 
+    /**
+     * 获取每个step下的childSteps 组装成一个list返回
+     * @param stepsDTOS 步骤集合
+     * @return 包含所有子步骤的集合
+     */
     List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS);
     /**
      * 如果步骤是条件步骤，且子条件也可能是条件步骤，则递归填充条件步骤的子步骤，且所有步骤都会填充 {@link StepsDTO#elements} 属性

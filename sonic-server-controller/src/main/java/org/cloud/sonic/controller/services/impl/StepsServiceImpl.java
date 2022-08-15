@@ -94,7 +94,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
      * @param stepsDTOS 步骤集合
      * @return 包含所有子步骤的集合
      */
-    public  List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS) {
+    public List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS) {
 
         // 记录一下层级，第一层不要
         List<StepsDTO> childSteps = new ArrayList<>();
@@ -103,14 +103,13 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             // 为空说明递归到最后一层，直接返回空集合
             return childSteps;
         }
+
         for (StepsDTO stepsDTO : stepsDTOS) {
             // 递归调用，底层返回的集合直接add到上层来
-            if (stepsDTO.getChildSteps() != null) {
-                childSteps.add(stepsDTO);
-                childSteps.addAll(stepsDTO.getChildSteps());
-                getChildSteps(stepsDTO.getChildSteps());
-            }
+            childSteps.add(stepsDTO);
+            childSteps.addAll(getChildSteps(stepsDTO.getChildSteps()));
         }
+
         // 结束递归的集合，最外层的就是结果
         return childSteps;
     }
