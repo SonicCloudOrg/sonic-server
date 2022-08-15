@@ -209,7 +209,6 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
 
             if (step.getParentId() != 0) {
                 //如果有关联的父亲步骤， 就计算插入过得父亲ID 写入parentId
-                Steps steps1 = stepsMapper.selectById(step.getParentId());
                 Integer fatherIdIndex = 0;
                 Integer idIndex = 0;
                 //计算子步骤和父步骤的相对间距
