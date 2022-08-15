@@ -9,7 +9,7 @@ import org.cloud.sonic.controller.models.dto.StepsDTO;
 import java.util.List;
 
 public interface ElementsService extends IService<Elements> {
-    Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, Page<Elements> pageable);
+    Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Page<Elements> pageable);
 
     List<StepsDTO> findAllStepsByElementsId(int elementsId);
 
