@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.http.StepSort;
 
@@ -65,4 +66,7 @@ public interface StepsService extends IService<Steps> {
     CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform, int page ,int pageSize,
                                                            String searchContent);
 
+    Boolean copyStepsIdByCase(Integer stepId);
+
+    List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps);
 }

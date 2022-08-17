@@ -26,10 +26,7 @@ import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.services.GlobalParamsService;
-import org.cloud.sonic.controller.services.StepsService;
-import org.cloud.sonic.controller.services.TestCasesService;
-import org.cloud.sonic.controller.services.TestSuitesService;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +51,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private TestSuitesService testSuitesService;
     @Autowired private TestCasesMapper testCasesMapper;
     @Autowired private StepsMapper stepsMapper;
-
+    @Autowired private ElementsService elementsService;
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
 
@@ -197,15 +194,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         List<StepsDTO> stepsCopyDTOS = stepsService.handleSteps(stepsDTO);
 
         //需要插入的步骤记录
-        List<PublicStepsAndStepsIdDTO> needCopySteps = new ArrayList<>();
-        int i = 1; //用来统计所在位置， 以及保持map中 key不同
-        for (Steps steps : oldStepsList) {
-            PublicStepsAndStepsIdDTO psasId = new PublicStepsAndStepsIdDTO();
-            psasId.setStepsDTO(steps.convertTo());
-            psasId.setIndex(i);
-            needCopySteps.add(psasId);
-            i++;
-        }
+        List<PublicStepsAndStepsIdDTO> needCopySteps = stepsService.stepAndIndex(stepsCopyDTOS);
 
         //插入新的步骤
         LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
@@ -235,11 +224,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 n++;
                 //关联steps和elId
                 if (steps.getElements() != null) {
-                    for (ElementsDTO elements : steps.getElements()) {
-                        stepsElementsMapper.insert( new StepsElements()
-                                .setElementsId(elements.getId())
-                                .setStepsId(step.getId()));
-                    }
+                    elementsService.newStepBeLinkedEle(steps,step);
                 }
                 continue;
             }
@@ -247,17 +232,10 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
-                for (ElementsDTO elements : steps.getElements()) {
-                    stepsElementsMapper.insert( new StepsElements()
-                            .setElementsId(elements.getId())
-                            .setStepsId(step.getId()));
-                }
+                elementsService.newStepBeLinkedEle(steps,step);
             }
             n++;
         }
-
-
-
         return true;
     }
 }

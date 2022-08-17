@@ -29,6 +29,7 @@ import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.services.ElementsService;
 import org.cloud.sonic.controller.services.PublicStepsService;
 import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
@@ -54,6 +55,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     @Autowired private StepsElementsMapper stepsElementsMapper;
     @Autowired private StepsMapper stepsMapper;
     @Autowired private StepsService stepsService;
+    @Autowired private ElementsService elementsService;
 
     @Transactional
     @Override
@@ -187,16 +189,8 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         List<StepsDTO> stepsDTOS = stepsService.handleSteps(oldStepsDtoList);
         List<StepsDTO> needAllCopySteps = stepsService.getChildSteps(stepsDTOS);
 
+        List<PublicStepsAndStepsIdDTO> oldStepDto = stepsService.stepAndIndex(needAllCopySteps);
 
-        List<PublicStepsAndStepsIdDTO> oldStepDto = new ArrayList<>();
-        int i = 1; //用来统计所在位置， 以及保持map中 key不同
-        for (StepsDTO steps : needAllCopySteps) {
-            PublicStepsAndStepsIdDTO psasId = new PublicStepsAndStepsIdDTO();
-            psasId.setStepsDTO(steps);
-            psasId.setIndex(i);
-            oldStepDto.add(psasId);
-            i++;
-        }
         //统计需要和公共步骤关联的步骤，
         int n = 1;  // n 用来保持搜索map时候 caseId  和 key中setCaseId一致
         LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
@@ -228,11 +222,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
                 n++;
                 //关联steps和elId
                 if (steps.getElements() != null) {
-                    for (ElementsDTO elements : steps.getElements()) {
-                        stepsElementsMapper.insert( new StepsElements()
-                                .setElementsId(elements.getId())
-                                .setStepsId(step.getId()));
-                    }
+                    elementsService.newStepBeLinkedEle(steps,step);
                 }
                 continue;
             }
@@ -241,11 +231,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
-                for (ElementsDTO elements : steps.getElements()) {
-                    stepsElementsMapper.insert( new StepsElements()
-                                                .setElementsId(elements.getId())
-                                                .setStepsId(step.getId()));
-                }
+                elementsService.newStepBeLinkedEle(steps,step);
             }
             //插入的stepId 记录到需要关联步骤的list种
             publicStepsStpesId.add(step.getId());
