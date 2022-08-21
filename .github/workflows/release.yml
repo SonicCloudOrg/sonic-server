@@ -1,4 +1,4 @@
-name: release CI
+name: release to github
 
 on:
   workflow_dispatch:
