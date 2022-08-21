@@ -19,5 +19,18 @@ jobs:
       with: 
        filename: sonic-server-v1.5.0-beta.zip
        directory: sonic-server-v1.5.0-beta
-    - name: tree
-      run: tree
+    - name: mkdir2
+      run: mkdir -p sonic-server-v1.5.0-beta-2/imageFiles sonic-server-v1.5.0-beta-2/keepFiles sonic-server-v1.5.0-beta-2/logs sonic-server-v1.5.0-beta-2/packageFiles sonic-server-v1.5.0-beta-2/recordFiles
+    - name: copy
+      run: cp .env docker-compose2.yml sonic-server-v1.5.0-beta-2/
+    - name: rename
+      run: mv sonic-server-v1.5.0-beta-2/docker-compose2.yml sonic-server-v1.5.0-beta-2/docker-compose.yml
+    - name: zip 
+      uses: TheDoctor0/zip-release@0.6.2
+      with: 
+       filename: sonic-server-v1.5.0-beta-2.zip
+       directory: sonic-server-v1.5.0-beta-2
+    - name: Upload To Github Release
+      uses: xresloader/upload-to-github-release@v1.3.4
+      with:
+        file: sonic-server-v1.5.0-beta.zip,sonic-server-v1.5.0-beta-2.zip
