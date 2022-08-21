@@ -31,6 +31,8 @@ jobs:
        filename: sonic-server-v1.5.0-beta-2.zip
        directory: sonic-server-v1.5.0-beta-2
     - name: Upload To Github Release
-      uses: svenstaro/upload-release-action@2.3.0
+      uses: xresloader/upload-to-github-release@v1.3.4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         file: sonic-server-v1.5.0-beta.zip,sonic-server-v1.5.0-beta-2.zip
