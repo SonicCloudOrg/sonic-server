@@ -45,3 +45,4 @@ jobs:
           file: sonic-server-${{ steps.previoustag.outputs.tag }}.zip;sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
           tag_name: ${{ steps.previoustag.outputs.tag }}
           update_latest_release: true
+          draft: false
