@@ -9,20 +9,25 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: login docker hub
-      run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
-    - name: Validate and Compile with Maven
-      run: mvn install
-    - name: login docker hub
-      run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
-    - name: tag
-      run: docker tag sonicorg/sonic-server-eureka:v1.5.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.5.0-beta && docker tag sonicorg/sonic-server-controller:v1.5.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.5.0-beta && docker tag sonicorg/sonic-server-folder:v1.5.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.5.0-beta && docker tag sonicorg/sonic-server-gateway:v1.5.0-beta registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.5.0-beta
-    - name: push
-      run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:v1.5.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:v1.5.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:v1.5.0-beta && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:v1.5.0-beta
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: login docker hub
+        run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
+      - name: Validate and Compile with Maven
+        run: mvn install
+      - name: login docker hub
+        run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
+      - name: tag
+        run: docker tag sonicorg/sonic-server-eureka:${{ steps.previoustag.outputs.tag }} registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:${{ steps.previoustag.outputs.tag }} && docker tag sonicorg/sonic-server-controller:${{ steps.previoustag.outputs.tag }} registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:${{ steps.previoustag.outputs.tag }} && docker tag sonicorg/sonic-server-folder:${{ steps.previoustag.outputs.tag }} registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:${{ steps.previoustag.outputs.tag }} && docker tag sonicorg/sonic-server-gateway:${{ steps.previoustag.outputs.tag }} registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:${{ steps.previoustag.outputs.tag }}
+      - name: push
+        run: docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:${{ steps.previoustag.outputs.tag }} && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:${{ steps.previoustag.outputs.tag }} && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:${{ steps.previoustag.outputs.tag }} && docker push registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:${{ steps.previoustag.outputs.tag }}
