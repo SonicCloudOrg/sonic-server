@@ -30,6 +30,8 @@ jobs:
       with: 
        filename: sonic-server-v1.5.0-beta-2.zip
        directory: sonic-server-v1.5.0-beta-2
+    - name: move outside
+      run: mv sonic-server-v1.5.0-beta/sonic-server-v1.5.0-beta.zip ./sonic-server-v1.5.0-beta.zip && mv sonic-server-v1.5.0-beta-2/sonic-server-v1.5.0-beta-2.zip ./sonic-server-v1.5.0-beta-2.zip
     - name: Upload To Github Release
       uses: xresloader/upload-to-github-release@v1.3.4
       env:
