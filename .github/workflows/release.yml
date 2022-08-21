@@ -9,56 +9,37 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: mkdir
-      run: mkdir -p sonic-server-v1.5.0-beta/imageFiles sonic-server-v1.5.0-beta/keepFiles sonic-server-v1.5.0-beta/logs sonic-server-v1.5.0-beta/packageFiles sonic-server-v1.5.0-beta/recordFiles
-    - name: copy
-      run: cp .env docker-compose.yml sonic-server-v1.5.0-beta/
-    - name: zip 
-      uses: TheDoctor0/zip-release@0.6.2
-      with: 
-       filename: sonic-server-v1.5.0-beta.zip
-       directory: sonic-server-v1.5.0-beta
-    - name: mkdir2
-      run: mkdir -p sonic-server-v1.5.0-beta-2/imageFiles sonic-server-v1.5.0-beta-2/keepFiles sonic-server-v1.5.0-beta-2/logs sonic-server-v1.5.0-beta-2/packageFiles sonic-server-v1.5.0-beta-2/recordFiles
-    - name: copy
-      run: cp .env docker-compose2.yml sonic-server-v1.5.0-beta-2/
-    - name: rename
-      run: mv sonic-server-v1.5.0-beta-2/docker-compose2.yml sonic-server-v1.5.0-beta-2/docker-compose.yml
-    - name: zip 
-      uses: TheDoctor0/zip-release@0.6.2
-      with: 
-       filename: sonic-server-v1.5.0-beta-2.zip
-       directory: sonic-server-v1.5.0-beta-2
-    - name: move outside
-      run: mv sonic-server-v1.5.0-beta/sonic-server-v1.5.0-beta.zip ./sonic-server-v1.5.0-beta.zip && mv sonic-server-v1.5.0-beta-2/sonic-server-v1.5.0-beta-2.zip ./sonic-server-v1.5.0-beta-2.zip
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
+      - uses: actions/checkout@v2
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: mkdir
+        run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}/logs sonic-server-${{ steps.previoustag.outputs.tag }}/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/recordFiles
+      - name: copy
+        run: cp .env docker-compose.yml sonic-server-${{ steps.previoustag.outputs.tag }}/
+      - name: zip
+        uses: TheDoctor0/zip-release@0.6.2
+        with:
+          filename: sonic-server-${{ steps.previoustag.outputs.tag }}.zip
+          directory: sonic-server-${{ steps.previoustag.outputs.tag }}
+      - name: mkdir2
+        run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}-2/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/logs sonic-server-${{ steps.previoustag.outputs.tag }}-2/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/recordFiles
+      - name: copy
+        run: cp .env docker-compose2.yml sonic-server-${{ steps.previoustag.outputs.tag }}-2/
+      - name: rename
+        run: mv sonic-server-${{ steps.previoustag.outputs.tag }}-2/docker-compose2.yml sonic-server-${{ steps.previoustag.outputs.tag }}-2/docker-compose.yml
+      - name: zip
+        uses: TheDoctor0/zip-release@0.6.2
+        with:
+          filename: sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+          directory: sonic-server-${{ steps.previoustag.outputs.tag }}-2
+      - name: move outside
+        run: mv sonic-server-${{ steps.previoustag.outputs.tag }}/sonic-server-${{ steps.previoustag.outputs.tag }}.zip ./sonic-server-${{ steps.previoustag.outputs.tag }}.zip && mv sonic-server-${{ steps.previoustag.outputs.tag }}-2/sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip ./sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+      - name: Upload To Github Release
+        uses: xresloader/upload-to-github-release@v1.3.4
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./sonic-server-v1.5.0-beta.zip
-          asset_name: sonic-server-v1.5.0-beta.zip
-          asset_content_type: application/zip
-    - name: Upload Release Asset
-      id: upload-release-asset-2
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./sonic-server-v1.5.0-beta-2.zip
-          asset_name: sonic-server-v1.5.0-beta-2.zip
-          asset_content_type: application/zip
+        with:
+          file: sonic-server-${{ steps.previoustag.outputs.tag }}.zip;sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+          tag_name: ${{ steps.previoustag.outputs.tag }}
+          update_latest_release: true
