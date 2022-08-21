@@ -32,10 +32,33 @@ jobs:
        directory: sonic-server-v1.5.0-beta-2
     - name: move outside
       run: mv sonic-server-v1.5.0-beta/sonic-server-v1.5.0-beta.zip ./sonic-server-v1.5.0-beta.zip && mv sonic-server-v1.5.0-beta-2/sonic-server-v1.5.0-beta-2.zip ./sonic-server-v1.5.0-beta-2.zip
-    - name: Upload To Github Release
-      uses: xresloader/upload-to-github-release@v1.3.4
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: sonic-server-v1.5.0-beta.zip;sonic-server-v1.5.0-beta-2.zip
-        tag_name: ${{github.ref}}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./sonic-server-v1.5.0-beta.zip
+          asset_name: sonic-server-v1.5.0-beta.zip
+          asset_content_type: application/zip
+    - name: Upload Release Asset
+      id: upload-release-asset-2
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./sonic-server-v1.5.0-beta-2.zip
+          asset_name: sonic-server-v1.5.0-beta-2.zip
+          asset_content_type: application/zip
