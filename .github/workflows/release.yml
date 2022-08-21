@@ -38,4 +38,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         file: sonic-server-v1.5.0-beta.zip;sonic-server-v1.5.0-beta-2.zip
-        tag_name: v1.5.0-beta
+        tag_name: ${{github.ref}}
