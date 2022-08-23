@@ -207,6 +207,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         if (jsonMsg.getString("platform") != null) {
             devices.setPlatform(jsonMsg.getInteger("platform"));
         }
+        if (jsonMsg.getString("isHM") != null) {
+            devices.setIsHM(jsonMsg.getInteger("isHM"));
+        }
         if (jsonMsg.getString("cpu") != null) {
             devices.setCpu(jsonMsg.getString("cpu"));
         }
