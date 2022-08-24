@@ -103,7 +103,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     @Override
     public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
-                                 String deviceInfo, Page<Devices> pageable) {
+                                 String deviceInfo, Page<Devices> pageable,List<String> hmVersion) {
         DevicesSearchParams params = new DevicesSearchParams()
                 .setIOSVersion(iOSVersion)
                 .setAndroidVersion(androidVersion)
@@ -112,7 +112,8 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 .setSize(size)
                 .setAgentId(agentId)
                 .setStatus(status)
-                .setDeviceInfo(deviceInfo);
+                .setDeviceInfo(deviceInfo)
+                .setHmVersion(hmVersion);
         return devicesMapper.findByParams(pageable, params);
     }
 

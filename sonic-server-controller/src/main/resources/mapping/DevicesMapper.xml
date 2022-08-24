@@ -5,26 +5,69 @@
     <select id="findByParams" resultType="org.cloud.sonic.controller.models.domain.Devices">
         select d.* from devices d
         <where>
-        1 = 1
-            <if test="params.androidVersion != null or params.iOSVersion != null">
+            1 = 1
+            <if test="params.androidVersion != null or params.iOSVersion != null or params.hmVersion != null">
                 <choose>
-                    <when test="params.androidVersion != null and params.iOSVersion != null">
+                    <when test="params.androidVersion != null and params.iOSVersion != null and params.hmVersion != null">
                         and ((
-                        d.platform = 1 and
-                        <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
+                        d.platform = 1 and d.is_hm = 0 and
+                        <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")"
+                                 separator="or">
                             d.version like concat( #{androidVersion}, '%')
-                        </foreach>
-                        )
+                        </foreach>)
                         or (d.platform = 2 and
                         <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
                             d.version like concat( #{iOSVersion}, '%')
-                        </foreach>))
+                        </foreach>)
+                        or (d.platform = 1 and d.is_hm = 1 and
+                        <foreach collection="params.hmVersion" item="hmVersion" open="(" close=")" separator="or">
+                            d.version like concat( #{hmVersion}, '%')
+                        </foreach>)
+                        )
+                    </when>
+                    <when test="params.androidVersion != null and params.iOSVersion != null">
+                        and ((
+                        d.platform = 1 and d.is_hm = 0 and
+                        <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")"
+                                 separator="or">
+                            d.version like concat( #{androidVersion}, '%')
+                        </foreach>)
+                        or (d.platform = 2 and
+                        <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
+                            d.version like concat( #{iOSVersion}, '%')
+                        </foreach>)
+                        )
+                    </when>
+                    <when test="params.androidVersion != null and params.hmVersion != null">
+                        and ((
+                        d.platform = 1 and d.is_hm = 0 and
+                        <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")"
+                                 separator="or">
+                            d.version like concat( #{androidVersion}, '%')
+                        </foreach>)
+                        or (d.platform = 1 and d.is_hm = 1 and
+                        <foreach collection="params.hmVersion" item="hmVersion" open="(" close=")" separator="or">
+                            d.version like concat( #{hmVersion}, '%')
+                        </foreach>)
+                        )
+                    </when>
+                    <when test="params.iOSVersion != null and params.hmVersion != null">
+                        and ((d.platform = 2 and
+                        <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
+                            d.version like concat( #{iOSVersion}, '%')
+                        </foreach>)
+                        or (d.platform = 1 and d.is_hm = 1 and
+                        <foreach collection="params.hmVersion" item="hmVersion" open="(" close=")" separator="or">
+                            d.version like concat( #{hmVersion}, '%')
+                        </foreach>)
+                        )
                     </when>
                     <otherwise>
                         <if test="params.androidVersion != null">
                             and (
-                            d.platform = 1 and
-                            <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")" separator="or">
+                            d.platform = 1 and d.is_hm = 0 and
+                            <foreach collection="params.androidVersion" item="androidVersion" open="(" close=")"
+                                     separator="or">
                                 d.version like concat( #{androidVersion}, '%')
                             </foreach>
                             )
@@ -34,6 +77,14 @@
                             d.platform = 2 and
                             <foreach collection="params.iOSVersion" item="iOSVersion" open="(" close=")" separator="or">
                                 d.version like concat( #{iOSVersion}, '%')
+                            </foreach>
+                            )
+                        </if>
+                        <if test="params.hmVersion != null">
+                            and (
+                            d.platform = 1 and d.is_hm = 1 and
+                            <foreach collection="params.hmVersion" item="hmVersion" open="(" close=")" separator="or">
+                                d.version like concat( #{hmVersion}, '%')
                             </foreach>
                             )
                         </if>
@@ -72,22 +123,22 @@
             </if>
             <if test="params.deviceInfo != null and params.deviceInfo != ''">
                 and (
-                    d.ud_id like "%${params.deviceInfo}%" or
-                    d.model like "%${params.deviceInfo}%" or
-                    d.chi_name like "%${params.deviceInfo}%"
+                d.ud_id like "%${params.deviceInfo}%" or
+                d.model like "%${params.deviceInfo}%" or
+                d.chi_name like "%${params.deviceInfo}%"
                 )
             </if>
         </where>
         order by case
-            when d.status='ONLINE' then 1
-            when d.status='DEBUGGING' then 2
-            when d.status='TESTING' then 3
-            when d.status='ERROR' then 4
-            when d.status='UNAUTHORIZED' then 5
-            when d.status='OFFLINE' then 6
-            when d.status='DISCONNECTED' then 7 else 8 end asc,
-                 d.status asc,
-                 d.id desc
+        when d.status='ONLINE' then 1
+        when d.status='DEBUGGING' then 2
+        when d.status='TESTING' then 3
+        when d.status='ERROR' then 4
+        when d.status='UNAUTHORIZED' then 5
+        when d.status='OFFLINE' then 6
+        when d.status='DISCONNECTED' then 7 else 8 end asc,
+        d.status asc,
+        d.id desc
     </select>
 
 

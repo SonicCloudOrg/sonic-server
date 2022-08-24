@@ -42,7 +42,7 @@ public interface DevicesService extends IService<Devices> {
 
     Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
-                          String deviceInfo, Page<Devices> pageable);
+                          String deviceInfo, Page<Devices> pageable,List<String> hmVersion);
 
     List<Devices> findAll(int platform);
 

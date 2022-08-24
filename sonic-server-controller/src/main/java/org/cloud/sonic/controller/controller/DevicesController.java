@@ -68,6 +68,7 @@ public class DevicesController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "androidVersion[]", value = "安卓版本", dataTypeClass = String.class),
             @ApiImplicitParam(name = "iOSVersion[]", value = "iOS版本", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "hmVersion[]", value = "鸿蒙版本", dataTypeClass = String.class),
             @ApiImplicitParam(name = "manufacturer[]", value = "制造商", dataTypeClass = String.class),
             @ApiImplicitParam(name = "cpu[]", value = "cpu类型", dataTypeClass = String.class),
             @ApiImplicitParam(name = "size[]", value = "屏幕尺寸", dataTypeClass = String.class),
@@ -80,6 +81,7 @@ public class DevicesController {
     @GetMapping("/list")
     public RespModel<CommentPage<Devices>> findAll(@RequestParam(name = "androidVersion[]", required = false) List<String> androidVersion,
                                                    @RequestParam(name = "iOSVersion[]", required = false) List<String> iOSVersion,
+                                                   @RequestParam(name = "hmVersion[]" , required = false) List<String> hmVersion,
                                                    @RequestParam(name = "manufacturer[]", required = false) List<String> manufacturer,
                                                    @RequestParam(name = "cpu[]", required = false) List<String> cpu,
                                                    @RequestParam(name = "size[]", required = false) List<String> size,
@@ -93,7 +95,7 @@ public class DevicesController {
                 RespEnum.SEARCH_OK,
                 CommentPage.convertFrom(
                         devicesService.findAll(iOSVersion, androidVersion, manufacturer, cpu, size,
-                                agentId, status, deviceInfo, pageable)
+                                agentId, status, deviceInfo, pageable,hmVersion)
                 )
         );
     }
