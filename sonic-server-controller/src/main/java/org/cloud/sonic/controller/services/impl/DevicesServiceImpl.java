@@ -60,14 +60,10 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 @Slf4j
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
-    @Autowired
-    private DevicesMapper devicesMapper;
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired
-    private AgentsService agentsService;
+    @Autowired private DevicesMapper devicesMapper;
+    @Autowired private UsersService usersService;
+    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired private AgentsService agentsService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -101,9 +97,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     }
 
     @Override
-    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
+    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
-                                 String deviceInfo, Page<Devices> pageable,List<String> hmVersion) {
+                                 String deviceInfo, Page<Devices> pageable) {
         DevicesSearchParams params = new DevicesSearchParams()
                 .setIOSVersion(iOSVersion)
                 .setAndroidVersion(androidVersion)

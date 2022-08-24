@@ -94,8 +94,8 @@ public class DevicesController {
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                 CommentPage.convertFrom(
-                        devicesService.findAll(iOSVersion, androidVersion, manufacturer, cpu, size,
-                                agentId, status, deviceInfo, pageable,hmVersion)
+                        devicesService.findAll(iOSVersion, androidVersion,hmVersion, manufacturer, cpu, size,
+                                agentId, status, deviceInfo, pageable)
                 )
         );
     }

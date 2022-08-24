@@ -40,9 +40,9 @@ public interface DevicesService extends IService<Devices> {
 
     void updateImg(UpdateDeviceImg updateDeviceImg);
 
-    Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
+    Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,List<String> hmVersion, List<String> manufacturer,
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
-                          String deviceInfo, Page<Devices> pageable,List<String> hmVersion);
+                          String deviceInfo, Page<Devices> pageable);
 
     List<Devices> findAll(int platform);
 
