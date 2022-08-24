@@ -1,0 +1,48 @@
+name: release to github
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: mkdir
+        run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}/logs sonic-server-${{ steps.previoustag.outputs.tag }}/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/recordFiles
+      - name: copy
+        run: cp .env docker-compose.yml sonic-server-${{ steps.previoustag.outputs.tag }}/
+      - name: zip
+        uses: TheDoctor0/zip-release@0.6.2
+        with:
+          filename: sonic-server-${{ steps.previoustag.outputs.tag }}.zip
+          directory: sonic-server-${{ steps.previoustag.outputs.tag }}
+      - name: mkdir2
+        run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}-2/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/logs sonic-server-${{ steps.previoustag.outputs.tag }}-2/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}-2/recordFiles
+      - name: copy
+        run: cp .env docker-compose2.yml sonic-server-${{ steps.previoustag.outputs.tag }}-2/
+      - name: rename
+        run: mv sonic-server-${{ steps.previoustag.outputs.tag }}-2/docker-compose2.yml sonic-server-${{ steps.previoustag.outputs.tag }}-2/docker-compose.yml
+      - name: zip
+        uses: TheDoctor0/zip-release@0.6.2
+        with:
+          filename: sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+          directory: sonic-server-${{ steps.previoustag.outputs.tag }}-2
+      - name: move outside
+        run: mv sonic-server-${{ steps.previoustag.outputs.tag }}/sonic-server-${{ steps.previoustag.outputs.tag }}.zip ./sonic-server-${{ steps.previoustag.outputs.tag }}.zip && mv sonic-server-${{ steps.previoustag.outputs.tag }}-2/sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip ./sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+      - name: Upload To Github Release
+        uses: xresloader/upload-to-github-release@v1.3.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: sonic-server-${{ steps.previoustag.outputs.tag }}.zip;sonic-server-${{ steps.previoustag.outputs.tag }}-2.zip
+          tag_name: ${{ steps.previoustag.outputs.tag }}
+          update_latest_release: true
+          draft: false
