@@ -22,7 +22,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.ElementsMapper;
+import org.cloud.sonic.controller.mapper.StepsElementsMapper;
 import org.cloud.sonic.controller.models.domain.Elements;
+import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.domain.StepsElements;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
 import org.cloud.sonic.controller.services.ElementsService;
@@ -43,6 +47,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Autowired private ElementsMapper elementsMapper;
     @Autowired private StepsService stepsService;
     @Autowired private TestCasesService testCasesService;
+    @Autowired private StepsElementsMapper stepsElementsMapper;
 
     @Override
     public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Page<Elements> pageable) {
@@ -118,5 +123,15 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         save(element);
 
         return new RespModel<>(RespEnum.COPY_OK);
+    }
+
+    @Override
+    public Boolean newStepBeLinkedEle(StepsDTO stepsDTO, Steps step) {
+        for (ElementsDTO elements : stepsDTO.getElements()) {
+            stepsElementsMapper.insert( new StepsElements()
+                    .setElementsId(elements.getId())
+                    .setStepsId(step.getId()));
+        }
+        return true;
     }
 }

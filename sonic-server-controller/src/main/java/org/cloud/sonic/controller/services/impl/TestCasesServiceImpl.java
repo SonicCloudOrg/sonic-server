@@ -21,15 +21,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.cloud.sonic.controller.mapper.PublicStepsMapper;
-import org.cloud.sonic.controller.mapper.TestCasesMapper;
-import org.cloud.sonic.controller.mapper.TestSuitesTestCasesMapper;
+import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
+import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.services.GlobalParamsService;
-import org.cloud.sonic.controller.services.StepsService;
-import org.cloud.sonic.controller.services.TestCasesService;
-import org.cloud.sonic.controller.services.TestSuitesService;
+import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,11 +45,13 @@ import java.util.stream.Collectors;
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
     @Autowired private StepsService stepsService;
-    @Autowired private PublicStepsMapper publicStepsMapper;
+    @Autowired private StepsElementsMapper stepsElementsMapper;
     @Autowired private GlobalParamsService globalParamsService;
     @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
     @Autowired private TestSuitesService testSuitesService;
-
+    @Autowired private TestCasesMapper testCasesMapper;
+    @Autowired private StepsMapper stepsMapper;
+    @Autowired private ElementsService elementsService;
     @Override
     public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
 
@@ -169,38 +168,75 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         return lambdaQuery().in(TestCases::getId, caseIdSet).list();
     }
 
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public boolean copyTestById(int oldId) {
-//        TestCases testCase = testCasesMapper.selectById(oldId);
-//        testCase.setId(null).setEditTime(null).setName(testCase.getName() + "_copy");
-//        save(testCase);
-//        List<StepsElements> stEleId = stepsElementsMapper.selectCopyElements(oldId);
-//
-//        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
-//        List<Steps> steps = stepsMapper.selectList(lqw.eq(Steps::getCaseId, oldId));
-//
-//        for (int i = 0 ;i < steps.size() ; i++) {
-//            Steps step = steps.get(i);
-//            //找出该步骤的子步骤
-//            List<Steps> stepsList = stepsMapper.selectList(lqw.eq(Steps::getParentId, step.getId()));
-//            //插入该步骤
-//            step.setId(null).setCaseId(testCase.getId());
-//            stepsMapper.insert(step);
-//            //判断该步骤是否有子步骤，有就插入  TODO 重复插入问题
-//            if (stepsList != null) {
-//                for (Steps stepsChild : stepsList) {
-//                    stepsChild.setId(null).setCaseId(testCase.getId()).setParentId(step.getId());
-//                    stepsMapper.insert(stepsChild);
-//                }
-//            }
-//            //插入控件元素
-//            if (stEleId.get(i).getElementsId() != null) {
-//                stepsElementsMapper.insert(new StepsElements()
-//                        .setStepsId(step.getId())
-//                        .setElementsId(stEleId.get(i).getElementsId()));
-//            }
-//        }
-//        return true;
+    /**
+     * 测试用例的复制
+     * 基本原理和公共步骤相同，不需要关联publicStep+step
+     * 只需要关联了step+ele。
+     * @param oldId  需要复制的id
+     * @return  返回成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean copyTestById(int oldId) {
+        //插入新的testCase
+        TestCases oldTestCases = testCasesMapper.selectById(oldId);
+        save(oldTestCases.setId(null).setName(oldTestCases.getName()+"_copy"));
+
+        //查找旧的case Step&&对应的ele
+        LambdaQueryWrapper<Steps> queryWrapper = new LambdaQueryWrapper<>();
+        List<Steps> oldStepsList = stepsMapper.selectList(
+                queryWrapper.eq(Steps::getCaseId, oldId).orderByAsc(Steps::getCaseId));
+        List<StepsDTO> stepsDTO = new ArrayList<>();
+        for(Steps steps : oldStepsList){
+            stepsDTO.add(steps.convertTo());
+
+        }
+        List<StepsDTO> stepsCopyDTOS = stepsService.handleSteps(stepsDTO);
+
+        //需要插入的步骤记录
+        List<PublicStepsAndStepsIdDTO> needCopySteps = stepsService.stepAndIndex(stepsCopyDTOS);
+
+        //插入新的步骤
+        LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
+        List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
+        int n = 1;
+        for (StepsDTO steps : stepsCopyDTOS) {
+            Steps step = steps.convertTo();
+
+            if (step.getParentId() != 0) {
+                //如果有关联的父亲步骤， 就计算插入过得父亲ID 写入parentId
+                Integer fatherIdIndex = 0;
+                Integer idIndex = 0;
+                //计算子步骤和父步骤的相对间距
+                for (PublicStepsAndStepsIdDTO stepsIdDTO : needCopySteps) {
+                    if (stepsIdDTO.getStepsDTO().convertTo().equals(step)) {
+                        fatherIdIndex = stepsIdDTO.getIndex();
+                    }
+                    if (stepsIdDTO.getStepsDTO().convertTo().equals(stepsMapper.selectById(step.getParentId()))) {
+                        idIndex = stepsIdDTO.getIndex();
+                    }
+                }
+                step.setId(null).setParentId(fatherIdIndex).setCaseId(oldTestCases.getId()).setSort(stepsList.get(0).getSort() + n);
+                stepsMapper.insert(step.setCaseId(oldTestCases.getId()));
+                //修改父步骤Id
+                step.setParentId(step.getId() - (fatherIdIndex - idIndex));
+                stepsMapper.updateById(step);
+                n++;
+                //关联steps和elId
+                if (steps.getElements() != null) {
+                    elementsService.newStepBeLinkedEle(steps,step);
+                }
+                continue;
+            }
+            step.setId(null).setCaseId(oldTestCases.getId()).setSort(stepsList.get(0).getSort() + n);
+            stepsMapper.insert(step);
+            //关联steps和elId
+            if (steps.getElements() != null) {
+                elementsService.newStepBeLinkedEle(steps,step);
+            }
+            n++;
+        }
+        return true;
+    }
 }
 

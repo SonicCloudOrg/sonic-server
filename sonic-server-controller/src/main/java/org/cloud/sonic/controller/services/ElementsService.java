@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Elements;
+import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 
 import java.util.List;
@@ -26,4 +27,11 @@ public interface ElementsService extends IService<Elements> {
      * @return
      */
     RespModel<String> copy(int id);
+
+    /**
+     * 关联stepsDto下面的元素
+     * @param stepsDTO
+     * @return
+     */
+    Boolean newStepBeLinkedEle(StepsDTO stepsDTO, Steps step);
 }
