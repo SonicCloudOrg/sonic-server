@@ -181,40 +181,52 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
-            List<JSONObject> suiteDetail = new ArrayList<>();
-            Set<Integer> agentIds = new HashSet<>();
-            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
-                JSONObject suite = new JSONObject();
-                List<JSONObject> steps = new ArrayList<>();
-                List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-                for (StepsDTO s : stepsList) {
-                    steps.add(getStep(s));
+            Map<Integer, List<JSONObject>> agentMap = new HashMap<>();
+            Map<Integer, List<JSONObject>> stepsMap = new HashMap<>();
+            for (Devices devices : devicesList) {
+                List<JSONObject> suiteDetail = agentMap.get(devices.getAgentId());
+                if(suiteDetail == null) {
+                    suiteDetail = new ArrayList<>();
+                    agentMap.put(devices.getAgentId(), suiteDetail);
                 }
-                for (Devices devices : devicesList) {
-                    agentIds.add(devices.getAgentId());
-                }
-                suite.put("steps", steps);
-                suite.put("cid", testCases.getId());
-                suite.put("device", devicesList);
-                //如果该字段的多参数数组还有，放入对象。否则去掉字段
                 for (String k : valueMap.keySet()) {
                     if (valueMap.get(k).size() > 0) {
                         String v = valueMap.get(k).get(0);
+                        if(gp.get(k) != null) {
+                            gp = gp.clone();
+                        }
                         gp.put(k, v);
                         valueMap.get(k).remove(0);
                     } else {
                         valueMap.remove(k);
                     }
                 }
-                suite.put("gp", gp);
-                suite.put("rid", results.getId());
-                suiteDetail.add(suite);
+                for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                    JSONObject suite = new JSONObject();
+                    List<JSONObject> steps = stepsMap.get(testCases.getId());
+                    if(steps == null) {
+                        steps = new ArrayList<>();
+                        List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                        for (StepsDTO s : stepsList) {
+                            steps.add(getStep(s));
+                        }
+                        stepsMap.put(testCases.getId(), steps);
+                    }
+                    suite.put("steps", steps);
+                    suite.put("cid", testCases.getId());
+                    suite.put("device", new ArrayList<>() {{
+                        add(devices);
+                    }});
+                    suite.put("gp", gp);
+                    suite.put("rid", results.getId());
+                    suiteDetail.add(suite);
+                }
             }
             JSONObject result = new JSONObject();
             result.put("msg", "suite");
             result.put("pf", testSuitesDTO.getPlatform());
-            result.put("cases", suiteDetail);
-            for (Integer id : agentIds) {
+            for (Integer id : agentMap.keySet()) {
+                result.put("cases", agentMap.get(id));
                 TransportWorker.send(id, result);
             }
         }
