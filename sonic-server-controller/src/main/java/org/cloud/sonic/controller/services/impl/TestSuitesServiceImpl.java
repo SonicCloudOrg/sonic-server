@@ -547,6 +547,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         }
     }
 
+    /**
+     * 设备覆盖处理器
+     */
     @Service
     class DeviceCoverHandler implements CoverHandler {
         @Autowired
