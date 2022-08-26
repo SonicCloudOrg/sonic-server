@@ -1,9 +1,8 @@
 name: deploy to dockerHub
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
 
