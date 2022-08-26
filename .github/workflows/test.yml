@@ -22,6 +22,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: replace version
-        run: ver=${${{ steps.previoustag.outputs.tag }}:1} && sed -i "s/SONIC_VERSION/ver/g" pom.xml && cat pom.xml
+        run: ver=${{ steps.previoustag.outputs.tag }} && new_ver=${ver:1} && sed -i "s/SONIC_VERSION/new_ver/g" pom.xml && cat pom.xml
       - name: replace version2
         run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" docker-compose*.yml && cat docker-compose.yml
