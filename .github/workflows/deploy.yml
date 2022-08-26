@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: replace version
-        run: sed -i "s/SONIC_VERSION/${${{ steps.previoustag.outputs.tag }}:1}/g" pom.xml
+        run: ver=${{ steps.previoustag.outputs.tag }} && new_ver=${ver:1} && sed -i "s/SONIC_VERSION/${new_ver}/g" pom.xml
       - name: login docker hub
         run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
       - name: Validate and Compile with Maven
