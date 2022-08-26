@@ -1,0 +1,27 @@
+name: deploy to dockerHub
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: replace version
+        run: sed -i "s/SONIC_VERSION/${${{ steps.previoustag.outputs.tag }}:1}/g" pom.xml && cat pom.xml
+      - name: replace version2
+        run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" docker-compose*.yml && cat docker-compose.yml

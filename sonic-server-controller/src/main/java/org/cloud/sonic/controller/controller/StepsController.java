@@ -154,4 +154,17 @@ public class StepsController {
         return new RespModel<>(RespEnum.SEARCH_OK, stepsService.searchFindByProjectIdAndPlatform(projectId, platform,
                 page,pageSize,searchContent));
     }
+
+    @WebAspect
+    @ApiOperation(value = "复制步骤", notes = "测试用例复制其中一个步骤")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "id", value = "用例中需要被复制步骤Id", dataTypeClass = Integer.class),
+    })
+    @GetMapping("/copy/steps")
+    public RespModel<String> copyStepsIdByCase(@RequestParam(name = "id") int stepId) {
+        stepsService.copyStepsIdByCase(stepId);
+
+        return new RespModel<>(RespEnum.COPY_OK);
+    }
+
 }

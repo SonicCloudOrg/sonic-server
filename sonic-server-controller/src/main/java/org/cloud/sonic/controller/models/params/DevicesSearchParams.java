@@ -46,4 +46,7 @@ public class DevicesSearchParams implements Serializable {
 
     @ApiModelProperty("设备udId等信息")
     private String deviceInfo;
+
+    @ApiModelProperty("鸿蒙版本")
+    private List<String> hmVersion;
 }

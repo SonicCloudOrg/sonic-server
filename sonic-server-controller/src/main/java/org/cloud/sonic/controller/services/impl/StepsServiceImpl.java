@@ -28,9 +28,11 @@ import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
 import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.domain.StepsElements;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
+import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.enums.ConditionEnum;
 import org.cloud.sonic.controller.models.http.StepSort;
+import org.cloud.sonic.controller.services.ElementsService;
 import org.cloud.sonic.controller.services.StepsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,8 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Autowired private PublicStepsMapper publicStepsMapper;
     @Autowired private PublicStepsStepsMapper publicStepsStepsMapper;
     @Autowired private StepsElementsMapper stepsElementsMapper;
+    @Autowired private StepsService stepsService;
+    @Autowired private ElementsService elementsService;
 
     @Transactional
     @Override
@@ -94,7 +98,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
      * @param stepsDTOS 步骤集合
      * @return 包含所有子步骤的集合
      */
-    public  List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS) {
+    public List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS) {
 
         // 记录一下层级，第一层不要
         List<StepsDTO> childSteps = new ArrayList<>();
@@ -103,14 +107,13 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             // 为空说明递归到最后一层，直接返回空集合
             return childSteps;
         }
+
         for (StepsDTO stepsDTO : stepsDTOS) {
             // 递归调用，底层返回的集合直接add到上层来
-            if (stepsDTO.getChildSteps() != null) {
-                childSteps.add(stepsDTO);
-                childSteps.addAll(stepsDTO.getChildSteps());
-                getChildSteps(stepsDTO.getChildSteps());
-            }
+            childSteps.add(stepsDTO);
+            childSteps.addAll(getChildSteps(stepsDTO.getChildSteps()));
         }
+
         // 结束递归的集合，最外层的就是结果
         return childSteps;
     }
@@ -292,5 +295,91 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         handleSteps(stepsDTOList);
 
         return CommentPage.convertFrom(pageList, stepsDTOList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean copyStepsIdByCase(Integer stepId) {
+        Steps steps = stepsMapper.selectById(stepId);
+        StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo());
+
+        LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
+        List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
+        save(steps.setId(null).setSort(stepsList.get(0).getSort()));
+        //关联ele
+        if (stepsCopyDTO.getElements() != null) {
+            elementsService.newStepBeLinkedEle(stepsCopyDTO,steps);
+        }
+        //插入子步骤
+        if (stepsCopyDTO.getChildSteps() != null){
+            List<StepsDTO> needAllCopySteps = stepsService.getChildSteps(stepsCopyDTO.getChildSteps());
+
+            List<PublicStepsAndStepsIdDTO> oldStepDto = stepAndIndex(needAllCopySteps);
+            //统计需要和公共步骤关联的步骤，
+            int n = 1;
+            LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
+
+            List<Steps> stepsList1 = stepsMapper.selectList(lqw.orderByDesc(Steps::getSort));
+
+            for (StepsDTO steps1 : needAllCopySteps) {
+                Steps step = steps1.convertTo();
+
+                if (step.getParentId() != 0) {
+                    //如果有关联的父亲步骤， 就计算插入过得父亲ID 写入parentId
+                    Integer fatherIdIndex = 0;
+                    Integer idIndex = 0;
+                    //计算子步骤和父步骤的相对间距
+                    for (PublicStepsAndStepsIdDTO stepsIdDTO : oldStepDto) {
+                        if (stepsIdDTO.getStepsDTO().convertTo().equals(step)) {
+                            fatherIdIndex = stepsIdDTO.getIndex();
+                        }
+                        if (stepsIdDTO.getStepsDTO().convertTo().equals(stepsMapper.selectById(step.getParentId()))) {
+                            idIndex = stepsIdDTO.getIndex();
+                        }
+                    }
+                    step.setId(null).setParentId(fatherIdIndex).setCaseId(0).setSort(stepsList1.get(0).getSort() + n);
+
+                    stepsMapper.insert(step.setCaseId(0));
+
+                    //修改父步骤Id
+                    step.setParentId(step.getId() - (fatherIdIndex - idIndex));
+                    stepsMapper.updateById(step);
+                    n++;
+                    //关联steps和elId
+                    if (steps1.getElements() != null) {
+                        elementsService.newStepBeLinkedEle(steps1,step);
+                    }
+                    continue;
+                }
+
+                step.setId(null).setCaseId(0).setSort(stepsList.get(0).getSort() + n);
+                stepsMapper.insert(step);
+                //关联steps和elId
+                if (steps1.getElements() != null) {
+                    elementsService.newStepBeLinkedEle(steps1,step);
+                }
+                //插入的stepId 记录到需要关联步骤的list种
+                n++;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 记录一组步骤中他们所在的位置；ma
+     * @return 步骤和对应位置
+     */
+    public List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps){
+        List<PublicStepsAndStepsIdDTO> oldStepDto = new ArrayList<>();
+        int i = 1; //用来统计所在位置， 以及保持map中 key不同
+        for (StepsDTO steps1 : needAllCopySteps) {
+            PublicStepsAndStepsIdDTO psasId = new PublicStepsAndStepsIdDTO();
+            psasId.setStepsDTO(steps1);
+            psasId.setIndex(i);
+            oldStepDto.add(psasId);
+            i++;
+        }
+        return oldStepDto;
     }
 }
