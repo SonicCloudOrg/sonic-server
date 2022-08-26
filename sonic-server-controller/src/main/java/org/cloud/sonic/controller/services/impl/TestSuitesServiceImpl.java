@@ -189,11 +189,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     suiteDetail = new ArrayList<>();
                     agentMap.put(devices.getAgentId(), suiteDetail);
                 }
+                boolean needClone = true;
                 for (String k : valueMap.keySet()) {
                     if (valueMap.get(k).size() > 0) {
                         String v = valueMap.get(k).get(0);
-                        if(gp.get(k) != null) {
+                        if(needClone && gp.get(k) != null) {
                             gp = gp.clone();
+                            needClone = false;
                         }
                         gp.put(k, v);
                         valueMap.get(k).remove(0);
