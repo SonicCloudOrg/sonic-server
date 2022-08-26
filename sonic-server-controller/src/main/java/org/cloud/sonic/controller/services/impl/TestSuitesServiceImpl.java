@@ -487,7 +487,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
      * @param valueMap
      * @return
      */
-    private JSONObject refresh(JSONObject gp, Map<String, List<String>> valueMap) {
+    private JSONObject refreshGlobalParams(JSONObject gp, Map<String, List<String>> valueMap) {
         boolean needClone = true;
         for (String k : valueMap.keySet()) {
             if (valueMap.get(k).size() > 0) {
@@ -532,7 +532,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     suiteDetail = new ArrayList<>();
                     agentMap.put(devices.getAgentId(), suiteDetail);
                 }
-                gp = refresh(gp, valueMap);
+                gp = refreshGlobalParams(gp, valueMap);
                 for (int j = i; j < testSuitesDTO.getTestCases().size(); j += devicesList.size()) {
                     TestCasesDTO testCases = testSuitesDTO.getTestCases().get(j);
                     suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
@@ -567,7 +567,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     suiteDetail = new ArrayList<>();
                     agentMap.put(devices.getAgentId(), suiteDetail);
                 }
-                gp = refresh(gp, valueMap);
+                gp = refreshGlobalParams(gp, valueMap);
                 for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
                     suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
                 }
