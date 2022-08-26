@@ -26,7 +26,7 @@ jobs:
       - name: login docker hub
         run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
       - name: Validate and Compile with Maven
-        run: mvn install
+        run: mvn package
       - name: login docker hub
         run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=小虫哔哔 registry.cn-hangzhou.aliyuncs.com --password-stdin
       - name: tag
