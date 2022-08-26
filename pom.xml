@@ -28,7 +28,7 @@
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <current.version>1.5.0-beta</current.version>
+        <current.version>SONIC_VERSION</current.version>
     </properties>
 
     <!-- SpringCloud版本管理   -->
