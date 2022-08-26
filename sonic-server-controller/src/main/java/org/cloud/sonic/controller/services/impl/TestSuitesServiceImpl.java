@@ -39,9 +39,7 @@ import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.BytesTool;
 import org.cloud.sonic.controller.transport.TransportWorker;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -78,10 +76,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     private AgentsService agentsService;
     @Autowired
     private PackagesService packagesService;
-
-    private Map<Integer, CoverHandler> coverHandlerMap;
-
-    private ApplicationContext applicationContext;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -140,14 +134,89 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp.put(g.getParamsKey(), g.getParamsValue());
             }
         }
-        JSONObject result = new JSONObject();
-        result.put("msg", "suite");
-        result.put("pf", testSuitesDTO.getPlatform());
-        Map<Integer, List<JSONObject>> agentMap = coverHandlerMap.get(testSuitesDTO.getCover())
-                .handlerSuite(testSuitesDTO, devicesList,  valueMap, results);
-        for (Integer id : agentMap.keySet()) {
-            result.put("cases", agentMap.get(id));
-            TransportWorker.send(id, result);
+        int deviceIndex = 0;
+        if (testSuitesDTO.getCover() == CoverType.CASE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                List<JSONObject> steps = new ArrayList<>();
+                List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (StepsDTO s : stepsList) {
+                    steps.add(getStep(s));
+                }
+                suite.put("steps", steps);
+                suite.put("cid", testCases.getId());
+                Devices devices = devicesList.get(deviceIndex);
+                // 不要用List.of，它的实现ImmutableCollections无法被序列化
+                suite.put("device", new ArrayList<>() {{
+                    add(devices);
+                }});
+                if (deviceIndex == devicesList.size() - 1) {
+                    deviceIndex = 0;
+                } else {
+                    deviceIndex++;
+                }
+                //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                for (String k : valueMap.keySet()) {
+                    if (valueMap.get(k).size() > 0) {
+                        String v = valueMap.get(k).get(0);
+                        gp.put(k, v);
+                        valueMap.get(k).remove(0);
+                    } else {
+                        valueMap.remove(k);
+                    }
+                }
+                suite.put("gp", gp);
+                suite.put("rid", results.getId());
+                agentIds.add(devices.getAgentId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "suite");
+            result.put("pf", testSuitesDTO.getPlatform());
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                TransportWorker.send(id, result);
+            }
+        }
+        if (testSuitesDTO.getCover() == CoverType.DEVICE) {
+            List<JSONObject> suiteDetail = new ArrayList<>();
+            Set<Integer> agentIds = new HashSet<>();
+            for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                JSONObject suite = new JSONObject();
+                List<JSONObject> steps = new ArrayList<>();
+                List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+                for (StepsDTO s : stepsList) {
+                    steps.add(getStep(s));
+                }
+                for (Devices devices : devicesList) {
+                    agentIds.add(devices.getAgentId());
+                }
+                suite.put("steps", steps);
+                suite.put("cid", testCases.getId());
+                suite.put("device", devicesList);
+                //如果该字段的多参数数组还有，放入对象。否则去掉字段
+                for (String k : valueMap.keySet()) {
+                    if (valueMap.get(k).size() > 0) {
+                        String v = valueMap.get(k).get(0);
+                        gp.put(k, v);
+                        valueMap.get(k).remove(0);
+                    } else {
+                        valueMap.remove(k);
+                    }
+                }
+                suite.put("gp", gp);
+                suite.put("rid", results.getId());
+                suiteDetail.add(suite);
+            }
+            JSONObject result = new JSONObject();
+            result.put("msg", "suite");
+            result.put("pf", testSuitesDTO.getPlatform());
+            result.put("cases", suiteDetail);
+            for (Integer id : agentIds) {
+                TransportWorker.send(id, result);
+            }
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
@@ -440,144 +509,5 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Override
     public List<TestSuites> listTestSuitesByTestCasesId(int testCasesId) {
         return testSuitesTestCasesMapper.listTestSuitesByTestCasesId(testCasesId);
-    }
-
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-        initCoverHandlerMap();
-    }
-
-    private void initCoverHandlerMap() {
-        Map<String, CoverHandler> coverHandlerBeans = applicationContext.getBeansOfType(CoverHandler.class);
-        coverHandlerMap = new HashMap<>();
-        if(coverHandlerBeans != null) {
-            for(CoverHandler coverHandler : coverHandlerBeans.values()) {
-                coverHandlerMap.put(coverHandler.cover(), coverHandler);
-            }
-        }
-    }
-
-    private JSONObject packageTestCase(Devices devices, TestCasesDTO testCases, Map<Integer,
-            List<JSONObject>> stepsMap, JSONObject gp, Results results, StepsService stepsService) {
-        JSONObject testCase = new JSONObject();
-        List<JSONObject> steps = stepsMap.get(testCases.getId());
-        if(steps == null) {
-            steps = new ArrayList<>();
-            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-            for (StepsDTO s : stepsList) {
-                steps.add(getStep(s));
-            }
-            stepsMap.put(testCases.getId(), steps);
-        }
-        testCase.put("steps", steps);
-        testCase.put("cid", testCases.getId());
-        testCase.put("device", new ArrayList<>() {{
-            add(devices);
-        }});
-        testCase.put("gp", gp);
-        testCase.put("rid", results.getId());
-        return testCase;
-    }
-
-    /**
-     * 更新全局变量，如果变量为多值以设备维度进行分配
-     * 当设备数量大于变量数量时，前面设备按顺序分配变
-     * 量，后面设备统一取变量的最后一个值。
-     * @param gp
-     * @param valueMap
-     * @return
-     */
-    private JSONObject refreshGlobalParams(JSONObject gp, Map<String, List<String>> valueMap) {
-        boolean needClone = true;
-        for (String k : valueMap.keySet()) {
-            if (valueMap.get(k).size() > 0) {
-                String v = valueMap.get(k).get(0);
-                if(needClone && gp.get(k) != null) {
-                    gp = gp.clone();
-                    needClone = false;
-                }
-                gp.put(k, v);
-                valueMap.get(k).remove(0);
-            } else {
-                valueMap.remove(k);
-            }
-        }
-        return gp;
-    }
-
-    interface CoverHandler {
-        Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO, List<Devices> devicesList, Map<String,
-                List<String>> valueMap, Results results);
-        Integer cover();
-    }
-
-    /**
-     * 用例覆盖处理器
-     */
-    @Service
-    class CaseCoverHandler implements CoverHandler {
-        @Autowired
-        private StepsService stepsService;
-
-        @Override
-        public Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO,
-                                                           List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
-            Map<Integer, List<JSONObject>> agentMap = new HashMap<>();
-            Map<Integer, List<JSONObject>> stepsMap = new HashMap<>();
-            JSONObject gp = new JSONObject();
-            for (int i = 0; i < devicesList.size(); i ++) {
-                Devices devices = devicesList.get(i);
-                List<JSONObject> suiteDetail = agentMap.get(devices.getAgentId());
-                if(suiteDetail == null) {
-                    suiteDetail = new ArrayList<>();
-                    agentMap.put(devices.getAgentId(), suiteDetail);
-                }
-                gp = refreshGlobalParams(gp, valueMap);
-                for (int j = i; j < testSuitesDTO.getTestCases().size(); j += devicesList.size()) {
-                    TestCasesDTO testCases = testSuitesDTO.getTestCases().get(j);
-                    suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
-                }
-            }
-            return agentMap;
-        }
-
-        @Override
-        public Integer cover() {
-            return CoverType.CASE;
-        }
-    }
-
-    /**
-     * 设备覆盖处理器
-     */
-    @Service
-    class DeviceCoverHandler implements CoverHandler {
-        @Autowired
-        private StepsService stepsService;
-
-        @Override
-        public Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO,
-                                                           List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
-            Map<Integer, List<JSONObject>> agentMap = new HashMap<>();
-            Map<Integer, List<JSONObject>> stepsMap = new HashMap<>();
-            JSONObject gp = new JSONObject();
-            for (Devices devices : devicesList) {
-                List<JSONObject> suiteDetail = agentMap.get(devices.getAgentId());
-                if(suiteDetail == null) {
-                    suiteDetail = new ArrayList<>();
-                    agentMap.put(devices.getAgentId(), suiteDetail);
-                }
-                gp = refreshGlobalParams(gp, valueMap);
-                for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
-                    suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
-                }
-            }
-            return agentMap;
-        }
-
-        @Override
-        public Integer cover() {
-            return CoverType.DEVICE;
-        }
     }
 }
