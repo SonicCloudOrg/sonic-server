@@ -87,8 +87,8 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     private Integer platform;
 
     @TableField
-    @Column(isNull = false, comment = "是否为鸿蒙类型 1：鸿蒙 0：非鸿蒙")
-    private Integer isHM;
+    @Column(value = "is_hm", isNull = false, comment = "是否为鸿蒙类型 1：鸿蒙 0：非鸿蒙")
+    private Integer isHm;
 
     @TableField
     @Column(comment = "设备分辨率", defaultValue = "")
@@ -133,7 +133,7 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
                 .setAgentId(0)
                 .setStatus("DISCONNECTED")
                 .setPlatform(0)
-                .setIsHM(0)
+                .setIsHm(0)
                 .setId(id)
                 .setVersion("unknown")
                 .setSize("unknown")

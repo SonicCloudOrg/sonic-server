@@ -45,7 +45,7 @@ public class DevicesDTO implements Serializable, TypeConverter<DevicesDTO, Devic
     Integer platform;
 
     @ApiModelProperty(value = "鸿蒙类型", example = "0")
-    Integer isHM;
+    Integer isHm;
 
     @ApiModelProperty(value = "分辨率", example = "1080x1920")
     String size;

@@ -36,13 +36,11 @@ import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.websocket.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -163,12 +161,14 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             cpuList.remove("unknown");
             cpuList.add("unknown");
         }
+        cpuList.remove("");
         jsonObject.put("cpu", cpuList);
         List<String> sizeList = devicesMapper.findSizeList();
         if (sizeList.contains("unknown")) {
             sizeList.remove("unknown");
             sizeList.add("unknown");
         }
+        sizeList.remove("");
         jsonObject.put("size", sizeList);
         return jsonObject;
     }
@@ -204,8 +204,8 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         if (jsonMsg.getString("platform") != null) {
             devices.setPlatform(jsonMsg.getInteger("platform"));
         }
-        if (jsonMsg.getString("isHM") != null) {
-            devices.setIsHM(jsonMsg.getInteger("isHM"));
+        if (jsonMsg.getString("isHm") != null) {
+            devices.setIsHm(jsonMsg.getInteger("isHm"));
         }
         if (jsonMsg.getString("cpu") != null) {
             devices.setCpu(jsonMsg.getString("cpu"));
