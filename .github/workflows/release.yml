@@ -1,7 +1,8 @@
 name: release to github
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
 
