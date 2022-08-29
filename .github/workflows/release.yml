@@ -1,7 +1,8 @@
 name: release to github
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
 
@@ -15,6 +16,8 @@ jobs:
       - name: 'Get Previous tag'
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: replace version
+        run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" docker-compose*.yml
       - name: mkdir
         run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}/logs sonic-server-${{ steps.previoustag.outputs.tag }}/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/recordFiles
       - name: copy

@@ -36,13 +36,11 @@ import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.websocket.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -60,14 +58,10 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 @Slf4j
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
-    @Autowired
-    private DevicesMapper devicesMapper;
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired
-    private AgentsService agentsService;
+    @Autowired private DevicesMapper devicesMapper;
+    @Autowired private UsersService usersService;
+    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired private AgentsService agentsService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -101,7 +95,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     }
 
     @Override
-    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> manufacturer,
+    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                                  String deviceInfo, Page<Devices> pageable) {
         DevicesSearchParams params = new DevicesSearchParams()
@@ -112,7 +106,8 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 .setSize(size)
                 .setAgentId(agentId)
                 .setStatus(status)
-                .setDeviceInfo(deviceInfo);
+                .setDeviceInfo(deviceInfo)
+                .setHmVersion(hmVersion);
         return devicesMapper.findByParams(pageable, params);
     }
 
@@ -166,12 +161,14 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             cpuList.remove("unknown");
             cpuList.add("unknown");
         }
+        cpuList.remove("");
         jsonObject.put("cpu", cpuList);
         List<String> sizeList = devicesMapper.findSizeList();
         if (sizeList.contains("unknown")) {
             sizeList.remove("unknown");
             sizeList.add("unknown");
         }
+        sizeList.remove("");
         jsonObject.put("size", sizeList);
         return jsonObject;
     }
@@ -206,6 +203,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         }
         if (jsonMsg.getString("platform") != null) {
             devices.setPlatform(jsonMsg.getInteger("platform"));
+        }
+        if (jsonMsg.getString("isHm") != null) {
+            devices.setIsHm(jsonMsg.getInteger("isHm"));
         }
         if (jsonMsg.getString("cpu") != null) {
             devices.setCpu(jsonMsg.getString("cpu"));

@@ -92,11 +92,11 @@ public class RobotMsgTool {
                 }
                 case RobotType.WeChat: {
                     ResponseEntity<JSONObject> responseEntity =
-                            restTemplate.postForEntity(token , jsonObject, JSONObject.class);
+                            restTemplate.postForEntity(token, jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
                 }
 
-                    break;
+                break;
                 case RobotType.FeiShu: {
 
                     if (!StringUtils.isEmpty(secret)) {
@@ -161,7 +161,7 @@ public class RobotMsgTool {
         if (type == RobotType.WeChat) {
             jsonObject.put("msgtype", "markdown");
             JSONObject markdown = new JSONObject();
-            markdown.put("content",  "**测试套件: " + suiteName + " 运行完毕！**\n" +
+            markdown.put("content", "**测试套件: " + suiteName + " 运行完毕！**\n" +
                     "通过数：" + pass + " \n" +
                     "异常数：" + warn + " \n" +
                     "失败数：" + fail + "\n" +
@@ -267,7 +267,7 @@ public class RobotMsgTool {
                     "> ###### 异常数：" + warnColorString + " \n" +
                     "> ###### 失败数：" + failColorString + " \n" +
                     "> ###### 测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
                     "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             markdown.put("title", "Sonic云真机测试平台日报");
             jsonObject.put("msgtype", "markdown");
@@ -290,14 +290,14 @@ public class RobotMsgTool {
             jsonObject.put("msgtype", "markdown");
             JSONObject markdown = new JSONObject();
             markdown.put("content", "### Sonic云真机测试平台日报 \n" +
-                            "> ###### 项目：" + projectName + " \n" +
-                            "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
-                            "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
-                            "> ###### 异常数：" + warnColorString + " \n" +
-                            "> ###### 失败数：" + failColorString + " \n" +
-                            "> ###### 测试通过率：" + (total > 0 ?
-                            new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
-                            "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
+                    "> ###### 项目：" + projectName + " \n" +
+                    "> ###### 时间：" + yesterday + " ～ " + today + " \n" +
+                    "> ###### 通过数：<font color=\"info\">" + passCount + "</font> \n" +
+                    "> ###### 异常数：" + warnColorString + " \n" +
+                    "> ###### 失败数：" + failColorString + " \n" +
+                    "> ###### 测试通过率：" + (total > 0 ?
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
+                    "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             jsonObject.put("markdown", markdown);
         }
         if (type == RobotType.FeiShu) {
@@ -317,7 +317,7 @@ public class RobotMsgTool {
                     "异常数：" + warnCount + " \n" +
                     "失败数：" + failCount + " \n" +
                     "测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
                     "详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             elementList.add(element);
             card.put("elements", elementList);
@@ -413,7 +413,7 @@ public class RobotMsgTool {
                     "> ###### 异常数：" + warnColorString + " \n" +
                     "> ###### 失败数：" + failColorString + " \n" +
                     "> ###### 测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
                     "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             markdown.put("title", "Sonic云真机测试平台周报");
             jsonObject.put("msgtype", "markdown");
@@ -443,7 +443,7 @@ public class RobotMsgTool {
                     "> ###### 异常数：" + warnColorString + " \n" +
                     "> ###### 失败数：" + failColorString + " \n" +
                     "> ###### 测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
                     "> ###### 详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             jsonObject.put("markdown", markdown);
         }
@@ -466,7 +466,7 @@ public class RobotMsgTool {
                     "异常数：" + warnCount + " \n" +
                     "失败数：" + failCount + " \n" +
                     "测试通过率：" + (total > 0 ?
-                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "% \n" +
+                    new BigDecimal((float) passCount / total).setScale(2, RoundingMode.HALF_UP).doubleValue() * 100 : 0) + "% \n" +
                     "详细统计：[点击查看](" + clientHost + "/Home/" + projectId + ")");
             elementList.add(element);
             card.put("elements", elementList);
