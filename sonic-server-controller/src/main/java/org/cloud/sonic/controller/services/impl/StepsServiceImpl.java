@@ -305,7 +305,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
         List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
-        save(steps.setId(null).setSort(stepsList.get(0).getSort()));
+        save(steps.setId(null).setSort(stepsList.get(0).getSort()+1));
         //关联ele
         if (stepsCopyDTO.getElements() != null) {
             elementsService.newStepBeLinkedEle(stepsCopyDTO,steps);
