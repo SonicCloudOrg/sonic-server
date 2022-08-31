@@ -53,7 +53,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private StepsMapper stepsMapper;
     @Autowired private ElementsService elementsService;
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
+    public Page<TestCases> findAll(int projectId, int platform, String name, String moduleId,Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
         if (projectId != 0) {
@@ -64,6 +64,9 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         }
         if (name != null && name.length() > 0) {
             lambdaQuery.like(TestCases::getName, name);
+        }
+        if (moduleId != null){
+            lambdaQuery.eq(TestCases::getModuleId,moduleId);
         }
 
         return lambdaQuery.orderByDesc(TestCases::getEditTime)
@@ -235,6 +238,20 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 elementsService.newStepBeLinkedEle(steps,step);
             }
             n++;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateTestCaseModuleByModuleId(Integer module) {
+        List<TestCases> testCasesList = lambdaQuery().eq(TestCases::getModuleId, module).list();
+        if (testCasesList == null){
+            return true;
+        }
+
+        for(TestCases testCases : testCasesList){
+            save(testCases.setModuleId(0));
         }
         return true;
     }

@@ -63,12 +63,13 @@ public class TestCasesController {
     public RespModel<CommentPage<TestCases>> findAll(@RequestParam(name = "projectId") int projectId,
                                                      @RequestParam(name = "platform") int platform,
                                                      @RequestParam(name = "name") String name,
+                                                     @RequestParam(name = "moduleId")String moduleId,
                                                      @RequestParam(name = "page") int page,
                                                      @RequestParam(name = "pageSize") int pageSize) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                CommentPage.convertFrom(testCasesService.findAll(projectId, platform, name, pageable))
+                CommentPage.convertFrom(testCasesService.findAll(projectId, platform, name, moduleId , pageable))
         );
     }
 

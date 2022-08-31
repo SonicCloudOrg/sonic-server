@@ -54,8 +54,8 @@ public class TestCases implements Serializable, TypeConverter<TestCases, TestCas
     private Date editTime;
 
     @TableField
-    @Column(isNull = false, comment = "所属模块")
-    private String module;
+    @Column(value = "module_id",isNull = true, comment = "所属模块")
+    private Integer moduleId;
 
     @TableField
     @Column(isNull = false, comment = "用例名称")

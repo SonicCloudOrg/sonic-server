@@ -60,13 +60,14 @@ public class ElementsController {
                                                     @RequestParam(name = "eleTypes[]", required = false) List<String> eleTypes,
                                                     @RequestParam(name = "name", required = false) String name,
                                                     @RequestParam(name = "value", required = false) String value,
+                                                    @RequestParam(name = "moduleId",required = false) String moduleId,
                                                     @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "pageSize") int pageSize) {
         Page<Elements> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                 CommentPage.convertFrom(
-                        elementsService.findAll(projectId, type, eleTypes, name, value, pageable)
+                        elementsService.findAll(projectId, type, eleTypes, name, value,moduleId, pageable)
                 )
         );
     }
