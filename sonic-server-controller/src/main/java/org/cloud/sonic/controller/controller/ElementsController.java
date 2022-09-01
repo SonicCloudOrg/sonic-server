@@ -56,7 +56,7 @@ public class ElementsController {
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<Elements>> findAll(@RequestParam(name = "projectId") int projectId,
+    public RespModel<CommentPage<ElementsDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                     @RequestParam(name = "type", required = false) String type,
                                                     @RequestParam(name = "eleTypes[]", required = false) List<String> eleTypes,
                                                     @RequestParam(name = "name", required = false) String name,
@@ -64,12 +64,10 @@ public class ElementsController {
                                                     @RequestParam(name = "moduleId", required = false) Integer moduleId,
                                                     @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "pageSize") int pageSize) {
-        Page<Elements> pageable = new Page<>(page, pageSize);
+        Page<ElementsDTO> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                CommentPage.convertFrom(
                         elementsService.findAll(projectId, type, eleTypes, name, value, moduleId, pageable)
-                )
         );
     }
 

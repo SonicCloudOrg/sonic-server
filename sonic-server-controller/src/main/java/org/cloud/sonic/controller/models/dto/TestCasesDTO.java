@@ -61,4 +61,8 @@ public class TestCasesDTO implements Serializable, TypeConverter<TestCasesDTO, T
     @JsonIgnore
     @JSONField(serialize = false)
     List<TestSuitesDTO> testSuites;
+
+    @JsonIgnore
+    @JSONField(serialize = false)
+    ModulesDTO modulesDTO;
 }

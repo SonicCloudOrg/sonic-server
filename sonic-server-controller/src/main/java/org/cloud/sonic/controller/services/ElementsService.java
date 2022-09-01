@@ -3,14 +3,16 @@ package org.cloud.sonic.controller.services;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Elements;
 import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 
 import java.util.List;
 
 public interface ElementsService extends IService<Elements> {
-    Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value,Integer moduleId, Page<Elements> pageable);
+    CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId, Page<ElementsDTO> pageable);
 
     List<StepsDTO> findAllStepsByElementsId(int elementsId);
 

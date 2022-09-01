@@ -22,16 +22,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
+import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.models.dto.TestCasesDTO;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,19 +55,28 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private TestCasesMapper testCasesMapper;
     @Autowired private StepsMapper stepsMapper;
     @Autowired private ElementsService elementsService;
+    @Autowired private ModulesMapper modulesMapper;
 
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCasesDTO> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
         lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
                 .eq(platform != 0, TestCases::getPlatform, platform)
                 .eq(moduleId != null, TestCases::getModuleId, moduleId)
-                .like(name != null && name.length() > 0, TestCases::getName, name);
+                .like(!StringUtils.isEmpty(name), TestCases::getName, name);
 
-        return lambdaQuery.orderByDesc(TestCases::getEditTime)
-                .page(pageable);
+        lambdaQuery.orderByDesc(TestCases::getEditTime);
+
+        //写入对应模块信息
+        List<TestCases> testCasesList = testCasesMapper.selectList(lambdaQuery);
+        List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
+        for (TestCases testCase : testCasesList) {
+            testCasesDTOS.add(testCase.convertTo()
+                    .setModulesDTO(modulesMapper.selectById(moduleId).convertTo()));
+        }
+        return CommentPage.convertFrom(pageable, testCasesDTOS);
     }
 
     @Override

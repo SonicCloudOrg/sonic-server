@@ -61,16 +61,16 @@ public class TestCasesController {
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<TestCases>> findAll(@RequestParam(name = "projectId") int projectId,
-                                                     @RequestParam(name = "platform") int platform,
-                                                     @RequestParam(name = "name", required = false) String name,
-                                                     @RequestParam(name = "moduleId", required = false) Integer moduleId,
-                                                     @RequestParam(name = "page") int page,
-                                                     @RequestParam(name = "pageSize") int pageSize) {
-        Page<TestCases> pageable = new Page<>(page, pageSize);
+    public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
+                                                        @RequestParam(name = "platform") int platform,
+                                                        @RequestParam(name = "name", required = false) String name,
+                                                        @RequestParam(name = "moduleId", required = false) Integer moduleId,
+                                                        @RequestParam(name = "page") int page,
+                                                        @RequestParam(name = "pageSize") int pageSize) {
+        Page<TestCasesDTO> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                CommentPage.convertFrom(testCasesService.findAll(projectId, platform, name, moduleId, pageable))
+                testCasesService.findAll(projectId, platform, name, moduleId, pageable)
         );
     }
 
