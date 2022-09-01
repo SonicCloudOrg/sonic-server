@@ -22,16 +22,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
+import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.controller.models.dto.TestCasesDTO;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,22 +55,28 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private TestCasesMapper testCasesMapper;
     @Autowired private StepsMapper stepsMapper;
     @Autowired private ElementsService elementsService;
+    @Autowired private ModulesMapper modulesMapper;
+
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCasesDTO> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
-        if (projectId != 0) {
-            lambdaQuery.eq(TestCases::getProjectId, projectId);
-        }
-        if (platform != 0) {
-            lambdaQuery.eq(TestCases::getPlatform, platform);
-        }
-        if (name != null && name.length() > 0) {
-            lambdaQuery.like(TestCases::getName, name);
-        }
 
-        return lambdaQuery.orderByDesc(TestCases::getEditTime)
-                .page(pageable);
+        lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
+                .eq(platform != 0, TestCases::getPlatform, platform)
+                .eq(moduleId != null, TestCases::getModuleId, moduleId)
+                .like(!StringUtils.isEmpty(name), TestCases::getName, name);
+
+        lambdaQuery.orderByDesc(TestCases::getEditTime);
+
+        //写入对应模块信息
+        List<TestCases> testCasesList = testCasesMapper.selectList(lambdaQuery);
+        List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
+        for (TestCases testCase : testCasesList) {
+            testCasesDTOS.add(testCase.convertTo()
+                    .setModulesDTO(modulesMapper.selectById(moduleId).convertTo()));
+        }
+        return CommentPage.convertFrom(pageable, testCasesDTOS);
     }
 
     @Override
@@ -172,22 +181,23 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
      * 测试用例的复制
      * 基本原理和公共步骤相同，不需要关联publicStep+step
      * 只需要关联了step+ele。
-     * @param oldId  需要复制的id
-     * @return  返回成功
+     *
+     * @param oldId 需要复制的id
+     * @return 返回成功
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean copyTestById(int oldId) {
         //插入新的testCase
         TestCases oldTestCases = testCasesMapper.selectById(oldId);
-        save(oldTestCases.setId(null).setName(oldTestCases.getName()+"_copy"));
+        save(oldTestCases.setId(null).setName(oldTestCases.getName() + "_copy"));
 
         //查找旧的case Step&&对应的ele
         LambdaQueryWrapper<Steps> queryWrapper = new LambdaQueryWrapper<>();
         List<Steps> oldStepsList = stepsMapper.selectList(
                 queryWrapper.eq(Steps::getCaseId, oldId).orderByAsc(Steps::getCaseId));
         List<StepsDTO> stepsDTO = new ArrayList<>();
-        for(Steps steps : oldStepsList){
+        for (Steps steps : oldStepsList) {
             stepsDTO.add(steps.convertTo());
 
         }
@@ -224,7 +234,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 n++;
                 //关联steps和elId
                 if (steps.getElements() != null) {
-                    elementsService.newStepBeLinkedEle(steps,step);
+                    elementsService.newStepBeLinkedEle(steps, step);
                 }
                 continue;
             }
@@ -232,9 +242,23 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
-                elementsService.newStepBeLinkedEle(steps,step);
+                elementsService.newStepBeLinkedEle(steps, step);
             }
             n++;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateTestCaseModuleByModuleId(Integer module) {
+        List<TestCases> testCasesList = lambdaQuery().eq(TestCases::getModuleId, module).list();
+        if (testCasesList == null) {
+            return true;
+        }
+
+        for (TestCases testCases : testCasesList) {
+            save(testCases.setModuleId(0));
         }
         return true;
     }

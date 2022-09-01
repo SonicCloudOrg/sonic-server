@@ -51,23 +51,23 @@ public class ElementsController {
             @ApiImplicitParam(name = "name", value = "控件名称", dataTypeClass = String.class),
             @ApiImplicitParam(name = "value", value = "控件值", dataTypeClass = String.class),
             @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "moduleId", value = "模块ID", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<Elements>> findAll(@RequestParam(name = "projectId") int projectId,
+    public RespModel<CommentPage<ElementsDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                     @RequestParam(name = "type", required = false) String type,
                                                     @RequestParam(name = "eleTypes[]", required = false) List<String> eleTypes,
                                                     @RequestParam(name = "name", required = false) String name,
                                                     @RequestParam(name = "value", required = false) String value,
+                                                    @RequestParam(name = "moduleId", required = false) Integer moduleId,
                                                     @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "pageSize") int pageSize) {
-        Page<Elements> pageable = new Page<>(page, pageSize);
+        Page<ElementsDTO> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                CommentPage.convertFrom(
-                        elementsService.findAll(projectId, type, eleTypes, name, value, pageable)
-                )
+                        elementsService.findAll(projectId, type, eleTypes, name, value, moduleId, pageable)
         );
     }
 
@@ -112,10 +112,10 @@ public class ElementsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "复制控件元素",notes ="复制空间元素，按照元素ID")
-    @ApiImplicitParam(name ="id",value = "元素id",dataTypeClass = Integer.class)
+    @ApiOperation(value = "复制控件元素", notes = "复制空间元素，按照元素ID")
+    @ApiImplicitParam(name = "id", value = "元素id", dataTypeClass = Integer.class)
     @GetMapping("/copyEle")
-    public RespModel<String> copy(@RequestParam(name ="id") int id){
+    public RespModel<String> copy(@RequestParam(name = "id") int id) {
         return elementsService.copy(id);
     }
 }

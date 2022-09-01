@@ -22,7 +22,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.ElementsMapper;
+import org.cloud.sonic.controller.mapper.ModulesMapper;
 import org.cloud.sonic.controller.mapper.StepsElementsMapper;
+import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Elements;
 import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.domain.StepsElements;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +51,10 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Autowired private StepsService stepsService;
     @Autowired private TestCasesService testCasesService;
     @Autowired private StepsElementsMapper stepsElementsMapper;
+    @Autowired private ModulesMapper modulesMapper;
 
     @Override
-    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Page<Elements> pageable) {
+    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId,Page<ElementsDTO> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -66,12 +70,21 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
 
         lambdaQuery.in(eleTypes != null, Elements::getEleType, eleTypes)
                 .like(!StringUtils.isEmpty(name), Elements::getEleName, name)
-                .like(!StringUtils.isEmpty(value), Elements::getEleValue, value);
+                .like(!StringUtils.isEmpty(value), Elements::getEleValue, value)
+                .eq(moduleId != null, Elements::getModuleId, moduleId);
 
         lambdaQuery.eq(Elements::getProjectId, projectId);
         lambdaQuery.orderByDesc(Elements::getId);
 
-        return lambdaQuery.page(pageable);
+        //写入对应模块信息
+        List<Elements> elements = elementsMapper.selectList(lambdaQuery);
+        List<ElementsDTO> elementsDTOS = new ArrayList<>();
+        for(Elements ele : elements){
+            elementsDTOS.add(ele.convertTo()
+                            .setModulesDTO(modulesMapper.selectById(moduleId).convertTo()));
+        }
+
+        return CommentPage.convertFrom(pageable, elementsDTOS);
     }
 
     @Override
@@ -131,6 +144,20 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             stepsElementsMapper.insert( new StepsElements()
                     .setElementsId(elements.getId())
                     .setStepsId(step.getId()));
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateEleModuleByModuleId(Integer module) {
+        List<Elements> elements = lambdaQuery().eq(Elements::getModuleId, module).list();
+        if (elements == null){
+            return true;
+        }
+
+        for(Elements element : elements){
+            save(element.setModuleId(0));
         }
         return true;
     }

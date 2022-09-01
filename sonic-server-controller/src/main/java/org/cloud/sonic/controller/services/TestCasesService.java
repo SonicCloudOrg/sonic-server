@@ -3,7 +3,9 @@ package org.cloud.sonic.controller.services;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.TestCases;
+import org.cloud.sonic.controller.models.dto.TestCasesDTO;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * @date 2021/8/20 17:51
  */
 public interface TestCasesService extends IService<TestCases> {
-    Page<TestCases> findAll(int projectId, int platform, String name, Page<TestCases> pageable);
+    CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCasesDTO> pageable);
 
     List<TestCases> findAll(int projectId, int platform);
 
@@ -31,8 +33,11 @@ public interface TestCasesService extends IService<TestCases> {
 
     /**
      * 复制测试用例
-     * @param id    测试用例id  （test_cases，步骤表 steps case_id字段）
+     *
+     * @param id 测试用例id  （test_cases，步骤表 steps case_id字段）
      * @return
      */
-     boolean copyTestById(int id);
+    boolean copyTestById(int id);
+
+    Boolean updateTestCaseModuleByModuleId(Integer module);
 }
