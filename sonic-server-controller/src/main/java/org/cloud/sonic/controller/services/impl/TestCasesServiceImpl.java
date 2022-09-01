@@ -52,22 +52,16 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private TestCasesMapper testCasesMapper;
     @Autowired private StepsMapper stepsMapper;
     @Autowired private ElementsService elementsService;
+
     @Override
-    public Page<TestCases> findAll(int projectId, int platform, String name, String moduleId,Page<TestCases> pageable) {
+    public Page<TestCases> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
-        if (projectId != 0) {
-            lambdaQuery.eq(TestCases::getProjectId, projectId);
-        }
-        if (platform != 0) {
-            lambdaQuery.eq(TestCases::getPlatform, platform);
-        }
-        if (name != null && name.length() > 0) {
-            lambdaQuery.like(TestCases::getName, name);
-        }
-        if (moduleId != null){
-            lambdaQuery.eq(TestCases::getModuleId,moduleId);
-        }
+
+        lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
+                .eq(platform != 0, TestCases::getPlatform, platform)
+                .eq(moduleId != null, TestCases::getModuleId, moduleId)
+                .like(name != null && name.length() > 0, TestCases::getName, name);
 
         return lambdaQuery.orderByDesc(TestCases::getEditTime)
                 .page(pageable);
@@ -175,22 +169,23 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
      * 测试用例的复制
      * 基本原理和公共步骤相同，不需要关联publicStep+step
      * 只需要关联了step+ele。
-     * @param oldId  需要复制的id
-     * @return  返回成功
+     *
+     * @param oldId 需要复制的id
+     * @return 返回成功
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean copyTestById(int oldId) {
         //插入新的testCase
         TestCases oldTestCases = testCasesMapper.selectById(oldId);
-        save(oldTestCases.setId(null).setName(oldTestCases.getName()+"_copy"));
+        save(oldTestCases.setId(null).setName(oldTestCases.getName() + "_copy"));
 
         //查找旧的case Step&&对应的ele
         LambdaQueryWrapper<Steps> queryWrapper = new LambdaQueryWrapper<>();
         List<Steps> oldStepsList = stepsMapper.selectList(
                 queryWrapper.eq(Steps::getCaseId, oldId).orderByAsc(Steps::getCaseId));
         List<StepsDTO> stepsDTO = new ArrayList<>();
-        for(Steps steps : oldStepsList){
+        for (Steps steps : oldStepsList) {
             stepsDTO.add(steps.convertTo());
 
         }
@@ -227,7 +222,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 n++;
                 //关联steps和elId
                 if (steps.getElements() != null) {
-                    elementsService.newStepBeLinkedEle(steps,step);
+                    elementsService.newStepBeLinkedEle(steps, step);
                 }
                 continue;
             }
@@ -235,7 +230,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
-                elementsService.newStepBeLinkedEle(steps,step);
+                elementsService.newStepBeLinkedEle(steps, step);
             }
             n++;
         }
@@ -246,11 +241,11 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateTestCaseModuleByModuleId(Integer module) {
         List<TestCases> testCasesList = lambdaQuery().eq(TestCases::getModuleId, module).list();
-        if (testCasesList == null){
+        if (testCasesList == null) {
             return true;
         }
 
-        for(TestCases testCases : testCasesList){
+        for (TestCases testCases : testCasesList) {
             save(testCases.setModuleId(0));
         }
         return true;

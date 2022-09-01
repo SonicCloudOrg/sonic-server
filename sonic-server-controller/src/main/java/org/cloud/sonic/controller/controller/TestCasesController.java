@@ -56,20 +56,21 @@ public class TestCasesController {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "moduleId", value = "用例名称", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
     public RespModel<CommentPage<TestCases>> findAll(@RequestParam(name = "projectId") int projectId,
                                                      @RequestParam(name = "platform") int platform,
-                                                     @RequestParam(name = "name") String name,
-                                                     @RequestParam(name = "moduleId")String moduleId,
+                                                     @RequestParam(name = "name", required = false) String name,
+                                                     @RequestParam(name = "moduleId", required = false) Integer moduleId,
                                                      @RequestParam(name = "page") int page,
                                                      @RequestParam(name = "pageSize") int pageSize) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                CommentPage.convertFrom(testCasesService.findAll(projectId, platform, name, moduleId , pageable))
+                CommentPage.convertFrom(testCasesService.findAll(projectId, platform, name, moduleId, pageable))
         );
     }
 
@@ -142,12 +143,13 @@ public class TestCasesController {
         return new RespModel<>(RespEnum.SEARCH_OK,
                 testCasesService.findByIdIn(ids));
     }
+
     //记得翻译
     @WebAspect
     @ApiOperation(value = "复制测试用例", notes = "复制对应用例id的用例详情")
     @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
     @GetMapping("/copy")
-    public RespModel<String> copyTestById(@RequestParam(name = "id") Integer id){
+    public RespModel<String> copyTestById(@RequestParam(name = "id") Integer id) {
         testCasesService.copyTestById(id);
         return new RespModel<>(RespEnum.COPY_OK);
     }

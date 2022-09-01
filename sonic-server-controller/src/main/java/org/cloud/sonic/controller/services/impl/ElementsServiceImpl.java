@@ -50,7 +50,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Autowired private StepsElementsMapper stepsElementsMapper;
 
     @Override
-    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, String moduleId,Page<Elements> pageable) {
+    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId,Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -67,7 +67,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         lambdaQuery.in(eleTypes != null, Elements::getEleType, eleTypes)
                 .like(!StringUtils.isEmpty(name), Elements::getEleName, name)
                 .like(!StringUtils.isEmpty(value), Elements::getEleValue, value)
-                .in(!StringUtils.isEmpty(moduleId), Elements::getModuleId, moduleId);
+                .eq(!StringUtils.isEmpty(moduleId), Elements::getModuleId, moduleId);
 
         lambdaQuery.eq(Elements::getProjectId, projectId);
         lambdaQuery.orderByDesc(Elements::getId);

@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2021/8/20 17:51
  */
 public interface TestCasesService extends IService<TestCases> {
-    Page<TestCases> findAll(int projectId, int platform, String name,String moduleId, Page<TestCases> pageable);
+    Page<TestCases> findAll(int projectId, int platform, String name,Integer moduleId, Page<TestCases> pageable);
 
     List<TestCases> findAll(int projectId, int platform);
 
