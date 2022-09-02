@@ -66,24 +66,32 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
         lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
                 .eq(platform != 0, TestCases::getPlatform, platform)
-                .eq(moduleId != null, TestCases::getModuleId, moduleId)
-                .like(!StringUtils.isEmpty(name), TestCases::getName, name);
+                .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
+                .like(!StringUtils.isEmpty(name), TestCases::getName, name)
+                .orderByDesc(TestCases::getEditTime);
 
         //写入对应模块信息
-        List<TestCases> testCasesList = lambdaQuery.orderByDesc(TestCases::getEditTime).list();
+        List<TestCases> testCasesList = lambdaQuery.list();
         List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
+        Map<Integer, Modules> modulesMap = new HashMap<>();
         for (TestCases testCase : testCasesList) {
             if (testCase.getModuleId() != null && testCase.getModuleId() != 0) {
-                Modules m = modulesMapper.selectById(testCase.getModuleId());
-                if (m != null) {
+                Modules modules = modulesMap.get(testCase.getModuleId());
+                if (modules == null) {
+                    modules = modulesMapper.selectById(testCase.getModuleId());
+                    if (modules != null) {
+                        modulesMap.put(modules.getId(), modules);
+                    }
+                }
+                if (modules != null) {
                     testCasesDTOS.add(testCase.convertTo()
-                            .setModulesDTO(m.convertTo()));
+                            .setModulesDTO(modules.convertTo()));
                     continue;
                 }
             }

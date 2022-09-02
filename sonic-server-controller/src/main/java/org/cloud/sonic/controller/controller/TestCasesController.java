@@ -56,7 +56,7 @@ public class TestCasesController {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "moduleId", value = "模块Id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "moduleIds", value = "模块Id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
@@ -64,13 +64,14 @@ public class TestCasesController {
     public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                         @RequestParam(name = "platform") int platform,
                                                         @RequestParam(name = "name", required = false) String name,
-                                                        @RequestParam(name = "moduleId", required = false) Integer moduleId,
+                                                        @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
                                                         @RequestParam(name = "page") int page,
                                                         @RequestParam(name = "pageSize") int pageSize) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
+        System.out.println(moduleIds);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                testCasesService.findAll(projectId, platform, name, moduleId, pageable)
+                testCasesService.findAll(projectId, platform, name, moduleIds, pageable)
         );
     }
 

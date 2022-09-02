@@ -39,7 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +59,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId, Page<Elements> pageable) {
+    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, List<Integer> moduleIds, Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -70,23 +72,29 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             }
         }
 
-
-        lambdaQuery.in(eleTypes != null, Elements::getEleType, eleTypes)
+        lambdaQuery.eq(Elements::getProjectId, projectId)
+                .in(eleTypes != null, Elements::getEleType, eleTypes)
+                .in(moduleIds != null && moduleIds.size() > 0, Elements::getModuleId, moduleIds)
                 .like(!StringUtils.isEmpty(name), Elements::getEleName, name)
                 .like(!StringUtils.isEmpty(value), Elements::getEleValue, value)
-                .eq(moduleId != null, Elements::getModuleId, moduleId);
-
-        lambdaQuery.eq(Elements::getProjectId, projectId);
+                .orderByDesc(Elements::getId);
 
         //写入对应模块信息
-        List<Elements> elements = lambdaQuery.orderByDesc(Elements::getId).list();
+        List<Elements> elements = lambdaQuery.list();
         List<ElementsDTO> elementsDTOS = new ArrayList<>();
+        Map<Integer, Modules> modulesMap = new HashMap<>();
         for (Elements ele : elements) {
             if (ele.getModuleId() != null && ele.getModuleId() != 0) {
-                Modules m = modulesMapper.selectById(ele.getModuleId());
-                if (m != null) {
+                Modules modules = modulesMap.get(ele.getModuleId());
+                if (modules == null) {
+                    modules = modulesMapper.selectById(ele.getModuleId());
+                    if (modules != null) {
+                        modulesMap.put(modules.getId(), modules);
+                    }
+                }
+                if (modules != null) {
                     elementsDTOS.add(ele.convertTo()
-                            .setModulesDTO(m.convertTo()));
+                            .setModulesDTO(modules.convertTo()));
                     continue;
                 }
             }
