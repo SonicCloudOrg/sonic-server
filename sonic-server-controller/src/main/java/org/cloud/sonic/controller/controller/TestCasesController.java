@@ -56,7 +56,7 @@ public class TestCasesController {
             @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "moduleId", value = "用例名称", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "moduleId", value = "模块Id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })

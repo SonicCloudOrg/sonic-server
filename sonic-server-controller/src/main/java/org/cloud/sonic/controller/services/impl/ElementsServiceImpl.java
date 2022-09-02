@@ -25,9 +25,7 @@ import org.cloud.sonic.controller.mapper.ElementsMapper;
 import org.cloud.sonic.controller.mapper.ModulesMapper;
 import org.cloud.sonic.controller.mapper.StepsElementsMapper;
 import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Elements;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.domain.StepsElements;
+import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -74,14 +72,17 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
                 .eq(moduleId != null, Elements::getModuleId, moduleId);
 
         lambdaQuery.eq(Elements::getProjectId, projectId);
-        lambdaQuery.orderByDesc(Elements::getId);
 
         //写入对应模块信息
-        List<Elements> elements = elementsMapper.selectList(lambdaQuery);
+        List<Elements> elements = lambdaQuery.orderByDesc(Elements::getId).list();
         List<ElementsDTO> elementsDTOS = new ArrayList<>();
-        for(Elements ele : elements){
-            elementsDTOS.add(ele.convertTo()
-                            .setModulesDTO(modulesMapper.selectById(moduleId).convertTo()));
+        for (Elements ele : elements) {
+            if(ele.getModuleId() != null && ele.getModuleId() != 0){
+                elementsDTOS.add(ele.convertTo()
+                        .setModulesDTO(modulesMapper.selectById(ele.getModuleId()).convertTo()));
+                continue;
+            }
+            elementsDTOS.add(ele.convertTo());
         }
 
         return CommentPage.convertFrom(pageable, elementsDTOS);
