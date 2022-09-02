@@ -48,7 +48,6 @@ public class ElementsDTO implements Serializable, TypeConverter<ElementsDTO, Ele
     @ApiModelProperty(value = "模块id", required = false, example = "1")
     Integer moduleId;
 
-    @JsonIgnore
     @JSONField(serialize = false)
     ModulesDTO modulesDTO;
 

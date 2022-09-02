@@ -67,14 +67,16 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .eq(moduleId != null, TestCases::getModuleId, moduleId)
                 .like(!StringUtils.isEmpty(name), TestCases::getName, name);
 
-        lambdaQuery.orderByDesc(TestCases::getEditTime);
-
         //写入对应模块信息
-        List<TestCases> testCasesList = testCasesMapper.selectList(lambdaQuery);
+        List<TestCases> testCasesList = lambdaQuery.orderByDesc(TestCases::getEditTime).list();
         List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
         for (TestCases testCase : testCasesList) {
-            testCasesDTOS.add(testCase.convertTo()
-                    .setModulesDTO(modulesMapper.selectById(moduleId).convertTo()));
+            if (testCase.getModuleId() != null && testCase.getModuleId() != 0) {
+                testCasesDTOS.add(testCase.convertTo()
+                        .setModulesDTO(modulesMapper.selectById(testCase.getModuleId()).convertTo()));
+                continue;
+            }
+            testCasesDTOS.add(testCase.convertTo());
         }
         return CommentPage.convertFrom(pageable, testCasesDTOS);
     }
