@@ -64,7 +64,7 @@ public class ElementsController {
                                                     @RequestParam(name = "moduleId", required = false) Integer moduleId,
                                                     @RequestParam(name = "page") int page,
                                                     @RequestParam(name = "pageSize") int pageSize) {
-        Page<ElementsDTO> pageable = new Page<>(page, pageSize);
+        Page<Elements> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                         elementsService.findAll(projectId, type, eleTypes, name, value, moduleId, pageable)

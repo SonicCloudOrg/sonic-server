@@ -24,7 +24,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -47,18 +46,27 @@ import java.util.stream.Collectors;
 @Service
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
-    @Autowired private StepsService stepsService;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private TestCasesMapper testCasesMapper;
-    @Autowired private StepsMapper stepsMapper;
-    @Autowired private ElementsService elementsService;
-    @Autowired private ModulesMapper modulesMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesMapper testCasesMapper;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private ElementsService elementsService;
+    @Autowired
+    private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCasesDTO> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
@@ -72,9 +80,12 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
         for (TestCases testCase : testCasesList) {
             if (testCase.getModuleId() != null && testCase.getModuleId() != 0) {
-                testCasesDTOS.add(testCase.convertTo()
-                        .setModulesDTO(modulesMapper.selectById(testCase.getModuleId()).convertTo()));
-                continue;
+                Modules m = modulesMapper.selectById(testCase.getModuleId());
+                if (m != null) {
+                    testCasesDTOS.add(testCase.convertTo()
+                            .setModulesDTO(m.convertTo()));
+                    continue;
+                }
             }
             testCasesDTOS.add(testCase.convertTo());
         }

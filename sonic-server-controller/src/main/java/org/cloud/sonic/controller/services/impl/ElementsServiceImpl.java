@@ -45,14 +45,19 @@ import java.util.stream.Collectors;
 @Service
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
-    @Autowired private ElementsMapper elementsMapper;
-    @Autowired private StepsService stepsService;
-    @Autowired private TestCasesService testCasesService;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
-    @Autowired private ModulesMapper modulesMapper;
+    @Autowired
+    private ElementsMapper elementsMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private TestCasesService testCasesService;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId,Page<ElementsDTO> pageable) {
+    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId, Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -77,10 +82,13 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         List<Elements> elements = lambdaQuery.orderByDesc(Elements::getId).list();
         List<ElementsDTO> elementsDTOS = new ArrayList<>();
         for (Elements ele : elements) {
-            if(ele.getModuleId() != null && ele.getModuleId() != 0){
-                elementsDTOS.add(ele.convertTo()
-                        .setModulesDTO(modulesMapper.selectById(ele.getModuleId()).convertTo()));
-                continue;
+            if (ele.getModuleId() != null && ele.getModuleId() != 0) {
+                Modules m = modulesMapper.selectById(ele.getModuleId());
+                if (m != null) {
+                    elementsDTOS.add(ele.convertTo()
+                            .setModulesDTO(m.convertTo()));
+                    continue;
+                }
             }
             elementsDTOS.add(ele.convertTo());
         }
@@ -127,13 +135,14 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
 
     /**
      * 复制控件元素
+     *
      * @param id 元素id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> copy(int id) {
         Elements element = elementsMapper.selectById(id);
-        element.setId(null).setEleName(element.getEleName()+"_copy");
+        element.setId(null).setEleName(element.getEleName() + "_copy");
         save(element);
 
         return new RespModel<>(RespEnum.COPY_OK);
@@ -142,7 +151,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Override
     public Boolean newStepBeLinkedEle(StepsDTO stepsDTO, Steps step) {
         for (ElementsDTO elements : stepsDTO.getElements()) {
-            stepsElementsMapper.insert( new StepsElements()
+            stepsElementsMapper.insert(new StepsElements()
                     .setElementsId(elements.getId())
                     .setStepsId(step.getId()));
         }
@@ -153,11 +162,11 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateEleModuleByModuleId(Integer module) {
         List<Elements> elements = lambdaQuery().eq(Elements::getModuleId, module).list();
-        if (elements == null){
+        if (elements == null) {
             return true;
         }
 
-        for(Elements element : elements){
+        for (Elements element : elements) {
             save(element.setModuleId(0));
         }
         return true;
