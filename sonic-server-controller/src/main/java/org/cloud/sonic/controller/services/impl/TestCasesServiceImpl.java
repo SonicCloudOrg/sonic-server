@@ -24,7 +24,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -58,7 +57,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCasesDTO> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 

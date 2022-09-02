@@ -52,7 +52,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Autowired private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId,Page<ElementsDTO> pageable) {
+    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Integer moduleId,Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {

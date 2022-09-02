@@ -67,7 +67,7 @@ public class TestCasesController {
                                                         @RequestParam(name = "moduleId", required = false) Integer moduleId,
                                                         @RequestParam(name = "page") int page,
                                                         @RequestParam(name = "pageSize") int pageSize) {
-        Page<TestCasesDTO> pageable = new Page<>(page, pageSize);
+        Page<TestCases> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                 testCasesService.findAll(projectId, platform, name, moduleId, pageable)
