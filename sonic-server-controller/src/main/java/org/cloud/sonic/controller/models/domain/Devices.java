@@ -87,7 +87,7 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     private Integer platform;
 
     @TableField
-    @Column(value = "is_hm", isNull = false, comment = "是否为鸿蒙类型 1：鸿蒙 0：非鸿蒙")
+    @Column(value = "is_hm", isNull = false, comment = "是否为鸿蒙类型 1：鸿蒙 0：非鸿蒙", defaultValue = "0")
     private Integer isHm;
 
     @TableField

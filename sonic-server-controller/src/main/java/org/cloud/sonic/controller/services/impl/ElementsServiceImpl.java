@@ -22,10 +22,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.ElementsMapper;
+import org.cloud.sonic.controller.mapper.ModulesMapper;
 import org.cloud.sonic.controller.mapper.StepsElementsMapper;
-import org.cloud.sonic.controller.models.domain.Elements;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.domain.StepsElements;
+import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -38,19 +38,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elements> implements ElementsService {
 
-    @Autowired private ElementsMapper elementsMapper;
-    @Autowired private StepsService stepsService;
-    @Autowired private TestCasesService testCasesService;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private ElementsMapper elementsMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private TestCasesService testCasesService;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private ModulesMapper modulesMapper;
 
     @Override
-    public Page<Elements> findAll(int projectId, String type, List<String> eleTypes, String name, String value, Page<Elements> pageable) {
+    public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, List<Integer> moduleIds, Page<Elements> pageable) {
         LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
 
         if (type != null && type.length() > 0) {
@@ -63,15 +72,30 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             }
         }
 
-
-        lambdaQuery.in(eleTypes != null, Elements::getEleType, eleTypes)
+        lambdaQuery.eq(Elements::getProjectId, projectId)
+                .in(eleTypes != null, Elements::getEleType, eleTypes)
+                .in(moduleIds != null && moduleIds.size() > 0, Elements::getModuleId, moduleIds)
                 .like(!StringUtils.isEmpty(name), Elements::getEleName, name)
-                .like(!StringUtils.isEmpty(value), Elements::getEleValue, value);
+                .like(!StringUtils.isEmpty(value), Elements::getEleValue, value)
+                .orderByDesc(Elements::getId);
 
-        lambdaQuery.eq(Elements::getProjectId, projectId);
-        lambdaQuery.orderByDesc(Elements::getId);
+        //写入对应模块信息
+        Page<Elements> page = lambdaQuery.page(pageable);
+        List<ElementsDTO> elementsDTOS = page.getRecords()
+                .stream().map(e->findEleDetail(e)).collect(Collectors.toList());
 
-        return lambdaQuery.page(pageable);
+        return CommentPage.convertFrom(page, elementsDTOS);
+    }
+
+    @Transactional
+    private ElementsDTO findEleDetail(Elements elements) {
+        if (elements.getModuleId() != null && elements.getModuleId() != 0) {
+            Modules modules = modulesMapper.selectById(elements.getModuleId());
+            if (modules != null) {
+                return elements.convertTo().setModulesDTO(modules.convertTo());
+            }
+        }
+        return elements.convertTo();
     }
 
     @Override
@@ -81,7 +105,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             if (0 == stepsDTO.getCaseId()) {
                 return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("unknown"));
             }
-            return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()).convertTo());
+            return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()));
         }).collect(Collectors.toList());
     }
 
@@ -113,13 +137,14 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
 
     /**
      * 复制控件元素
+     *
      * @param id 元素id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> copy(int id) {
         Elements element = elementsMapper.selectById(id);
-        element.setId(null).setEleName(element.getEleName()+"_copy");
+        element.setId(null).setEleName(element.getEleName() + "_copy");
         save(element);
 
         return new RespModel<>(RespEnum.COPY_OK);
@@ -128,9 +153,23 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Override
     public Boolean newStepBeLinkedEle(StepsDTO stepsDTO, Steps step) {
         for (ElementsDTO elements : stepsDTO.getElements()) {
-            stepsElementsMapper.insert( new StepsElements()
+            stepsElementsMapper.insert(new StepsElements()
                     .setElementsId(elements.getId())
                     .setStepsId(step.getId()));
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateEleModuleByModuleId(Integer module) {
+        List<Elements> elements = lambdaQuery().eq(Elements::getModuleId, module).list();
+        if (elements == null) {
+            return true;
+        }
+
+        for (Elements element : elements) {
+            save(element.setModuleId(0));
         }
         return true;
     }

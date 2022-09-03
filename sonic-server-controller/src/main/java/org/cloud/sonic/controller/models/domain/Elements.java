@@ -55,4 +55,10 @@ public class Elements implements Serializable, TypeConverter<Elements, ElementsD
     @Column(value = "project_id", isNull = false, comment = "所属项目id")
     @Index(value = "IDX_PROJECT_ID", columns = {"project_id"})
     private Integer projectId;
+
+
+    @TableField
+    @Column(value = "module_id", isNull = true, comment = "所属项目id", defaultValue = "0")
+    @Index(value = "IDX_MODULE_ID", columns = {"module_id"})
+    private Integer moduleId;
 }

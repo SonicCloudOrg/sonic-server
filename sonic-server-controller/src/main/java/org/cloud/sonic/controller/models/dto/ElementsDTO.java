@@ -45,6 +45,12 @@ public class ElementsDTO implements Serializable, TypeConverter<ElementsDTO, Ele
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     Integer projectId;
 
+    @ApiModelProperty(value = "模块id", required = false, example = "1")
+    Integer moduleId;
+
+    @JSONField(serialize = false)
+    ModulesDTO modulesDTO;
+
     //因为一个控件可以存在于多个步骤，也可以一个步骤有多个同样的控件，所以是多对多关系
     @JsonIgnore
     @JSONField(serialize = false)
