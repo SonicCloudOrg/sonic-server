@@ -80,28 +80,22 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
                 .orderByDesc(Elements::getId);
 
         //写入对应模块信息
-        List<Elements> elements = lambdaQuery.list();
-        List<ElementsDTO> elementsDTOS = new ArrayList<>();
-        Map<Integer, Modules> modulesMap = new HashMap<>();
-        for (Elements ele : elements) {
-            if (ele.getModuleId() != null && ele.getModuleId() != 0) {
-                Modules modules = modulesMap.get(ele.getModuleId());
-                if (modules == null) {
-                    modules = modulesMapper.selectById(ele.getModuleId());
-                    if (modules != null) {
-                        modulesMap.put(modules.getId(), modules);
-                    }
-                }
-                if (modules != null) {
-                    elementsDTOS.add(ele.convertTo()
-                            .setModulesDTO(modules.convertTo()));
-                    continue;
-                }
-            }
-            elementsDTOS.add(ele.convertTo());
-        }
+        Page<Elements> page = lambdaQuery.page(pageable);
+        List<ElementsDTO> elementsDTOS = page.getRecords()
+                .stream().map(e->findEleDetail(e)).collect(Collectors.toList());
 
-        return CommentPage.convertFrom(pageable, elementsDTOS);
+        return CommentPage.convertFrom(page, elementsDTOS);
+    }
+
+    @Transactional
+    private ElementsDTO findEleDetail(Elements elements) {
+        if (elements.getModuleId() != null && elements.getModuleId() != 0) {
+            Modules modules = modulesMapper.selectById(elements.getModuleId());
+            if (modules != null) {
+                return elements.convertTo().setModulesDTO(modules.convertTo());
+            }
+        }
+        return elements.convertTo();
     }
 
     @Override

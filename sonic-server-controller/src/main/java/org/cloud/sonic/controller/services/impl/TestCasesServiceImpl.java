@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -77,27 +78,22 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .orderByDesc(TestCases::getEditTime);
 
         //写入对应模块信息
-        List<TestCases> testCasesList = lambdaQuery.list();
-        List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
-        Map<Integer, Modules> modulesMap = new HashMap<>();
-        for (TestCases testCase : testCasesList) {
-            if (testCase.getModuleId() != null && testCase.getModuleId() != 0) {
-                Modules modules = modulesMap.get(testCase.getModuleId());
-                if (modules == null) {
-                    modules = modulesMapper.selectById(testCase.getModuleId());
-                    if (modules != null) {
-                        modulesMap.put(modules.getId(), modules);
-                    }
-                }
-                if (modules != null) {
-                    testCasesDTOS.add(testCase.convertTo()
-                            .setModulesDTO(modules.convertTo()));
-                    continue;
-                }
+        Page<TestCases> page = lambdaQuery.page(pageable);
+        List<TestCasesDTO> testCasesDTOS = page.getRecords()
+                .stream().map(e -> findCaseDetail(e)).collect(Collectors.toList());
+
+        return CommentPage.convertFrom(page, testCasesDTOS);
+    }
+
+    @Transactional
+    private TestCasesDTO findCaseDetail(TestCases testCases) {
+        if (testCases.getModuleId() != null && testCases.getModuleId() != 0) {
+            Modules modules = modulesMapper.selectById(testCases.getModuleId());
+            if (modules != null) {
+                return testCases.convertTo().setModulesDTO(modules.convertTo());
             }
-            testCasesDTOS.add(testCase.convertTo());
         }
-        return CommentPage.convertFrom(pageable, testCasesDTOS);
+        return testCases.convertTo();
     }
 
     @Override
