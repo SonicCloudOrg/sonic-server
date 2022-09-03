@@ -105,7 +105,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
             if (0 == stepsDTO.getCaseId()) {
                 return stepsDTO.setTestCasesDTO(new TestCasesDTO().setId(0).setName("unknown"));
             }
-            return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()).convertTo());
+            return stepsDTO.setTestCasesDTO(testCasesService.findById(stepsDTO.getCaseId()));
         }).collect(Collectors.toList());
     }
 

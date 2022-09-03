@@ -127,8 +127,8 @@ public class TestCasesController {
     @ApiOperation(value = "查询测试用例详情", notes = "查找对应用例id的用例详情")
     @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
     @GetMapping
-    public RespModel<TestCases> findById(@RequestParam(name = "id") int id) {
-        TestCases testCases = testCasesService.findById(id);
+    public RespModel<TestCasesDTO> findById(@RequestParam(name = "id") int id) {
+        TestCasesDTO testCases = testCasesService.findById(id);
         if (testCases != null) {
             return new RespModel<>(RespEnum.SEARCH_OK, testCases);
         } else {

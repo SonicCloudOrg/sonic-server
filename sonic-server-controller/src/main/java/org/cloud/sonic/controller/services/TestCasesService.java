@@ -21,7 +21,7 @@ public interface TestCasesService extends IService<TestCases> {
 
     boolean delete(int id);
 
-    TestCases findById(int id);
+    TestCasesDTO findById(int id);
 
     JSONObject findSteps(int id);
 

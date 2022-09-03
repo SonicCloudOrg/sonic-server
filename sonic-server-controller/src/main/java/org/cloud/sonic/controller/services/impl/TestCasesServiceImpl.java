@@ -24,7 +24,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.*;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -127,8 +126,9 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     }
 
     @Override
-    public TestCases findById(int id) {
-        return baseMapper.selectById(id);
+    public TestCasesDTO findById(int id) {
+        TestCases testCases = baseMapper.selectById(id);
+        return findCaseDetail(testCases);
     }
 
     @Transactional
