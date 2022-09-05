@@ -58,10 +58,14 @@ import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 @Slf4j
 public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices> implements DevicesService {
 
-    @Autowired private DevicesMapper devicesMapper;
-    @Autowired private UsersService usersService;
-    @Autowired private TestSuitesDevicesMapper testSuitesDevicesMapper;
-    @Autowired private AgentsService agentsService;
+    @Autowired
+    private DevicesMapper devicesMapper;
+    @Autowired
+    private UsersService usersService;
+    @Autowired
+    private TestSuitesDevicesMapper testSuitesDevicesMapper;
+    @Autowired
+    private AgentsService agentsService;
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
@@ -95,7 +99,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     }
 
     @Override
-    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,List<String> hmVersion, List<String> manufacturer,
+    public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                                  String deviceInfo, Page<Devices> pageable) {
         DevicesSearchParams params = new DevicesSearchParams()
@@ -185,6 +189,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setImgUrl("");
             devices.setTemperature(0);
             devices.setLevel(0);
+            devices.setIsHm(0);
         }
         devices.setAgentId(jsonMsg.getInteger("agentId"));
         if (jsonMsg.getString("name") != null) {
@@ -201,10 +206,10 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         if (jsonMsg.getString("version") != null) {
             devices.setVersion(jsonMsg.getString("version"));
         }
-        if (jsonMsg.getString("platform") != null) {
+        if (jsonMsg.getInteger("platform") != null) {
             devices.setPlatform(jsonMsg.getInteger("platform"));
         }
-        if (jsonMsg.getString("isHm") != null) {
+        if (jsonMsg.getInteger("isHm") != null) {
             devices.setIsHm(jsonMsg.getInteger("isHm"));
         }
         if (jsonMsg.getString("cpu") != null) {

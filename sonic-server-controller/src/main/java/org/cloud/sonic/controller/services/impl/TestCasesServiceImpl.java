@@ -46,38 +46,53 @@ import java.util.stream.Collectors;
 @Service
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
 
-    @Autowired private StepsService stepsService;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private TestCasesMapper testCasesMapper;
-    @Autowired private StepsMapper stepsMapper;
-    @Autowired private ElementsService elementsService;
-    @Autowired private ModulesMapper modulesMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private TestSuitesTestCasesMapper testSuitesTestCasesMapper;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesMapper testCasesMapper;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private ElementsService elementsService;
+    @Autowired
+    private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, Integer moduleId, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
         lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
                 .eq(platform != 0, TestCases::getPlatform, platform)
-                .eq(moduleId != null, TestCases::getModuleId, moduleId)
-                .like(!StringUtils.isEmpty(name), TestCases::getName, name);
+                .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
+                .like(!StringUtils.isEmpty(name), TestCases::getName, name)
+                .orderByDesc(TestCases::getEditTime);
 
         //写入对应模块信息
-        List<TestCases> testCasesList = lambdaQuery.orderByDesc(TestCases::getEditTime).list();
-        List<TestCasesDTO> testCasesDTOS = new ArrayList<>();
-        for (TestCases testCase : testCasesList) {
-            if (testCase.getModuleId() != null && testCase.getModuleId() != 0) {
-                testCasesDTOS.add(testCase.convertTo()
-                        .setModulesDTO(modulesMapper.selectById(testCase.getModuleId()).convertTo()));
-                continue;
+        Page<TestCases> page = lambdaQuery.page(pageable);
+        List<TestCasesDTO> testCasesDTOS = page.getRecords()
+                .stream().map(e -> findCaseDetail(e)).collect(Collectors.toList());
+
+        return CommentPage.convertFrom(page, testCasesDTOS);
+    }
+
+    @Transactional
+    private TestCasesDTO findCaseDetail(TestCases testCases) {
+        if (testCases.getModuleId() != null && testCases.getModuleId() != 0) {
+            Modules modules = modulesMapper.selectById(testCases.getModuleId());
+            if (modules != null) {
+                return testCases.convertTo().setModulesDTO(modules.convertTo());
             }
-            testCasesDTOS.add(testCase.convertTo());
         }
-        return CommentPage.convertFrom(pageable, testCasesDTOS);
+        return testCases.convertTo();
     }
 
     @Override
@@ -111,8 +126,9 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     }
 
     @Override
-    public TestCases findById(int id) {
-        return baseMapper.selectById(id);
+    public TestCasesDTO findById(int id) {
+        TestCases testCases = baseMapper.selectById(id);
+        return findCaseDetail(testCases);
     }
 
     @Transactional
