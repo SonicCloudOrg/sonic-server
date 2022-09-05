@@ -1,5 +1,4 @@
 alwaysReplace: true
-caseSensitive: true
 customLabels:
   - text: 'fix'
     label: 'fix'
@@ -11,5 +10,4 @@ customLabels:
     label: 'fix'
   - text: 'doc'
     label: 'document'
-searchBody: true
-searchTitle: true
+searchBody: false
