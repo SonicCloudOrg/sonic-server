@@ -141,15 +141,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp.put(g.getParamsKey(), g.getParamsValue());
             }
         }
-        JSONObject result = new JSONObject();
-        result.put("msg", "suite");
-        result.put("pf", testSuitesDTO.getPlatform());
-        Map<Integer, List<JSONObject>> agentMap = coverHandlerMap.get(testSuitesDTO.getCover())
-                .handlerSuite(testSuitesDTO, devicesList,  valueMap, results);
-        for (Integer id : agentMap.keySet()) {
-            result.put("cases", agentMap.get(id));
-            TransportWorker.send(id, result);
-        }
+        coverHandlerMap.get(testSuitesDTO.getCover()).handlerSuite(testSuitesDTO, gp, devicesList,  valueMap, results);
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
@@ -458,17 +450,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         }
     }
 
-    private JSONObject packageTestCase(Devices devices, TestCasesDTO testCases, Map<Integer,
-            List<JSONObject>> stepsMap, JSONObject gp, Results results, StepsService stepsService) {
+    private JSONObject packageTestCase(Devices devices, TestCasesDTO testCases,
+                JSONObject gp, Results results, StepsService stepsService) {
         JSONObject testCase = new JSONObject();
-        List<JSONObject> steps = stepsMap.get(testCases.getId());
-        if(steps == null) {
-            steps = new ArrayList<>();
-            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
-            for (StepsDTO s : stepsList) {
-                steps.add(getStep(s));
-            }
-            stepsMap.put(testCases.getId(), steps);
+        List<JSONObject> steps = new ArrayList<>();
+        List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+        for (StepsDTO s : stepsList) {
+            steps.add(getStep(s));
         }
         testCase.put("steps", steps);
         testCase.put("cid", testCases.getId());
@@ -507,8 +495,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     }
 
     interface CoverHandler {
-        Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO, List<Devices> devicesList, Map<String,
-                List<String>> valueMap, Results results);
+        void handlerSuite(TestSuitesDTO testSuitesDTO, JSONObject gp, List<Devices> devicesList,
+                          Map<String,List<String>> valueMap, Results results);
         Integer cover();
     }
 
@@ -521,25 +509,19 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         private StepsService stepsService;
 
         @Override
-        public Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO,
-                                                           List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
-            Map<Integer, List<JSONObject>> agentMap = new HashMap<>();
-            Map<Integer, List<JSONObject>> stepsMap = new HashMap<>();
-            JSONObject gp = new JSONObject();
+        public void handlerSuite(TestSuitesDTO testSuitesDTO, JSONObject gp,
+                                 List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
+            List<JSONObject> suiteDetailList = new ArrayList<>();
             for (int i = 0; i < devicesList.size(); i ++) {
                 Devices devices = devicesList.get(i);
-                List<JSONObject> suiteDetail = agentMap.get(devices.getAgentId());
-                if(suiteDetail == null) {
-                    suiteDetail = new ArrayList<>();
-                    agentMap.put(devices.getAgentId(), suiteDetail);
-                }
                 gp = refreshGlobalParams(gp, valueMap);
                 for (int j = i; j < testSuitesDTO.getTestCases().size(); j += devicesList.size()) {
                     TestCasesDTO testCases = testSuitesDTO.getTestCases().get(j);
-                    suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
+                    suiteDetailList.add(packageTestCase(devices, testCases, gp, results, this.stepsService));
                 }
+                send(devices.getAgentId(), testSuitesDTO.getPlatform(), suiteDetailList);
+                suiteDetailList.clear();
             }
-            return agentMap;
         }
 
         @Override
@@ -557,28 +539,45 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         private StepsService stepsService;
 
         @Override
-        public Map<Integer, List<JSONObject>> handlerSuite(TestSuitesDTO testSuitesDTO,
-                                                           List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
-            Map<Integer, List<JSONObject>> agentMap = new HashMap<>();
-            Map<Integer, List<JSONObject>> stepsMap = new HashMap<>();
-            JSONObject gp = new JSONObject();
+        public void handlerSuite(TestSuitesDTO testSuitesDTO, JSONObject gp,
+                                 List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
+            List<JSONObject> suiteDetailList = null;
             for (Devices devices : devicesList) {
-                List<JSONObject> suiteDetail = agentMap.get(devices.getAgentId());
-                if(suiteDetail == null) {
-                    suiteDetail = new ArrayList<>();
-                    agentMap.put(devices.getAgentId(), suiteDetail);
-                }
                 gp = refreshGlobalParams(gp, valueMap);
-                for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
-                    suiteDetail.add(packageTestCase(devices, testCases, stepsMap, gp, results, this.stepsService));
+                if(suiteDetailList == null) {
+                    suiteDetailList = new ArrayList<>();
+                    for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
+                        suiteDetailList.add(packageTestCase(devices, testCases, gp, results, this.stepsService));
+                    }
+                } else {
+                    for (JSONObject suiteDetail : suiteDetailList) {
+                        suiteDetail.put("device", new ArrayList<>() {{
+                            add(devices);
+                        }});
+                        suiteDetail.put("gp", gp);
+                    }
                 }
+                send(devices.getAgentId(), testSuitesDTO.getPlatform(), suiteDetailList);
             }
-            return agentMap;
         }
 
         @Override
         public Integer cover() {
             return CoverType.DEVICE;
         }
+    }
+
+    /**
+     * 封装数据并发送执行机
+     * @param agentId
+     * @param platform
+     * @param suiteDetailList
+     */
+    private void send(Integer agentId, Integer platform, List<JSONObject> suiteDetailList) {
+        JSONObject result = new JSONObject();
+        result.put("msg", "suite");
+        result.put("pf", platform);
+        result.put("cases", suiteDetailList);
+        TransportWorker.send(agentId, result);
     }
 }
