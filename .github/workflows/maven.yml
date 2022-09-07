@@ -1,4 +1,4 @@
-name: maven-compile-test
+name: maven compile test
 
 on: [pull_request]
 
