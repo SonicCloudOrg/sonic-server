@@ -305,7 +305,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
         List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
-        save(steps.setId(null).setSort(stepsList.get(0).getSort()+1));
+        save(steps.setId(null).setSort(stepsList.size()+1));
         //关联ele
         if (stepsCopyDTO.getElements() != null) {
             elementsService.newStepBeLinkedEle(stepsCopyDTO,steps);
@@ -337,9 +337,9 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                             idIndex = stepsIdDTO.getIndex();
                         }
                     }
-                    step.setId(null).setParentId(fatherIdIndex).setCaseId(0).setSort(stepsList1.get(0).getSort() + n);
+                    step.setId(null).setParentId(fatherIdIndex).setSort(stepsList1.size() + n);
 
-                    stepsMapper.insert(step.setCaseId(0));
+                    stepsMapper.insert(step);
 
                     //修改父步骤Id
                     step.setParentId(step.getId() - (fatherIdIndex - idIndex));
@@ -352,7 +352,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                     continue;
                 }
 
-                step.setId(null).setCaseId(0).setSort(stepsList.get(0).getSort() + n);
+                step.setId(null).setSort(stepsList.size() + n);
                 stepsMapper.insert(step);
                 //关联steps和elId
                 if (steps1.getElements() != null) {
