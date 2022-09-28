@@ -85,7 +85,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     }
 
     @Transactional
-    private TestCasesDTO findCaseDetail(TestCases testCases) {
+    public TestCasesDTO findCaseDetail(TestCases testCases) {
         if (testCases.getModuleId() != null && testCases.getModuleId() != 0) {
             Modules modules = modulesMapper.selectById(testCases.getModuleId());
             if (modules != null) {
@@ -212,7 +212,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         //查找旧的case Step&&对应的ele
         LambdaQueryWrapper<Steps> queryWrapper = new LambdaQueryWrapper<>();
         List<Steps> oldStepsList = stepsMapper.selectList(
-                queryWrapper.eq(Steps::getCaseId, oldId).orderByAsc(Steps::getCaseId));
+                queryWrapper.eq(Steps::getCaseId, oldId).orderByAsc(Steps::getSort));
         List<StepsDTO> stepsDTO = new ArrayList<>();
         for (Steps steps : oldStepsList) {
             stepsDTO.add(steps.convertTo());
@@ -243,7 +243,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                         idIndex = stepsIdDTO.getIndex();
                     }
                 }
-                step.setId(null).setParentId(fatherIdIndex).setCaseId(oldTestCases.getId()).setSort(stepsList.get(0).getSort() + n);
+                step.setId(null).setParentId(fatherIdIndex).setCaseId(oldTestCases.getId()).setSort(stepsList.size() + n);
                 stepsMapper.insert(step.setCaseId(oldTestCases.getId()));
                 //修改父步骤Id
                 step.setParentId(step.getId() - (fatherIdIndex - idIndex));
@@ -255,7 +255,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 }
                 continue;
             }
-            step.setId(null).setCaseId(oldTestCases.getId()).setSort(stepsList.get(0).getSort() + n);
+            step.setId(null).setCaseId(oldTestCases.getId()).setSort(stepsList.size() + n);
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
