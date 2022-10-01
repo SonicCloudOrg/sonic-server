@@ -1,13 +1,21 @@
 name: release to github
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*.*.*-*"
 
 jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          generate_release_notes: true
 
   build:
-
+    needs: create
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
