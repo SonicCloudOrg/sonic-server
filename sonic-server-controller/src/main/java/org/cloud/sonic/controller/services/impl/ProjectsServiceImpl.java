@@ -36,16 +36,28 @@ import java.util.List;
 @Service
 public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projects> implements ProjectsService {
 
-    @Autowired private ElementsService elementsService;
-    @Autowired private GlobalParamsService globalParamsService;
-    @Autowired private ModulesService modulesService;
-    @Autowired private VersionsService versionsService;
-    @Autowired private PublicStepsService publicStepsService;
-    @Autowired private ResultsService resultsService;
-    @Autowired private ResultDetailService resultDetailService;
-    @Autowired private StepsService stepsService;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private TestCasesService testCasesService;
+    @Autowired
+    private ElementsService elementsService;
+    @Autowired
+    private GlobalParamsService globalParamsService;
+    @Autowired
+    private ModulesService modulesService;
+    @Autowired
+    private VersionsService versionsService;
+    @Autowired
+    private PublicStepsService publicStepsService;
+    @Autowired
+    private ResultsService resultsService;
+    @Autowired
+    private ResultDetailService resultDetailService;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesService testCasesService;
+    @Autowired
+    private ScriptsService scriptsService;
 
     @Override
     public Projects findById(int id) {
@@ -74,6 +86,7 @@ public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projec
             }
             resultsService.deleteByProjectId(id);
             versionsService.deleteByProjectId(id);
+            scriptsService.deleteByProjectId(id);
             baseMapper.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();
