@@ -41,7 +41,7 @@ public class ScriptsServiceImpl extends SonicServiceImpl<ScriptsMapper, Scripts>
     @Override
     public Page<Scripts> findByProjectId(int projectId, String name, Page<Scripts> pageable) {
         return lambdaQuery().eq(Scripts::getProjectId, projectId)
-                .eq(!StringUtils.isEmpty(name), Scripts::getName, name)
+                .like((name != null && name.length() > 0), Scripts::getName, name)
                 .orderByDesc(Scripts::getId)
                 .page(pageable);
     }
