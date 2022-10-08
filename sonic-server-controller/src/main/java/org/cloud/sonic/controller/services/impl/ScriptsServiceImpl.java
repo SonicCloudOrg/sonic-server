@@ -25,7 +25,6 @@ import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Service
 public class ScriptsServiceImpl extends SonicServiceImpl<ScriptsMapper, Scripts> implements ScriptsService {
