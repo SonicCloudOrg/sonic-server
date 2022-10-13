@@ -65,7 +65,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         if (type != null && type.length() > 0) {
             switch (type) {
                 case "normal" -> lambdaQuery.and(
-                        l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image")
+                        l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image").ne(Elements::getEleType, "poco")
                 );
                 case "poco" -> lambdaQuery.eq(Elements::getEleType, "poco");
                 case "point" -> lambdaQuery.eq(Elements::getEleType, "point");
