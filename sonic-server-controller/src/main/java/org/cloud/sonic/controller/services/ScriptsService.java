@@ -7,7 +7,7 @@ import org.cloud.sonic.controller.models.domain.Scripts;
 public interface ScriptsService extends IService<Scripts> {
     boolean delete(int id);
 
-    Page<Scripts> findByProjectId(int projectId, String name, Page<Scripts> pageable);
+    Page<Scripts> findByProjectId(Integer projectId, String name, Page<Scripts> pageable);
 
     Scripts findById(int id);
 
