@@ -87,6 +87,9 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
     @Value("${sonic.user.ldap.userBaseDN}")
     private String userBaseDN;
 
+    @Value("${sonic.user.ldap.objectClass}")
+    private String objectClass;
+
     @Autowired
     @Lazy
     private LdapTemplate ldapTemplate;
@@ -143,10 +146,10 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         String password = userInfo.getPassword();
         logger.info("login check content username {}", username);
         AndFilter filter = new AndFilter();
-        filter.and(new EqualsFilter("objectclass", "person")).and(new EqualsFilter(userId, username));
+        filter.and(new EqualsFilter("objectclass", objectClass)).and(new EqualsFilter(userId, username));
         try {
             boolean authResult = ldapTemplate.authenticate(userBaseDN, filter.toString(), password);
-            if (create) {
+            if (create && authResult) {
                 save(buildUser(userInfo));
             }
             return authResult;
