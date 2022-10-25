@@ -193,10 +193,8 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
 
         //统计需要和公共步骤关联的步骤，
         int n = 1;  // n 用来保持搜索map时候 caseId  和 key中setCaseId一致
-        LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
 
-        List<Steps> stepsList = stepsMapper.selectList(lqw.orderByDesc(Steps::getSort));
-        List<Integer> publicStepsStpesId = new ArrayList<>();
+        List<Integer> publicStepsStepsId = new ArrayList<>();
 
         for (StepsDTO steps : needAllCopySteps) {
             Steps step = steps.convertTo();
@@ -214,7 +212,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
                         idIndex = stepsIdDTO.getIndex();
                     }
                 }
-                step.setId(null).setParentId(fatherIdIndex).setCaseId(0).setSort(stepsList.get(0).getSort() + n);
+                step.setId(null).setParentId(fatherIdIndex).setCaseId(0).setSort(stepsMapper.findMaxSort() + n);
                 stepsMapper.insert(step.setCaseId(0));
                 //修改父步骤Id
                 step.setParentId(step.getId() - (fatherIdIndex - idIndex));
@@ -227,18 +225,18 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
                 continue;
             }
 
-            step.setId(null).setCaseId(0).setSort(stepsList.get(0).getSort() + n);
+            step.setId(null).setCaseId(0).setSort(stepsMapper.findMaxSort() + n);
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
                 elementsService.newStepBeLinkedEle(steps,step);
             }
             //插入的stepId 记录到需要关联步骤的list种
-            publicStepsStpesId.add(step.getId());
+            publicStepsStepsId.add(step.getId());
             n++;
         }
         //查询新增step的步骤list 来遍历id  此时不包括子步骤
-        for (Integer stepsId : publicStepsStpesId) {
+        for (Integer stepsId : publicStepsStepsId) {
             // 保存 public_step 与 最外层step 映射关系
             publicStepsStepsMapper.insert(
                     new PublicStepsSteps()
