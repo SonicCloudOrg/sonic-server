@@ -303,9 +303,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         Steps steps = stepsMapper.selectById(stepId);
         StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo());
 
-        LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
-        List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
-        save(steps.setId(null).setSort(stepsList.size()+1));
+        save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
         //关联ele
         if (stepsCopyDTO.getElements() != null) {
             elementsService.newStepBeLinkedEle(stepsCopyDTO,steps);
@@ -317,9 +315,6 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             List<PublicStepsAndStepsIdDTO> oldStepDto = stepAndIndex(needAllCopySteps);
             //统计需要和公共步骤关联的步骤，
             int n = 1;
-            LambdaQueryWrapper<Steps> lqw = new LambdaQueryWrapper<>();
-
-            List<Steps> stepsList1 = stepsMapper.selectList(lqw.orderByDesc(Steps::getSort));
 
             for (StepsDTO steps1 : needAllCopySteps) {
                 Steps step = steps1.convertTo();
@@ -337,7 +332,8 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                             idIndex = stepsIdDTO.getIndex();
                         }
                     }
-                    step.setId(null).setParentId(fatherIdIndex).setSort(stepsList1.size() + n);
+
+                    step.setId(null).setParentId(fatherIdIndex).setSort(stepsMapper.findMaxSort() + n);
 
                     stepsMapper.insert(step);
 
@@ -352,7 +348,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                     continue;
                 }
 
-                step.setId(null).setSort(stepsList.size() + n);
+                step.setId(null).setSort(stepsMapper.findMaxSort() + n);
                 stepsMapper.insert(step);
                 //关联steps和elId
                 if (steps1.getElements() != null) {

@@ -224,8 +224,6 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         List<PublicStepsAndStepsIdDTO> needCopySteps = stepsService.stepAndIndex(stepsCopyDTOS);
 
         //插入新的步骤
-        LambdaQueryWrapper<Steps> sort = new LambdaQueryWrapper<>();
-        List<Steps> stepsList = stepsMapper.selectList(sort.orderByDesc(Steps::getSort));
         int n = 1;
         for (StepsDTO steps : stepsCopyDTOS) {
             Steps step = steps.convertTo();
@@ -243,7 +241,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                         idIndex = stepsIdDTO.getIndex();
                     }
                 }
-                step.setId(null).setParentId(fatherIdIndex).setCaseId(oldTestCases.getId()).setSort(stepsList.size() + n);
+                step.setId(null).setParentId(fatherIdIndex).setCaseId(oldTestCases.getId()).setSort(stepsMapper.findMaxSort() + n);
                 stepsMapper.insert(step.setCaseId(oldTestCases.getId()));
                 //修改父步骤Id
                 step.setParentId(step.getId() - (fatherIdIndex - idIndex));
@@ -255,7 +253,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 }
                 continue;
             }
-            step.setId(null).setCaseId(oldTestCases.getId()).setSort(stepsList.size() + n);
+            step.setId(null).setCaseId(oldTestCases.getId()).setSort(stepsMapper.findMaxSort() + n);
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {

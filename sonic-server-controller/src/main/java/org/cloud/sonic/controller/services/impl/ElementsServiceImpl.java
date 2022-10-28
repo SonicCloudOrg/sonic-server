@@ -67,7 +67,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
                 case "normal" -> lambdaQuery.and(
                         l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image").ne(Elements::getEleType, "poco")
                 );
-                case "poco" -> lambdaQuery.eq(Elements::getEleType, "poco");
+                case "poco" -> lambdaQuery.eq(Elements::getEleType, "poco").or().eq(Elements::getEleType, "xpath").or().eq(Elements::getEleType, "cssSelector");
                 case "point" -> lambdaQuery.eq(Elements::getEleType, "point");
                 case "image" -> lambdaQuery.eq(Elements::getEleType, "image");
             }
@@ -83,7 +83,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
         //写入对应模块信息
         Page<Elements> page = lambdaQuery.page(pageable);
         List<ElementsDTO> elementsDTOS = page.getRecords()
-                .stream().map(e->findEleDetail(e)).collect(Collectors.toList());
+                .stream().map(e -> findEleDetail(e)).collect(Collectors.toList());
 
         return CommentPage.convertFrom(page, elementsDTOS);
     }
