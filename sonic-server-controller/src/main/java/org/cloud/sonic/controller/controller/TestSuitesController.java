@@ -48,7 +48,7 @@ public class TestSuitesController {
     @ApiOperation(value = "运行测试套件", notes = "运行指定项目的指定测试套件")
     @ApiImplicitParam(name = "id", value = "测试套件id", dataTypeClass = Integer.class)
     @GetMapping("/runSuite")
-    public RespModel<String> runSuite(@RequestParam(name = "id") int id
+    public RespModel<Integer> runSuite(@RequestParam(name = "id") int id
             , HttpServletRequest request) {
         String strike = "SYSTEM";
         if (request.getHeader("SonicToken") != null) {

@@ -37,7 +37,6 @@ import org.cloud.sonic.controller.models.interfaces.PlatformType;
 import org.cloud.sonic.controller.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.BytesTool;
 import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.websocket.Session;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,10 +84,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RespModel<String> runSuite(int suiteId, String strike) {
+    public RespModel<Integer> runSuite(int suiteId, String strike) {
         TestSuitesDTO testSuitesDTO;
-        // 统计不在线的agent
-        List<Integer> offLineAgentIds = new ArrayList<>();
         if (existsById(suiteId)) {
             testSuitesDTO = findById(suiteId);
         } else {
@@ -141,8 +137,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp.put(g.getParamsKey(), g.getParamsValue());
             }
         }
-        coverHandlerMap.get(testSuitesDTO.getCover()).handlerSuite(testSuitesDTO, gp, devicesList,  valueMap, results);
-        return new RespModel<>(RespEnum.HANDLE_OK);
+        coverHandlerMap.get(testSuitesDTO.getCover()).handlerSuite(testSuitesDTO, gp, devicesList, valueMap, results);
+        return new RespModel<>(RespEnum.HANDLE_OK, results.getId());
     }
 
     @Override
@@ -443,15 +439,15 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     private void initCoverHandlerMap() {
         Map<String, CoverHandler> coverHandlerBeans = applicationContext.getBeansOfType(CoverHandler.class);
         coverHandlerMap = new HashMap<>();
-        if(coverHandlerBeans != null) {
-            for(CoverHandler coverHandler : coverHandlerBeans.values()) {
+        if (coverHandlerBeans != null) {
+            for (CoverHandler coverHandler : coverHandlerBeans.values()) {
                 coverHandlerMap.put(coverHandler.cover(), coverHandler);
             }
         }
     }
 
     private JSONObject packageTestCase(Devices devices, TestCasesDTO testCases,
-                JSONObject gp, Results results, StepsService stepsService) {
+                                       JSONObject gp, Results results, StepsService stepsService) {
         JSONObject testCase = new JSONObject();
         List<JSONObject> steps = new ArrayList<>();
         List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
@@ -472,6 +468,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
      * 更新全局变量，如果变量为多值以设备维度进行分配
      * 当设备数量大于变量数量时，前面设备按顺序分配变
      * 量，后面设备统一取变量的最后一个值。
+     *
      * @param gp
      * @param valueMap
      * @return
@@ -481,7 +478,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         for (String k : valueMap.keySet()) {
             if (valueMap.get(k).size() > 0) {
                 String v = valueMap.get(k).get(0);
-                if(needClone && gp.get(k) != null) {
+                if (needClone && gp.get(k) != null) {
                     gp = gp.clone();
                     needClone = false;
                 }
@@ -496,7 +493,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     interface CoverHandler {
         void handlerSuite(TestSuitesDTO testSuitesDTO, JSONObject gp, List<Devices> devicesList,
-                          Map<String,List<String>> valueMap, Results results);
+                          Map<String, List<String>> valueMap, Results results);
+
         Integer cover();
     }
 
@@ -512,7 +510,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         public void handlerSuite(TestSuitesDTO testSuitesDTO, JSONObject gp,
                                  List<Devices> devicesList, Map<String, List<String>> valueMap, Results results) {
             List<JSONObject> suiteDetailList = new ArrayList<>();
-            for (int i = 0; i < devicesList.size(); i ++) {
+            for (int i = 0; i < devicesList.size(); i++) {
                 Devices devices = devicesList.get(i);
                 gp = refreshGlobalParams(gp, valueMap);
                 for (int j = i; j < testSuitesDTO.getTestCases().size(); j += devicesList.size()) {
@@ -544,7 +542,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             List<JSONObject> suiteDetailList = null;
             for (Devices devices : devicesList) {
                 gp = refreshGlobalParams(gp, valueMap);
-                if(suiteDetailList == null) {
+                if (suiteDetailList == null) {
                     suiteDetailList = new ArrayList<>();
                     for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
                         suiteDetailList.add(packageTestCase(devices, testCases, gp, results, this.stepsService));
@@ -569,6 +567,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     /**
      * 封装数据并发送执行机
+     *
      * @param agentId
      * @param platform
      * @param suiteDetailList
