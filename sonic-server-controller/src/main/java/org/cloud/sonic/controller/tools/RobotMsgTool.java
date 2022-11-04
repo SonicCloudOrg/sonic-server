@@ -94,11 +94,9 @@ public class RobotMsgTool {
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
+                    break;
                 }
-
-                break;
                 case RobotType.FeiShu: {
-
                     if (!StringUtils.isEmpty(secret)) {
                         String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
                         String stringToSign = timestamp + "\n" + secret;
@@ -109,18 +107,35 @@ public class RobotMsgTool {
                         jsonObject.put("timestamp", timestamp);
                         jsonObject.put("sign", sign);
                     }
-
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token, jsonObject, JSONObject.class);
                     logger.info("robot result: " + responseEntity.getBody());
                     break;
                 }
-                case RobotType.YouSpace:
+                case RobotType.YouSpace: {
+                    JSONObject you = new JSONObject();
+                    you.put("timestamp", System.currentTimeMillis());
+                    you.put("content", Base64Utils.encode(jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8)));
+                    ResponseEntity<JSONObject> responseEntity =
+                            restTemplate.postForEntity(token
+                                    , you, JSONObject.class);
+                    logger.info("robot result: " + responseEntity.getBody());
                     break;
+                }
             }
         } catch (Exception e) {
             logger.info("robot send failed, cause: " + e.getMessage());
         }
+    }
+
+    private JSONObject generateYouTextView(String s) {
+        JSONObject text = new JSONObject();
+        text.put("type", "textView");
+        JSONObject data = new JSONObject();
+        data.put("text", s);
+        data.put("level", 1);
+        text.put("data", data);
+        return text;
     }
 
     /**
@@ -140,52 +155,77 @@ public class RobotMsgTool {
     public void sendResultFinishReport(String token, String secret, String suiteName, int pass,
                                        int warn, int fail, int projectId, int resultId, int type) {
         JSONObject jsonObject = new JSONObject();
-        if (type == RobotType.DingTalk) {
-            JSONObject link = new JSONObject();
-            link.put("text", "通过数：" + pass +
-                    " \n异常数：" + warn +
-                    " \n失败数：" + fail);
-            link.put("title", "测试套件: " + suiteName + " 运行完毕！");
-            link.put("messageUrl", clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId);
-            //判断测试结果，来决定显示什么图片
-            if (fail > 0) {
-                link.put("picUrl", errorUrl);
-            } else if (warn > 0) {
-                link.put("picUrl", warningUrl);
-            } else {
-                link.put("picUrl", successUrl);
+        switch (type) {
+            case RobotType.DingTalk: {
+                JSONObject link = new JSONObject();
+                link.put("text", "通过数：" + pass +
+                        " \n异常数：" + warn +
+                        " \n失败数：" + fail);
+                link.put("title", "测试套件: " + suiteName + " 运行完毕！");
+                link.put("messageUrl", clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId);
+                //判断测试结果，来决定显示什么图片
+                if (fail > 0) {
+                    link.put("picUrl", errorUrl);
+                } else if (warn > 0) {
+                    link.put("picUrl", warningUrl);
+                } else {
+                    link.put("picUrl", successUrl);
+                }
+                jsonObject.put("msgtype", "link");
+                jsonObject.put("link", link);
+                break;
             }
-            jsonObject.put("msgtype", "link");
-            jsonObject.put("link", link);
-        }
-        if (type == RobotType.WeChat) {
-            jsonObject.put("msgtype", "markdown");
-            JSONObject markdown = new JSONObject();
-            markdown.put("content", "**测试套件: " + suiteName + " 运行完毕！**\n" +
-                    "通过数：" + pass + " \n" +
-                    "异常数：" + warn + " \n" +
-                    "失败数：" + fail + "\n" +
-                    "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
-            jsonObject.put("markdown", markdown);
-
-        }
-        if (type == RobotType.FeiShu) {
-            jsonObject.put("msg_type", "interactive");
-            JSONObject card = new JSONObject();
-            JSONObject config = new JSONObject();
-            config.put("wide_screen_mode", true);
-            card.put("config", config);
-            JSONObject element = new JSONObject();
-            element.put("tag", "markdown");
-            List<JSONObject> elementList = new ArrayList<>();
-            element.put("content", "**测试套件: " + suiteName + " 运行完毕！**\n" +
-                    "通过数：" + pass + " \n" +
-                    "异常数：" + warn + " \n" +
-                    "失败数：" + fail + "\n" +
-                    "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
-            elementList.add(element);
-            card.put("elements", elementList);
-            jsonObject.put("card", card);
+            case RobotType.WeChat: {
+                jsonObject.put("msgtype", "markdown");
+                JSONObject markdown = new JSONObject();
+                markdown.put("content", "**测试套件: " + suiteName + " 运行完毕！**\n" +
+                        "通过数：" + pass + " \n" +
+                        "异常数：" + warn + " \n" +
+                        "失败数：" + fail + "\n" +
+                        "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
+                jsonObject.put("markdown", markdown);
+                break;
+            }
+            case RobotType.FeiShu: {
+                jsonObject.put("msg_type", "interactive");
+                JSONObject card = new JSONObject();
+                JSONObject config = new JSONObject();
+                config.put("wide_screen_mode", true);
+                card.put("config", config);
+                JSONObject element = new JSONObject();
+                element.put("tag", "markdown");
+                List<JSONObject> elementList = new ArrayList<>();
+                element.put("content", "**测试套件: " + suiteName + " 运行完毕！**\n" +
+                        "通过数：" + pass + " \n" +
+                        "异常数：" + warn + " \n" +
+                        "失败数：" + fail + "\n" +
+                        "测试报告：[点击查看](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
+                elementList.add(element);
+                card.put("elements", elementList);
+                jsonObject.put("card", card);
+                break;
+            }
+            case RobotType.YouSpace: {
+                jsonObject.put("businessId", "测试套件: " + suiteName + " 运行完毕！");
+                JSONObject titleZone = new JSONObject();
+                titleZone.put("type", 0);
+                titleZone.put("text", "测试套件: " + suiteName + " 运行完毕！");
+                jsonObject.put("titleZone", titleZone);
+                List<JSONObject> contentZone = new ArrayList<>();
+                contentZone.add(generateYouTextView("通过数：" + pass));
+                contentZone.add(generateYouTextView("异常数：" + warn));
+                contentZone.add(generateYouTextView("失败数：" + fail));
+                JSONObject button = new JSONObject();
+                button.put("type", "buttonView");
+                JSONObject data = new JSONObject();
+                data.put("mode", 0);
+                data.put("text", "点击查看测试报告");
+                data.put("url", "[" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + "](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
+                button.put("data", data);
+                contentZone.add(button);
+                jsonObject.put("contentZone", contentZone);
+                break;
+            }
         }
         signAndSend(token, secret, type, jsonObject);
     }
