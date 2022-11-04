@@ -60,7 +60,7 @@ public class QuartzJob extends QuartzJobBean implements Job {
             case JobType.TEST_JOB: {
                 Jobs jobs = jobsService.findById(dataMap.getInt("id"));
                 if (jobs != null) {
-                    RespModel<String> r = testSuitesService.runSuite(jobs.getSuiteId(), "SYSTEM");
+                    RespModel<Integer> r = testSuitesService.runSuite(jobs.getSuiteId(), "SYSTEM");
                     if (r.getCode() == 3001) {
                         logger.info("Test suite " + jobs.getSuiteId() + " deleted. " + r);
                         jobsService.delete(dataMap.getInt("id"));

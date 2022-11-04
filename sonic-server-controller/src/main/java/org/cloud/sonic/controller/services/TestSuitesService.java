@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2021/8/20 17:51
  */
 public interface TestSuitesService extends IService<TestSuites> {
-    RespModel<String> runSuite(int id, String strike);
+    RespModel<Integer> runSuite(int id, String strike);
 
     RespModel<String> forceStopSuite(int id, String strike);
 
