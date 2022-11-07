@@ -115,7 +115,7 @@ public class RobotMsgTool {
                 case RobotType.YouSpace: {
                     JSONObject you = new JSONObject();
                     you.put("timestamp", System.currentTimeMillis());
-                    you.put("content", Base64Utils.encode(jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8)));
+                    you.put("content", Base64Utils.encodeToString(jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8)));
                     ResponseEntity<JSONObject> responseEntity =
                             restTemplate.postForEntity(token
                                     , you, JSONObject.class);
