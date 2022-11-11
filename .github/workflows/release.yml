@@ -3,7 +3,7 @@ name: release to github
 on:
   push:
     tags:
-      - "v*.*.*-*"
+      - "v*.*.*"
 
 jobs:
   create:
