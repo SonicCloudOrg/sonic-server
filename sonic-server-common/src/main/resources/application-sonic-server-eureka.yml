@@ -17,7 +17,7 @@ eureka:
     instance-id: ${random.uuid}
   server:
     enable-self-preservation: false
-    eviction-interval-timer-in-ms: 5000
+    eviction-interval-timer-in-ms: 10000
   client:
     #    单机部署的话以下为false
     register-with-eureka: ${IS_CLUSTERED:false}
