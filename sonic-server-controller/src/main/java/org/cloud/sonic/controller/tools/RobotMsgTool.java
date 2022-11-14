@@ -220,7 +220,7 @@ public class RobotMsgTool {
                 JSONObject data = new JSONObject();
                 data.put("mode", 0);
                 data.put("text", "点击查看测试报告");
-                data.put("url", "[" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + "](" + clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId + ")");
+                data.put("url", clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId);
                 button.put("data", data);
                 contentZone.add(button);
                 jsonObject.put("contentZone", contentZone);
@@ -384,7 +384,7 @@ public class RobotMsgTool {
                 JSONObject data = new JSONObject();
                 data.put("mode", 0);
                 data.put("text", "点击查看");
-                data.put("url", "[" + clientHost + "/Home/" + projectId + "](" + clientHost + "/Home/" + projectId + ")");
+                data.put("url", clientHost + "/Home/" + projectId);
                 button.put("data", data);
                 contentZone.add(button);
                 jsonObject.put("contentZone", contentZone);
@@ -579,7 +579,7 @@ public class RobotMsgTool {
                 JSONObject data = new JSONObject();
                 data.put("mode", 0);
                 data.put("text", "点击查看");
-                data.put("url", "[" + clientHost + "/Home/" + projectId + "](" + clientHost + "/Home/" + projectId + ")");
+                data.put("url", clientHost + "/Home/" + projectId);
                 button.put("data", data);
                 contentZone.add(button);
                 jsonObject.put("contentZone", contentZone);
