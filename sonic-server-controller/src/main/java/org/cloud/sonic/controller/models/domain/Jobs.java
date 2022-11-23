@@ -54,4 +54,8 @@ public class Jobs implements Serializable, TypeConverter<Jobs, JobsDTO> {
     @TableField
     @Column(value = "suite_id", isNull = false, comment = "测试套件id")
     private Integer suiteId;
+
+    @TableField
+    @Column(isNull = false, comment = "定时任务类型")
+    private String type;
 }

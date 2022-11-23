@@ -18,8 +18,10 @@
 package org.cloud.sonic.controller.quartz;
 
 import com.alibaba.fastjson.JSONObject;
+import org.cloud.sonic.controller.mapper.JobsMapper;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.interfaces.JobType;
+import org.cloud.sonic.controller.services.JobsService;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,8 @@ public class QuartzHandler {
     private final Logger logger = LoggerFactory.getLogger(QuartzHandler.class);
     @Autowired
     private Scheduler scheduler;
+    @Autowired
+    private JobsService jobsService;
     private List<String> typeList = Arrays.asList("cleanFile", "cleanResult", "sendDayReport", "sendWeekReport");
 
     /**
@@ -247,7 +251,49 @@ public class QuartzHandler {
 
     public void createSysTrigger() {
         for (String type : typeList) {
-            updateSysScheduleJob(type, "");
+//            从数据库中获取数据，然后创建
+            Jobs job = jobsService.findByType(type);
+//            首次部署，初始化系统定时任务
+            if (job == null) {
+                initSysJob(job, type);
+            }
+            updateSysScheduleJob(type, job.getCronExpression());
         }
+    }
+
+    /**
+     * 初始化系统定时任务
+     * @param job jobs 表实体
+     * @param type 系统定时任务类型
+     */
+    private void initSysJob(Jobs job, String type) {
+        String name = "";
+        String cronExpression = "";
+
+        switch (type) {
+            case "cleanFile":
+                cronExpression = "0 0 12 15 * ?";
+                name = "清理系统文件";
+                break;
+            case "cleanResult":
+                cronExpression = "0 0 12 15 * ?";
+                name = "清理测试报告";
+                break;
+            case "sendDayReport":
+                cronExpression = "0 0 10 * * ?";
+                name = "发送日报";
+                break;
+            case "sendWeekReport":
+                cronExpression = "0 0 10 ? * MON";
+                name = "发送周报";
+                break;
+        }
+
+        job.setCronExpression(cronExpression);
+        job.setName(name);
+        job.setProjectId(0);
+        job.setStatus(1);
+        job.setSuiteId(0);
+        job.setType(type);
     }
 }
