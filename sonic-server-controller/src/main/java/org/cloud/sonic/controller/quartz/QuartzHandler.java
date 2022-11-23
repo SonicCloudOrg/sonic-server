@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.controller.mapper.JobsMapper;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.interfaces.JobType;
+import org.cloud.sonic.controller.services.JobsService;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class QuartzHandler {
     @Autowired
     private Scheduler scheduler;
     @Autowired
-    private JobsMapper jobsMapper;
+    private JobsService jobsService;
     private List<String> typeList = Arrays.asList("cleanFile", "cleanResult", "sendDayReport", "sendWeekReport");
 
     /**
@@ -250,7 +251,7 @@ public class QuartzHandler {
     public void createSysTrigger() {
         for (String type : typeList) {
 //            从数据库中获取数据，然后创建
-            Jobs job = jobsMapper.findByType(type);
+            Jobs job = jobsService.findByType(type);
 //            首次部署，初始化系统定时任务
             if (job == null) {
                 initSysJob(job, type);

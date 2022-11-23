@@ -50,12 +50,13 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     private QuartzHandler quartzHandler;
     @Autowired
     private JobsMapper jobsMapper;
+    private static final String TEST_JOB = "testJob";
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> saveJobs(Jobs jobs) throws SonicException {
         jobs.setStatus(JobStatus.ENABLE);
-        jobs.setType("TEST_JOB");
+        jobs.setType(TEST_JOB);
         save(jobs);
         CronTrigger trigger = quartzHandler.getTrigger(jobs);
         try {
@@ -122,7 +123,7 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     public Page<Jobs> findByProjectId(int projectId, Page<Jobs> pageable) {
         return lambdaQuery()
                 .eq(Jobs::getProjectId, projectId)
-                .eq(Jobs::getType, "TEST_JOB")
+                .eq(Jobs::getType, TEST_JOB)
                 .orderByDesc(Jobs::getId)
                 .page(pageable);
     }
@@ -131,9 +132,17 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     public Jobs findById(int id) {
         return lambdaQuery()
                 .eq(Jobs::getId, id)
-                .eq(Jobs::getType, "TEST_JOB")
+                .eq(Jobs::getType, TEST_JOB)
                 .one();
     }
+
+    @Override
+    public Jobs findByType(String type) {
+        return lambdaQuery()
+                .eq(Jobs::getType, type)
+                .one();
+    }
+
 
     @Override
     public void updateSysJob(String type, String cron) {

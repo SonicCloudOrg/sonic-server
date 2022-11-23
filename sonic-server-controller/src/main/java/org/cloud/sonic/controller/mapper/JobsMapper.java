@@ -14,6 +14,5 @@ import java.util.List;
  */
 @Mapper
 public interface JobsMapper extends BaseMapper<Jobs> {
-    @Select("select * from jobs where type = #{type}")
-    Jobs findByType(@Param("type") String type);
+
 }
