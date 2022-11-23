@@ -18,6 +18,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.util.MapUtil;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -33,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.cloud.sonic.controller.quartz.QuartzHandler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ZhouYiXun
@@ -52,6 +55,7 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     @Transactional(rollbackFor = Exception.class)
     public RespModel<String> saveJobs(Jobs jobs) throws SonicException {
         jobs.setStatus(JobStatus.ENABLE);
+        jobs.setType("TEST_JOB");
         save(jobs);
         CronTrigger trigger = quartzHandler.getTrigger(jobs);
         try {
@@ -118,17 +122,29 @@ public class JobsServiceImpl extends SonicServiceImpl<JobsMapper, Jobs> implemen
     public Page<Jobs> findByProjectId(int projectId, Page<Jobs> pageable) {
         return lambdaQuery()
                 .eq(Jobs::getProjectId, projectId)
+                .eq(Jobs::getType, "TEST_JOB")
                 .orderByDesc(Jobs::getId)
                 .page(pageable);
     }
 
     @Override
     public Jobs findById(int id) {
-        return baseMapper.selectById(id);
+        return lambdaQuery()
+                .eq(Jobs::getId, id)
+                .eq(Jobs::getType, "TEST_JOB")
+                .one();
     }
 
     @Override
     public void updateSysJob(String type, String cron) {
+        Jobs jobs =  lambdaQuery()
+                .eq(Jobs::getType, type)
+                .one();
+        if(jobs != null){
+            jobs.setCronExpression(cron);
+            save(jobs);
+        }
+
         quartzHandler.updateSysScheduleJob(type, cron);
     }
 
