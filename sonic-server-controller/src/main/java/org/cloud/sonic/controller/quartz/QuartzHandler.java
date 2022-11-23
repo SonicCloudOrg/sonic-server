@@ -255,7 +255,7 @@ public class QuartzHandler {
             Jobs job = jobsService.findByType(type);
 //            首次部署，初始化系统定时任务
             if (job == null) {
-                initSysJob(job, type);
+                job = initSysJob(type);
             }
             updateSysScheduleJob(type, job.getCronExpression());
         }
@@ -263,10 +263,10 @@ public class QuartzHandler {
 
     /**
      * 初始化系统定时任务
-     * @param job jobs 表实体
      * @param type 系统定时任务类型
      */
-    private void initSysJob(Jobs job, String type) {
+    private Jobs initSysJob(String type) {
+        Jobs job = new Jobs();
         String name = "";
         String cronExpression = "";
 
@@ -295,5 +295,8 @@ public class QuartzHandler {
         job.setStatus(1);
         job.setSuiteId(0);
         job.setType(type);
+
+        jobsService.save(job);
+        return job;
     }
 }
