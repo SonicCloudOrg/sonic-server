@@ -268,6 +268,25 @@ public class QuartzHandler {
         String name = "";
         String cronExpression = "";
 
+        switch (type) {
+            case "cleanFile":
+                cronExpression = "0 0 12 15 * ?";
+                name = "清理系统文件";
+                break;
+            case "cleanResult":
+                cronExpression = "0 0 12 15 * ?";
+                name = "清理测试报告";
+                break;
+            case "sendDayReport":
+                cronExpression = "0 0 10 * * ?";
+                name = "发送日报";
+                break;
+            case "sendWeekReport":
+                cronExpression = "0 0 10 ? * MON";
+                name = "发送周报";
+                break;
+        }
+
         job.setCronExpression(cronExpression);
         job.setName(name);
         job.setProjectId(0);
