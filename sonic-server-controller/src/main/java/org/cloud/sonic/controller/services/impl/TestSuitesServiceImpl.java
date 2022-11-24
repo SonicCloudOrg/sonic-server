@@ -117,7 +117,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             results.setSendMsgCount(testSuitesDTO.getTestCases().size());
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
-            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * testSuitesDTO.getDevices().size());
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * devicesList.size());
         }
         results.setReceiveMsgCount(0);
         results.setProjectId(testSuitesDTO.getProjectId());
@@ -181,7 +181,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             results.setSendMsgCount(testSuitesDTO.getTestCases().size());
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
-            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * testSuitesDTO.getDevices().size());
+            results.setSendMsgCount(testSuitesDTO.getTestCases().size() * devicesList.size());
         }
         results.setProjectId(testSuitesDTO.getProjectId());
         resultsService.save(results);
