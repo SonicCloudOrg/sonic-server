@@ -69,6 +69,20 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired
     private ModulesMapper modulesMapper;
 
+    private static final Map<String, String> sortMap = new HashMap<>();
+    // 兼容测试用例表所有字段自定义排序
+    static {
+        sortMap.put("id", "id");
+        sortMap.put("des", "des");
+        sortMap.put("designer", "designer");
+        sortMap.put("editTime", "edit_time");
+        sortMap.put("moduleId", "module_id");
+        sortMap.put("name", "name");
+        sortMap.put("platform", "platform");
+        sortMap.put("projectId", "project_id");
+        sortMap.put("version", "version");
+    }
+
     @Override
     public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
                                              String orderAsc, String orderDesc) {
@@ -78,8 +92,8 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .eq(platform != 0, "platform", platform)
                 .in(moduleIds != null && moduleIds.size() > 0, "module_id", moduleIds)
                 .like(!StringUtils.isEmpty(name), "name", name)
-                .orderByDesc(!StringUtils.isEmpty(orderDesc), orderDesc)
-                .orderByAsc(!StringUtils.isEmpty(orderAsc), orderAsc);
+                .orderByDesc(!StringUtils.isEmpty(orderDesc), sortMap.get(orderDesc))
+                .orderByAsc(!StringUtils.isEmpty(orderAsc), sortMap.get(orderAsc));
 
         if (StringUtils.isEmpty(orderAsc) && StringUtils.isEmpty(orderDesc)){
             lambdaQuery.orderByDesc("edit_time");
