@@ -87,7 +87,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
                                              String orderAsc, String orderDesc) {
         QueryWrapper<TestCases> lambdaQuery = new QueryWrapper<>();
-        // 有个问题，需要驼峰转换成字符串
+
         lambdaQuery.eq(projectId != 0, "project_id", projectId)
                 .eq(platform != 0, "platform", platform)
                 .in(moduleIds != null && moduleIds.size() > 0, "module_id", moduleIds)
