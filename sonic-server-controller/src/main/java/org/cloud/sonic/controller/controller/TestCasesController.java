@@ -59,7 +59,9 @@ public class TestCasesController {
             @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
             @ApiImplicitParam(name = "moduleIds", value = "模块Id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "orderAsc", value = "升序字段", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "orderDesc", value = "降序字段", dataTypeClass = String.class)
     })
     @GetMapping("/list")
     public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
@@ -67,12 +69,14 @@ public class TestCasesController {
                                                         @RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
                                                         @RequestParam(name = "page") int page,
-                                                        @RequestParam(name = "pageSize") int pageSize) {
+                                                        @RequestParam(name = "pageSize") int pageSize,
+                                                        @RequestParam(name = "orderAsc", required = false) String orderAsc,
+                                                        @RequestParam(value = "orderDesc", required = false) String orderDesc) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         System.out.println(moduleIds);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                testCasesService.findAll(projectId, platform, name, moduleIds, pageable)
+                testCasesService.findAll(projectId, platform, name, moduleIds, pageable,orderAsc ,orderDesc)
         );
     }
 

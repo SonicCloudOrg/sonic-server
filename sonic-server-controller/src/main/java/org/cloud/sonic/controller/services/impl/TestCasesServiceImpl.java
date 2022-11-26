@@ -20,6 +20,7 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
@@ -37,6 +38,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -67,20 +70,24 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
+                                             String orderAsc, String orderDesc) {
+        QueryWrapper<TestCases> lambdaQuery = new QueryWrapper<>();
+        // 有个问题，需要驼峰转换成字符串
+        lambdaQuery.eq(projectId != 0, "project_id", projectId)
+                .eq(platform != 0, "platform", platform)
+                .in(moduleIds != null && moduleIds.size() > 0, "module_id", moduleIds)
+                .like(!StringUtils.isEmpty(name), "name", name)
+                .orderByDesc(!StringUtils.isEmpty(orderDesc), orderDesc)
+                .orderByAsc(!StringUtils.isEmpty(orderAsc), orderAsc);
 
-        LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
-
-        lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
-                .eq(platform != 0, TestCases::getPlatform, platform)
-                .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
-                .like(!StringUtils.isEmpty(name), TestCases::getName, name)
-                .orderByDesc(TestCases::getEditTime);
-
+        if (StringUtils.isEmpty(orderAsc) && StringUtils.isEmpty(orderDesc)){
+            lambdaQuery.orderByDesc("edit_time");
+        }
         //写入对应模块信息
-        Page<TestCases> page = lambdaQuery.page(pageable);
+        Page<TestCases> page = testCasesMapper.selectPage(pageable, lambdaQuery);
         List<TestCasesDTO> testCasesDTOS = page.getRecords()
-                .stream().map(e -> findCaseDetail(e)).collect(Collectors.toList());
+                .stream().map(this::findCaseDetail).collect(Collectors.toList());
 
         return CommentPage.convertFrom(page, testCasesDTOS);
     }
