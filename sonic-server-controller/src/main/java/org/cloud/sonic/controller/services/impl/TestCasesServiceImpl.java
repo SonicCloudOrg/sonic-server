@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, TestCases> implements TestCasesService {
-
     @Autowired
     private StepsService stepsService;
     @Autowired
@@ -68,7 +67,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 
     @Override
     public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
-                                             String idSort ,String designerSort, String editTimeSort) {
+                                             String idSort, String designerSort, String editTimeSort) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 

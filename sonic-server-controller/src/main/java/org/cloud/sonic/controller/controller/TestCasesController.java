@@ -130,7 +130,7 @@ public class TestCasesController {
         }
 
         // 修改时，更新修改时间
-        if(!StringUtils.isEmpty(testCasesDTO.getId())){
+        if (!StringUtils.isEmpty(testCasesDTO.getId())) {
             testCasesDTO.setEditTime(new Date());
         }
         testCasesService.save(testCasesDTO.convertTo());
