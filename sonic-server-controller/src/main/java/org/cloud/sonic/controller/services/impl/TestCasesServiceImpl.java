@@ -67,7 +67,8 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
+                                             String idSort ,String designerSort, String editTimeSort) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
@@ -75,12 +76,14 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .eq(platform != 0, TestCases::getPlatform, platform)
                 .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
                 .like(!StringUtils.isEmpty(name), TestCases::getName, name)
-                .orderByDesc(TestCases::getEditTime);
+                .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId)
+                .orderBy(!StringUtils.isEmpty(designerSort), "asc".equals(designerSort), TestCases::getDesigner)
+                .orderBy(!StringUtils.isEmpty(editTimeSort), "asc".equals(editTimeSort), TestCases::getEditTime);
 
         //写入对应模块信息
         Page<TestCases> page = lambdaQuery.page(pageable);
         List<TestCasesDTO> testCasesDTOS = page.getRecords()
-                .stream().map(e -> findCaseDetail(e)).collect(Collectors.toList());
+                .stream().map(this::findCaseDetail).collect(Collectors.toList());
 
         return CommentPage.convertFrom(page, testCasesDTOS);
     }

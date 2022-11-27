@@ -17,7 +17,6 @@
  */
 package org.cloud.sonic.controller.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -34,10 +33,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Api(tags = "测试用例相关")
@@ -59,7 +60,11 @@ public class TestCasesController {
             @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
             @ApiImplicitParam(name = "moduleIds", value = "模块Id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "idSort", value = "控制id排序方式", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "designerSort", value = "控制designer排序方式", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "editTimeSort", value = "控制editTime排序方式", dataTypeClass = String.class)
+
     })
     @GetMapping("/list")
     public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
@@ -67,12 +72,15 @@ public class TestCasesController {
                                                         @RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
                                                         @RequestParam(name = "page") int page,
-                                                        @RequestParam(name = "pageSize") int pageSize) {
+                                                        @RequestParam(name = "pageSize") int pageSize,
+                                                        @RequestParam(name = "idSort", required = false) String idSort,
+                                                        @RequestParam(value = "designerSort", required = false) String designerSort,
+                                                        @RequestParam(value = "editTimeSort", required = false, defaultValue = "desc") String editTimeSort) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         System.out.println(moduleIds);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                testCasesService.findAll(projectId, platform, name, moduleIds, pageable)
+                testCasesService.findAll(projectId, platform, name, moduleIds, pageable, idSort, designerSort, editTimeSort)
         );
     }
 
@@ -119,6 +127,11 @@ public class TestCasesController {
             if (userName != null) {
                 testCasesDTO.setDesigner(userName);
             }
+        }
+
+        // 修改时，更新修改时间
+        if(!StringUtils.isEmpty(testCasesDTO.getId())){
+            testCasesDTO.setEditTime(new Date());
         }
         testCasesService.save(testCasesDTO.convertTo());
         return new RespModel<>(RespEnum.UPDATE_OK);
