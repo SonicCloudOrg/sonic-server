@@ -90,7 +90,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     }
 
     @Transactional
-    private ElementsDTO findEleDetail(Elements elements) {
+    public ElementsDTO findEleDetail(Elements elements) {
         if (elements.getModuleId() != null && elements.getModuleId() != 0) {
             Modules modules = modulesMapper.selectById(elements.getModuleId());
             if (modules != null) {

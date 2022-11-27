@@ -17,6 +17,7 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
@@ -35,6 +36,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -125,6 +127,11 @@ public class TestCasesController {
             if (userName != null) {
                 testCasesDTO.setDesigner(userName);
             }
+        }
+
+        // 修改时，更新修改时间
+        if(!StringUtils.isEmpty(testCasesDTO.getId())){
+            testCasesDTO.setEditTime(DateUtil.date(System.currentTimeMillis()));
         }
         testCasesService.save(testCasesDTO.convertTo());
         return new RespModel<>(RespEnum.UPDATE_OK);
