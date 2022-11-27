@@ -75,9 +75,9 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .eq(platform != 0, TestCases::getPlatform, platform)
                 .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
                 .like(!StringUtils.isEmpty(name), TestCases::getName, name)
-                .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId)
                 .orderBy(!StringUtils.isEmpty(designerSort), "asc".equals(designerSort), TestCases::getDesigner)
-                .orderBy(!StringUtils.isEmpty(editTimeSort), "asc".equals(editTimeSort), TestCases::getEditTime);
+                .orderBy(!StringUtils.isEmpty(editTimeSort), "desc".equals(editTimeSort), TestCases::getEditTime)
+                .orderBy(!StringUtils.isEmpty(idSort), "desc".equals(idSort), TestCases::getId);
 
         //写入对应模块信息
         Page<TestCases> page = lambdaQuery.page(pageable);
