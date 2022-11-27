@@ -17,8 +17,6 @@
  */
 package org.cloud.sonic.controller.controller;
 
-import cn.hutool.core.date.DateUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -28,7 +26,6 @@ import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.TestCases;
 import org.cloud.sonic.controller.models.domain.TestSuites;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
-import org.cloud.sonic.controller.models.dto.TestCasesQueryInfoDTO;
 import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.TestSuitesService;
 import io.swagger.annotations.Api;
@@ -41,6 +38,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Api(tags = "测试用例相关")
@@ -63,8 +61,10 @@ public class TestCasesController {
             @ApiImplicitParam(name = "moduleIds", value = "模块Id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "orderAsc", value = "升序字段", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "orderDesc", value = "降序字段", dataTypeClass = String.class)
+            @ApiImplicitParam(name = "idSort", value = "控制id排序方式", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "designerSort", value = "控制designer排序方式", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "editTimeSort", value = "控制editTime排序方式", dataTypeClass = String.class)
+
     })
     @GetMapping("/list")
     public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
@@ -131,7 +131,7 @@ public class TestCasesController {
 
         // 修改时，更新修改时间
         if(!StringUtils.isEmpty(testCasesDTO.getId())){
-            testCasesDTO.setEditTime(DateUtil.date(System.currentTimeMillis()));
+            testCasesDTO.setEditTime(new Date());
         }
         testCasesService.save(testCasesDTO.convertTo());
         return new RespModel<>(RespEnum.UPDATE_OK);
