@@ -76,7 +76,6 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                 .eq(platform != 0, TestCases::getPlatform, platform)
                 .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
                 .like(!StringUtils.isEmpty(name), TestCases::getName, name)
-                .orderByDesc(TestCases::getEditTime)
                 .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId)
                 .orderBy(!StringUtils.isEmpty(designerSort), "asc".equals(designerSort), TestCases::getDesigner)
                 .orderBy(!StringUtils.isEmpty(editTimeSort), "asc".equals(editTimeSort), TestCases::getEditTime);

@@ -73,7 +73,7 @@ public class TestCasesController {
                                                         @RequestParam(name = "pageSize") int pageSize,
                                                         @RequestParam(name = "idSort", required = false) String idSort,
                                                         @RequestParam(value = "designerSort", required = false) String designerSort,
-                                                        @RequestParam(value = "editTimeSort", required = false) String editTimeSort) {
+                                                        @RequestParam(value = "editTimeSort", required = false, defaultValue = "desc") String editTimeSort) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         System.out.println(moduleIds);
         return new RespModel<>(
