@@ -20,7 +20,6 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
@@ -38,8 +37,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -69,37 +66,25 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     @Autowired
     private ModulesMapper modulesMapper;
 
-    private static final Map<String, String> sortMap = new HashMap<>();
-    // 兼容测试用例表所有字段自定义排序
-    static {
-        sortMap.put("id", "id");
-        sortMap.put("des", "des");
-        sortMap.put("designer", "designer");
-        sortMap.put("editTime", "edit_time");
-        sortMap.put("moduleId", "module_id");
-        sortMap.put("name", "name");
-        sortMap.put("platform", "platform");
-        sortMap.put("projectId", "project_id");
-        sortMap.put("version", "version");
-    }
-
     @Override
     public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
-                                             String orderAsc, String orderDesc) {
-        QueryWrapper<TestCases> lambdaQuery = new QueryWrapper<>();
+                                             String idSort ,String designerSort, String editTimeSort) {
 
-        lambdaQuery.eq(projectId != 0, "project_id", projectId)
-                .eq(platform != 0, "platform", platform)
-                .in(moduleIds != null && moduleIds.size() > 0, "module_id", moduleIds)
-                .like(!StringUtils.isEmpty(name), "name", name)
-                .orderByDesc(!StringUtils.isEmpty(orderDesc), sortMap.get(orderDesc))
-                .orderByAsc(!StringUtils.isEmpty(orderAsc), sortMap.get(orderAsc));
+        LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
-        if (StringUtils.isEmpty(orderAsc) && StringUtils.isEmpty(orderDesc)){
-            lambdaQuery.orderByDesc("edit_time");
+        lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
+                .eq(platform != 0, TestCases::getPlatform, platform)
+                .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
+                .like(!StringUtils.isEmpty(name), TestCases::getName, name)
+                .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId)
+                .orderBy(!StringUtils.isEmpty(designerSort), "asc".equals(designerSort), TestCases::getDesigner)
+                .orderBy(!StringUtils.isEmpty(editTimeSort), "asc".equals(editTimeSort), TestCases::getEditTime);
+
+        if(StringUtils.isEmpty(idSort) && StringUtils.isEmpty(designerSort) && StringUtils.isEmpty(editTimeSort)){
+            lambdaQuery.orderByDesc(TestCases::getEditTime);
         }
         //写入对应模块信息
-        Page<TestCases> page = testCasesMapper.selectPage(pageable, lambdaQuery);
+        Page<TestCases> page = lambdaQuery.page(pageable);
         List<TestCasesDTO> testCasesDTOS = page.getRecords()
                 .stream().map(this::findCaseDetail).collect(Collectors.toList());
 

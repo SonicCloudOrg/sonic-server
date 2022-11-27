@@ -27,6 +27,7 @@ import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.TestCases;
 import org.cloud.sonic.controller.models.domain.TestSuites;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
+import org.cloud.sonic.controller.models.dto.TestCasesQueryInfoDTO;
 import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.TestSuitesService;
 import io.swagger.annotations.Api;
@@ -70,13 +71,14 @@ public class TestCasesController {
                                                         @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
                                                         @RequestParam(name = "page") int page,
                                                         @RequestParam(name = "pageSize") int pageSize,
-                                                        @RequestParam(name = "orderAsc", required = false) String orderAsc,
-                                                        @RequestParam(value = "orderDesc", required = false) String orderDesc) {
+                                                        @RequestParam(name = "idSort", required = false) String idSort,
+                                                        @RequestParam(value = "designerSort", required = false) String designerSort,
+                                                        @RequestParam(value = "editTimeSort", required = false) String editTimeSort) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         System.out.println(moduleIds);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                testCasesService.findAll(projectId, platform, name, moduleIds, pageable,orderAsc ,orderDesc)
+                testCasesService.findAll(projectId, platform, name, moduleIds, pageable, idSort, designerSort, editTimeSort)
         );
     }
 
