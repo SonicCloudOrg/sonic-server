@@ -20,6 +20,7 @@ package org.cloud.sonic.controller.services.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.http.RespEnum;
@@ -30,7 +31,6 @@ import org.cloud.sonic.controller.models.domain.Users;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
-import org.cloud.sonic.controller.models.params.DevicesSearchParams;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.UsersService;
@@ -41,12 +41,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalDouble;
 
 import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
@@ -103,17 +105,74 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                                  String deviceInfo, Page<Devices> pageable) {
-        DevicesSearchParams params = new DevicesSearchParams()
-                .setIOSVersion(iOSVersion)
-                .setAndroidVersion(androidVersion)
-                .setManufacturer(manufacturer)
-                .setCpu(cpu)
-                .setSize(size)
-                .setAgentId(agentId)
-                .setStatus(status)
-                .setDeviceInfo(deviceInfo)
-                .setHmVersion(hmVersion);
-        return devicesMapper.findByParams(pageable, params);
+        LambdaQueryChainWrapper<Devices> chainWrapper = new LambdaQueryChainWrapper<>(devicesMapper);
+        if (androidVersion != null || iOSVersion != null || hmVersion != null) {
+            chainWrapper.and(i -> {
+                if (androidVersion != null) {
+                    i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 0)
+                            .and(j -> {
+                                for (String v : androidVersion) {
+                                    j.or().likeRight(Devices::getVersion, v);
+                                }
+                            });
+                }
+                if (iOSVersion != null) {
+                    i.or().eq(Devices::getPlatform, 2).and(j -> {
+                        for (String v : iOSVersion) {
+                            j.or().likeRight(Devices::getVersion, v);
+                        }
+                    });
+                }
+                if (hmVersion != null) {
+                    i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 1)
+                            .and(j -> {
+                                for (String v : hmVersion) {
+                                    j.or().likeRight(Devices::getVersion, v);
+                                }
+                            });
+                }
+            });
+        }
+
+        if (manufacturer != null && manufacturer.size() > 0) {
+            chainWrapper.in(Devices::getManufacturer, manufacturer);
+        }
+
+        if (cpu != null && cpu.size() > 0) {
+            chainWrapper.in(Devices::getCpu, cpu);
+        }
+
+        if (size != null && size.size() > 0) {
+            chainWrapper.in(Devices::getSize, size);
+        }
+
+        if (agentId != null && agentId.size() > 0) {
+            chainWrapper.in(Devices::getAgentId, agentId);
+        }
+
+        if (status != null && status.size() > 0) {
+            chainWrapper.in(Devices::getStatus, status);
+        }
+
+        if (!StringUtils.isEmpty(deviceInfo)) {
+            chainWrapper.like(Devices::getUdId, deviceInfo)
+                    .or().like(Devices::getModel, deviceInfo)
+                    .or().like(Devices::getChiName, deviceInfo);
+        }
+
+        chainWrapper.last("order by case\n" +
+                "        when status='ONLINE' then 1\n" +
+                "        when status='DEBUGGING' then 2\n" +
+                "        when status='TESTING' then 3\n" +
+                "        when status='ERROR' then 4\n" +
+                "        when status='UNAUTHORIZED' then 5\n" +
+                "        when status='OFFLINE' then 6\n" +
+                "        when status='DISCONNECTED' then 7 else 8 end asc,\n" +
+                "        status asc,\n" +
+                "        id desc");
+
+        Page<Devices> devicesPage = chainWrapper.page(pageable);
+        return devicesPage;
     }
 
     @Override
@@ -272,8 +331,10 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public Integer findTemper() {
-        return devicesMapper.findTemper(Arrays.asList(DeviceStatus.ONLINE
-                , DeviceStatus.DEBUGGING, DeviceStatus.TESTING));
+        OptionalDouble tempers = new LambdaQueryChainWrapper<Devices>(devicesMapper).ne(Devices::getTemperature, 0)
+                .in(Devices::getStatus, Arrays.asList(DeviceStatus.ONLINE, DeviceStatus.DEBUGGING, DeviceStatus.TESTING))
+                .list().stream().mapToInt(Devices::getTemperature).average();
+        return tempers.isPresent() ? (int) tempers.getAsDouble() : 0;
     }
 
     @Override

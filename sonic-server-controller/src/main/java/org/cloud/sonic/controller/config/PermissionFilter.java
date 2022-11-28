@@ -95,7 +95,6 @@ public class PermissionFilter extends OncePerRequestFilter {
             }
 
             if (!rolesServices.checkUserHasResourceAuthorize(userName, resourceName, method)) {
-
                 response.setContentType("text/plain;charset=UTF-8");
                 JSONObject re = (JSONObject) JSONObject.toJSON(new RespModel(RespEnum.PERMISSION_DENIED));
                 response.getWriter().write(re.toJSONString());
