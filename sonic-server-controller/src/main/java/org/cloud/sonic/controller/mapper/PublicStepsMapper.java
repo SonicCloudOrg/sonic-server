@@ -12,20 +12,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  Mapper 接口
+ * Mapper 接口
+ *
  * @author JayWenStar
  * @since 2021-12-17
  */
 @Mapper
 public interface PublicStepsMapper extends BaseMapper<PublicSteps> {
 
+    @Select("<script>" +
+            "select pss.public_steps_id, s.* from public_steps_steps pss\n" +
+            "inner join steps s on s.id = pss.steps_id\n" +
+            "where public_steps_id in\n" +
+            "<foreach collection='publicStepsIds' item='item' index='index' open='(' close=')' separator=','>#{item}</foreach>\n" +
+            "order by pss.public_steps_id asc" +
+            "</script>")
     List<StepsDTO> listStepsByPublicStepsIds(@Param("publicStepsIds") Collection<Integer> publicStepsIds);
 
     @Select("select ps.* from public_steps_steps pss " +
-                "inner join public_steps ps on ps.id = pss.public_steps_id " +
+            "inner join public_steps ps on ps.id = pss.public_steps_id " +
             "where pss.steps_id = #{stepId}")
     List<PublicSteps> listPubStepsByStepId(@Param("stepId") int stepId);
 
-    @Select("select id,name from public_steps where project_id=#{projectId} and platform=#{platform} order by id desc")
-    List<Map<Integer, String>> findByProjectIdAndPlatform(@Param("projectId") int projectId, @Param("platform") int platform);
 }

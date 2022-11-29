@@ -14,7 +14,7 @@ spring:
 
 # 一般不需要动
 mybatis-plus:
-  mapper-locations: classpath:mapping/*.xml, classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+  mapper-locations: classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
   global-config:
     banner: false
   configuration:
