@@ -51,6 +51,14 @@ public class TestSuites implements Serializable, TypeConverter<TestSuites, TestS
     private Integer platform;
 
     @TableField
+    @Column(isNull = false, comment = "是否采集系统性能数据", defaultValue = "0")
+    private Integer isOpenPerfmon;
+
+    @TableField
+    @Column(isNull = false, comment = "采集性能数据间隔", defaultValue = "1000")
+    private Integer perfmonInterval;
+
+    @TableField
     @Column(value = "project_id", isNull = false, comment = "覆盖类型")
     @Index(value = "IDX_PROJECT_ID", columns = {"project_id"})
     private Integer projectId;

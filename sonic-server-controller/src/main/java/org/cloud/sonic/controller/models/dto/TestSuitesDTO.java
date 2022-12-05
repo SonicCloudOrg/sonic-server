@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.List;
@@ -41,6 +42,14 @@ public class TestSuitesDTO implements Serializable, TypeConverter<TestSuitesDTO,
     @Positive
     @ApiModelProperty(value = "项目id", required = true, example = "1")
     Integer projectId;
+
+    @NotNull
+    @ApiModelProperty(value = "是否采集系统性能数据", required = true, example = "1")
+    Integer isOpenPerfmon;
+
+    @NotNull
+    @ApiModelProperty(value = "采集性能数据间隔", required = true, example = "1")
+    Integer perfmonInterval;
 
     @ApiModelProperty(value = "包含的测试用例")
     List<TestCasesDTO> testCases;

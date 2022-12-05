@@ -447,7 +447,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         }
     }
 
-    private JSONObject packageTestCase(Devices devices, TestCasesDTO testCases,
+    private JSONObject packageTestCase(Devices devices, int isOpenPerfmon, int perfmonInterval, TestCasesDTO testCases,
                                        JSONObject gp, Results results, StepsService stepsService) {
         JSONObject testCase = new JSONObject();
         List<JSONObject> steps = new ArrayList<>();
@@ -455,6 +455,10 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         for (StepsDTO s : stepsList) {
             steps.add(getStep(s));
         }
+        JSONObject perf = new JSONObject();
+        perf.put("isOpen", isOpenPerfmon);
+        perf.put("perfInterval", perfmonInterval);
+        testCase.put("perf", perf);
         testCase.put("steps", steps);
         testCase.put("cid", testCases.getId());
         testCase.put("device", new ArrayList<>() {{
@@ -516,7 +520,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp = refreshGlobalParams(gp, valueMap);
                 for (int j = i; j < testSuitesDTO.getTestCases().size(); j += devicesList.size()) {
                     TestCasesDTO testCases = testSuitesDTO.getTestCases().get(j);
-                    suiteDetailList.add(packageTestCase(devices, testCases, gp, results, this.stepsService));
+                    suiteDetailList.add(packageTestCase(devices, testSuitesDTO.getIsOpenPerfmon(), testSuitesDTO.getPerfmonInterval(),
+                            testCases, gp, results, this.stepsService));
                 }
                 send(devices.getAgentId(), testSuitesDTO.getPlatform(), suiteDetailList);
                 suiteDetailList.clear();
@@ -546,7 +551,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 if (suiteDetailList == null) {
                     suiteDetailList = new ArrayList<>();
                     for (TestCasesDTO testCases : testSuitesDTO.getTestCases()) {
-                        suiteDetailList.add(packageTestCase(devices, testCases, gp, results, this.stepsService));
+                        suiteDetailList.add(packageTestCase(devices, testSuitesDTO.getIsOpenPerfmon(), testSuitesDTO.getPerfmonInterval(),
+                                testCases, gp, results, this.stepsService));
                     }
                 } else {
                     for (JSONObject suiteDetail : suiteDetailList) {
