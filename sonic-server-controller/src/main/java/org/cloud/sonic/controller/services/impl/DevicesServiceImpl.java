@@ -248,6 +248,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setPassword("");
             devices.setImgUrl("");
             devices.setTemperature(0);
+            devices.setVoltage(0);
             devices.setLevel(0);
             devices.setIsHm(0);
         }
@@ -324,6 +325,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             if (devices != null) {
                 devices.setTemperature(d.getInteger("tem"));
                 devices.setLevel(d.getInteger("level"));
+                devices.setVoltage(d.getInteger("vol"));
                 save(devices);
             }
         }

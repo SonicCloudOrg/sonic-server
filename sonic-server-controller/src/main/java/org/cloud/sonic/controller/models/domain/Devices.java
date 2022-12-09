@@ -125,6 +125,10 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     Integer temperature;
 
     @TableField
+    @Column(defaultValue = "0", comment = "设备电池电压")
+    Integer voltage;
+
+    @TableField
     @Column(defaultValue = "0", comment = "设备电量")
     Integer level;
 
@@ -148,6 +152,7 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
                 .setUser(tips)
                 .setUdId(tips)
                 .setTemperature(0)
+                .setVoltage(0)
                 .setLevel(0);
     }
 }

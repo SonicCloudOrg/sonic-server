@@ -77,22 +77,26 @@ public class DevicesDTO implements Serializable, TypeConverter<DevicesDTO, Devic
     Integer temperature;
 
     @Getter(AccessLevel.NONE)
+    @ApiModelProperty(value = "设备电池电压", example = "33")
+    Integer voltage;
+
+    @Getter(AccessLevel.NONE)
     @ApiModelProperty(value = "设备电量", example = "33")
     Integer level;
 
     @ApiModelProperty(value = "中文设备", example = "荣耀全网通")
     String chiName;
 
-    public float getTemperature() {
+    public int getTemperature() {
         if (temperature == null) {
-            return 0F;
+            return 0;
         }
         return temperature;
     }
 
-    public float getLevel() {
+    public int getLevel() {
         if (level == null) {
-            return 0F;
+            return 0;
         }
         return level;
     }
