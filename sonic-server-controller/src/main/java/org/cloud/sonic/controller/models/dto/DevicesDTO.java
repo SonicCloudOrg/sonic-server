@@ -87,6 +87,13 @@ public class DevicesDTO implements Serializable, TypeConverter<DevicesDTO, Devic
     @ApiModelProperty(value = "中文设备", example = "荣耀全网通")
     String chiName;
 
+    public int getVoltage() {
+        if (voltage == null) {
+            return 0;
+        }
+        return voltage;
+    }
+
     public int getTemperature() {
         if (temperature == null) {
             return 0;
