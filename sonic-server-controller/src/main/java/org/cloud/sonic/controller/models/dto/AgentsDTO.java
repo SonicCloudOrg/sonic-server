@@ -52,10 +52,10 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     String secretKey;
 
     @ApiModelProperty(value = "highTemp", example = "1")
-    private Integer highTemp;
+    Integer highTemp;
 
     @ApiModelProperty(value = "highTempTime", example = "1")
-    private Integer highTempTime;
+    Integer highTempTime;
 
     @ApiModelProperty(value = "机器人类型", required = true, example = "1")
     Integer robotType;
@@ -65,4 +65,7 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
 
     @ApiModelProperty(value = "机器人加签密钥", required = true, example = "qwe***")
     String robotSecret;
+
+    @ApiModelProperty(value = "是否使用sonic hub", example = "1")
+    Integer hasHub;
 }

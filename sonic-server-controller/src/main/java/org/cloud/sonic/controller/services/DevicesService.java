@@ -37,11 +37,13 @@ import java.util.concurrent.CompletableFuture;
 public interface DevicesService extends IService<Devices> {
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
+    void updatePosition(int id, int position);
+
     void updateDevicesUser(JSONObject jsonObject);
 
     void updateImg(UpdateDeviceImg updateDeviceImg);
 
-    Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion,List<String> hmVersion, List<String> manufacturer,
+    Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> hmVersion, List<String> manufacturer,
                           List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                           String deviceInfo, Page<Devices> pageable);
 

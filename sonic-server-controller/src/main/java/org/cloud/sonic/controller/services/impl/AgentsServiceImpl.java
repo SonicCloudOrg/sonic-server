@@ -105,6 +105,9 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 oldAgent.setPort(jsonObject.getInteger("port"));
                 oldAgent.setVersion(jsonObject.getString("version"));
                 oldAgent.setSystemType(jsonObject.getString("systemType"));
+                if (jsonObject.getInteger("hasHub") != null) {
+                    oldAgent.setHasHub(jsonObject.getInteger("hasHub"));
+                }
                 save(oldAgent);
             }
         }

@@ -132,6 +132,10 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
     @Column(defaultValue = "0", comment = "设备电量")
     Integer level;
 
+    @TableField
+    @Column(defaultValue = "0", comment = "HUB位置")
+    Integer position;
+
     public static Devices newDeletedDevice(int id) {
         String tips = "Device does not exist.";
         return new Devices()
@@ -151,6 +155,7 @@ public class Devices implements Serializable, TypeConverter<Devices, DevicesDTO>
                 .setName(tips)
                 .setUser(tips)
                 .setUdId(tips)
+                .setPosition(0)
                 .setTemperature(0)
                 .setVoltage(0)
                 .setLevel(0);

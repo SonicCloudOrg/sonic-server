@@ -89,4 +89,8 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     @TableField
     @Column(value = "robot_type", isNull = false, comment = "机器人类型", defaultValue = "1")
     private Integer robotType;
+
+    @TableField
+    @Column(value = "has_hub", isNull = false, comment = "是否使用了Sonic hub", defaultValue = "0")
+    private Integer hasHub;
 }

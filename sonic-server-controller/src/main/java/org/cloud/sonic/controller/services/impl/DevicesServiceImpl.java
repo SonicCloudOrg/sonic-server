@@ -84,6 +84,18 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     }
 
     @Override
+    public void updatePosition(int id, int position) {
+        Devices o = lambdaQuery().eq(Devices::getId, id).one();
+        Devices devices = lambdaQuery().eq(Devices::getAgentId, o.getAgentId()).eq(Devices::getPosition, position).one();
+        if (devices != null) {
+            devices.setPosition(0);
+            save(devices);
+        }
+        o.setPosition(position);
+        save(o);
+    }
+
+    @Override
     public void updateDevicesUser(JSONObject jsonObject) {
         Users users = usersService.getUserInfo(jsonObject.getString("token"));
         Devices devices = findByAgentIdAndUdId(jsonObject.getInteger("agentId"),
@@ -105,9 +117,8 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                                  String deviceInfo, Page<Devices> pageable) {
-        LambdaQueryChainWrapper<Devices> chainWrapper = new LambdaQueryChainWrapper<>(devicesMapper);
         if (androidVersion != null || iOSVersion != null || hmVersion != null) {
-            chainWrapper.and(i -> {
+            lambdaQuery().and(i -> {
                 if (androidVersion != null) {
                     i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 0)
                             .and(j -> {
@@ -135,32 +146,32 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         }
 
         if (manufacturer != null && manufacturer.size() > 0) {
-            chainWrapper.in(Devices::getManufacturer, manufacturer);
+            lambdaQuery().in(Devices::getManufacturer, manufacturer);
         }
 
         if (cpu != null && cpu.size() > 0) {
-            chainWrapper.in(Devices::getCpu, cpu);
+            lambdaQuery().in(Devices::getCpu, cpu);
         }
 
         if (size != null && size.size() > 0) {
-            chainWrapper.in(Devices::getSize, size);
+            lambdaQuery().in(Devices::getSize, size);
         }
 
         if (agentId != null && agentId.size() > 0) {
-            chainWrapper.in(Devices::getAgentId, agentId);
+            lambdaQuery().in(Devices::getAgentId, agentId);
         }
 
         if (status != null && status.size() > 0) {
-            chainWrapper.in(Devices::getStatus, status);
+            lambdaQuery().in(Devices::getStatus, status);
         }
 
         if (!StringUtils.isEmpty(deviceInfo)) {
-            chainWrapper.like(Devices::getUdId, deviceInfo)
+            lambdaQuery().like(Devices::getUdId, deviceInfo)
                     .or().like(Devices::getModel, deviceInfo)
                     .or().like(Devices::getChiName, deviceInfo);
         }
 
-        chainWrapper.last("order by case\n" +
+        lambdaQuery().last("order by case\n" +
                 "        when status='ONLINE' then 1\n" +
                 "        when status='DEBUGGING' then 2\n" +
                 "        when status='TESTING' then 3\n" +
@@ -171,7 +182,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 "        status asc,\n" +
                 "        id desc");
 
-        Page<Devices> devicesPage = chainWrapper.page(pageable);
+        Page<Devices> devicesPage = lambdaQuery().page(pageable);
         return devicesPage;
     }
 
@@ -247,6 +258,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             devices.setUser("");
             devices.setPassword("");
             devices.setImgUrl("");
+            devices.setPosition(0);
             devices.setTemperature(0);
             devices.setVoltage(0);
             devices.setLevel(0);

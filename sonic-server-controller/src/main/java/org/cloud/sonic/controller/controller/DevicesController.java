@@ -57,6 +57,18 @@ public class DevicesController {
     }
 
     @WebAspect
+    @ApiOperation(value = "更新设备Pos", notes = "更新设备Pos")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "position", value = "position", dataTypeClass = Integer.class)
+    })
+    @GetMapping("/updatePosition")
+    public RespModel updatePosition(@RequestParam(name = "id") int id, @RequestParam(name = "position") int position) {
+        devicesService.updatePosition(id, position);
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
+
+    @WebAspect
     @ApiOperation(value = "修改设备图片", notes = "修改对应设备id的图片")
     @PutMapping("/updateImg")
     public RespModel<String> updateImg(@Validated @RequestBody UpdateDeviceImg updateDeviceImg) {
@@ -82,7 +94,7 @@ public class DevicesController {
     @GetMapping("/list")
     public RespModel<CommentPage<Devices>> findAll(@RequestParam(name = "androidVersion[]", required = false) List<String> androidVersion,
                                                    @RequestParam(name = "iOSVersion[]", required = false) List<String> iOSVersion,
-                                                   @RequestParam(name = "hmVersion[]" , required = false) List<String> hmVersion,
+                                                   @RequestParam(name = "hmVersion[]", required = false) List<String> hmVersion,
                                                    @RequestParam(name = "manufacturer[]", required = false) List<String> manufacturer,
                                                    @RequestParam(name = "cpu[]", required = false) List<String> cpu,
                                                    @RequestParam(name = "size[]", required = false) List<String> size,
@@ -95,7 +107,7 @@ public class DevicesController {
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
                 CommentPage.convertFrom(
-                        devicesService.findAll(iOSVersion, androidVersion,hmVersion, manufacturer, cpu, size,
+                        devicesService.findAll(iOSVersion, androidVersion, hmVersion, manufacturer, cpu, size,
                                 agentId, status, deviceInfo, pageable)
                 )
         );

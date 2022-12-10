@@ -84,8 +84,19 @@ public class DevicesDTO implements Serializable, TypeConverter<DevicesDTO, Devic
     @ApiModelProperty(value = "设备电量", example = "33")
     Integer level;
 
+    @Getter(AccessLevel.NONE)
+    @ApiModelProperty(value = "HUB位置", example = "1")
+    Integer position;
+
     @ApiModelProperty(value = "中文设备", example = "荣耀全网通")
     String chiName;
+
+    public int getPosition() {
+        if (position == null) {
+            return 0;
+        }
+        return position;
+    }
 
     public int getVoltage() {
         if (voltage == null) {
