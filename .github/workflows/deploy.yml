@@ -29,3 +29,19 @@ jobs:
         run: echo "${{ secrets.ACCESS_TOKEN_ALIYUN }}" | docker login --username=${{ secrets.ALIYUN_USERNAME }} registry.cn-hongkong.aliyuncs.com --password-stdin
       - name: Validate and Compile with Maven
         run: mvn package
+      - name: deploy controller
+        run: docker build -t registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-controller:${{ steps.previoustag.outputs.tag }} -f sonic-server-controller/src/main/docker/Dockerfile .
+      - name: push controller
+        run: docker push registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-controller:${{ steps.previoustag.outputs.tag }}
+      - name: deploy eureka
+        run: docker build -t registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-eureka:${{ steps.previoustag.outputs.tag }} -f sonic-server-eureka/src/main/docker/Dockerfile .
+      - name: push eureka
+        run: docker push registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-eureka:${{ steps.previoustag.outputs.tag }}
+      - name: deploy gateway
+        run: docker build -t registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-gateway:${{ steps.previoustag.outputs.tag }} -f sonic-server-gateway/src/main/docker/Dockerfile .
+      - name: push gateway
+        run: docker push registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-gateway:${{ steps.previoustag.outputs.tag }}
+      - name: deploy folder
+        run: docker build -t registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-folder:${{ steps.previoustag.outputs.tag }} -f sonic-server-folder/src/main/docker/Dockerfile .
+      - name: push folder
+        run: docker push registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-folder:${{ steps.previoustag.outputs.tag }}
