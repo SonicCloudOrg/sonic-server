@@ -85,11 +85,8 @@
                         </goals>
                         <configuration>
                             <pushImage>true</pushImage>
-                            <imageName>sonicorg/${project.artifactId}:v${project.version}</imageName>
-                            <baseImage>adoptopenjdk/openjdk15:alpine AS builder</baseImage>
-                            <runs>
-                                <run>ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</run>
-                            </runs>
+                            <imageName>registry.cn-hongkong.aliyuncs.com/sonic-cloud/${project.artifactId}:v${project.version}</imageName>
+                            <baseImage>registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-base:v1.0.0</baseImage>
                             <entryPoint>
                                 ["java","-server","-XX:-UseGCOverheadLimit","-XX:+DisableExplicitGC","-XX:SurvivorRatio=1","-XX:LargePageSizeInBytes=128M","-XX:SoftRefLRUPolicyMSPerMB=0","-Djava.security.egd=file:/dev/./urandom","--add-exports=java.naming/com.sun.jndi.ldap=ALL-UNNAMED","-jar","/${project.build.finalName}.jar"]
                             </entryPoint>

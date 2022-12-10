@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonic-server-eureka:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-eureka:SONIC_VERSION"
+    image: "registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-eureka:SONIC_VERSION"
     hostname: sonic-server-eureka
     environment:
       - SONIC_EUREKA_USERNAME
@@ -15,7 +15,7 @@ services:
     ports:
       - "${SONIC_EUREKA_PORT}:${SONIC_EUREKA_PORT}"
   sonic-server-gateway:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-gateway:SONIC_VERSION"
+    image: "registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-gateway:SONIC_VERSION"
     hostname: sonic-server-gateway
     environment:
       - SONIC_EUREKA_USERNAME
@@ -32,7 +32,7 @@ services:
       - sonic-network
     restart: on-failure
   sonic-server-controller:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-controller:SONIC_VERSION"
+    image: "registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-controller:SONIC_VERSION"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -65,7 +65,7 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-server-folder:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-server-folder:SONIC_VERSION"
+    image: "registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-server-folder:SONIC_VERSION"
     environment:
       - SONIC_EUREKA_USERNAME
       - SONIC_EUREKA_PASSWORD
@@ -87,7 +87,7 @@ services:
       - sonic-server-eureka
     restart: on-failure
   sonic-client-web:
-    image: "registry.cn-hangzhou.aliyuncs.com/sonic-cloud/sonic-client-web:SONIC_VERSION"
+    image: "registry.cn-hongkong.aliyuncs.com/sonic-cloud/sonic-client-web:SONIC_VERSION"
     environment:
       - SONIC_SERVER_HOST
       - SONIC_SERVER_PORT
