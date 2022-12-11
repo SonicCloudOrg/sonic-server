@@ -46,6 +46,15 @@ public class DevicesController {
     private DevicesService devicesService;
 
     @WebAspect
+    @ApiOperation(value = "查询Agent所有设备", notes = "不分页的设备列表")
+    @ApiImplicitParam(name = "agentId", value = "平台", dataTypeClass = Integer.class)
+    @GetMapping("/listByAgentId")
+    public RespModel<List<Devices>> listByAgentId(@RequestParam(name = "agentId") int agentId) {
+        return new RespModel<>(RespEnum.SEARCH_OK,
+                devicesService.listByAgentId(agentId));
+    }
+
+    @WebAspect
     @ApiOperation(value = "修改设备安装密码", notes = "修改对应设备id的安装密码")
     @PutMapping("/saveDetail")
     public RespModel<String> saveDetail(@Validated @RequestBody DeviceDetailChange deviceDetailChange) {

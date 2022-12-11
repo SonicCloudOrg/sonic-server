@@ -18,6 +18,8 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -27,6 +29,7 @@ import org.cloud.sonic.controller.models.dto.AgentsDTO;
 import org.cloud.sonic.controller.services.AgentsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +48,23 @@ public class AgentsController {
 
     @Autowired
     private AgentsService agentsService;
+
+    @WebAspect
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "position", value = "position", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "type", value = "type", dataTypeClass = String.class)
+    })
+    @GetMapping("/hubControl")
+    public RespModel<?> hubControl(@RequestParam(name = "id") int id, @RequestParam(name = "position") int position,
+                                   @RequestParam(name = "type") String type) {
+        JSONObject result = new JSONObject();
+        result.put("msg", "hub");
+        result.put("position", position);
+        result.put("type", type);
+        TransportWorker.send(id, result);
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
 
     @WebAspect
     @ApiOperation(value = "查询所有Agent端", notes = "获取所有Agent端以及详细信息")

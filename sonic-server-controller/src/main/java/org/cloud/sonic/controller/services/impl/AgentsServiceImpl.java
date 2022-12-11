@@ -69,6 +69,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setRobotToken(robotToken);
             agents.setRobotSecret(robotSecret);
             agents.setSecretKey(UUID.randomUUID().toString());
+            agents.setHasHub(0);
             save(agents);
         } else {
             Agents ag = findById(id);
