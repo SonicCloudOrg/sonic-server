@@ -19,7 +19,6 @@ package org.cloud.sonic.common.config;
 
 import org.cloud.sonic.common.http.RespModel;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -37,7 +36,7 @@ import java.util.Locale;
  * @author JayWenStar, Eason
  * @date 2022/4/11 1:59 上午
  */
-@ControllerAdvice({"org.cloud.sonic.controller.controller", "org.cloud.sonic.folder.controller"})
+@ControllerAdvice
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
     @Resource
     private MessageSource messageSource;
@@ -50,8 +49,20 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         MappingJacksonValue container = getOrCreateContainer(body);
-        String language = "zh_CN";
+
         String l = request.getHeaders().getFirst("Accept-Language");
+        // Get return body
+        Object returnBody = container.getValue();
+
+        if (returnBody instanceof RespModel) {
+            RespModel<?> baseResponse = (RespModel) returnBody;
+            process(l, baseResponse, messageSource);
+        }
+        return container;
+    }
+
+    public static RespModel process(String l, RespModel respModel,MessageSource messageSource) {
+        String language = "zh_CN";
         if (l != null) {
             language = l;
         }
@@ -62,14 +73,8 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
         } else {
             locale = new Locale("zh", "CN");
         }
-        // Get return body
-        Object returnBody = container.getValue();
-
-        if (returnBody instanceof RespModel) {
-            RespModel<?> baseResponse = (RespModel) returnBody;
-            baseResponse.setMessage(messageSource.getMessage(baseResponse.getMessage(), new Object[]{}, locale));
-        }
-        return container;
+        respModel.setMessage(messageSource.getMessage(respModel.getMessage(), new Object[]{}, locale));
+        return respModel;
     }
 
     private MappingJacksonValue getOrCreateContainer(Object body) {

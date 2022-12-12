@@ -19,6 +19,7 @@ package org.cloud.sonic.controller.config;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.sonic.common.config.CommonResultControllerAdvice;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
@@ -28,9 +29,11 @@ import org.cloud.sonic.controller.services.ResourcesService;
 import org.cloud.sonic.controller.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +67,9 @@ public class PermissionFilter extends OncePerRequestFilter {
 
     public static final String TOKEN = "SonicToken";
 
+    @Resource
+    private MessageSource messageSource;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(TOKEN);
@@ -84,7 +90,7 @@ public class PermissionFilter extends OncePerRequestFilter {
 
             if (resources == null) {
                 response.setContentType("text/plain;charset=UTF-8");
-                JSONObject re = (JSONObject) JSONObject.toJSON(new RespModel(RespEnum.RESOURCE_NOT_FOUND));
+                JSONObject re = (JSONObject) JSONObject.toJSON(process(request, new RespModel(RespEnum.RESOURCE_NOT_FOUND)));
                 response.getWriter().write(re.toJSONString());
                 return;
             }
@@ -96,13 +102,21 @@ public class PermissionFilter extends OncePerRequestFilter {
 
             if (!rolesServices.checkUserHasResourceAuthorize(userName, resourceName, method)) {
                 response.setContentType("text/plain;charset=UTF-8");
-                JSONObject re = (JSONObject) JSONObject.toJSON(new RespModel(RespEnum.PERMISSION_DENIED));
+                JSONObject re = (JSONObject) JSONObject.toJSON(process(request, new RespModel(RespEnum.PERMISSION_DENIED)));
                 response.getWriter().write(re.toJSONString());
                 return;
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private RespModel process(HttpServletRequest request, RespModel respModel) {
+        String l = request.getHeader("Accept-Language");
+        CommonResultControllerAdvice.process(l, respModel, messageSource);
+
+        return respModel;
     }
 
 
