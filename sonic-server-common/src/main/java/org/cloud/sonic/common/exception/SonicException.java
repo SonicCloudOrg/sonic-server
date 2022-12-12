@@ -17,6 +17,11 @@ public class SonicException extends RuntimeException {
         super(message);
     }
 
+    public SonicException(String message, Object errorData) {
+        super(message);
+        this.errorData = errorData;
+    }
+
     public SonicException(String message, Throwable cause) {
         super(message, cause);
     }

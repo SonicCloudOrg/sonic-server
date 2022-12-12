@@ -22,6 +22,7 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -36,6 +37,7 @@ import javax.validation.ConstraintViolationException;
  * @date 2021/8/15 18:26
  */
 @RestControllerAdvice
+@Order(1)
 public class GlobalWebException {
     private final Logger logger = LoggerFactory.getLogger(GlobalWebException.class);
 
