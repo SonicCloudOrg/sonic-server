@@ -3,16 +3,16 @@
  *   Copyright (C) 2022 SonicCloudOrg
  *
  *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
+ *   it under the terms of the GNU Affero General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *   GNU Affero General Public License for more details.
  *
- *   You should have received a copy of the GNU General Public License
+ *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package org.cloud.sonic.controller.services.impl;
@@ -117,8 +117,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public Page<Devices> findAll(List<String> iOSVersion, List<String> androidVersion, List<String> hmVersion, List<String> manufacturer,
                                  List<String> cpu, List<String> size, List<Integer> agentId, List<String> status,
                                  String deviceInfo, Page<Devices> pageable) {
+        LambdaQueryChainWrapper<Devices> chainWrapper = new LambdaQueryChainWrapper<>(devicesMapper);
         if (androidVersion != null || iOSVersion != null || hmVersion != null) {
-            lambdaQuery().and(i -> {
+            chainWrapper.and(i -> {
                 if (androidVersion != null) {
                     i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 0)
                             .and(j -> {
@@ -146,32 +147,32 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         }
 
         if (manufacturer != null && manufacturer.size() > 0) {
-            lambdaQuery().in(Devices::getManufacturer, manufacturer);
+            chainWrapper.in(Devices::getManufacturer, manufacturer);
         }
 
         if (cpu != null && cpu.size() > 0) {
-            lambdaQuery().in(Devices::getCpu, cpu);
+            chainWrapper.in(Devices::getCpu, cpu);
         }
 
         if (size != null && size.size() > 0) {
-            lambdaQuery().in(Devices::getSize, size);
+            chainWrapper.in(Devices::getSize, size);
         }
 
         if (agentId != null && agentId.size() > 0) {
-            lambdaQuery().in(Devices::getAgentId, agentId);
+            chainWrapper.in(Devices::getAgentId, agentId);
         }
 
         if (status != null && status.size() > 0) {
-            lambdaQuery().in(Devices::getStatus, status);
+            chainWrapper.in(Devices::getStatus, status);
         }
 
         if (!StringUtils.isEmpty(deviceInfo)) {
-            lambdaQuery().like(Devices::getUdId, deviceInfo)
+            chainWrapper.like(Devices::getUdId, deviceInfo)
                     .or().like(Devices::getModel, deviceInfo)
                     .or().like(Devices::getChiName, deviceInfo);
         }
 
-        lambdaQuery().last("order by case\n" +
+        chainWrapper.last("order by case\n" +
                 "        when status='ONLINE' then 1\n" +
                 "        when status='DEBUGGING' then 2\n" +
                 "        when status='TESTING' then 3\n" +
@@ -182,7 +183,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 "        status asc,\n" +
                 "        id desc");
 
-        Page<Devices> devicesPage = lambdaQuery().page(pageable);
+        Page<Devices> devicesPage = chainWrapper.page(pageable);
         return devicesPage;
     }
 
