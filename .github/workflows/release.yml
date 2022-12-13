@@ -25,11 +25,11 @@ jobs:
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: replace version
-        run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" docker-compose.yml
+        run: sed -i "s/SONIC_VERSION/${{ steps.previoustag.outputs.tag }}/g" docker-compose*.yml
       - name: mkdir
         run: mkdir -p sonic-server-${{ steps.previoustag.outputs.tag }}/imageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/keepFiles sonic-server-${{ steps.previoustag.outputs.tag }}/logs sonic-server-${{ steps.previoustag.outputs.tag }}/packageFiles sonic-server-${{ steps.previoustag.outputs.tag }}/recordFiles
       - name: copy
-        run: cp .env docker-compose.yml sonic-server-${{ steps.previoustag.outputs.tag }}/
+        run: cp .env docker-compose*.yml sonic-server-${{ steps.previoustag.outputs.tag }}/
       - name: zip
         uses: TheDoctor0/zip-release@0.6.2
         with:
