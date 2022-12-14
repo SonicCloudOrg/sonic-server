@@ -43,6 +43,10 @@ mvn package
 ```
 docker-compose up -d
 ```
+或
+```
+docker-compose -f docker-compose-zh.yml up -d
+```
 
 ## 赞助商
 
