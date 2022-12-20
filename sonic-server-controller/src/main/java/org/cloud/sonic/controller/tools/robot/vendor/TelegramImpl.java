@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -17,7 +17,7 @@ import java.math.RoundingMode;
  * @date 2022/12/20
  */
 @Slf4j
-@Component("TelegramImpl")
+@Service("TelegramImpl")
 public class TelegramImpl implements RobotMessenger {
 
     //从配置文件获取前端部署的host
