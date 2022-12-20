@@ -1,6 +1,7 @@
 package org.cloud.sonic.controller.tools.robot.vendor;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.math.RoundingMode;
  * @des 企业微信机器人推送实作类
  * @date 2022/12/20
  */
+@Slf4j
 @Component("WeChatImpl")
 public class WeChatImpl implements RobotMessenger {
 
@@ -40,9 +42,9 @@ public class WeChatImpl implements RobotMessenger {
         try {
             ResponseEntity<JSONObject> responseEntity =
                     restTemplate.postForEntity(token, jsonObject, JSONObject.class);
-            logger.info("robot result: " + responseEntity.getBody());
+            log.info("robot result: " + responseEntity.getBody());
         } catch (Exception e) {
-            logger.warn("robot send failed, cause: " + e.getMessage());
+            log.warn("robot send failed, cause: " + e.getMessage());
         }
     }
 

@@ -1,9 +1,8 @@
 package org.cloud.sonic.controller.tools.robot.vendor;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,10 +21,10 @@ import java.net.URLEncoder;
  * @des 钉钉机器人推送实作类，可以参考 https://developers.dingtalk.com/document/app/push-robots
  * @date 2022/12/20
  */
+@Slf4j
 @Component("DingTalkImpl")
 public class DingTalkImpl implements RobotMessenger {
 
-    private final Logger logger = LoggerFactory.getLogger(DingTalkImpl.class);
     //从配置文件获取前端部署的host
     @Value("${robot.client.host}")
     private String clientHost;
@@ -65,9 +64,9 @@ public class DingTalkImpl implements RobotMessenger {
             ResponseEntity<JSONObject> responseEntity =
                     restTemplate.postForEntity(token + path
                             , jsonObject, JSONObject.class);
-            logger.info("robot result: " + responseEntity.getBody());
+            log.info("robot result: " + responseEntity.getBody());
         } catch (Exception e) {
-            logger.warn("robot send failed, cause: " + e.getMessage());
+            log.warn("robot send failed, cause: " + e.getMessage());
         }
     }
 

@@ -1,9 +1,8 @@
 package org.cloud.sonic.controller.tools.robot.vendor;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,10 +16,9 @@ import java.math.RoundingMode;
  * @des Telegram电报机器人推送实作类，可以参考 https://core.telegram.org/bots/api#sendmessage
  * @date 2022/12/20
  */
+@Slf4j
 @Component("TelegramImpl")
 public class TelegramImpl implements RobotMessenger {
-
-    private final Logger logger = LoggerFactory.getLogger(DingTalkImpl.class);
 
     //从配置文件获取前端部署的host
     @Value("${robot.client.host}")
@@ -40,9 +38,9 @@ public class TelegramImpl implements RobotMessenger {
         try {
             ResponseEntity<JSONObject> responseEntity =
                     restTemplate.postForEntity(token, jsonObject, JSONObject.class);
-            logger.info("robot result: " + responseEntity.getBody());
+            log.info("robot result: " + responseEntity.getBody());
         } catch (Exception e) {
-            logger.warn("robot send failed, cause: " + e.getMessage());
+            log.warn("robot send failed, cause: " + e.getMessage());
         }
     }
 
