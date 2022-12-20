@@ -13,6 +13,10 @@
 //    private String wechatToken = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx";
 //
 //    private String feishuToken = "https://open.feishu.cn/open-apis/bot/v2/hook/xxx";
+//
+//    // API path https://api.telegram.org/bot<token>/sendMessage?chat_id=<chat_id>
+//    private String telegramToken = "https://api.telegram.org/botxxx/sendMessage?chat_id=zzz";
+
 //    @Test
 //    public void sendDayReportMessage() {
 //        robotMsgTool.sendDayReportMessage(wechatToken, "" ,1, "2",
@@ -58,4 +62,28 @@
 //        robotMsgTool.sendResultFinishReport(wechatToken, "","111", 1,1,1,1,
 //                1,RobotType.WeChat);
 //    }
+//
+//    @Test
+//    public void sendDayReportMessageForTelegram() {
+//        robotMsgTool.sendDayReportMessage(telegramToken, "" ,1, "2",
+//                "1", "2" , 1,2,3, RobotType.Telegram);
+//    }
+//
+//    @Test
+//    public void sendResultFinishReportForTelegram() {
+//        robotMsgTool.sendResultFinishReport(telegramToken, "","111", 1,1,1,1,
+//                1,RobotType.Telegram);
+//    }
+//
+//    @Test
+//    public void sendWeekReportMessageForTelegram() {
+//        robotMsgTool.sendWeekReportMessage(telegramToken, "" ,1, "2",
+//                "1", "2" , 1,0,0,100, RobotType.Telegram);
+//    }
+//
+//    @Test
+//    public void testSendErrorDeviceForTelegram() {
+//        robotMsgTool.sendErrorDevice(telegramToken, "", RobotType.Telegram, 2, 80,"测试");
+//    }
+//
 //}
