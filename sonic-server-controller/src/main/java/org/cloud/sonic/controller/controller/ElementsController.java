@@ -96,7 +96,7 @@ public class ElementsController {
     @WebAspect
     @ApiOperation(value = "删除控件元素前检验", notes = "返回引用控件的步骤")
     @ApiImplicitParam(name = "id", value = "元素id", dataTypeClass = Integer.class)
-    @GetMapping("deleteCheck")
+    @GetMapping("/deleteCheck")
     public RespModel<List<StepsDTO>> deleteCheck(@RequestParam(name = "id") int id) {
         return new RespModel<>(RespEnum.SEARCH_OK, elementsService.findAllStepsByElementsId(id));
     }
