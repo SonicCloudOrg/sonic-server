@@ -19,6 +19,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -68,7 +69,8 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
                 case "normal" -> lambdaQuery.and(
                         l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image").ne(Elements::getEleType, "poco")
                 );
-                case "poco" -> lambdaQuery.eq(Elements::getEleType, "poco").or().eq(Elements::getEleType, "xpath").or().eq(Elements::getEleType, "cssSelector");
+                case "poco" ->
+                        lambdaQuery.eq(Elements::getEleType, "poco").or().eq(Elements::getEleType, "xpath").or().eq(Elements::getEleType, "cssSelector");
                 case "point" -> lambdaQuery.eq(Elements::getEleType, "point");
                 case "image" -> lambdaQuery.eq(Elements::getEleType, "image");
             }
@@ -115,10 +117,8 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
     @Transactional(rollbackFor = Exception.class)
     public RespModel delete(int id) {
         if (existsById(id)) {
-            List<StepsDTO> stepsList = findAllStepsByElementsId(id);
-            for (StepsDTO steps : stepsList) {
-                stepsService.delete(steps.getId());
-            }
+            new LambdaUpdateChainWrapper<StepsElements>(stepsElementsMapper).eq(StepsElements::getElementsId, id)
+                    .set(StepsElements::getElementsId, 0).update();
             baseMapper.deleteById(id);
             return new RespModel<>(RespEnum.DELETE_OK);
         } else {

@@ -20,14 +20,12 @@ package org.cloud.sonic.controller.services.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.PublicSteps;
-import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.domain.StepsElements;
+import org.cloud.sonic.controller.models.domain.*;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
@@ -54,13 +52,20 @@ import java.util.stream.Collectors;
 @Service
 public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> implements StepsService {
 
-    @Autowired private StepsMapper stepsMapper;
-    @Autowired private ElementsMapper elementsMapper;
-    @Autowired private PublicStepsMapper publicStepsMapper;
-    @Autowired private PublicStepsStepsMapper publicStepsStepsMapper;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
-    @Autowired private StepsService stepsService;
-    @Autowired private ElementsService elementsService;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private ElementsMapper elementsMapper;
+    @Autowired
+    private PublicStepsMapper publicStepsMapper;
+    @Autowired
+    private PublicStepsStepsMapper publicStepsStepsMapper;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private ElementsService elementsService;
 
     @Transactional
     @Override
@@ -96,6 +101,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     /**
      * 获取每个step下的childSteps 组装成一个list返回
+     *
      * @param stepsDTOS 步骤集合
      * @return 包含所有子步骤的集合
      */
@@ -137,7 +143,15 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         if (stepsDTO == null) {
             return null;
         }
-        stepsDTO.setElements(elementsMapper.listElementsByStepsId(stepsDTO.getId()));
+        stepsDTO.setElements(new LambdaQueryChainWrapper<>(stepsElementsMapper).eq(StepsElements::getStepsId, stepsDTO.getId()).list()
+                .stream().map(e -> {
+                    Elements ele = elementsService.findById(e.getElementsId());
+                    if (ele != null) {
+                        return ele.convertTo();
+                    } else {
+                        return Elements.newDeletedElement(e.getElementsId()).convertTo();
+                    }
+                }).collect(Collectors.toList()));
         // 如果是条件步骤
         if (!stepsDTO.getConditionType().equals(ConditionEnum.NONE.getValue())) {
             List<StepsDTO> childSteps = lambdaQuery()
@@ -276,19 +290,30 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     public List<StepsDTO> listByPublicStepsId(int publicStepsId) {
         return stepsMapper.listByPublicStepsId(publicStepsId)
                 // 填充elements
-                .stream().map(e -> e.convertTo().setElements(elementsMapper.listElementsByStepsId(e.getId())))
+                .stream().map(e -> e.convertTo().setElements(
+                        new LambdaQueryChainWrapper<>(stepsElementsMapper).eq(StepsElements::getStepsId, e.getId()).list()
+                                .stream().map(ec -> {
+                                    Elements ele = elementsService.findById(ec.getElementsId());
+                                    if (ele != null) {
+                                        return ele.convertTo();
+                                    } else {
+                                        return Elements.newDeletedElement(ec.getElementsId()).convertTo();
+                                    }
+                                }).collect(Collectors.toList())
+                ))
                 .collect(Collectors.toList());
     }
+
     /**
      * 步骤列表:搜索
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform,int page ,int pageSize,
-                                                                  String searchContent){
-        Page<Steps> pageList = new Page<>(page,pageSize);
+    public CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform, int page, int pageSize,
+                                                                  String searchContent) {
+        Page<Steps> pageList = new Page<>(page, pageSize);
         //分页返回数据
-        IPage<Steps> steps = stepsMapper.sreachByEleName(pageList,searchContent);
+        IPage<Steps> steps = stepsMapper.sreachByEleName(pageList, searchContent);
         //取出页面里面的数据，转为List<StepDTO>
         List<StepsDTO> stepsDTOList = steps.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
@@ -307,10 +332,10 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
         //关联ele
         if (stepsCopyDTO.getElements() != null) {
-            elementsService.newStepBeLinkedEle(stepsCopyDTO,steps);
+            elementsService.newStepBeLinkedEle(stepsCopyDTO, steps);
         }
         //插入子步骤
-        if (stepsCopyDTO.getChildSteps() != null){
+        if (stepsCopyDTO.getChildSteps() != null) {
             List<StepsDTO> needAllCopySteps = stepsService.getChildSteps(stepsCopyDTO.getChildSteps());
 
             List<PublicStepsAndStepsIdDTO> oldStepDto = stepAndIndex(needAllCopySteps);
@@ -344,7 +369,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                     n++;
                     //关联steps和elId
                     if (steps1.getElements() != null) {
-                        elementsService.newStepBeLinkedEle(steps1,step);
+                        elementsService.newStepBeLinkedEle(steps1, step);
                     }
                     continue;
                 }
@@ -353,7 +378,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                 stepsMapper.insert(step);
                 //关联steps和elId
                 if (steps1.getElements() != null) {
-                    elementsService.newStepBeLinkedEle(steps1,step);
+                    elementsService.newStepBeLinkedEle(steps1, step);
                 }
                 //插入的stepId 记录到需要关联步骤的list种
                 n++;
@@ -365,9 +390,10 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     /**
      * 记录一组步骤中他们所在的位置；ma
+     *
      * @return 步骤和对应位置
      */
-    public List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps){
+    public List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps) {
         List<PublicStepsAndStepsIdDTO> oldStepDto = new ArrayList<>();
         int i = 1; //用来统计所在位置， 以及保持map中 key不同
         for (StepsDTO steps1 : needAllCopySteps) {

@@ -61,4 +61,15 @@ public class Elements implements Serializable, TypeConverter<Elements, ElementsD
     @Column(value = "module_id", isNull = true, comment = "所属项目id", defaultValue = "0")
     @Index(value = "IDX_MODULE_ID", columns = {"module_id"})
     private Integer moduleId;
+
+    public static Elements newDeletedElement(int id) {
+        String tips = "Element does not exist.";
+        return new Elements()
+                .setId(id)
+                .setEleName(tips)
+                .setModuleId(0)
+                .setEleType("id")
+                .setEleValue(tips)
+                .setProjectId(0);
+    }
 }

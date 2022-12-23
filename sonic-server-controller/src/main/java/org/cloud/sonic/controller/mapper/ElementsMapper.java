@@ -17,8 +17,4 @@ import java.util.Set;
  */
 @Mapper
 public interface ElementsMapper extends BaseMapper<Elements> {
-    @Select("select e.* from steps_elements se " +
-                "inner join elements e on se.elements_id = e.id " +
-            "where se.steps_id = #{stepId}")
-    List<ElementsDTO> listElementsByStepsId(@Param("stepId") Integer stepId);
 }
