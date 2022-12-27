@@ -40,17 +40,20 @@ public class FilesController {
         List<String> fileList = Arrays.asList("imageFiles", "recordFiles", "logFiles", "packageFiles");
         cachedThreadPool.execute(() -> {
             for (String fileType : fileList) {
-                File[] type = new File(fileType).listFiles();
-                for (File dateFile : type) {
-                    try {
-                        if (timeMillis - sf.parse(dateFile.getName()).getTime()
-                                > day * 86400000L) {
-                            logger.info("clean begin! " + dateFile.getPath());
-                            fileTool.deleteDir(dateFile);
+                File f = new File(fileType);
+                File[] type = f.listFiles();
+                if (type != null) {
+                    for (File dateFile : type) {
+                        try {
+                            if (timeMillis - sf.parse(dateFile.getName()).getTime()
+                                    > day * 86400000L) {
+                                logger.info("clean begin! " + dateFile.getPath());
+                                fileTool.deleteDir(dateFile);
+                            }
+                        } catch (ParseException e) {
+                            logger.info("Parse file name error, cause: " + dateFile.getPath());
+                            logger.error(e.getMessage());
                         }
-                    } catch (ParseException e) {
-                        logger.info("Parse file name error, cause: " + dateFile.getPath());
-                        logger.error(e.getMessage());
                     }
                 }
             }
