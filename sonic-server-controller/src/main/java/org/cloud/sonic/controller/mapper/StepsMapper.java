@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -39,10 +38,10 @@ public interface StepsMapper extends BaseMapper<Steps> {
             "WHERE " +
             "steps.id = steps_elements.steps_id  " +
             "AND steps_elements.elements_id = elements.id  " +
-            "AND elements.ele_name LIKE '%${ele_name}%'  " +
+            "AND elements.ele_name LIKE concat('%',#{ele_name}, '%')  " +
             "union  " +
-            "SELECT * FROM steps WHERE content LIKE '%${ele_name}%') t ORDER BY id DESC")
-    IPage<Steps> sreachByEleName(Page<?> page , @Param("ele_name") String eleName);
+            "SELECT * FROM steps WHERE content LIKE concat('%',#{ele_name}, '%')) t ORDER BY id DESC")
+    IPage<Steps> searchByEleName(Page<?> page , @Param("ele_name") String eleName);
 
 
 

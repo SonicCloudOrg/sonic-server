@@ -18,7 +18,7 @@ public interface StepsElementsMapper extends BaseMapper<StepsElements> {
     @Select("SELECT steps_elements.*  " +
             "FROM steps,steps_elements  " +
             "WHERE steps.id = steps_elements.steps_id AND " +
-            " steps.case_id =${caseId}")
+            " steps.case_id =#{caseId}")
     List<StepsElements> selectCopyElements(@Param("caseId")int caseId);
 
 

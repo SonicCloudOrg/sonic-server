@@ -313,7 +313,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                                                                   String searchContent) {
         Page<Steps> pageList = new Page<>(page, pageSize);
         //分页返回数据
-        IPage<Steps> steps = stepsMapper.sreachByEleName(pageList, searchContent);
+        IPage<Steps> steps = stepsMapper.searchByEleName(pageList, searchContent);
         //取出页面里面的数据，转为List<StepDTO>
         List<StepsDTO> stepsDTOList = steps.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
