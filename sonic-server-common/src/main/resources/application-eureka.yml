@@ -2,8 +2,9 @@ eureka:
   instance:
     instance-id: ${random.uuid}
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 5
   client:
-    registry-fetch-interval-seconds: 10
+    registry-fetch-interval-seconds: 5
     service-url:
       defaultZone: http://${SONIC_EUREKA_USERNAME:sonic}:${SONIC_EUREKA_PASSWORD:sonic}@${SONIC_EUREKA_HOST:127.0.0.1}:${SONIC_EUREKA_PORT:9090}/eureka/

@@ -15,7 +15,6 @@
     <version>2.0.0</version>
     <packaging>pom</packaging>
 
-    <!--  包含的模块  -->
     <modules>
         <module>sonic-server-common</module>
         <module>sonic-server-controller</module>
@@ -24,14 +23,12 @@
         <module>sonic-server-eureka</module>
     </modules>
 
-    <!-- maven打包的java版本   -->
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
         <current.version>SONIC_VERSION</current.version>
     </properties>
 
-    <!-- SpringCloud版本管理   -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -45,19 +42,16 @@
     </dependencyManagement>
 
     <dependencies>
-        <!--    监控模块 刷新配置    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--     链路追踪      -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
     </dependencies>
 
-    <!-- 打包构建配置  -->
     <build>
         <resources>
             <resource>
@@ -65,7 +59,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <!--   最终打包的jar包名，使用artifactId     -->
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
@@ -75,7 +68,6 @@
         </plugins>
     </build>
 
-    <!-- 镜像加速   -->
     <repositories>
         <repository>
             <id>alimaven</id>

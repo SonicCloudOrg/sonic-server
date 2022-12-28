@@ -1,4 +1,3 @@
-# 一般不需要动
 logging:
   file:
     name: logs/${spring.application.name}.log

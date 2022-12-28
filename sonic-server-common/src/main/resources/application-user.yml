@@ -1,4 +1,3 @@
-# 一般除了修改语言、ldap配置之外，不需要动
 sonic:
   token:
     secret: ${SECRET_KEY:sonic}

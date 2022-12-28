@@ -21,7 +21,7 @@
 </p>
 
 ### Official Website
-[Sonic Official Website](https://sonic-cloud.gitee.io)
+[Sonic Official Website](https://sonic-cloud.cn)
 ## Background
 
 #### What is sonic ?

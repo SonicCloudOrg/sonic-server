@@ -13,9 +13,7 @@
     <version>${current.version}</version>
     <packaging>jar</packaging>
 
-    <!-- 依赖列表   -->
     <dependencies>
-        <!--    服务调用    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -26,7 +24,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--     eureka客户端   -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -42,30 +39,26 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- undertow服务器 -->
+        <!-- undertow -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
-        <!--   Mysql依赖     -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--ldap 依赖        -->
         <dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-core</artifactId>
             <version>2.3.3.RELEASE</version>
         </dependency>
-        <!-- mybatis-plus依赖 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.4.3.4</version>
         </dependency>
-        <!-- mybatis-自动生成数据库 -->
         <dependency>
             <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
             <artifactId>mybatis-enhance-actable</artifactId>
@@ -98,12 +91,10 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-        <!--   定时任务     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
-        <!--     公共模块   -->
         <dependency>
             <groupId>org.cloud.sonic</groupId>
             <artifactId>sonic-server-common</artifactId>
@@ -116,25 +107,4 @@
             </exclusions>
         </dependency>
     </dependencies>
-
-    <!--    <build>-->
-    <!--        <plugins>-->
-    <!--            &lt;!&ndash;   只作为公共依赖，不需要打包         &ndash;&gt;-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.springframework.boot</groupId>-->
-    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-    <!--                <configuration>-->
-    <!--                    <skip>true</skip>-->
-    <!--                </configuration>-->
-    <!--            </plugin>-->
-    <!--            <plugin>-->
-    <!--                <groupId>com.spotify</groupId>-->
-    <!--                <artifactId>docker-maven-plugin</artifactId>-->
-    <!--                <configuration>-->
-    <!--                    <skipDocker>true</skipDocker>-->
-    <!--                </configuration>-->
-    <!--            </plugin>-->
-    <!--        </plugins>-->
-    <!--    </build>-->
-
 </project>
