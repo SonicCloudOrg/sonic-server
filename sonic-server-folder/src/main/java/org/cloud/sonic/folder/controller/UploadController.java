@@ -63,6 +63,23 @@ public class UploadController {
     }
 
     @WebAspect
+    @ApiOperation(value = "上传文件v2", notes = "上传文件到服务器")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),
+            @ApiImplicitParam(name = "type", value = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)", dataTypeClass = String.class),
+    })
+    @PostMapping("/v2")
+    public RespModel<String> uploadFilesV2(@RequestParam(name = "file") MultipartFile file,
+                                         @RequestParam(name = "type") String type) throws IOException {
+        String url = fileTool.uploadV2(type, file);
+        if (url != null) {
+            return new RespModel(RespEnum.UPLOAD_OK, url);
+        } else {
+            return new RespModel(RespEnum.UPLOAD_FAIL);
+        }
+    }
+
+    @WebAspect
     @ApiOperation(value = "上传文件（录像分段上传）", notes = "上传文件到服务器")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),

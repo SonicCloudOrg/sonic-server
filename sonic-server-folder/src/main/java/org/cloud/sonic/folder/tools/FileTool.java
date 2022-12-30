@@ -73,6 +73,25 @@ public class FileTool {
         return host + "/api/folder/" + local.getPath().replaceAll("\\\\", "/");
     }
 
+    public String uploadV2(String folderName, MultipartFile file) throws IOException {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        File folder = new File(folderName + File.separator
+                + sf.format(Calendar.getInstance().getTimeInMillis()));
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        //防止文件重名
+        File local = new File(folder.getPath() + File.separator +
+                UUID.randomUUID() + file.getOriginalFilename()
+                .substring(file.getOriginalFilename().lastIndexOf(".")));
+        try {
+            file.transferTo(local.getAbsoluteFile());
+        } catch (FileAlreadyExistsException e) {
+            logger.error(e.getMessage());
+        }
+        return local.getPath().replaceAll("\\\\", "/");
+    }
+
     /**
      * @param file
      * @return void
