@@ -6,4 +6,5 @@ public interface RobotType {
     int FeiShu = 3;
     int YouSpace = 4;
     int Telegram = 5;
+    int LineNotify = 6;
 }

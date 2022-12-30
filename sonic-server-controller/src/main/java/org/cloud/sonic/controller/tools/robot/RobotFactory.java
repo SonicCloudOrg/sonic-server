@@ -28,17 +28,25 @@ public class RobotFactory {
      */
     public RobotMessenger getRobotMessenger(int robotType){
 
-        switch (robotType){
-            case RobotType.DingTalk:
+        switch (robotType) {
+            case RobotType.DingTalk -> {
                 return context.getBean(DingTalkImpl.class);
-            case RobotType.WeChat:
+            }
+            case RobotType.WeChat -> {
                 return context.getBean(WeChatImpl.class);
-            case RobotType.FeiShu:
+            }
+            case RobotType.FeiShu -> {
                 return context.getBean(FeiShuImpl.class);
-            case RobotType.YouSpace:
+            }
+            case RobotType.YouSpace -> {
                 return context.getBean(YouSpaceImpl.class);
-            case RobotType.Telegram:
+            }
+            case RobotType.Telegram -> {
                 return context.getBean(TelegramImpl.class);
+            }
+            case RobotType.LineNotify ->  {
+                return context.getBean(LineNotifyImpl.class);
+            }
         }
         throw new SonicException("Unsupported robot type");
     }
