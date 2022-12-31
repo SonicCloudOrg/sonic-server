@@ -27,7 +27,7 @@ public class LineNotifyImpl implements RobotMessenger {
     //从配置文件获取前端部署的host
     @Value("${robot.client.host}")
     private String clientHost;
-    //从配置文件获line notify的host
+    //line notify的host
     private static final String LINE_NOTIFY_HOST = "https://notify-api.line.me/api/notify";
 
     /**
