@@ -16,6 +16,8 @@
 //
 //    // API path https://api.telegram.org/bot<token>/sendMessage?chat_id=<chat_id>
 //    private String telegramToken = "https://api.telegram.org/botxxx/sendMessage?chat_id=zzz";
+//
+//    private String lineToken = "XXXXX";
 
 //    @Test
 //    public void sendDayReportMessage() {
@@ -85,5 +87,27 @@
 //    public void testSendErrorDeviceForTelegram() {
 //        robotMsgTool.sendErrorDevice(telegramToken, "", RobotType.Telegram, 2, 80,"测试");
 //    }
+
+//    @Test
+//    public void sendDayReportMessageForLineNotify() {
+//        robotMsgTool.sendDayReportMessage(lineToken, "" ,1, "2",
+//                "1", "2" , 1,2,3, RobotType.LineNotify);
+//    }
+//    @Test
+//    public void sendResultFinishReportForLineNotify() {
+//        robotMsgTool.sendResultFinishReport(lineToken, "","111", 1,1,2,1,
+//                1,RobotType.LineNotify);
+//    }
 //
+//    @Test
+//    public void sendWeekReportMessageForLineNotify() {
+//        robotMsgTool.sendWeekReportMessage(lineToken, "" ,1, "2",
+//                "1", "2" , 1,3,5,100, RobotType.LineNotify);
+//    }
+//
+//    @Test
+//    public void testSendErrorDeviceForLineNotify() {
+//        robotMsgTool.sendErrorDevice(lineToken, "", RobotType.LineNotify, 2, 80,"测试");
+//    }
+
 //}
