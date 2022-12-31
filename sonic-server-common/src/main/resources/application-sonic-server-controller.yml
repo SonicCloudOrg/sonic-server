@@ -22,5 +22,3 @@ robot:
     success: "https://gitee.com/sonic-cloud/sonic-cloud/raw/main/src/assets/suc.png"
     warning: "https://gitee.com/sonic-cloud/sonic-cloud/raw/main/src/assets/warn.png"
     error: "https://gitee.com/sonic-cloud/sonic-cloud/raw/main/src/assets/fail.png"
-  line-notify:
-    host: "https://notify-api.line.me/api/notify"

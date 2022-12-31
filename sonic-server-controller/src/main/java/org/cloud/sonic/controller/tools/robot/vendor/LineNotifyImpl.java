@@ -28,8 +28,8 @@ public class LineNotifyImpl implements RobotMessenger {
     @Value("${robot.client.host}")
     private String clientHost;
     //从配置文件获line notify的host
-    @Value("${robot.line-notify.host}")
-    private String lineNotifyHost;
+    private static final String LINE_NOTIFY_HOST = "https://notify-api.line.me/api/notify";
+
     /**
      * @param restTemplate RestTemplate
      * @param token      机器人token
@@ -49,7 +49,7 @@ public class LineNotifyImpl implements RobotMessenger {
             requestMap.add("message", message);
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(requestMap, headers);
             ResponseEntity<String> responseEntity =
-                    restTemplate.postForEntity(lineNotifyHost, entity, String.class);
+                    restTemplate.postForEntity(LINE_NOTIFY_HOST, entity, String.class);
             log.info("robot result: " + responseEntity.getBody());
         } catch (Exception e) {
             log.warn("robot send failed, cause: " + e.getMessage());
