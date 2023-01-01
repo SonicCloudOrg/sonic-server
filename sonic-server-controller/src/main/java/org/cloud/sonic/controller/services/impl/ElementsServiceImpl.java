@@ -62,7 +62,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
 
     @Override
     public CommentPage<ElementsDTO> findAll(int projectId, String type, List<String> eleTypes, String name, String value, List<Integer> moduleIds, Page<Elements> pageable) {
-        LambdaQueryChainWrapper<Elements> lambdaQuery = lambdaQuery();
+        LambdaQueryChainWrapper<Elements> lambdaQuery = new LambdaQueryChainWrapper<>(elementsMapper);
 
         if (type != null && type.length() > 0) {
             switch (type) {
@@ -70,7 +70,7 @@ public class ElementsServiceImpl extends SonicServiceImpl<ElementsMapper, Elemen
                         l -> l.ne(Elements::getEleType, "point").ne(Elements::getEleType, "image").ne(Elements::getEleType, "poco")
                 );
                 case "poco" ->
-                        lambdaQuery.eq(Elements::getEleType, "poco").or().eq(Elements::getEleType, "xpath").or().eq(Elements::getEleType, "cssSelector");
+                        lambdaQuery.and(i -> i.eq(Elements::getEleType, "poco").or().eq(Elements::getEleType, "xpath").or().eq(Elements::getEleType, "cssSelector"));
                 case "point" -> lambdaQuery.eq(Elements::getEleType, "point");
                 case "image" -> lambdaQuery.eq(Elements::getEleType, "image");
             }
