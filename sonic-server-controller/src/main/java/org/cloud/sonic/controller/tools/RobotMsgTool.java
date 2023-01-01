@@ -28,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author ZhouYiXun
- * @des 机器人推送相关工具类，可以参考 https://developers.dingtalk.com/document/app/push-robots
+ * @des 机器人推送相关工具类
  * @date 2021/8/15 18:20
  */
 @Component
@@ -60,45 +60,6 @@ public class RobotMsgTool {
         RobotMessenger robotMessenger = robotFactory.getRobotMessenger(type);
         robotMessenger.sendResultFinishReport(restTemplate, token, secret, suiteName, pass, warn, fail, projectId, resultId);
     }
-
-    /**
-     * @param token    机器人token
-     * @param secret   机器人密钥
-     * @param platform 平台
-     * @param version  版本号
-     * @param url      安装包链接
-     * @param detail   具体安装情况
-     * @return void
-     * @author ZhouYiXun
-     * @des 发送装包完毕通知
-     * @date 2021/8/20 18:33
-     */
-//    public void sendInstallPackageFinishReport(String token, String secret, String platform,
-//                                               String version, String url, JSONArray detail) {
-//        JSONObject jsonObject = new JSONObject();
-//        JSONObject markdown = new JSONObject();
-//        String device = "";
-//        //遍历详情里面的结果，组装成多条安装结果的markdown
-//        for (Object o : detail) {
-//            JSONObject deviceDetail = (JSONObject) o;
-//            String statusColor;
-//            if (deviceDetail.getString("status").equals("PASS")) {
-//                statusColor = "<font color=#67C23A>PASS</font>";
-//            } else {
-//                statusColor = "<font color=#F56C6C>FAIL</font>";
-//            }
-//            device += ("> ###### " + deviceDetail.getString("name") + "  ---  " + statusColor + " \n");
-//        }
-//        markdown.put("text", "#### **Sonic装包完成通知** \n" +
-//                "  ###### 平台：" + platform + " \n" +
-//                "  ###### 版本号：" + (version.length() == 0 ? "未知版本" : version) + " \n" +
-//                device +
-//                "  ###### 安装地址：[点击查看](" + url + ")");
-//        markdown.put("title", "Sonic装包完成通知");
-//        jsonObject.put("msgtype", "markdown");
-//        jsonObject.put("markdown", markdown);
-//        signAndSend(token, secret, jsonObject);
-//    }
 
     public void sendDayReportMessage(String token, String secret, int projectId, String projectName,
                                      String yesterday, String today, int passCount, int warnCount, int failCount, int type) {
