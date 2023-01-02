@@ -5,7 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.cloud.sonic.controller.models.domain.Roles;
 
 /**
- *  Mapper 接口
+ * Mapper 接口
+ *
  * @author yaming116
  * @since 2022-6-2
  */

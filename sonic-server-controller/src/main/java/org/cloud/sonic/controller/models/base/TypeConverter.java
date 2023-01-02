@@ -12,6 +12,7 @@ import static org.cloud.sonic.common.tools.BeanTool.updateProperties;
 
 /**
  * 映射dto与domain关系
+ *
  * @param <CURRENT>
  * @param <TARGET>
  */

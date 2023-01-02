@@ -50,7 +50,7 @@ public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> imple
         Roles roles = rolesDTO.convertTo();
         if (rolesDTO.getId() == null) {
             save(roles);
-        }else {
+        } else {
             lambdaUpdate().eq(Roles::getId, roles.getId())
                     .update(roles);
         }
@@ -69,7 +69,7 @@ public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> imple
     }
 
     @Override
-    public Map<Integer, Roles> mapRoles(){
+    public Map<Integer, Roles> mapRoles() {
         return lambdaQuery()
                 .orderByDesc(Roles::getId)
                 .list()
@@ -83,10 +83,10 @@ public class RolesServiceImpl extends SonicServiceImpl<RolesMapper, Roles> imple
     }
 
     @Transactional
-    public void editResourceRoles(Integer roleId,Integer resId, boolean hasAuth) {
+    public void editResourceRoles(Integer roleId, Integer resId, boolean hasAuth) {
         if (hasAuth) {
             roleResourcesMapper.insert(RoleResources.builder().roleId(roleId).resId(resId).build());
-        }else {
+        } else {
             roleResourcesMapper.delete(new LambdaQueryWrapper<RoleResources>()
                     .eq(RoleResources::getRoleId, roleId)
                     .eq(RoleResources::getResId, resId));

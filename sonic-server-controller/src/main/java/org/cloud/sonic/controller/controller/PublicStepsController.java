@@ -18,6 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -27,10 +31,6 @@ import org.cloud.sonic.controller.models.domain.TestCases;
 import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
 import org.cloud.sonic.controller.services.PublicStepsService;
 import org.cloud.sonic.controller.services.TestCasesService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -74,7 +74,7 @@ public class PublicStepsController {
     })
     @GetMapping("/findNameByProjectId")
     public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
-                                                                 @RequestParam(name = "platform") int platform) {
+                                                                @RequestParam(name = "platform") int platform) {
         return new RespModel<>(RespEnum.SEARCH_OK, publicStepsService.findByProjectIdAndPlatform(projectId, platform));
     }
 
@@ -120,10 +120,10 @@ public class PublicStepsController {
     }
 
     @WebAspect
-    @ApiOperation(value="复制公共步骤",notes="复制对应公共步骤，步骤也会同步")
-    @ApiImplicitParam(name="id",value="公共步骤Id",dataTypeClass = Integer.class)
+    @ApiOperation(value = "复制公共步骤", notes = "复制对应公共步骤，步骤也会同步")
+    @ApiImplicitParam(name = "id", value = "公共步骤Id", dataTypeClass = Integer.class)
     @GetMapping("/copy")
-    public  RespModel<String> copyPublicSteps(@RequestParam(name="id") int id) {
+    public RespModel<String> copyPublicSteps(@RequestParam(name = "id") int id) {
         publicStepsService.copyPublicSetpsIds(id);
 
         return new RespModel<>(RespEnum.COPY_OK);

@@ -17,6 +17,7 @@ public interface ResourcesService extends IService<Resources> {
 
     /**
      * 根据路径查和方法找对应资源
+     *
      * @param path
      * @param method
      * @return
@@ -29,23 +30,22 @@ public interface ResourcesService extends IService<Resources> {
     void init();
 
     /**
-     *
-     * @param id 资源 id
+     * @param id       资源 id
      * @param needAuth 是否需要鉴权
      */
     void updateResourceAuth(Integer id, Boolean needAuth);
 
     /**
-     *
      * @param page
      * @param isAll 是否查询全量，全量查询不分页
-     * @param path 资源路径
+     * @param path  资源路径
      * @return
      */
     CommentPage<ResourcesDTO> listResource(Page<Resources> page, String path, boolean isAll);
 
     /**
      * 获取详情角色下的资源情况
+     *
      * @param roleId
      * @return
      */

@@ -5,7 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.cloud.sonic.controller.models.domain.Jobs;
 
 /**
- *  Mapper 接口
+ * Mapper 接口
+ *
  * @author JayWenStar
  */
 @Mapper

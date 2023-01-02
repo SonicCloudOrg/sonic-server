@@ -17,5 +17,5 @@ assignees: ''
 
 **版本**
 Sonic的版本号 | Sonic's Version.
-部署的系统(mac,windows32...) |  System
+部署的系统(mac,windows32...) | System
 

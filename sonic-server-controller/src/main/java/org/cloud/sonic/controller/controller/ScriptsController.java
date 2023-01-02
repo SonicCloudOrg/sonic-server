@@ -49,7 +49,7 @@ public class ScriptsController {
             @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<Scripts>> findAll(@RequestParam(name = "projectId",required = false) Integer projectId,
+    public RespModel<CommentPage<Scripts>> findAll(@RequestParam(name = "projectId", required = false) Integer projectId,
                                                    @RequestParam(name = "name", required = false) String name,
                                                    @RequestParam(name = "page") int page,
                                                    @RequestParam(name = "pageSize") int pageSize) {

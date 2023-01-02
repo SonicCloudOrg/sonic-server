@@ -25,6 +25,7 @@ public interface ElementsService extends IService<Elements> {
 
     /**
      * 复制元素 按照元素id
+     *
      * @param id 元素id
      * @return
      */
@@ -32,6 +33,7 @@ public interface ElementsService extends IService<Elements> {
 
     /**
      * 关联stepsDto下面的元素
+     *
      * @param stepsDTO
      * @return
      */

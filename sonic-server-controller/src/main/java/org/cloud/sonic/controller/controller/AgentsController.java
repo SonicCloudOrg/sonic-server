@@ -18,8 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -27,8 +29,6 @@ import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.dto.AgentsDTO;
 import org.cloud.sonic.controller.services.AgentsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

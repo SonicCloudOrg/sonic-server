@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author yaming116,Eason
+ * @author yaming116, Eason
  * @date 2022/5/26 1:22
  */
 @ApiModel(value = "Packages对象", description = "")

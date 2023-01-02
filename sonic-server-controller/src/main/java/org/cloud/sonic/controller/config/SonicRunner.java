@@ -63,7 +63,7 @@ public class SonicRunner implements ApplicationRunner {
             log.info("version: {}, resource  init finish!", version);
             confListService.save(ConfType.RESOURCE, version, null);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("init resource error", e);
         }
     }

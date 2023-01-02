@@ -26,7 +26,7 @@ import java.util.Date;
 @TableComment("配置信息表")
 @TableCharset(MySqlCharsetConstant.DEFAULT)
 @TableEngine(MySqlEngineConstant.InnoDB)
-public class ConfList implements Serializable{
+public class ConfList implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     @IsAutoIncrement
     private Integer id;

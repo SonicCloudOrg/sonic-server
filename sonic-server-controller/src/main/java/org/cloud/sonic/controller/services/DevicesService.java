@@ -27,7 +27,6 @@ import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author ZhouYiXun

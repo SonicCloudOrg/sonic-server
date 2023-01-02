@@ -15,24 +15,28 @@ public interface RolesServices extends IService<Roles> {
 
     /**
      * 保存或编辑角色
-      * @param rolesDTO
+     *
+     * @param rolesDTO
      */
     void save(RolesDTO rolesDTO);
 
     /**
      * 获取所有角色
+     *
      * @return
      */
     CommentPage<RolesDTO> listRoles(Page<Roles> page, String roleName);
 
     /**
      * 获取所有角色
+     *
      * @return
      */
     Map<Integer, Roles> mapRoles();
 
     /**
      * 根据 id 获取角色信息
+     *
      * @param roleId
      * @return
      */
@@ -40,6 +44,7 @@ public interface RolesServices extends IService<Roles> {
 
     /**
      * 保存当前角色对应的资源 id
+     *
      * @param roleId
      * @param resId
      */
@@ -47,20 +52,23 @@ public interface RolesServices extends IService<Roles> {
 
     /**
      * 删除角色
+     *
      * @param roleId 角色 id
      */
     void delete(Integer roleId);
 
     /**
      * 编辑资源位对应权限
+     *
      * @param roleId
      * @param resId
      * @param hasAuth
      */
-    void editResourceRoles(Integer roleId,Integer resId, boolean hasAuth);
+    void editResourceRoles(Integer roleId, Integer resId, boolean hasAuth);
 
     /**
      * 校验用户是否有对应资源权限
+     *
      * @param userName
      * @param path
      * @param method

@@ -27,7 +27,7 @@ public interface JobsService extends IService<Jobs> {
 
     Jobs findByType(String type);
 
-    void updateSysJob(String type,String cron);
+    void updateSysJob(String type, String cron);
 
     List<JSONObject> findSysJobs();
 }

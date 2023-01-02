@@ -2,8 +2,6 @@ package org.cloud.sonic.controller.models.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Elements;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Elements;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;

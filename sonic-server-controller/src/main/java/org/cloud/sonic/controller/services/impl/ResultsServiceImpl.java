@@ -54,12 +54,18 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
     private final Logger logger = LoggerFactory.getLogger(ResultsServiceImpl.class);
     ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
-    @Autowired private ResultsMapper resultsMapper;
-    @Autowired private ResultDetailService resultDetailService;
-    @Autowired private ProjectsService projectsService;
-    @Autowired private RobotMsgTool robotMsgTool;
-    @Autowired private TestSuitesService testSuitesService;
-    @Autowired private TestCasesService testCasesService;
+    @Autowired
+    private ResultsMapper resultsMapper;
+    @Autowired
+    private ResultDetailService resultDetailService;
+    @Autowired
+    private ProjectsService projectsService;
+    @Autowired
+    private RobotMsgTool robotMsgTool;
+    @Autowired
+    private TestSuitesService testSuitesService;
+    @Autowired
+    private TestCasesService testCasesService;
 
     @Override
     public Page<Results> findByProjectId(int projectId, Page<Results> pageable) {
@@ -233,7 +239,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                         break;
                 }
             }
-            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0 ) {
+            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0) {
                 robotMsgTool.sendDayReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
                         , projects.getProjectName(), sf.format(yesterday), sf.format(today), suc, warn, fail, projects.getRobotType());
             }
@@ -267,7 +273,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                         break;
                 }
             }
-            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0 ) {
+            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0) {
                 robotMsgTool.sendWeekReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
                         , projects.getProjectName(), sf.format(lastWeek), sf.format(today), suc, warn, fail, count, projects.getRobotType());
             }

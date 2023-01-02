@@ -8,14 +8,14 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.dto.ElementsDTO;
 
 import java.io.Serializable;
 

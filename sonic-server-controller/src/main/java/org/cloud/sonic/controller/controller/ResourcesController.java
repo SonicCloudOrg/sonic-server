@@ -48,7 +48,7 @@ public class ResourcesController {
     @PostMapping("/refresh")
     public RespModel<CommentPage<ResourcesDTO>> refreshResources() {
         resourcesService.init();
-        return  listResources(1, null);
+        return listResources(1, null);
     }
 
 

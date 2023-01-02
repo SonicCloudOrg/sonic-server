@@ -27,7 +27,10 @@ import org.cloud.sonic.controller.mapper.ElementsMapper;
 import org.cloud.sonic.controller.mapper.ModulesMapper;
 import org.cloud.sonic.controller.mapper.StepsElementsMapper;
 import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.*;
+import org.cloud.sonic.controller.models.domain.Elements;
+import org.cloud.sonic.controller.models.domain.Modules;
+import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.domain.StepsElements;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
@@ -40,10 +43,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

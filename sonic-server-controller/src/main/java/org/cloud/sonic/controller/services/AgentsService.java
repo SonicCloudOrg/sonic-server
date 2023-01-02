@@ -55,5 +55,5 @@ public interface AgentsService extends IService<Agents> {
 
     Agents findBySecretKey(String secretKey);
 
-    void errCall(int id,String udId,int tem,int type);
+    void errCall(int id, String udId, int tem, int type);
 }

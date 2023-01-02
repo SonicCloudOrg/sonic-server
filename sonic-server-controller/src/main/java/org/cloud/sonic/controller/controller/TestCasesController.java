@@ -18,6 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -28,10 +32,6 @@ import org.cloud.sonic.controller.models.domain.TestSuites;
 import org.cloud.sonic.controller.models.dto.TestCasesDTO;
 import org.cloud.sonic.controller.services.TestCasesService;
 import org.cloud.sonic.controller.services.TestSuitesService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;

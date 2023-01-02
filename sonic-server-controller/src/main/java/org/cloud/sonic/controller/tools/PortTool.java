@@ -18,9 +18,7 @@
 package org.cloud.sonic.controller.tools;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 public class PortTool {
     public static int port = 0;

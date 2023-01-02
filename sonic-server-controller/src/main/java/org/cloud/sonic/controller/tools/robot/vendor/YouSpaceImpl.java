@@ -47,9 +47,9 @@ public class YouSpaceImpl implements RobotMessenger {
 
     /**
      * @param restTemplate RestTemplate
-     * @param token      机器人token
-     * @param secret     机器人密钥
-     * @param jsonObject 通知内容
+     * @param token        机器人token
+     * @param secret       机器人密钥
+     * @param jsonObject   通知内容
      * @author ZhouYiXun
      * @des 友空间签名方法
      * @date 2021/8/20 18:20
@@ -70,7 +70,7 @@ public class YouSpaceImpl implements RobotMessenger {
     }
 
     /**
-     * @param s         讯息内容
+     * @param s 讯息内容
      * @return JSONObject
      * @author ZhouYiXun
      * @des 将字串转为友空间格式
@@ -88,14 +88,14 @@ public class YouSpaceImpl implements RobotMessenger {
 
     /**
      * @param restTemplate RestTemplate
-     * @param token     机器人token
-     * @param secret    机器人密钥
-     * @param suiteName 套件名称
-     * @param pass      通过数量
-     * @param warn      警告数量
-     * @param fail      失败数量
-     * @param projectId 项目id
-     * @param resultId  结果id
+     * @param token        机器人token
+     * @param secret       机器人密钥
+     * @param suiteName    套件名称
+     * @param pass         通过数量
+     * @param warn         警告数量
+     * @param fail         失败数量
+     * @param projectId    项目id
+     * @param resultId     结果id
      * @return void
      * @author ZhouYiXun
      * @des 发送每次测试结果到友空间
@@ -127,12 +127,12 @@ public class YouSpaceImpl implements RobotMessenger {
 
     /**
      * @param restTemplate RestTemplate
-     * @param token       机器人token
-     * @param secret      机器人密钥
-     * @param projectId   项目id
-     * @param projectName 项目名称
-     * @param yesterday   昨天的起始时间
-     * @param today       今天的起始时间
+     * @param token        机器人token
+     * @param secret       机器人密钥
+     * @param projectId    项目id
+     * @param projectName  项目名称
+     * @param yesterday    昨天的起始时间
+     * @param today        今天的起始时间
      * @return void
      * @author ZhouYiXun
      * @des 发送日报
@@ -171,11 +171,11 @@ public class YouSpaceImpl implements RobotMessenger {
 
     /**
      * @param restTemplate RestTemplate
-     * @param token       机器人token
-     * @param secret      机器人密钥
-     * @param errorType   errorType
-     * @param tem         温度
-     * @param udId        设备Id
+     * @param token        机器人token
+     * @param secret       机器人密钥
+     * @param errorType    errorType
+     * @param tem          温度
+     * @param udId         设备Id
      * @return void
      * @author ZhouYiXun
      * @des 发送设备错误讯息
@@ -202,16 +202,16 @@ public class YouSpaceImpl implements RobotMessenger {
 
     /**
      * @param restTemplate RestTemplate
-     * @param token       机器人token
-     * @param secret      机器人密钥
-     * @param projectId   项目id
-     * @param projectName 项目名称
-     * @param yesterday   昨天的起始时间
-     * @param today       今天的起始时间
-     * @param passCount   通过数量
-     * @param warnCount   警告数量
-     * @param failCount   失败数量
-     * @param count       测试数量
+     * @param token        机器人token
+     * @param secret       机器人密钥
+     * @param projectId    项目id
+     * @param projectName  项目名称
+     * @param yesterday    昨天的起始时间
+     * @param today        今天的起始时间
+     * @param passCount    通过数量
+     * @param warnCount    警告数量
+     * @param failCount    失败数量
+     * @param count        测试数量
      * @return void
      * @author ZhouYiXun
      * @des 发送周报

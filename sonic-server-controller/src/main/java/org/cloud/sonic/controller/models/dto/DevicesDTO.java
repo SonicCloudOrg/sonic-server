@@ -2,12 +2,12 @@ package org.cloud.sonic.controller.models.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Devices;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Devices;
 
 import java.io.Serializable;
 import java.util.Set;

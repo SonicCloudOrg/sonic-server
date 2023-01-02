@@ -1,4 +1,5 @@
 package org.cloud.sonic.controller.models.interfaces;
+
 /**
  * @author ZhouYiXun
  * @des 定义Agent端状态类型

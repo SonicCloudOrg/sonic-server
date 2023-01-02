@@ -18,6 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -28,10 +32,6 @@ import org.cloud.sonic.controller.models.domain.Steps;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
 import org.cloud.sonic.controller.models.http.StepSort;
 import org.cloud.sonic.controller.services.StepsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -137,6 +137,7 @@ public class StepsController {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
     }
+
     @WebAspect
     @ApiOperation(value = "搜索查找步骤列表", notes = "查找对应用例id下的步骤列表（分页）")
     @ApiImplicitParams(value = {
@@ -151,9 +152,9 @@ public class StepsController {
                                                           @RequestParam(name = "platform") int platform,
                                                           @RequestParam(name = "page") int page,
                                                           @RequestParam(name = "pageSize") int pageSize,
-                                                          @RequestParam(name="searchContent")String searchContent) {
+                                                          @RequestParam(name = "searchContent") String searchContent) {
         return new RespModel<>(RespEnum.SEARCH_OK, stepsService.searchFindByProjectIdAndPlatform(projectId, platform,
-                page,pageSize,searchContent));
+                page, pageSize, searchContent));
     }
 
     @WebAspect

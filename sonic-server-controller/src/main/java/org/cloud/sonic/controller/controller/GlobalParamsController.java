@@ -17,15 +17,15 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.GlobalParams;
 import org.cloud.sonic.controller.models.dto.GlobalParamsDTO;
 import org.cloud.sonic.controller.services.GlobalParamsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

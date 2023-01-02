@@ -38,7 +38,7 @@ public class RobotFactory {
     private ApplicationContext context;
 
     /**
-     * @param robotType  机器人种类
+     * @param robotType 机器人种类
      * @author ayumi760405
      * @des 取得推送机器人实作
      * @date 2022/12/20 18:20

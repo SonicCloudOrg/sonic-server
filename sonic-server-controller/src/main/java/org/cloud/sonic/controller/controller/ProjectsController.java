@@ -17,6 +17,9 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
@@ -26,9 +29,6 @@ import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Projects;
 import org.cloud.sonic.controller.models.dto.ProjectsDTO;
 import org.cloud.sonic.controller.services.ProjectsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

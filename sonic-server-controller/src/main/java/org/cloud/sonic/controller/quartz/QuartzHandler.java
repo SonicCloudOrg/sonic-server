@@ -18,7 +18,6 @@
 package org.cloud.sonic.controller.quartz;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.controller.mapper.JobsMapper;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.interfaces.JobType;
 import org.cloud.sonic.controller.services.JobsService;
@@ -263,6 +262,7 @@ public class QuartzHandler {
 
     /**
      * 初始化系统定时任务
+     *
      * @param type 系统定时任务类型
      */
     private Jobs initSysJob(String type) {

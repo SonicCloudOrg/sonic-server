@@ -24,7 +24,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.stereotype.Component;
 
 /**
- * @author JayWenStar,Eason
+ * @author JayWenStar, Eason
  * @date 2022/4/11 1:32 上午
  */
 @Component

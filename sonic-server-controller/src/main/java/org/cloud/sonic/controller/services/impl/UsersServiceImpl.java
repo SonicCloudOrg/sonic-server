@@ -47,12 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
-import springfox.documentation.annotations.Cacheable;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -98,9 +95,9 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
     @Override
     public JSONObject getLoginConfig() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("registerEnable",registerEnable);
-        jsonObject.put("normalEnable",normalEnable);
-        jsonObject.put("ldapEnable",ldapEnable);
+        jsonObject.put("registerEnable", registerEnable);
+        jsonObject.put("normalEnable", normalEnable);
+        jsonObject.put("ldapEnable", ldapEnable);
         return jsonObject;
     }
 
@@ -128,7 +125,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
             if (checkLdapAuthenticate(userInfo, true)) {
                 token = jwtTokenTool.getToken(userInfo.getUserName());
             }
-        }else if (normalEnable && UserLoginType.LOCAL.equals(users.getSource()) && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
+        } else if (normalEnable && UserLoginType.LOCAL.equals(users.getSource()) && DigestUtils.md5DigestAsHex(userInfo.getPassword().getBytes()).equals(users.getPassword())) {
             token = jwtTokenTool.getToken(users.getUserName());
             users.setPassword("");
             logger.info("user: " + userInfo.getUserName() + " login! token:" + token);
@@ -218,7 +215,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         Map<Integer, Roles> rolesMap = rolesServices.mapRoles();
         final Roles emptyRole = new Roles();
         List<UsersDTO> rolesDTOList = users.getRecords().stream()
-                .map( e -> {
+                .map(e -> {
                     UsersDTO usersDTO = e.convertTo();
                     Roles role = rolesMap.getOrDefault(e.getUserRole(), emptyRole);
                     usersDTO.setRole(role.getId())

@@ -42,9 +42,12 @@ import java.util.List;
 @Service
 public class ResultDetailServiceImpl extends SonicServiceImpl<ResultDetailMapper, ResultDetail> implements ResultDetailService {
 
-    @Autowired private ResultDetailMapper resultDetailMapper;
-    @Autowired private DevicesService devicesService;
-    @Autowired private ResultsService resultsService;
+    @Autowired
+    private ResultDetailMapper resultDetailMapper;
+    @Autowired
+    private DevicesService devicesService;
+    @Autowired
+    private ResultsService resultsService;
 
     @Override
     public void saveByTransport(JSONObject jsonMsg) {

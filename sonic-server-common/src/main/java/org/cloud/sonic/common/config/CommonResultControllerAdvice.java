@@ -61,7 +61,7 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
         return container;
     }
 
-    public static RespModel process(String l, RespModel respModel,MessageSource messageSource) {
+    public static RespModel process(String l, RespModel respModel, MessageSource messageSource) {
         String language = "zh_CN";
         if (l != null) {
             language = l;

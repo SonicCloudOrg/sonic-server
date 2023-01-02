@@ -26,7 +26,7 @@ import java.util.Date;
 @TableComment("角色资源表表")
 @TableCharset(MySqlCharsetConstant.DEFAULT)
 @TableEngine(MySqlEngineConstant.InnoDB)
-public class RoleResources implements Serializable{
+public class RoleResources implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     @IsAutoIncrement
     private Integer id;

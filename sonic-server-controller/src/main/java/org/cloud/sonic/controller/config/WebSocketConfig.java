@@ -12,7 +12,7 @@ public class WebSocketConfig {
     }
 
     @Bean
-    public WsEndpointConfigure newMyEndpointConfigure (){
+    public WsEndpointConfigure newMyEndpointConfigure() {
         return new WsEndpointConfigure();
     }
 }

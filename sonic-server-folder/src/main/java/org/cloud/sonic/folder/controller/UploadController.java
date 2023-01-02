@@ -70,7 +70,7 @@ public class UploadController {
     })
     @PostMapping("/v2")
     public RespModel<String> uploadFilesV2(@RequestParam(name = "file") MultipartFile file,
-                                         @RequestParam(name = "type") String type) throws IOException {
+                                           @RequestParam(name = "type") String type) throws IOException {
         String url = fileTool.uploadV2(type, file);
         if (url != null) {
             return new RespModel(RespEnum.UPLOAD_OK, url);

@@ -18,7 +18,6 @@
 package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.cloud.sonic.controller.mapper.ElementsMapper;
 import org.cloud.sonic.controller.mapper.ModulesMapper;
 import org.cloud.sonic.controller.models.domain.Modules;
 import org.cloud.sonic.controller.services.ElementsService;

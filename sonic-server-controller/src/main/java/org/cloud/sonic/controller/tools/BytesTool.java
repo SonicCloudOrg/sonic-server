@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Slf4j
 public class BytesTool {
-    public static Map<Integer,Session> agentSessionMap = new HashMap<>();
+    public static Map<Integer, Session> agentSessionMap = new HashMap<>();
 
     public static void sendText(Session session, String message) {
         if (session == null || !session.isOpen()) {

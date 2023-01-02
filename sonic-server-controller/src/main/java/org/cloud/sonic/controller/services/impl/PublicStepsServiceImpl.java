@@ -25,8 +25,6 @@ import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.PublicSteps;
 import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
 import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.domain.StepsElements;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
@@ -39,7 +37,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -50,13 +51,20 @@ import java.util.stream.Collectors;
 @Service
 public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, PublicSteps> implements PublicStepsService {
 
-    @Autowired private PublicStepsMapper publicStepsMapper;
-    @Autowired private ElementsMapper elementsMapper;
-    @Autowired private PublicStepsStepsMapper publicStepsStepsMapper;
-    @Autowired private StepsElementsMapper stepsElementsMapper;
-    @Autowired private StepsMapper stepsMapper;
-    @Autowired private StepsService stepsService;
-    @Autowired private ElementsService elementsService;
+    @Autowired
+    private PublicStepsMapper publicStepsMapper;
+    @Autowired
+    private ElementsMapper elementsMapper;
+    @Autowired
+    private PublicStepsStepsMapper publicStepsStepsMapper;
+    @Autowired
+    private StepsElementsMapper stepsElementsMapper;
+    @Autowired
+    private StepsMapper stepsMapper;
+    @Autowired
+    private StepsService stepsService;
+    @Autowired
+    private ElementsService elementsService;
 
     @Transactional
     @Override
@@ -221,7 +229,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
                 n++;
                 //关联steps和elId
                 if (steps.getElements() != null) {
-                    elementsService.newStepBeLinkedEle(steps,step);
+                    elementsService.newStepBeLinkedEle(steps, step);
                 }
                 continue;
             }
@@ -230,7 +238,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
             stepsMapper.insert(step);
             //关联steps和elId
             if (steps.getElements() != null) {
-                elementsService.newStepBeLinkedEle(steps,step);
+                elementsService.newStepBeLinkedEle(steps, step);
             }
             //插入的stepId 记录到需要关联步骤的list种
             publicStepsStepsId.add(step.getId());

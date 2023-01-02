@@ -55,9 +55,9 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
         Map<String, Resources> parentMap = new HashMap<>();
 
-        map.forEach((key, value) ->{
+        map.forEach((key, value) -> {
             String beanName = value.getBean().toString();
-            Resources parentResource = parentMap.getOrDefault(beanName, processParent(beanName, parentMap)) ;
+            Resources parentResource = parentMap.getOrDefault(beanName, processParent(beanName, parentMap));
             if (parentResource == null) {
                 return;
             }
@@ -100,11 +100,11 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         parentResource.setPath(res);
         parentResource.setVersion(version);
         // 每次扫描都把parent 设置为正常资源
-        parentResource.setWhite(UrlType.NORMAL );
+        parentResource.setWhite(UrlType.NORMAL);
 
         if (needInsert) {
             insert(parentResource);
-        }else {
+        } else {
             parentResource.setUpdateTime(null);
             updateById(parentResource);
         }
@@ -139,7 +139,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         WhiteUrl whiteUrl = value.getMethodAnnotation(WhiteUrl.class);
         if (apiOperation == null) {
             resource.setDesc("未设置");
-        }else {
+        } else {
             resource.setDesc(apiOperation.value());
         }
         //标记相关资源加白
@@ -147,7 +147,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
 
         if (needInsert) {
             insert(resource);
-        }else {
+        } else {
             resource.setUpdateTime(null);
             updateById(resource);
         }
@@ -212,15 +212,15 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
 
     @Override
     public List<ResourcesDTO> listRoleResource(Integer roleId) {
-        CommentPage<ResourcesDTO> commentPage = listResource(new Page<>(),null, true);
+        CommentPage<ResourcesDTO> commentPage = listResource(new Page<>(), null, true);
 
-        List<ResourcesDTO>  parentListResource = listParentResource();
-        Map<Integer, ResourcesDTO> mapParent = parentListResource.stream().collect(Collectors.toMap(ResourcesDTO::getId, Function.identity() ,(a, b) -> a));
+        List<ResourcesDTO> parentListResource = listParentResource();
+        Map<Integer, ResourcesDTO> mapParent = parentListResource.stream().collect(Collectors.toMap(ResourcesDTO::getId, Function.identity(), (a, b) -> a));
 
         List<RoleResources> roleResourcesList = lambdaQuery(roleResourcesMapper).eq(RoleResources::getRoleId, roleId).list();
         Map<Integer, RoleResources> map = null;
         if (!CollectionUtils.isEmpty(roleResourcesList)) {
-            map = roleResourcesList.stream().collect(Collectors.toMap(RoleResources::getResId, Function.identity() ,(a, b) -> a));
+            map = roleResourcesList.stream().collect(Collectors.toMap(RoleResources::getResId, Function.identity(), (a, b) -> a));
         }
 
         Map<Integer, RoleResources> finalMap = map;
@@ -228,7 +228,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
             //判断当前资源是否具有权限
             if (finalMap != null && finalMap.containsKey(a.getId())) {
                 a.setHasAuth(true);
-            }else {
+            } else {
                 a.setHasAuth(false);
             }
             // 构建权限树

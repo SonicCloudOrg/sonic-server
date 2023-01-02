@@ -7,7 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import org.cloud.sonic.controller.models.domain.RoleResources;
 
 /**
- *  Mapper 接口
+ * Mapper 接口
+ *
  * @author yaming116
  * @since 2022-6-2
  */

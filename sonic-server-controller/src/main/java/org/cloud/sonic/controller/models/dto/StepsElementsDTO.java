@@ -1,19 +1,19 @@
 package org.cloud.sonic.controller.models.dto;
 
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.StepsElements;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.StepsElements;
 
 import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author JayWenStar

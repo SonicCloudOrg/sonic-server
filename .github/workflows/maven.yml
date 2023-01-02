@@ -1,6 +1,6 @@
 name: maven compile test
 
-on: [pull_request]
+on: [ pull_request ]
 
 jobs:
   build:
@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Validate and Compile with Maven
-      run: mvn validate compile
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Validate and Compile with Maven
+        run: mvn validate compile

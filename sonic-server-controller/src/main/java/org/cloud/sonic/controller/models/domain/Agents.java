@@ -7,14 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.dto.AgentsDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.dto.AgentsDTO;
 
 import java.io.Serializable;
 
@@ -79,11 +79,11 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     private Integer highTempTime;
 
     @TableField
-    @Column(value = "robot_secret", isNull = false, comment = "机器人秘钥",defaultValue = "")
+    @Column(value = "robot_secret", isNull = false, comment = "机器人秘钥", defaultValue = "")
     private String robotSecret;
 
     @TableField
-    @Column(value = "robot_token", isNull = false, comment = "机器人token",defaultValue = "")
+    @Column(value = "robot_token", isNull = false, comment = "机器人token", defaultValue = "")
     private String robotToken;
 
     @TableField

@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.exception.ServerErrorException;
 import org.cloud.sonic.common.tools.ReflectionTool;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

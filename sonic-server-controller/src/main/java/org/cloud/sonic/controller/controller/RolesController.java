@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-
 @Slf4j
 @Api(tags = "角色相关")
 @RestController
@@ -39,7 +38,7 @@ public class RolesController {
     })
     public RespModel<CommentPage<RolesDTO>> listResources(@RequestParam(name = "page") int page,
                                                           @RequestParam(name = "isAll", required = false) boolean isAll,
-            @RequestParam(name = "roleName", required = false)  String roleName) {
+                                                          @RequestParam(name = "roleName", required = false) String roleName) {
         Page<Roles> pageable = new Page<>(page, 20);
         if (isAll) {
             pageable.setSize(1000L);
@@ -47,7 +46,6 @@ public class RolesController {
 
         return RespModel.result(RespEnum.SEARCH_OK, rolesServices.listRoles(pageable, roleName));
     }
-
 
 
     @WebAspect
@@ -67,7 +65,7 @@ public class RolesController {
         rolesServices.delete(id);
 
         Page<Roles> pageable = new Page<>(1, 20);
-        return  RespModel.result(RespEnum.SEARCH_OK, rolesServices.listRoles(pageable, null));
+        return RespModel.result(RespEnum.SEARCH_OK, rolesServices.listRoles(pageable, null));
     }
 
     @WebAspect
@@ -86,9 +84,6 @@ public class RolesController {
 
         return RespModel.result(RespEnum.UPDATE_OK);
     }
-
-
-
 
 
 }
