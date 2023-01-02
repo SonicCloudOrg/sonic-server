@@ -41,6 +41,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -219,8 +220,21 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         // 保存element映射关系
         List<ElementsDTO> elements = stepsDTO.getElements();
+        List<String> iterator = Arrays.asList("androidIterator", "pocoIterator", "iOSIterator");
         for (ElementsDTO element : elements) {
-            stepsElementsMapper.insert(new StepsElements().setElementsId(element.getId()).setStepsId(steps.getId()));
+            if (iterator.contains(element.getEleType())) {
+                List<Elements> es = new LambdaQueryChainWrapper<>(elementsMapper).eq(Elements::getEleType, element.getEleType()).list();
+                Elements e;
+                if (es.size() > 0) {
+                    e = es.get(0);
+                } else {
+                    e = new Elements().setEleName("当前迭代控件").setEleType(element.getEleType()).setEleValue("").setProjectId(0);
+                    elementsMapper.insert(e);
+                }
+                stepsElementsMapper.insert(new StepsElements().setElementsId(e.getId()).setStepsId(steps.getId()));
+            } else {
+                stepsElementsMapper.insert(new StepsElements().setElementsId(element.getId()).setStepsId(steps.getId()));
+            }
         }
     }
 
