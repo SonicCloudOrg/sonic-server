@@ -5,24 +5,4 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "maven"
-    directory: "/sonic-server-common/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "maven"
-    directory: "/sonic-server-controller/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "maven"
-    directory: "/sonic-server-gateway/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "maven"
-    directory: "/sonic-server-eureka/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "maven"
-    directory: "/sonic-server-folder/"
-    schedule:
-      interval: "weekly"
 
