@@ -484,7 +484,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             if (valueMap.get(k).size() > 0) {
                 String v = valueMap.get(k).get(0);
                 if (needClone && gp.get(k) != null) {
-                    gp = gp.clone();
+                    gp = (JSONObject) gp.clone();
                     needClone = false;
                 }
                 gp.put(k, v);
