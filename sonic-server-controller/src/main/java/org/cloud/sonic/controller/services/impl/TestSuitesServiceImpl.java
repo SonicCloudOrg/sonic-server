@@ -67,6 +67,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired
     private GlobalParamsService globalParamsService;
     @Autowired
+    private TestSuitesParamsService testSuitesParamsService;
+    @Autowired
     private StepsService stepsService;
     @Autowired
     private PublicStepsService publicStepsService;
@@ -125,6 +127,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
         //组装全局参数为json对象
         List<GlobalParams> globalParamsList = globalParamsService.findAll(testSuitesDTO.getProjectId());
+        List<TestSuitesParams> testSuitesParams = testSuitesParamsService.findAll(suiteId);
 
         //将包含|的拆开多个参数并打乱，去掉json对象多参数的字段
         Map<String, List<String>> valueMap = new HashMap<>();
@@ -138,6 +141,18 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp.put(g.getParamsKey(), g.getParamsValue());
             }
         }
+
+        //  替换套件参数, 优先级大于全局参数
+        for (TestSuitesParams p : testSuitesParams) {
+            if (p.getParamsValue().contains("|")){
+                List<String> shuffle = new ArrayList<>(Arrays.asList(p.getParamsValue().split("\\|")));
+                Collections.shuffle(shuffle);
+                valueMap.put(p.getParamsKey(),shuffle);
+            } else {
+                gp.put(p.getParamsKey(),p.getParamsValue());
+            }
+        }
+
         coverHandlerMap.get(testSuitesDTO.getCover()).handlerSuite(testSuitesDTO, gp, devicesList, valueMap, results);
         return new RespModel<>(RespEnum.HANDLE_OK, results.getId());
     }
@@ -346,6 +361,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean delete(int id) {
+        testSuitesParamsService.deleteBySuiteId(id);
         return baseMapper.deleteById(id) > 0;
     }
 
