@@ -407,7 +407,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         Page<TestSuites> page = lambdaQuery.page(pageable);
 
         List<TestSuitesDTO> testSuitesDTOList = page.getRecords()
-                // 转换 + 填充 testcase 和 devices
                 .stream().map(e -> findById(e.getId())).collect(Collectors.toList());
 
         return CommentPage.convertFrom(page, testSuitesDTOList);
@@ -418,7 +417,6 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         return lambdaQuery().eq(TestSuites::getProjectId, projectId)
                 .orderByDesc(TestSuites::getId)
                 .list()
-                // 转换 + 填充 testcase 和 devices
                 .stream().map(e -> findById(e.getId())).collect(Collectors.toList());
     }
 
