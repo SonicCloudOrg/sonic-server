@@ -152,7 +152,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
             }
             return authResult;
         } catch (Exception e) {
-            logger.error("ldap login failed, cause: {}", e);
+            logger.info("ldap login failed, cause: {}", e.getMessage());
             return false;
         }
     }
