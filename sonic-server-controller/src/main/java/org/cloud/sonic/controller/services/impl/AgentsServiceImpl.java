@@ -45,7 +45,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     private DevicesService devicesService;
     @Autowired
     private RobotMsgTool robotMsgTool;
-    @Resource
+    @Autowired
     private AgentsMapper agentsMapper;
 
     @Override
