@@ -86,10 +86,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RespModel<Integer> runSuite(int suiteId, String strike) {
-        TestSuitesDTO testSuitesDTO;
-        if (existsById(suiteId)) {
-            testSuitesDTO = findById(suiteId);
-        } else {
+        TestSuitesDTO testSuitesDTO = findById(suiteId);
+        if (testSuitesDTO == null) {
             return new RespModel<>(3001, "suite.deleted");
         }
 
