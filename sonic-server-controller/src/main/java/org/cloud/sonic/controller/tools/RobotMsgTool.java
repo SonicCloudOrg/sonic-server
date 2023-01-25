@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-
 /**
  * @author ZhouYiXun
  * @des 机器人推送相关工具类
@@ -33,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class RobotMsgTool {
-    private final Logger logger = LoggerFactory.getLogger(RobotMsgTool.class);
 
     @Autowired
     private RobotFactory robotFactory;
