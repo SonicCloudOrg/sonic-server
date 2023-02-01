@@ -29,11 +29,11 @@ import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.RobotMsgTool;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,6 +81,11 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 ag.setRobotToken(robotToken);
                 ag.setRobotSecret(robotSecret);
                 save(ag);
+                JSONObject result = new JSONObject();
+                result.put("msg", "settings");
+                result.put("highTemp", highTemp);
+                result.put("highTempTime", highTempTime);
+                TransportWorker.send(id, result);
             }
         }
     }

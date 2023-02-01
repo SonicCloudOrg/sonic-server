@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.config.WsEndpointConfigure;
 import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.interfaces.AgentStatus;
+import org.cloud.sonic.controller.models.interfaces.ConfType;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class TransportServer {
     @Autowired
     private TestCasesService testCasesService;
 
+    @Autowired
+    private ConfListService confListService;
+
     @OnOpen
     public void onOpen(Session session, @PathParam("agentKey") String agentKey) throws IOException {
         log.info("Session: {} is requesting auth server.", session.getId());
@@ -73,6 +77,7 @@ public class TransportServer {
             auth.put("id", authResult.getId());
             auth.put("highTemp", authResult.getHighTemp());
             auth.put("highTempTime", authResult.getHighTempTime());
+            auth.put("remoteTimeout", confListService.searchByKey(ConfType.REMOTE_DEBUG_TIMEOUT).getContent());
             BytesTool.sendText(session, auth.toJSONString());
         }
     }
