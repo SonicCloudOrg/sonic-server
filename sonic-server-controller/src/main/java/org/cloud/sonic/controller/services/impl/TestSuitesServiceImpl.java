@@ -25,7 +25,6 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.base.TypeConverter;
@@ -95,7 +94,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             return new RespModel<>(3002, "suite.empty.cases");
         }
 
-        List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
+        List<Devices> devicesList = testSuitesDTO.getDevices().stream().map(DevicesDTO::convertTo).collect(Collectors.toList());
         for (int i = devicesList.size() - 1; i >= 0; i--) {
             if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
                 devicesList.remove(devicesList.get(i));
@@ -163,7 +162,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             return new RespModel<>(3002, "suite.empty.cases");
         }
 
-        List<Devices> devicesList = BeanTool.transformFromInBatch(testSuitesDTO.getDevices(), Devices.class);
+        List<Devices> devicesList = testSuitesDTO.getDevices().stream().map(DevicesDTO::convertTo).collect(Collectors.toList());
         for (int i = devicesList.size() - 1; i >= 0; i--) {
             if (devicesList.get(i).getStatus().equals(DeviceStatus.OFFLINE) || devicesList.get(i).getStatus().equals(DeviceStatus.DISCONNECTED)) {
                 devicesList.remove(devicesList.get(i));
