@@ -50,7 +50,7 @@ public class ConfListController {
     @GetMapping("/getRemoteTimeout")
     public RespModel getRemoteTimeout() {
         return new RespModel<>(RespEnum.SEARCH_OK,
-                confListService.searchByKey(ConfType.REMOTE_DEBUG_TIMEOUT).getContent());
+                Integer.parseInt(confListService.searchByKey(ConfType.REMOTE_DEBUG_TIMEOUT).getContent()));
     }
 
     @WebAspect
