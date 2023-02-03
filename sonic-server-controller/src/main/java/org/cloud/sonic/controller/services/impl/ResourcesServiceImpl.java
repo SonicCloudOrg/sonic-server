@@ -133,6 +133,9 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         resource.setParentId(parentResource.getId());
         resource.setMethod(method);
         resource.setPath(path);
+        if (path.equals("/devices/stopDebug")) {
+            resource.setNeedAuth(UrlType.NORMAL);
+        }
         resource.setVersion(version);
 
         ApiOperation apiOperation = value.getMethodAnnotation(ApiOperation.class);

@@ -57,11 +57,11 @@ public class SonicRunner implements ApplicationRunner {
 
             ConfList conf = confListService.searchByKey(ConfType.RESOURCE);
             if (conf != null && Objects.equals(conf.getContent(), version)) {
-                log.info("version: {},resource has been init...", version);
+                log.info("version: {}, resource has been init...", version);
                 return;
             }
             resourcesService.init();
-            log.info("version: {}, resource  init finish!", version);
+            log.info("version: {}, resource init finish!", version);
             confListService.save(ConfType.RESOURCE, version, null);
 
         } catch (Exception e) {
