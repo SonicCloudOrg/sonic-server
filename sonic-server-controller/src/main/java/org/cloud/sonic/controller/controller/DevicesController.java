@@ -31,6 +31,7 @@ import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.services.DevicesService;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,23 @@ public class DevicesController {
 
     @Autowired
     private DevicesService devicesService;
+
+    @WebAspect
+    @ApiOperation(value = "强制解除设备占用", notes = "强制解除设备占用")
+    @ApiImplicitParam(name = "udId", value = "平台", dataTypeClass = Integer.class)
+    @GetMapping("/stopDebug")
+    public RespModel<List<Devices>> stopDebug(@RequestParam(name = "udId") String udId) {
+        Devices devices = devicesService.findByUdId(udId);
+        if (devices != null) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "stopDebug");
+            jsonObject.put("udId", udId);
+            TransportWorker.send(devices.getAgentId(), jsonObject);
+            return new RespModel<>(RespEnum.HANDLE_OK);
+        } else {
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
+        }
+    }
 
     @WebAspect
     @ApiOperation(value = "查询Agent所有设备", notes = "不分页的设备列表")
