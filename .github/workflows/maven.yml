@@ -1,6 +1,10 @@
 name: maven compile test
 
-on: [ pull_request ]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -15,5 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql version: '5.7'
+          mysql database: 'sonic'
+          mysql root password: 'Sonic!@#123'
+          mysql user: 'root'
+          mysql password: 'Sonic!@#123'
       - name: Validate and Compile with Maven
-        run: mvn validate compile test
+        run: mvn test
