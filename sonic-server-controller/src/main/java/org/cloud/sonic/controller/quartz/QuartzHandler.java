@@ -250,9 +250,7 @@ public class QuartzHandler {
 
     public void createSysTrigger() {
         for (String type : typeList) {
-//            从数据库中获取数据，然后创建
             Jobs job = jobsService.findByType(type);
-//            首次部署，初始化系统定时任务
             if (job == null) {
                 job = initSysJob(type);
             }

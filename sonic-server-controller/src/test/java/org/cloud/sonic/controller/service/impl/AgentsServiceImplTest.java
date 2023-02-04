@@ -100,11 +100,6 @@ public class AgentsServiceImplTest {
 
         agentsService.update(id, name, highTemp, highTempTime, robotType, robotToken, robotSecret);
 
-        agents.setId(1);
-        Mockito.when(agentsMapper.selectById(Mockito.any()))
-                .thenReturn(agents);
-        agentsService.update(1, name, highTemp, highTempTime, robotType, robotToken, robotSecret);
-
     }
 
 

@@ -56,6 +56,6 @@ public class Jobs implements Serializable, TypeConverter<Jobs, JobsDTO> {
     private Integer suiteId;
 
     @TableField
-    @Column(isNull = false, comment = "定时任务类型")
+    @Column(isNull = false, defaultValue = "testJob", comment = "定时任务类型")
     private String type;
 }
