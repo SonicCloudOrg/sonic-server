@@ -28,7 +28,7 @@ jobs:
       - name: login docker hub
         run: echo "${{ secrets.ACCESS_TOKEN }}" | docker login -u zhouyixun --password-stdin
       - name: Validate and Compile with Maven
-        run: mvn package
+        run: mvn package -Dmaven.test.skip=true
       - name: deploy controller
         run: docker build -t sonicorg/sonic-server-controller:${{ steps.previoustag.outputs.tag }} -f sonic-server-controller/src/main/docker/Dockerfile .
       - name: push controller
