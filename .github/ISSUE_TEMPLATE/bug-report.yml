@@ -1,5 +1,5 @@
-name: "Bug report | Bug报告"
-description: "Problems with the Sonic. | Sonic的一些问题。"
+name: "Bug report - Bug报告"
+description: "Problems with the Sonic. Sonic的一些问题。"
 title: "[Bug] "
 labels: [ "bug" ]
 body:
@@ -45,4 +45,4 @@ body:
         - label: I'm willing to submit a PR! | 我将发起PR！
   - type: markdown
     attributes:
-      value: "Thanks for completing our form! | 感谢您完成了本表单！"
+      value: "> Thanks for completing our form! | 感谢您完成了本表单！"
