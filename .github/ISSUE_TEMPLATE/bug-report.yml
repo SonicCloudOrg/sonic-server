@@ -42,7 +42,7 @@ body:
       description: >
         We look forward to the community of developers or users helping solve Sonic problems together. If you are willing to submit a PR to fix this problem, please check the box. | 我们正寻找一同解决问题的开发者，如果您将提起PR修复这个问题，请勾选这个选项。
       options:
-        - label: I'm willing to submit a PR!
+        - label: I'm willing to submit a PR! | 我将发起PR！
   - type: markdown
     attributes:
-      value: "Thanks for completing our form!"
+      value: "Thanks for completing our form! | 感谢您完成了本表单！"
