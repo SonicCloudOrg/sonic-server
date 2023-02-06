@@ -1,21 +1,48 @@
----
-name: Bug 报告 | Bug report
-about: Create a report to help us improve
-title: "【Bug】"
-labels: bug
-assignees: ''
-
----
-
-**在提出此issue时，我确认了以下几点（保存后请点击复选框）：**
-
-- [ ] 我已自己确认这是Sonic自身的Bug。
-- [ ] 我接受此issue可能被关闭，并查看开发人员的建议。
-
-**Bug 描述**
-清晰地描述Bug的情况与详细复现步骤 | A clear and concise description of what the bug is.
-
-**版本**
-Sonic的版本号 | Sonic's Version.
-部署的系统(mac,windows32...) | System
-
+name: Bug report
+description: Problems with the software
+title: "[Bug] "
+labels: ["bug"]
+body:
+- type: markdown
+  attributes:
+  value: |
+  Thank you very much for your feedback! | 感谢您的反馈！
+- type: checkboxes
+  attributes:
+  label: Search before asking
+  description: >
+  Please search [issues](https://github.com/SonicCloudOrg/sonic-server/issues) to check if your issue has already been reported. | 请在提问前在issue列表查询是否有重复的报告。
+  options:
+  - label: >
+  I searched in the [issues](https://github.com/SonicCloudOrg/sonic-server/issues) and found nothing similar. | 我查找了并确认issue列表无相似报告。
+  required: true
+- type: textarea
+  attributes:
+  label: Sonic version
+  description: >
+  Please provide the version of Sonic you are using. If you are using the main branch, please provide the commit id or tag. | 请提供Sonic的版本号，如果是main分支，请提供commit id或者tag。
+  validations:
+  required: true
+- type: textarea
+  attributes:
+  label: Deploy platform
+  description: >
+  Please provide the platform you deploy to and its version. Windows 10, Macosx, Linux, etc. | 请提供部署的系统，如Windows 10, Macosx, Linux等等。
+  validations:
+  required: true
+- type: textarea
+  attributes:
+  label: Minimal reproduce step
+  description: Please try to give reproducing steps to facilitate quick location of the problem. | 请提供复现的步骤以便于我们排查。
+  validations:
+  required: true
+- type: checkboxes
+  attributes:
+  label: Are you willing to submit a PR?
+  description: >
+  We look forward to the community of developers or users helping solve Sonic problems together. If you are willing to submit a PR to fix this problem, please check the box. | 我们正寻找一同解决问题的开发者，如果您将提起PR修复这个问题，请勾选这个选项。
+  options:
+  - label: I'm willing to submit a PR!
+- type: markdown
+  attributes:
+  value: "Thanks for completing our form!"
