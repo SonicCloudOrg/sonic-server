@@ -62,7 +62,7 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
     }
 
     public static RespModel process(String l, RespModel respModel, MessageSource messageSource) {
-        String language = "zh_CN";
+        String language = "en_US";
         if (l != null) {
             language = l;
         }
@@ -71,7 +71,7 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
         if (split.length >= 2) {
             locale = new Locale(split[0], split[1]);
         } else {
-            locale = new Locale("zh", "CN");
+            locale = new Locale("en", "US");
         }
         respModel.setMessage(messageSource.getMessage(respModel.getMessage(), new Object[]{}, locale));
         return respModel;
