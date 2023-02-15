@@ -52,6 +52,7 @@ public class RobotFactory {
             case RobotType.YouSpace -> robotMessenger = context.getBean(YouSpaceImpl.class);
             case RobotType.Telegram -> robotMessenger = context.getBean(TelegramImpl.class);
             case RobotType.LineNotify -> robotMessenger = context.getBean(LineNotifyImpl.class);
+            case RobotType.SlackNotify -> robotMessenger = context.getBean(SlackNotifyImpl.class);
             default -> throw new SonicException("Unsupported robot type");
         }
         return robotMessenger;
