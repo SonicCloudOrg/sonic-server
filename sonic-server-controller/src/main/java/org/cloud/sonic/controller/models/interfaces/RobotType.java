@@ -7,4 +7,5 @@ public interface RobotType {
     int YouSpace = 4;
     int Telegram = 5;
     int LineNotify = 6;
+    int SlackNotify = 7;
 }

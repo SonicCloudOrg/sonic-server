@@ -41,11 +41,20 @@ public class RobotMsgToolTest {
 
     private String lineToken = "XXXXX";
 
+    private String slackWebhook = "https://hooks.slack.com/services/TAMNTVCAH/B04PURURLEM/XXXXXXXXX";
+
     @Test
     public void sendDayReportMessage() {
         robotMsgTool.sendDayReportMessage(wechatToken, "", 1, "2",
                 "1", "2", 1, 2, 3, RobotType.WeChat);
     }
+
+    @Test
+    public void sendSlackDayReportMessage() {
+        robotMsgTool.sendDayReportMessage(slackWebhook, "", 1, "Operator App",
+                "2023-2-14 14:52:01", "2023-2-14 14:59:21", 40, 0, 0, RobotType.SlackNotify);
+    }
+
 
     @Test
     public void sendDayReportMessage2() {
@@ -54,8 +63,13 @@ public class RobotMsgToolTest {
     }
 
     @Test
-    public void testSendErrorDevice1() {
-        robotMsgTool.sendErrorDevice(wechatToken, "", RobotType.WeChat, 1, 80, "111");
+    public void testSendErrorDeviceSlack() {
+        robotMsgTool.sendErrorDevice(slackWebhook, "", RobotType.SlackNotify, 0, 80, "111");
+    }
+
+    @Test
+    public void testSendErrorDeviceSlack2() {
+        robotMsgTool.sendErrorDevice(slackWebhook, "", RobotType.SlackNotify, 1, 80, "111");
     }
 
 
@@ -82,9 +96,21 @@ public class RobotMsgToolTest {
     }
 
     @Test
+    public void sendWeekReportMessageSlack() {
+        robotMsgTool.sendWeekReportMessage(slackWebhook, "", 1, "2",
+                "1", "2", 1, 0, 0, 100, RobotType.SlackNotify);
+    }
+
+    @Test
     public void sendResultFinishReport() {
         robotMsgTool.sendResultFinishReport(wechatToken, "", "111", 1, 1, 1, 1,
                 1, RobotType.WeChat);
+    }
+
+    @Test
+    public void sendResultFinishReportSlack() {
+        robotMsgTool.sendResultFinishReport(slackWebhook, "", "suite-01", 1, 1, 1, 1,
+                1, RobotType.SlackNotify);
     }
 
     @Test
