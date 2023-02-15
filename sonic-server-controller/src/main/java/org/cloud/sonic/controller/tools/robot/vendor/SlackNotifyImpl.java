@@ -87,11 +87,11 @@ public class SlackNotifyImpl implements RobotMessenger {
         String reportLink = clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId;
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setType("mrkdwn");
-        slackMessage.setText("*" + suiteName + " 测试完成* \n" +
-                "通过条数：" + passCount + "\n" +
-                "异常条数：" + warnCount + "\n" +
-                "失败条数：" + failCount + "\n" +
-                "测试详情：" + reportLink);
+        slackMessage.setText("*测试套件：" + suiteName + " 运行完毕* \n" +
+                "通过数：" + passCount + "\n" +
+                "异常数：" + warnCount + "\n" +
+                "失败数：" + failCount + "\n" +
+                "测试报告：" + reportLink);
 
         this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, suiteName);
     }
@@ -119,14 +119,14 @@ public class SlackNotifyImpl implements RobotMessenger {
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setType("mrkdwn");
         slackMessage.setText("*Sonic云真机测试平台日报* \n" +
-                "项目名称：" + projectName + "\n" +
-                "测试时间：" + yesterday + " - " + today + "\n" +
-                "通过条数：" + passCount + "\n" +
-                "异常条数：" + warnCount + "\n" +
-                "失败条数：" + failCount + "\n" +
-                "通  过  率：" + (total > 0 ?
+                "项目：" + projectName + "\n" +
+                "时间：" + yesterday + " - " + today + "\n" +
+                "通过数：" + passCount + "\n" +
+                "异常数：" + warnCount + "\n" +
+                "失败数：" + failCount + "\n" +
+                "测试通过率：" + (total > 0 ?
                 new BigDecimal(((float) passCount / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "%\n" +
-                "测试详情：" + reportLink);
+                "详细统计：" + reportLink);
 
         this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, projectName);
 
@@ -154,18 +154,18 @@ public class SlackNotifyImpl implements RobotMessenger {
 
         if (errorType == 1) {
             slackMessage.setText("*Sonic设备高温预警* \n" +
-                    "设备UDID：" + udId + "\n" +
+                    "设备序列号：" + udId + "\n" +
                     "电池温度：" + (tem / 10) + "℃");
 
             //这个是slack消息的通知title
-            slackObjs.put("text", "警告，设备：" + udId + "温度过高！");
+            slackObjs.put("text", "Sonic设备：" + udId + "温度过高！");
         } else {
             slackMessage.setText("*Sonic设备高温超时，已关机* \n" +
-                    "设备UDID：" + udId + "\n" +
+                    "设备序列号：" + udId + "\n" +
                     "电池温度：" + (tem / 10) + "℃");
 
             //这个是slack消息的通知title
-            slackObjs.put("text", "警告，设备：" + udId + "高温超时，已关机");
+            slackObjs.put("text", "Sonic设备：" + udId + "高温超时，已关机");
         }
 
         this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, udId);
@@ -197,15 +197,15 @@ public class SlackNotifyImpl implements RobotMessenger {
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.setType("mrkdwn");
         slackMessage.setText("*Sonic云真机测试平台周报* \n" +
-                "项目名称：" + projectName + "\n" +
-                "测试时间：" + yesterday + " - " + today + "\n" +
-                "一共测试：" + count + "次" + "\n" +
-                "通过条数：" + passCount + "\n" +
-                "异常条数：" + warnCount + "\n" +
-                "失败条数：" + failCount + "\n" +
-                "通  过  率：" + (total > 0 ?
+                "项目：" + projectName + "\n" +
+                "时间：" + yesterday + " - " + today + "\n" +
+                "共测试：" + count + "次" + "\n" +
+                "通过数：" + passCount + "\n" +
+                "异常数：" + warnCount + "\n" +
+                "失败数：" + failCount + "\n" +
+                "测试通过率：" + (total > 0 ?
                 new BigDecimal(((float) passCount / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "%\n" +
-                "测试详情：" + reportLink);
+                "详细统计：" + reportLink);
 
         this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, projectName);
     }
