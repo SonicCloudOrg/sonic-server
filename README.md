@@ -35,22 +35,14 @@
 >
 >If you want to support, you can give me a star. ⭐
 
-## How to package
+## Deploy & Document
+
+See [Here](https://sonic-cloud.cn/deploy/back-end-deploy.html)
+
+## Package
 
 ```
 mvn package
-```
-
-## Deployment mode
-
-```
-docker-compose up -d
-```
-
-or
-
-```
-docker-compose -f docker-compose-zh.yml up -d
 ```
 
 ## Sponsors
