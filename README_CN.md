@@ -34,22 +34,14 @@
 >
 > 如果你想支持，可以给我一个star。⭐
 
-## 打包方式
+## 部署 & 文档
+
+看 [这里](https://sonic-cloud.cn/deploy/back-end-deploy.html)
+
+## 打包
 
 ```
-mvn package 
-```
-
-## 部署方式
-
-```
-docker-compose up -d
-```
-
-或
-
-```
-docker-compose -f docker-compose-zh.yml up -d
+mvn package
 ```
 
 ## 赞助商
