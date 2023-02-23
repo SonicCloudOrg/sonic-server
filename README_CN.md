@@ -9,6 +9,7 @@
   <span>| 简体中文</span>
 </p>
 <p align="center">
+  <a href='https://gitee.com/sonic-cloud/sonic-server/stargazers'><img src='https://gitee.com/sonic-cloud/sonic-server/badge/star.svg?theme=gvp' alt='star'></img></a>
   <a href="#">  
     <img src="https://img.shields.io/github/v/release/SonicCloudOrg/sonic-server?include_prereleases">
   </a>
