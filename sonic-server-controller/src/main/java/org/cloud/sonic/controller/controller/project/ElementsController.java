@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller.controller.project;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.controller.config.ProjectPermissionHandler;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Elements;
 import org.cloud.sonic.controller.models.dto.ElementsDTO;
@@ -39,7 +40,7 @@ import java.util.List;
 @Api(tags = "控件元素管理相关")
 @RestController
 @RequestMapping("/elements")
-public class ElementsController {
+public class ElementsController implements ProjectPermissionHandler {
 
     @Autowired
     private ElementsService elementsService;
@@ -118,5 +119,12 @@ public class ElementsController {
     @GetMapping("/copyEle")
     public RespModel<String> copy(@RequestParam(name = "id") int id) {
         return elementsService.copy(id);
+    }
+
+
+
+    @Override
+    public int getProjectId(String method, Object[] args) {
+        return 0;
     }
 }

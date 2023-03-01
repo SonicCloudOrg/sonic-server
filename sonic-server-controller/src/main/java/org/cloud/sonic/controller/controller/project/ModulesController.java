@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller.controller.project;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,58 +23,65 @@ import io.swagger.annotations.ApiOperation;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.domain.Versions;
-import org.cloud.sonic.controller.models.dto.VersionsDTO;
-import org.cloud.sonic.controller.services.VersionsService;
+import org.cloud.sonic.controller.models.base.TypeConverter;
+import org.cloud.sonic.controller.models.domain.Modules;
+import org.cloud.sonic.controller.models.dto.ModulesDTO;
+import org.cloud.sonic.controller.services.ModulesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Api(tags = "版本迭代相关")
+@Api(tags = "模块管理相关")
 @RestController
-@RequestMapping("/versions")
-public class VersionsController {
+@RequestMapping("/modules")
+public class ModulesController {
+
     @Autowired
-    private VersionsService versionsService;
+    private ModulesService modulesService;
 
     @WebAspect
-    @ApiOperation(value = "更新版本迭代", notes = "新增或更改版本迭代信息")
+    @ApiOperation(value = "更新模块信息", notes = "新增或更新对应的模块信息")
     @PutMapping
-    public RespModel<String> save(@Validated @RequestBody VersionsDTO versionsDTO) {
-        versionsService.save(versionsDTO.convertTo());
+    public RespModel<String> save(@Validated @RequestBody ModulesDTO modules) {
+        modulesService.save(modules.convertTo());
         return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
     @WebAspect
-    @ApiOperation(value = "查询版本迭代列表", notes = "用于查询对应项目id下的版本迭代列表")
+    @ApiOperation(value = "查找模块列表", notes = "查找对应项目id的模块列表")
     @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
     @GetMapping("/list")
-    public RespModel<List<Versions>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
-        return new RespModel<>(RespEnum.SEARCH_OK, versionsService.findByProjectId(projectId));
+    public RespModel<List<ModulesDTO>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
+        return new RespModel<>(
+                RespEnum.SEARCH_OK,
+                modulesService.findByProjectId(projectId)
+                        .stream().map(TypeConverter::convertTo).collect(Collectors.toList())
+        );
     }
 
     @WebAspect
-    @ApiOperation(value = "删除版本迭代", notes = "删除指定id的版本迭代")
-    @ApiImplicitParam(name = "id", value = "版本迭代id", dataTypeClass = Integer.class)
+    @ApiOperation(value = "删除模块", notes = "删除对应id的模块")
+    @ApiImplicitParam(name = "id", value = "模块id", dataTypeClass = Integer.class)
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
-        if (versionsService.delete(id)) {
+        if (modulesService.delete(id)) {
             return new RespModel<>(RespEnum.DELETE_OK);
         } else {
-            return new RespModel<>(RespEnum.ID_NOT_FOUND);
+            return new RespModel<>(RespEnum.DELETE_FAIL);
         }
     }
 
     @WebAspect
-    @ApiOperation(value = "查询版本迭代信息", notes = "查询指定id的版本迭代的详细信息")
-    @ApiImplicitParam(name = "id", value = "版本迭代id", dataTypeClass = Integer.class)
+    @ApiOperation(value = "查看模块信息", notes = "查看对应id的模块信息")
+    @ApiImplicitParam(name = "id", value = "模块id", dataTypeClass = Integer.class)
     @GetMapping
-    public RespModel<Versions> findById(@RequestParam(name = "id") int id) {
-        Versions versions = versionsService.findById(id);
-        if (versions != null) {
-            return new RespModel<>(RespEnum.SEARCH_OK, versions);
+    public RespModel<ModulesDTO> findById(@RequestParam(name = "id") int id) {
+        Modules modules = modulesService.findById(id);
+        if (modules != null) {
+            return new RespModel<>(RespEnum.SEARCH_OK, modules.convertTo());
         } else {
             return new RespModel<>(RespEnum.ID_NOT_FOUND);
         }
