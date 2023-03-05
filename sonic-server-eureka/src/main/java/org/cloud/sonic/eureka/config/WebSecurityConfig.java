@@ -1,26 +1,19 @@
 package org.cloud.sonic.eureka.config;
 
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 /**
  * @author ZhouYiXun
  * @des 配置需要加密的内容
  * @date 2021/8/19 15:26
  */
-@EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/eureka/**");
-        super.configure(http);
-    }
+@Configuration
+public class WebSecurityConfig {
 
-    @Override
-    public void init(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/actuator/**");
-        super.init(web);
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/eureka/**", "/actuator/**");
     }
 }

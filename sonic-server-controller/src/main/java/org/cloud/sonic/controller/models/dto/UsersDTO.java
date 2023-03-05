@@ -10,8 +10,8 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Users;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 
 @ApiModel("用户DTO 模型")

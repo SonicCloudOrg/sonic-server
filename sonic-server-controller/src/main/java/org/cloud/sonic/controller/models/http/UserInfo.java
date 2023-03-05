@@ -3,7 +3,7 @@ package org.cloud.sonic.controller.models.http;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @ApiModel("登录请求模型")

@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.Session;
+import jakarta.websocket.Session;
 
 
 @Api(tags = "调度相关")

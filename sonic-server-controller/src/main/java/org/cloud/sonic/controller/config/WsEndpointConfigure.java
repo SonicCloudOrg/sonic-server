@@ -5,7 +5,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 public class WsEndpointConfigure extends ServerEndpointConfig.Configurator implements ApplicationContextAware {
 

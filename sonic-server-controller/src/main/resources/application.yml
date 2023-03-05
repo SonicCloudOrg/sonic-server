@@ -5,3 +5,5 @@ spring:
     des: "Controller of Sonic Cloud Real Machine Platform"
   profiles:
     active: @project.artifactId@,eureka,actuator,jdbc,feign,logging,knife4j,user
+  main:
+    allow-circular-references: true
