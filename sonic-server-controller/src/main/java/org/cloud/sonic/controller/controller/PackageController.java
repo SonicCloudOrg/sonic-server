@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
  * @des
  * @date 2022/5/26 1:22
  */
-@Api(tags = "安装包管理")
+@Tag(name = "安装包管理")
 @RestController
 @RequestMapping("/packages")
 public class PackageController {

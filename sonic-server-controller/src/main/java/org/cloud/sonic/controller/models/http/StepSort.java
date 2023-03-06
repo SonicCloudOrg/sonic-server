@@ -1,25 +1,23 @@
 package org.cloud.sonic.controller.models.http;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
 import java.io.Serializable;
 
-@ApiModel("拖拽排序请求模型")
+@Schema(name = "拖拽排序请求模型")
 public class StepSort implements Serializable {
     @NotNull
-    @ApiModelProperty(value = "测试用例id", required = true, example = "1")
+    @Schema(description = "测试用例id", required = true, example = "1")
     private int caseId;
     @NotNull
-    @ApiModelProperty(value = "拖拽方向", required = true, example = "up | down")
+    @Schema(description = "拖拽方向", required = true, example = "up | down")
     private String direction;
     @Positive
-    @ApiModelProperty(value = "移动后被影响的第一个步骤sort序号", required = true, example = "1")
+    @Schema(description = "移动后被影响的第一个步骤sort序号", required = true, example = "1")
     private int startId;
     @Positive
-    @ApiModelProperty(value = "移动后被影响的最后一个步骤sort序号", required = true, example = "9")
+    @Schema(description = "移动后被影响的最后一个步骤sort序号", required = true, example = "9")
     private int endId;
 
     public int getCaseId() {

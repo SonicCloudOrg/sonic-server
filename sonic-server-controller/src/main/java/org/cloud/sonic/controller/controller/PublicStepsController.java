@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "公共步骤相关")
+@Tag(name = "公共步骤相关")
 @RestController
 @RequestMapping("/publicSteps")
 public class PublicStepsController {

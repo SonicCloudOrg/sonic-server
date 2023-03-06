@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @des
  * @date 2021/9/9 22:46
  */
-@Api(tags = "项目管理相关")
+@Tag(name = "项目管理相关")
 @RestController
 @RequestMapping("/projects")
 public class ProjectsController {

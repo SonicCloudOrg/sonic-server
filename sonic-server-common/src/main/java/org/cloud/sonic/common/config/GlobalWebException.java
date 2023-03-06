@@ -17,6 +17,7 @@
  */
 package org.cloud.sonic.common.config;
 
+import jakarta.validation.ConstraintViolationException;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -28,8 +29,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import jakarta.validation.ConstraintViolationException;
 
 /**
  * @author ZhouYiXun

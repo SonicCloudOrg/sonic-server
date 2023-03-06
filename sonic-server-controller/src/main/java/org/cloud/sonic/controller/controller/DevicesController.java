@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "设备管理相关")
+@Tag(name = "设备管理相关")
 @RestController
 @RequestMapping("/devices")
 public class DevicesController {

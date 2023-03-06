@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "控件元素管理相关")
+@Tag(name = "控件元素管理相关")
 @RestController
 @RequestMapping("/elements")
 public class ElementsController {

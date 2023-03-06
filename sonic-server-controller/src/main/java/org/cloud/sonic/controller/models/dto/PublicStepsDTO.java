@@ -1,7 +1,8 @@
 package org.cloud.sonic.controller.models.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +11,10 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.PublicSteps;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel("公共步骤模型")
+@Schema(name = "公共步骤模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -23,21 +22,21 @@ import java.util.List;
 @AllArgsConstructor
 public class PublicStepsDTO implements Serializable, TypeConverter<PublicStepsDTO, PublicSteps> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     Integer id;
 
     @Positive
-    @ApiModelProperty(value = "项目id", required = true, example = "1")
+    @Schema(description = "项目id", required = true, example = "1")
     Integer projectId;
 
     @Positive
-    @ApiModelProperty(value = "平台", required = true, example = "1")
+    @Schema(description = "平台", required = true, example = "1")
     Integer platform;
 
     @NotBlank
-    @ApiModelProperty(value = "公共步骤名称", required = true, example = "登陆步骤")
+    @Schema(description = "公共步骤名称", required = true, example = "登陆步骤")
     String name;
 
-    @ApiModelProperty(value = "包含操作步骤列表")
+    @Schema(description = "包含操作步骤列表")
     List<StepsDTO> steps;
 }

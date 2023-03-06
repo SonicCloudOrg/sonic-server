@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "全局参数相关")
+@Tag(name = "全局参数相关")
 @RestController
 @RequestMapping("/globalParams")
 public class GlobalParamsController {

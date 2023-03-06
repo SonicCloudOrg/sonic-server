@@ -22,7 +22,7 @@ import java.util.List;
 
 
 @Slf4j
-@Api(tags = "请求路径资源")
+@Tag(name = "请求路径资源")
 @RestController
 @RequestMapping("/resources")
 public class ResourcesController {

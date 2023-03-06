@@ -22,6 +22,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -41,7 +44,7 @@ import java.util.stream.Collectors;
  * @des
  * @date 2021/8/28 21:49
  */
-@Api(tags = "Agent端相关")
+@Tag(name = "Agent端相关")
 @RestController
 @RequestMapping("/agents")
 public class AgentsController {
@@ -50,8 +53,8 @@ public class AgentsController {
     private AgentsService agentsService;
 
     @WebAspect
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class),
+    @Parameters(value = {
+            @Parameter(name = "id", value = "id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "position", value = "position", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "type", value = "type", dataTypeClass = String.class)
     })

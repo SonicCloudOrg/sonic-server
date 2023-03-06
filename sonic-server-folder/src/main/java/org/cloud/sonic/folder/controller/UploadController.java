@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 
-@Api(tags = "文件上传")
+@Tag(name = "文件上传")
 @RestController
 @RequestMapping("/upload")
 @Slf4j

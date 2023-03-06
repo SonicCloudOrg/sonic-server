@@ -1,7 +1,8 @@
 package org.cloud.sonic.controller.models.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +11,9 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Users;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import java.io.Serializable;
 
-@ApiModel("用户DTO 模型")
+@Schema(name = "用户DTO 模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -22,21 +21,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class UsersDTO implements Serializable, TypeConverter<UsersDTO, Users> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     Integer id;
 
     @NotBlank
-    @ApiModelProperty(value = "用户名称", required = true, example = "ZhouYiXun")
+    @Schema(description = "用户名称", required = true, example = "ZhouYiXun")
     String userName;
 
     @NotBlank
-    @ApiModelProperty(value = "用户密码", required = true, example = "123456")
+    @Schema(description = "用户密码", required = true, example = "123456")
     String password;
 
     @Positive
-    @ApiModelProperty(value = "角色", required = false, example = "1")
+    @Schema(description = "角色", required = false, example = "1")
     Integer role;
 
-    @ApiModelProperty(value = "角色名称", required = false, example = "tester")
+    @Schema(description = "角色名称", required = false, example = "tester")
     String roleName;
 }

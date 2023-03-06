@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "版本迭代相关")
+@Tag(name = "版本迭代相关")
 @RestController
 @RequestMapping("/versions")
 public class VersionsController {

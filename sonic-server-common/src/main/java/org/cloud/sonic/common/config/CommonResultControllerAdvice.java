@@ -17,6 +17,7 @@
  */
 package org.cloud.sonic.common.config;
 
+import jakarta.annotation.Resource;
 import org.cloud.sonic.common.http.RespModel;
 import org.springframework.context.MessageSource;
 import org.springframework.core.MethodParameter;
@@ -29,7 +30,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import jakarta.annotation.Resource;
 import java.util.Locale;
 
 /**

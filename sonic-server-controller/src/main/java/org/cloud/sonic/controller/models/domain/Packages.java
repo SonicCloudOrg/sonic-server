@@ -6,8 +6,6 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +21,7 @@ import java.util.Date;
  * @author yaming116, Eason
  * @date 2022/5/26 1:22
  */
-@ApiModel(value = "Packages对象", description = "")
+@Schema(name = value="Packages对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -63,13 +61,13 @@ public class Packages implements Serializable, TypeConverter<Packages, PackageDT
     @Column(value = "build_url", isNull = false, comment = "来源地址")
     private String buildUrl;
 
-    @ApiModelProperty(value = "创建时间", example = "2021-08-15 11:36:00")
+    @Schema(description = "创建时间", example = "2021-08-15 11:36:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     @Column(value = "create_time", type = MySqlTypeConstant.DATETIME, isNull = false, comment = "任务创建时间")
     Date createTime;
 
-    @ApiModelProperty(value = "更新时间", example = "2021-08-15 11:36:00")
+    @Schema(description = "更新时间", example = "2021-08-15 11:36:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @Column(value = "update_time", type = MySqlTypeConstant.DATETIME, comment = "更新时间")

@@ -1,8 +1,7 @@
 package org.cloud.sonic.controller.models.http;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import jakarta.validation.constraints.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -12,11 +11,11 @@ import java.io.Serializable;
  */
 public class ChangePwd implements Serializable {
     @NotNull
-    @ApiModelProperty(value = "旧密码", required = true, example = "123456")
+    @Schema(description = "旧密码", required = true, example = "123456")
     private String oldPwd;
 
     @NotNull
-    @ApiModelProperty(value = "新密码", required = true, example = "123456")
+    @Schema(description = "新密码", required = true, example = "123456")
     private String newPwd;
 
     public String getOldPwd() {

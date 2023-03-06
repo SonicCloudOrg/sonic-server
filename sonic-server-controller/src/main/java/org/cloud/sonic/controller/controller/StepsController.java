@@ -43,7 +43,7 @@ import java.util.List;
  * @des
  * @date 2021/9/19 11:45
  */
-@Api(tags = "操作步骤相关")
+@Tag(name = "操作步骤相关")
 @RestController
 @RequestMapping("/steps")
 public class StepsController {

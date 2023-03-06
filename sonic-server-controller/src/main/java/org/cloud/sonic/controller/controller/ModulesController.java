@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "模块管理相关")
+@Tag(name = "模块管理相关")
 @RestController
 @RequestMapping("/modules")
 public class ModulesController {

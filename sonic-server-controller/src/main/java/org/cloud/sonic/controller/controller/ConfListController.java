@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(tags = "配置项相关")
+@Tag(name = "配置项相关")
 @RestController
 @RequestMapping("/confList")
 public class ConfListController {

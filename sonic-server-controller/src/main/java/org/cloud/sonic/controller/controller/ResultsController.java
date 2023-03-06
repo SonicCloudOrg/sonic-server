@@ -33,7 +33,7 @@ import org.cloud.sonic.controller.services.ResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "测试结果相关")
+@Tag(name = "测试结果相关")
 @RestController
 @RequestMapping("/results")
 public class ResultsController {

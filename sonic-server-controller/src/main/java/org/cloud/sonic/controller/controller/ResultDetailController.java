@@ -39,7 +39,7 @@ import java.util.List;
  * @des
  * @date 2021/8/29 16:59
  */
-@Api(tags = "测试结果详情相关")
+@Tag(name = "测试结果详情相关")
 @RestController
 @RequestMapping("/resultDetail")
 public class ResultDetailController {

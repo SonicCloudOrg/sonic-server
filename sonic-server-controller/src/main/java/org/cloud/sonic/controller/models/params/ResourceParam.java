@@ -1,13 +1,13 @@
 package org.cloud.sonic.controller.models.params;
 
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data

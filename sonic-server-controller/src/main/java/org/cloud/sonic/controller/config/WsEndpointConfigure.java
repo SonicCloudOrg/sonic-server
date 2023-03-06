@@ -1,11 +1,10 @@
 package org.cloud.sonic.controller.config;
 
+import jakarta.websocket.server.ServerEndpointConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-import jakarta.websocket.server.ServerEndpointConfig;
 
 public class WsEndpointConfigure extends ServerEndpointConfig.Configurator implements ApplicationContextAware {
 
