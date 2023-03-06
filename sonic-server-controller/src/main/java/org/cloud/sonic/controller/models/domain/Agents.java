@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ import java.io.Serializable;
  * @author JayWenStar, Eason
  * @since 2021-12-17
  */
-@Schema(name = value="Agents对象", description = "")
+@Schema(name ="Agents对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder

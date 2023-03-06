@@ -18,12 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -53,11 +51,6 @@ public class AgentsController {
     private AgentsService agentsService;
 
     @WebAspect
-    @Parameters(value = {
-            @Parameter(name = "id", value = "id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "position", value = "position", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "type", value = "type", dataTypeClass = String.class)
-    })
     @GetMapping("/hubControl")
     public RespModel<?> hubControl(@RequestParam(name = "id") int id, @RequestParam(name = "position") int position,
                                    @RequestParam(name = "type") String type) {
@@ -70,7 +63,7 @@ public class AgentsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询所有Agent端", notes = "获取所有Agent端以及详细信息")
+    @Operation(summary = "查询所有Agent端", description = "获取所有Agent端以及详细信息")
     @GetMapping("/list")
     public RespModel<List<AgentsDTO>> findAgents() {
         return new RespModel<>(
@@ -80,7 +73,7 @@ public class AgentsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "修改agent信息", notes = "修改agent信息")
+    @Operation(summary = "修改agent信息", description = "修改agent信息")
     @PutMapping("/update")
     public RespModel<String> update(@RequestBody JSONObject jsonObject) {
         agentsService.update(jsonObject.getInteger("id"),
@@ -91,7 +84,7 @@ public class AgentsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询Agent端信息", notes = "获取对应id的Agent信息")
+    @Operation(summary = "查询Agent端信息", description = "获取对应id的Agent信息")
     @GetMapping
     public RespModel<?> findOne(@RequestParam(name = "id") int id) {
         Agents agents = agentsService.findById(id);

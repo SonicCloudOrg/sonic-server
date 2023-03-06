@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ import org.cloud.sonic.controller.models.dto.JobsDTO;
 
 import java.io.Serializable;
 
-@Schema(name = value="Jobs对象", description = "")
+@Schema(name ="Jobs对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder

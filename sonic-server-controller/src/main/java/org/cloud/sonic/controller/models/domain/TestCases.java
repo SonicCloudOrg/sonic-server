@@ -6,6 +6,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ import java.util.Date;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@Schema(name = value="TestCases对象", description = "")
+@Schema(name ="TestCases对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder

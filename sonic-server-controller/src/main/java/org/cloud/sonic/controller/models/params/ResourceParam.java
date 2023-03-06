@@ -1,6 +1,6 @@
 package org.cloud.sonic.controller.models.params;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +17,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ResourceParam implements Serializable {
 
-    @ApiModelProperty("资源 id")
+    @Schema(name = "资源 id")
     @NotNull
     private Integer id;
 
-    @ApiModelProperty("是否需要鉴权")
+    @Schema(name = "是否需要鉴权")
     @NotNull
     private Boolean needAuth;
 }
