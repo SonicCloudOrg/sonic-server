@@ -1,5 +1,6 @@
 package org.cloud.sonic.folder.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.folder.tools.FileTool;
@@ -22,8 +23,8 @@ import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/files")
+@Slf4j
 public class FilesController {
-    private final Logger logger = LoggerFactory.getLogger(FilesController.class);
     private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
     @Autowired
     private FileTool fileTool;
@@ -50,12 +51,12 @@ public class FilesController {
                         try {
                             if (timeMillis - sf.parse(dateFile.getName()).getTime()
                                     > day * 86400000L) {
-                                logger.info("clean begin! " + dateFile.getPath());
+                                log.info("clean begin! " + dateFile.getPath());
                                 fileTool.deleteDir(dateFile);
                             }
                         } catch (ParseException e) {
-                            logger.info("Parse file name error, cause: " + dateFile.getPath());
-                            logger.error(e.getMessage());
+                            log.info("Parse file name error, cause: " + dateFile.getPath());
+                            log.error(e.getMessage());
                         }
                     }
                 }

@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: reactive
   version: @project.version@
   application:
     name: @project.artifactId@
