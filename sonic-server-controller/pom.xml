@@ -14,7 +14,6 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
@@ -79,7 +78,7 @@
         <dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-core</artifactId>
-            <version>2.4.1</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

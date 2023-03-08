@@ -23,6 +23,7 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -39,18 +40,15 @@ import java.util.List;
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
 
-    @ConfigurationProperties(prefix = "filter")
-    @Data
-    public class Filter {
-        private static List<String> whiteList;
-    }
+    @Value("${filter.white-list}")
+    private List<String> whiteList;
 
     @Autowired
     private JWTTokenTool jwtTokenTool;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        for (String white : Filter.whiteList) {
+        for (String white : whiteList) {
             if (exchange.getRequest().getURI().toString().contains(white)) {
                 return chain.filter(exchange);
             }

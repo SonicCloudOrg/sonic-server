@@ -1,12 +1,9 @@
-#knife4j:
-#  enable: true
-#  setting:
-#    enableHost: true
-#    enableHostText: http://${SONIC_SERVER_HOST:localhost}:${SONIC_SERVER_PORT:3000}/server
-#    enableFooter: false
-#    enableFooterCustom: true
-#    footerCustomContent: GPL License | Copyright 2022 - [SonicCloudOrg/sonic-server](https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE)
 knife4j:
   enable: true
   setting:
     language: zh_cn
+    enableHost: true
+    enableHostText: http://${SONIC_SERVER_HOST:localhost}:${SONIC_SERVER_PORT:3000}/server
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: AGPL License | Copyright 2022 - [SonicCloudOrg/sonic-server](https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE)
