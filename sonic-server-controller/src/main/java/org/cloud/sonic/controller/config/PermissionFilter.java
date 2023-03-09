@@ -18,6 +18,10 @@
 package org.cloud.sonic.controller.config;
 
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,6 +39,7 @@ import org.cloud.sonic.controller.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -44,6 +49,18 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class PermissionFilter extends OncePerRequestFilter {
+
+    @Bean
+    public OpenAPI springShopOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("SpringShop API")
+                        .description("Spring shop sample application")
+                        .version("v0.0.1")
+                        .license(new License().name("Apache 2.0").url("http://springdoc.org")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("SpringShop Wiki Documentation")
+                        .url("https://springshop.wiki.github.org/docs"));
+    }
 
     /**
      * 是否开启权限管理
@@ -72,6 +89,10 @@ public class PermissionFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURL().toString().contains("swagger")) {
+            return;
+        }
+
         String token = request.getHeader(TOKEN);
 
         if (permissionEnable && token != null && !request.getMethod().equalsIgnoreCase("options")) {

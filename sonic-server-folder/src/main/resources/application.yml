@@ -4,4 +4,4 @@ spring:
     name: @project.artifactId@
     des: "Folder of Sonic Cloud Real Machine Platform"
   profiles:
-    active: @project.artifactId@,actuator,eureka,feign,logging,knife4j,user
+    active: @project.artifactId@,actuator,eureka,feign,logging,user

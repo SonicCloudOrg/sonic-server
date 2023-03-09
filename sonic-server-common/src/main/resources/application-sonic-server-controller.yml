@@ -1,5 +1,8 @@
 server:
-  port: 0
+  port: 8080
+
+springdoc:
+  enable-native-support: true
 
 spring:
   quartz:
