@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 19
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '19'
+          java-version: '17'
           distribution: 'temurin'
           cache: maven
       - uses: mirromutth/mysql-action@v1.1
