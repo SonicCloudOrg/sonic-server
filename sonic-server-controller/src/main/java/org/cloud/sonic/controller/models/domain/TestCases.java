@@ -6,8 +6,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +22,7 @@ import java.util.Date;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@ApiModel(value = "TestCases对象", description = "")
+@Schema(name ="TestCases对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -47,7 +46,7 @@ public class TestCases implements Serializable, TypeConverter<TestCases, TestCas
     @Column(isNull = false, comment = "用例设计人")
     private String designer;
 
-    @ApiModelProperty(value = "最后修改日期", required = true, example = "2021-08-15 11:10:00")
+    @Schema(description = "最后修改日期", required = true, example = "2021-08-15 11:10:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @Column(value = "edit_time", type = MySqlTypeConstant.DATETIME, isNull = false, comment = "最后修改日期")

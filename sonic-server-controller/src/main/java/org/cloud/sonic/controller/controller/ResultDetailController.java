@@ -19,10 +19,10 @@ package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -39,7 +39,7 @@ import java.util.List;
  * @des
  * @date 2021/8/29 16:59
  */
-@Api(tags = "测试结果详情相关")
+@Tag(name = "测试结果详情相关")
 @RestController
 @RequestMapping("/resultDetail")
 public class ResultDetailController {
@@ -48,7 +48,7 @@ public class ResultDetailController {
     private ResultDetailService resultDetailService;
 
     @WebAspect
-    @ApiOperation(value = "保存测试结果", notes = "保存测试结果")
+    @Operation(summary = "保存测试结果", description = "保存测试结果")
     @PostMapping
     public RespModel<String> save(@RequestBody JSONObject jsonObject) {
         resultDetailService.saveByTransport(jsonObject);
@@ -56,13 +56,13 @@ public class ResultDetailController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找测试结果详情", notes = "查找对应测试结果详情")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "caseId", value = "测试用例id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "resultId", value = "测试结果id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "deviceId", value = "设备id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class)
+    @Operation(summary = "查找测试结果详情", description = "查找对应测试结果详情")
+    @Parameters(value = {
+            @Parameter(name = "caseId", description = "测试用例id"),
+            @Parameter(name = "resultId", description = "测试结果id"),
+            @Parameter(name = "deviceId", description = "设备id"),
+            @Parameter(name = "type", description = "类型"),
+            @Parameter(name = "page", description = "页码")
     })
     @GetMapping("/list")
     public RespModel<CommentPage<ResultDetail>> findAll(@RequestParam(name = "caseId") int caseId,
@@ -78,12 +78,12 @@ public class ResultDetailController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找测试结果详情2", notes = "查找对应测试结果详情")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "caseId", value = "测试用例id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "resultId", value = "测试结果id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "deviceId", value = "设备id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "type", value = "类型", dataTypeClass = String.class),
+    @Operation(summary = "查找测试结果详情2", description = "查找对应测试结果详情")
+    @Parameters(value = {
+            @Parameter(name = "caseId", description = "测试用例id"),
+            @Parameter(name = "resultId", description = "测试结果id"),
+            @Parameter(name = "deviceId", description = "设备id"),
+            @Parameter(name = "type", description = "类型"),
     })
     @GetMapping("/listAll")
     public RespModel<List<ResultDetail>> findAll(@RequestParam(name = "caseId") int caseId,

@@ -1,7 +1,8 @@
 package org.cloud.sonic.controller.models.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +11,9 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Jobs;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
-@ApiModel("定时任务DTO 实体")
+@Schema(name = "定时任务DTO 实体")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -22,25 +21,25 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class JobsDTO implements Serializable, TypeConverter<JobsDTO, Jobs> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     Integer id;
 
     @NotBlank
-    @ApiModelProperty(value = "定时任务名称", required = true, example = "每周三跑一次")
+    @Schema(description = "定时任务名称", required = true, example = "每周三跑一次")
     String name;
 
     @Positive
-    @ApiModelProperty(value = "套件id", required = true, example = "123")
+    @Schema(description = "套件id", required = true, example = "123")
     Integer suiteId;
 
     @Positive
-    @ApiModelProperty(value = "项目id", required = true, example = "1")
+    @Schema(description = "项目id", required = true, example = "1")
     Integer projectId;
 
-    @ApiModelProperty(value = "状态（1为开启，2为关闭）", example = "1")
+    @Schema(description = "状态（1为开启，2为关闭）", example = "1")
     Integer status;
 
     @NotBlank
-    @ApiModelProperty(value = "cron表达式", required = true, example = "* 30 * * * ?")
+    @Schema(description = "cron表达式", required = true, example = "* 30 * * * ?")
     String cronExpression;
 }

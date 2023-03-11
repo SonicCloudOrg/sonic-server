@@ -1,19 +1,18 @@
 package org.cloud.sonic.controller.models.http;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
-@ApiModel("更新设备图片请求模型")
+@Schema(name = "更新设备图片请求模型")
 public class UpdateDeviceImg implements Serializable {
     @Positive
-    @ApiModelProperty(value = "设备id", required = true, example = "1")
+    @Schema(description = "设备id", required = true, example = "1")
     private int id;
     @NotNull
-    @ApiModelProperty(value = "设备图片Url", required = true, example = "123456")
+    @Schema(description = "设备图片Url", required = true, example = "123456")
     private String imgUrl;
 
     public int getId() {

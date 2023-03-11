@@ -17,10 +17,10 @@
  */
 package org.cloud.sonic.folder.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 
-@Api(tags = "文件上传")
+@Tag(name = "文件上传")
 @RestController
 @RequestMapping("/upload")
 @Slf4j
@@ -46,10 +46,10 @@ public class UploadController {
     private FileTool fileTool;
 
     @WebAspect
-    @ApiOperation(value = "上传文件", notes = "上传文件到服务器")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),
-            @ApiImplicitParam(name = "type", value = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)", dataTypeClass = String.class),
+    @Operation(summary = "上传文件", description = "上传文件到服务器")
+    @Parameters(value = {
+            @Parameter(name = "file", description = "文件"),
+            @Parameter(name = "type", description = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)"),
     })
     @PostMapping
     public RespModel<String> uploadFiles(@RequestParam(name = "file") MultipartFile file,
@@ -63,10 +63,10 @@ public class UploadController {
     }
 
     @WebAspect
-    @ApiOperation(value = "上传文件v2", notes = "上传文件到服务器")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),
-            @ApiImplicitParam(name = "type", value = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)", dataTypeClass = String.class),
+    @Operation(summary = "上传文件v2", description = "上传文件到服务器")
+    @Parameters(value = {
+            @Parameter(name = "file", description = "文件"),
+            @Parameter(name = "type", description = "文件类型(只能为keepFiles、imageFiles、recordFiles、logFiles、packageFiles)"),
     })
     @PostMapping("/v2")
     public RespModel<String> uploadFilesV2(@RequestParam(name = "file") MultipartFile file,
@@ -80,12 +80,12 @@ public class UploadController {
     }
 
     @WebAspect
-    @ApiOperation(value = "上传文件（录像分段上传）", notes = "上传文件到服务器")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "file", value = "文件", dataTypeClass = MultipartFile.class),
-            @ApiImplicitParam(name = "uuid", value = "文件uuid", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "index", value = "当前index", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "total", value = "index总数", dataTypeClass = Integer.class),
+    @Operation(summary = "上传文件（录像分段上传）", description = "上传文件到服务器")
+    @Parameters(value = {
+            @Parameter(name = "file", description = "文件"),
+            @Parameter(name = "uuid", description = "文件uuid"),
+            @Parameter(name = "index", description = "当前index"),
+            @Parameter(name = "total", description = "index总数"),
     })
     @PostMapping(value = "/recordFiles")
     public RespModel<String> uploadRecord(@RequestParam(name = "file") MultipartFile file,

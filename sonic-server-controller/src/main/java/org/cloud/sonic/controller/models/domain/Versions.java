@@ -6,8 +6,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +22,7 @@ import java.util.Date;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@ApiModel(value = "Versions对象", description = "")
+@Schema(name ="Versions对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -40,7 +39,7 @@ public class Versions implements Serializable, TypeConverter<Versions, VersionsD
     private Integer id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ApiModelProperty(value = "日期", example = "2021-08-15T16:00:00.000+00:00")
+    @Schema(description = "日期", example = "2021-08-15T16:00:00.000+00:00")
     @TableField(fill = FieldFill.INSERT)
     @Column(value = "create_time", type = MySqlTypeConstant.DATETIME, isNull = false, comment = "创建时间内")
     private Date createTime;

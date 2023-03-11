@@ -17,9 +17,9 @@
  */
 package org.cloud.sonic.controller.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "版本迭代相关")
+@Tag(name = "版本迭代相关")
 @RestController
 @RequestMapping("/versions")
 public class VersionsController {
@@ -40,7 +40,7 @@ public class VersionsController {
     private VersionsService versionsService;
 
     @WebAspect
-    @ApiOperation(value = "更新版本迭代", notes = "新增或更改版本迭代信息")
+    @Operation(summary = "更新版本迭代", description = "新增或更改版本迭代信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody VersionsDTO versionsDTO) {
         versionsService.save(versionsDTO.convertTo());
@@ -48,16 +48,16 @@ public class VersionsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询版本迭代列表", notes = "用于查询对应项目id下的版本迭代列表")
-    @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询版本迭代列表", description = "用于查询对应项目id下的版本迭代列表")
+    @Parameter(name = "projectId", description = "项目id")
     @GetMapping("/list")
     public RespModel<List<Versions>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
         return new RespModel<>(RespEnum.SEARCH_OK, versionsService.findByProjectId(projectId));
     }
 
     @WebAspect
-    @ApiOperation(value = "删除版本迭代", notes = "删除指定id的版本迭代")
-    @ApiImplicitParam(name = "id", value = "版本迭代id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除版本迭代", description = "删除指定id的版本迭代")
+    @Parameter(name = "id", description = "版本迭代id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (versionsService.delete(id)) {
@@ -68,8 +68,8 @@ public class VersionsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询版本迭代信息", notes = "查询指定id的版本迭代的详细信息")
-    @ApiImplicitParam(name = "id", value = "版本迭代id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询版本迭代信息", description = "查询指定id的版本迭代的详细信息")
+    @Parameter(name = "id", description = "版本迭代id")
     @GetMapping
     public RespModel<Versions> findById(@RequestParam(name = "id") int id) {
         Versions versions = versionsService.findById(id);

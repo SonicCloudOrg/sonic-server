@@ -1,7 +1,9 @@
 spring:
+  main:
+    web-application-type: reactive
   version: @project.version@
   application:
     name: @project.artifactId@
     des: "Gateway of Sonic Cloud Real Machine Platform"
   profiles:
-    active: @project.artifactId@,actuator,eureka,logging,user
+    active: @project.artifactId@,eureka,logging,user

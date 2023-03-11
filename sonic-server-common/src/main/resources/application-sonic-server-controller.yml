@@ -1,6 +1,9 @@
 server:
   port: 0
 
+springdoc:
+  paths-to-exclude: /exchange/send,/agents/hubControl
+
 spring:
   quartz:
     properties:

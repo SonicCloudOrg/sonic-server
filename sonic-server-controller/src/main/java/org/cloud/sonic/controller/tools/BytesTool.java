@@ -17,9 +17,9 @@
  */
 package org.cloud.sonic.controller.tools;
 
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

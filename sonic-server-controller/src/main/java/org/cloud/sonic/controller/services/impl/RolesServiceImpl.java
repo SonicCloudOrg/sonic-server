@@ -19,6 +19,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.annotation.Resource;
 import org.cloud.sonic.controller.mapper.RoleResourcesMapper;
 import org.cloud.sonic.controller.mapper.RolesMapper;
 import org.cloud.sonic.controller.models.base.CommentPage;
@@ -32,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

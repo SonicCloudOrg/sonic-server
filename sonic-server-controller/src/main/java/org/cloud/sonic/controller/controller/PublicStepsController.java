@@ -18,10 +18,10 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "公共步骤相关")
+@Tag(name = "公共步骤相关")
 @RestController
 @RequestMapping("/publicSteps")
 public class PublicStepsController {
@@ -49,11 +49,11 @@ public class PublicStepsController {
     private TestCasesService testCasesService;
 
     @WebAspect
-    @ApiOperation(value = "查询公共步骤列表1", notes = "查找对应项目id下的公共步骤列表（分页）")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    @Operation(summary = "查询公共步骤列表1", description = "查找对应项目id下的公共步骤列表（分页）")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "页数据大小")
     })
     @GetMapping("/list")
     public RespModel<CommentPage<PublicStepsDTO>> findByProjectId(@RequestParam(name = "projectId") int projectId,
@@ -67,10 +67,10 @@ public class PublicStepsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询公共步骤列表2", notes = "查找对应项目id下的公共步骤列表（不分页，只查询id和name）")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class),
+    @Operation(summary = "查询公共步骤列表2", description = "查找对应项目id下的公共步骤列表（不分页，只查询id和name）")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "platform", description = "平台"),
     })
     @GetMapping("/findNameByProjectId")
     public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
@@ -79,15 +79,15 @@ public class PublicStepsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "更新公共步骤信息", notes = "新增或更新公共步骤信息")
+    @Operation(summary = "更新公共步骤信息", description = "新增或更新公共步骤信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody PublicStepsDTO publicStepsDTO) {
         return new RespModel(RespEnum.UPDATE_OK, publicStepsService.savePublicSteps(publicStepsDTO));
     }
 
     @WebAspect
-    @ApiOperation(value = "删除公共步骤", notes = "删除对应公共步骤id，包含的操作步骤不会被删除")
-    @ApiImplicitParam(name = "id", value = "公共步骤id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除公共步骤", description = "删除对应公共步骤id，包含的操作步骤不会被删除")
+    @Parameter(name = "id", description = "公共步骤id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (publicStepsService.delete(id)) {
@@ -98,8 +98,8 @@ public class PublicStepsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除公共步骤检查", notes = "返回引用公共步骤的用例")
-    @ApiImplicitParam(name = "id", value = "公共步骤id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除公共步骤检查", description = "返回引用公共步骤的用例")
+    @Parameter(name = "id", description = "公共步骤id")
     @GetMapping("deleteCheck")
     public RespModel<List<TestCases>> deleteCheck(@RequestParam(name = "id") int id) {
         return new RespModel<>(RespEnum.SEARCH_OK, testCasesService.listByPublicStepsId(id));
@@ -107,8 +107,8 @@ public class PublicStepsController {
 
 
     @WebAspect
-    @ApiOperation(value = "查找公共步骤信息", notes = "查询对应公共步骤的详细信息")
-    @ApiImplicitParam(name = "id", value = "公共步骤id", dataTypeClass = Integer.class)
+    @Operation(summary = "查找公共步骤信息", description = "查询对应公共步骤的详细信息")
+    @Parameter(name = "id", description = "公共步骤id")
     @GetMapping
     public RespModel<?> findById(@RequestParam(name = "id") int id) {
         PublicStepsDTO publicStepsDTO = publicStepsService.findById(id);
@@ -120,8 +120,8 @@ public class PublicStepsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "复制公共步骤", notes = "复制对应公共步骤，步骤也会同步")
-    @ApiImplicitParam(name = "id", value = "公共步骤Id", dataTypeClass = Integer.class)
+    @Operation(summary = "复制公共步骤", description = "复制对应公共步骤，步骤也会同步")
+    @Parameter(name = "id", description = "公共步骤Id")
     @GetMapping("/copy")
     public RespModel<String> copyPublicSteps(@RequestParam(name = "id") int id) {
         publicStepsService.copyPublicSetpsIds(id);

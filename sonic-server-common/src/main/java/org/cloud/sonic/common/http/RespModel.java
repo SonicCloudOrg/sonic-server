@@ -17,21 +17,20 @@
  */
 package org.cloud.sonic.common.http;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * @author ZhouYiXun
  * @des 接口响应模型，后续开发相关模块会共用
  * @date 2021/8/15 18:26
  */
-@ApiModel("请求响应模型")
+@Schema(name = "请求响应模型")
 public class RespModel<T> {
-    @ApiModelProperty(value = "状态码", example = "2000")
+    @Schema(description = "状态码")
     private int code;
-    @ApiModelProperty(value = "状态描述", example = "操作成功！")
+    @Schema(description = "状态描述")
     private String message;
-    @ApiModelProperty(value = "响应详情")
+    @Schema(description = "响应详情")
     private T data;
 
     public RespModel() {

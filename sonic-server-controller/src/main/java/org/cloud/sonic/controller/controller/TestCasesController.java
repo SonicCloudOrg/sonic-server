@@ -18,10 +18,11 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -37,11 +38,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
-@Api(tags = "测试用例相关")
+@Tag(name = "测试用例相关")
 @RestController
 @RequestMapping("/testCases")
 public class TestCasesController {
@@ -53,17 +53,17 @@ public class TestCasesController {
     private TestSuitesService testSuitesService;
 
     @WebAspect
-    @ApiOperation(value = "查询测试用例列表", notes = "查找对应项目id下的测试用例列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "name", value = "用例名称", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "moduleIds", value = "模块Id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "idSort", value = "控制id排序方式", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "designerSort", value = "控制designer排序方式", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "editTimeSort", value = "控制editTime排序方式", dataTypeClass = String.class)
+    @Operation(summary = "查询测试用例列表", description = "查找对应项目id下的测试用例列表")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "platform", description = "平台类型"),
+            @Parameter(name = "name", description = "用例名称"),
+            @Parameter(name = "moduleIds", description = "模块Id"),
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "页数据大小"),
+            @Parameter(name = "idSort", description = "控制id排序方式"),
+            @Parameter(name = "designerSort", description = "控制designer排序方式"),
+            @Parameter(name = "editTimeSort", description = "控制editTime排序方式")
 
     })
     @GetMapping("/list")
@@ -84,10 +84,10 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询测试用例列表", notes = "不分页的测试用例列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "platform", value = "平台类型", dataTypeClass = Integer.class),
+    @Operation(summary = "查询测试用例列表", description = "不分页的测试用例列表")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "platform", description = "平台类型"),
     })
     @GetMapping("/listAll")
     public RespModel<List<TestCases>> findAll(@RequestParam(name = "projectId") int projectId,
@@ -97,8 +97,8 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除测试用例", notes = "删除对应用例id，用例下的操作步骤的caseId重置为0")
-    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除测试用例", description = "删除对应用例id，用例下的操作步骤的caseId重置为0")
+    @Parameter(name = "id", description = "用例id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (testCasesService.delete(id)) {
@@ -109,15 +109,15 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除测试用例检查", notes = "返回被引用的测试套件")
-    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除测试用例检查", description = "返回被引用的测试套件")
+    @Parameter(name = "id", description = "用例id")
     @GetMapping("deleteCheck")
     public RespModel<List<TestSuites>> deleteCheck(@RequestParam(name = "id") int id) {
         return new RespModel<>(RespEnum.SEARCH_OK, testSuitesService.listTestSuitesByTestCasesId(id));
     }
 
     @WebAspect
-    @ApiOperation(value = "更新测试用例信息", notes = "新增或更改测试用例信息")
+    @Operation(summary = "更新测试用例信息", description = "新增或更改测试用例信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody TestCasesDTO testCasesDTO, HttpServletRequest request) {
         if (request.getHeader("SonicToken") != null) {
@@ -137,8 +137,8 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询测试用例详情", notes = "查找对应用例id的用例详情")
-    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询测试用例详情", description = "查找对应用例id的用例详情")
+    @Parameter(name = "id", description = "用例id")
     @GetMapping
     public RespModel<TestCasesDTO> findById(@RequestParam(name = "id") int id) {
         TestCasesDTO testCases = testCasesService.findById(id);
@@ -150,8 +150,8 @@ public class TestCasesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "批量查询用例", notes = "查找id列表的用例信息，可以传多个ids[]")
-    @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
+    @Operation(summary = "批量查询用例", description = "查找id列表的用例信息，可以传多个ids[]")
+    @Parameter(name = "ids[]", description = "id列表")
     @GetMapping("/findByIdIn")
     public RespModel<List<TestCases>> findByIdIn(@RequestParam(name = "ids[]") List<Integer> ids) {
         return new RespModel<>(RespEnum.SEARCH_OK,
@@ -160,8 +160,8 @@ public class TestCasesController {
 
     //记得翻译
     @WebAspect
-    @ApiOperation(value = "复制测试用例", notes = "复制对应用例id的用例详情")
-    @ApiImplicitParam(name = "id", value = "用例id", dataTypeClass = Integer.class)
+    @Operation(summary = "复制测试用例", description = "复制对应用例id的用例详情")
+    @Parameter(name = "id", description = "用例id")
     @GetMapping("/copy")
     public RespModel<String> copyTestById(@RequestParam(name = "id") Integer id) {
         testCasesService.copyTestById(id);

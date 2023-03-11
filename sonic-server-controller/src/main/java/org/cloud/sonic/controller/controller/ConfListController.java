@@ -18,8 +18,8 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(tags = "配置项相关")
+@Tag(name = "配置项相关")
 @RestController
 @RequestMapping("/confList")
 public class ConfListController {
@@ -46,7 +46,7 @@ public class ConfListController {
     private AgentsService agentsService;
 
     @WebAspect
-    @ApiOperation(value = "获取远控超时时间", notes = "获取远控超时时间")
+    @Operation(summary = "获取远控超时时间", description = "获取远控超时时间")
     @GetMapping("/getRemoteTimeout")
     public RespModel getRemoteTimeout() {
         return new RespModel<>(RespEnum.SEARCH_OK,
@@ -54,7 +54,7 @@ public class ConfListController {
     }
 
     @WebAspect
-    @ApiOperation(value = "设置远控超时时间", notes = "设置远控超时时间")
+    @Operation(summary = "设置远控超时时间", description = "设置远控超时时间")
     @GetMapping("/setRemoteTimeout")
     public RespModel setRemoteTimeout(@RequestParam(name = "timeout") int timeout) {
         confListService.save(ConfType.REMOTE_DEBUG_TIMEOUT, timeout + "", null);

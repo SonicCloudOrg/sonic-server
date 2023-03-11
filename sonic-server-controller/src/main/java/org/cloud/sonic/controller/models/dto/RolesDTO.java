@@ -1,7 +1,6 @@
 package org.cloud.sonic.controller.models.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import org.cloud.sonic.controller.models.domain.Roles;
 
 import java.io.Serializable;
 
-@ApiModel("角色模型")
+@Schema(name = "角色模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -20,13 +19,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class RolesDTO implements Serializable, TypeConverter<RolesDTO, Roles> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     private Integer id;
 
-    @ApiModelProperty(value = "角色名称", example = "角色名称")
+    @Schema(description = "角色名称", example = "角色名称")
     private String roleName;
 
-    @ApiModelProperty(value = "描述", example = "描述")
+    @Schema(description = "描述", example = "描述")
     private String comment;
 
 

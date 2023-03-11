@@ -2,10 +2,10 @@ package org.cloud.sonic.controller.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -17,9 +17,8 @@ import org.cloud.sonic.controller.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 @Slf4j
-@Api(tags = "角色相关")
+@Tag(name = "角色相关")
 @RestController
 @RequestMapping("/roles")
 public class RolesController {
@@ -28,12 +27,12 @@ public class RolesController {
     private RolesServices rolesServices;
 
     @WebAspect
-    @ApiOperation(value = "查询所有角色信息", notes = "查询所有角色信息")
+    @Operation(summary = "查询所有角色信息", description = "查询所有角色信息")
     @GetMapping("/list")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "isAll", value = "是否全部", dataTypeClass = Boolean.class),
-            @ApiImplicitParam(name = "roleName", value = "角色名称", dataTypeClass = String.class),
+    @Parameters(value = {
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "isAll", description = "是否全部"),
+            @Parameter(name = "roleName", description = "角色名称"),
 
     })
     public RespModel<CommentPage<RolesDTO>> listResources(@RequestParam(name = "page") int page,
@@ -49,7 +48,7 @@ public class RolesController {
 
 
     @WebAspect
-    @ApiOperation(value = "编辑或新增角色", notes = "编辑或新增角色")
+    @Operation(summary = "编辑或新增角色", description = "编辑或新增角色")
     @PutMapping("/edit")
     public RespModel<String> editResources(@RequestBody RolesDTO rolesDTO) {
         rolesServices.save(rolesDTO);
@@ -57,8 +56,8 @@ public class RolesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除角色", notes = "返回当前第一页角色")
-    @ApiImplicitParam(name = "id", value = "角色id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除角色", description = "返回当前第一页角色")
+    @Parameter(name = "id", description = "角色id")
     @DeleteMapping("/delete")
     public RespModel<CommentPage<RolesDTO>> deleteCheck(@RequestParam(name = "id") int id) {
 
@@ -69,11 +68,11 @@ public class RolesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "编辑角色资源鉴权状态", notes = "编辑是否成功")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "roleId", value = "角色 id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "resId", value = "资源 id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "hasAuth", value = "是否有权限", dataTypeClass = Boolean.class)
+    @Operation(summary = "编辑角色资源鉴权状态", description = "编辑是否成功")
+    @Parameters(value = {
+            @Parameter(name = "roleId", description = "角色 id"),
+            @Parameter(name = "resId", description = "资源 id"),
+            @Parameter(name = "hasAuth", description = "是否有权限")
     })
     @PutMapping("/update")
     public RespModel<String> editResourceRoles(@RequestParam(name = "roleId") int roleId,

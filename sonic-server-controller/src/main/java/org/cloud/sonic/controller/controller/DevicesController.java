@@ -19,10 +19,10 @@ package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "设备管理相关")
+@Tag(name = "设备管理相关")
 @RestController
 @RequestMapping("/devices")
 public class DevicesController {
@@ -47,8 +47,8 @@ public class DevicesController {
     private DevicesService devicesService;
 
     @WebAspect
-    @ApiOperation(value = "强制解除设备占用", notes = "强制解除设备占用")
-    @ApiImplicitParam(name = "udId", value = "平台", dataTypeClass = Integer.class)
+    @Operation(summary = "强制解除设备占用", description = "强制解除设备占用")
+    @Parameter(name = "udId", description = "平台")
     @GetMapping("/stopDebug")
     public RespModel<List<Devices>> stopDebug(@RequestParam(name = "udId") String udId) {
         Devices devices = devicesService.findByUdId(udId);
@@ -64,8 +64,8 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询Agent所有设备", notes = "不分页的设备列表")
-    @ApiImplicitParam(name = "agentId", value = "平台", dataTypeClass = Integer.class)
+    @Operation(summary = "查询Agent所有设备", description = "不分页的设备列表")
+    @Parameter(name = "agentId", description = "平台")
     @GetMapping("/listByAgentId")
     public RespModel<List<Devices>> listByAgentId(@RequestParam(name = "agentId") int agentId) {
         return new RespModel<>(RespEnum.SEARCH_OK,
@@ -73,7 +73,7 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "修改设备安装密码", notes = "修改对应设备id的安装密码")
+    @Operation(summary = "修改设备安装密码", description = "修改对应设备id的安装密码")
     @PutMapping("/saveDetail")
     public RespModel<String> saveDetail(@Validated @RequestBody DeviceDetailChange deviceDetailChange) {
         if (devicesService.saveDetail(deviceDetailChange)) {
@@ -84,10 +84,10 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "更新设备Pos", notes = "更新设备Pos")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "id", value = "id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "position", value = "position", dataTypeClass = Integer.class)
+    @Operation(summary = "更新设备Pos", description = "更新设备Pos")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "id"),
+            @Parameter(name = "position", description = "position")
     })
     @GetMapping("/updatePosition")
     public RespModel updatePosition(@RequestParam(name = "id") int id, @RequestParam(name = "position") int position) {
@@ -96,7 +96,7 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "修改设备图片", notes = "修改对应设备id的图片")
+    @Operation(summary = "修改设备图片", description = "修改对应设备id的图片")
     @PutMapping("/updateImg")
     public RespModel<String> updateImg(@Validated @RequestBody UpdateDeviceImg updateDeviceImg) {
         devicesService.updateImg(updateDeviceImg);
@@ -104,19 +104,19 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询所有设备", notes = "查找筛选条件下的所有设备，带[]的参数可以重复传")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "androidVersion[]", value = "安卓版本", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "iOSVersion[]", value = "iOS版本", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "hmVersion[]", value = "鸿蒙版本", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "manufacturer[]", value = "制造商", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "cpu[]", value = "cpu类型", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "size[]", value = "屏幕尺寸", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "agentId[]", value = "所在Agent", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "status[]", value = "当前状态", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "deviceInfo", value = "设备型号或udId", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    @Operation(summary = "查询所有设备", description = "查找筛选条件下的所有设备，带[]的参数可以重复传")
+    @Parameters(value = {
+            @Parameter(name = "androidVersion[]", description = "安卓版本"),
+            @Parameter(name = "iOSVersion[]", description = "iOS版本"),
+            @Parameter(name = "hmVersion[]", description = "鸿蒙版本"),
+            @Parameter(name = "manufacturer[]", description = "制造商"),
+            @Parameter(name = "cpu[]", description = "cpu类型"),
+            @Parameter(name = "size[]", description = "屏幕尺寸"),
+            @Parameter(name = "agentId[]", description = "所在Agent"),
+            @Parameter(name = "status[]", description = "当前状态"),
+            @Parameter(name = "deviceInfo", description = "设备型号或udId"),
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "页数据大小")
     })
     @GetMapping("/list")
     public RespModel<CommentPage<Devices>> findAll(@RequestParam(name = "androidVersion[]", required = false) List<String> androidVersion,
@@ -141,8 +141,8 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询所有设备", notes = "不分页的设备列表")
-    @ApiImplicitParam(name = "platform", value = "平台", dataTypeClass = Integer.class)
+    @Operation(summary = "查询所有设备", description = "不分页的设备列表")
+    @Parameter(name = "platform", description = "平台")
     @GetMapping("/listAll")
     public RespModel<List<Devices>> listAll(@RequestParam(name = "platform") int platform) {
         return new RespModel<>(RespEnum.SEARCH_OK,
@@ -150,8 +150,8 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "批量查询设备", notes = "查找id列表的设备信息，可以传多个ids[]")
-    @ApiImplicitParam(name = "ids[]", value = "id列表", dataTypeClass = Integer.class)
+    @Operation(summary = "批量查询设备", description = "查找id列表的设备信息，可以传多个ids[]")
+    @Parameter(name = "ids[]", description = "id列表")
     @GetMapping("/findByIdIn")
     public RespModel<List<Devices>> findByIdIn(@RequestParam(name = "ids[]") List<Integer> ids) {
         return new RespModel<>(RespEnum.SEARCH_OK,
@@ -159,15 +159,15 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "获取查询条件", notes = "获取现有筛选条件（所有设备有的条件）")
+    @Operation(summary = "获取查询条件", description = "获取现有筛选条件（所有设备有的条件）")
     @GetMapping("/getFilterOption")
     public RespModel<JSONObject> getFilterOption() {
         return new RespModel<>(RespEnum.SEARCH_OK, devicesService.getFilterOption());
     }
 
 //    @WebAspect
-//    @ApiOperation(value = "查询单个设备信息", notes = "获取单个设备的详细信息")
-//    @ApiImplicitParam(name = "udId", value = "设备序列号", dataTypeClass = String.class)
+//    @Operation(summary = "查询单个设备信息", description = "获取单个设备的详细信息")
+//    @Parameter(name = "udId", value = "设备序列号")
 //    @GetMapping
 //    public RespModel<Devices> findByUdId(@RequestParam(name = "udId") String udId) {
 //        Devices devices = devicesService.findByUdId(udId);
@@ -179,7 +179,7 @@ public class DevicesController {
 //    }
 
     @WebAspect
-    @ApiOperation(value = "设备信息", notes = "获取指定设备信息")
+    @Operation(summary = "设备信息", description = "获取指定设备信息")
     @GetMapping
     public RespModel<Devices> findById(@RequestParam(name = "id") int id) {
         Devices devices = devicesService.findById(id);
@@ -191,14 +191,14 @@ public class DevicesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "获取电池概况", notes = "获取现有电池概况")
+    @Operation(summary = "获取电池概况", description = "获取现有电池概况")
     @GetMapping("/findTemper")
     public RespModel<Integer> findTemper() {
         return new RespModel<>(RespEnum.SEARCH_OK, devicesService.findTemper());
     }
 
     @WebAspect
-    @ApiOperation(value = "删除设备", notes = "设备必须离线才能删除，会删除设备与套件绑定关系")
+    @Operation(summary = "删除设备", description = "设备必须离线才能删除，会删除设备与套件绑定关系")
     @DeleteMapping()
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         return devicesService.delete(id);

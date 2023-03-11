@@ -18,8 +18,9 @@
 package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
@@ -36,10 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.Session;
-
-
-@Api(tags = "调度相关")
+@Tag(name = "调度相关")
 @RestController
 @RequestMapping("/exchange")
 @Slf4j
@@ -51,7 +49,7 @@ public class ExchangeController {
     private DevicesService devicesService;
 
     @WebAspect
-    @ApiOperation(value = "重启设备", notes = "根据 id 重启特定设备")
+    @Operation(summary = "重启设备", description = "根据 id 重启特定设备")
     @GetMapping("/reboot")
     public RespModel<String> reboot(@RequestParam(name = "id") int id) {
 
@@ -72,7 +70,7 @@ public class ExchangeController {
     }
 
     @WebAspect
-    @ApiOperation(value = "下线agent", notes = "下线指定的 agent")
+    @Operation(summary = "下线agent", description = "下线指定的 agent")
     @GetMapping("/stop")
     public RespModel<String> stop(@RequestParam(name = "id") int id) {
         Agents agents = agentsService.findById(id);

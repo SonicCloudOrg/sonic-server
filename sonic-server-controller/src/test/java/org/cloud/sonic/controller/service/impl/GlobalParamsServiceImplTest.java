@@ -51,7 +51,7 @@ public class GlobalParamsServiceImplTest {
                 .setParamsValue("world");
 
         Mockito.when(new LambdaQueryChainWrapper<>(globalParamsMapper)
-                .eq(GlobalParams::getProjectId, Mockito.any()).list())
+                        .eq(GlobalParams::getProjectId, Mockito.any()).list())
                 .thenReturn(Arrays.asList(globalParams));
 
         List<GlobalParams> list = globalParamsService.findAll(1);
@@ -87,8 +87,8 @@ public class GlobalParamsServiceImplTest {
     public void testDeleteByProjectId() {
 
         Mockito.when(globalParamsMapper.delete(
-                new LambdaQueryWrapper<GlobalParams>()
-                        .eq(GlobalParams::getProjectId, Mockito.any())))
+                        new LambdaQueryWrapper<GlobalParams>()
+                                .eq(GlobalParams::getProjectId, Mockito.any())))
                 .thenReturn(1);
 
         Assert.assertEquals(true, globalParamsService.deleteByProjectId(999));

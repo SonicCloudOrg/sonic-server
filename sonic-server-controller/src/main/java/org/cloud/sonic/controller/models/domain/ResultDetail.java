@@ -9,8 +9,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,7 @@ import java.util.Date;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@ApiModel(value = "ResultDetail对象", description = "")
+@Schema(name ="ResultDetail对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -70,7 +69,7 @@ public class ResultDetail implements Serializable, TypeConverter<ResultDetail, R
     @Column(isNull = false, comment = "步骤执行状态")
     private Integer status;
 
-    @ApiModelProperty(value = "时间", example = "16:00:00")
+    @Schema(description = "时间", example = "16:00:00")
     @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     @TableField
     @Column(type = MySqlTypeConstant.TIMESTAMP, isNull = false, comment = "步骤执行状态")

@@ -2,8 +2,9 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.AopUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.controller.mapper.ResourcesMapper;
@@ -29,7 +30,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +77,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
     }
 
     private Resources processParent(String beanName, Map<String, Resources> parentMap) {
-        Api api = SpringTool.getBean(beanName).getClass().getAnnotation(Api.class);
+        Tag api = SpringTool.getBean(beanName).getClass().getAnnotation(Tag.class);
         if (api == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
             parentMap.put(beanName, parentResource);
             needInsert = true;
         }
-        String tag = api.tags()[0];
+        String tag = api.name();
         parentResource.setDesc(tag);
         parentResource.setPath(res);
         parentResource.setVersion(version);
@@ -138,12 +138,12 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
         }
         resource.setVersion(version);
 
-        ApiOperation apiOperation = value.getMethodAnnotation(ApiOperation.class);
+        Operation apiOperation = value.getMethodAnnotation(Operation.class);
         WhiteUrl whiteUrl = value.getMethodAnnotation(WhiteUrl.class);
         if (apiOperation == null) {
             resource.setDesc("未设置");
         } else {
-            resource.setDesc(apiOperation.value());
+            resource.setDesc(apiOperation.summary());
         }
         //标记相关资源加白
         resource.setWhite(whiteUrl == null ? UrlType.NORMAL : UrlType.WHITE);

@@ -19,8 +19,8 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
  * @des
  * @date 2022/5/26 1:22
  */
-@Api(tags = "安装包管理")
+@Tag(name = "安装包管理")
 @RestController
 @RequestMapping("/packages")
 public class PackageController {
@@ -46,7 +46,7 @@ public class PackageController {
     private PackagesService packagesService;
 
     @WebAspect
-    @ApiOperation(value = "添加安装包信息", notes = "添加安装包信息")
+    @Operation(summary = "添加安装包信息", description = "添加安装包信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody PackageDTO pkg) {
         packagesService.save(pkg.convertTo());
@@ -54,7 +54,7 @@ public class PackageController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找所有安装包", notes = "查找所有安装包")
+    @Operation(summary = "查找所有安装包", description = "查找所有安装包")
     @GetMapping("/list")
     public RespModel<CommentPage<PackageDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                       @RequestParam(name = "branch", required = false) String branch,

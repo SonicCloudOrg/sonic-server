@@ -2,8 +2,9 @@ package org.cloud.sonic.controller.models.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +13,10 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Elements;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel("页面控件DTO 模型")
+@Schema(name = "页面控件DTO 模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -25,27 +24,27 @@ import java.util.List;
 @AllArgsConstructor
 public class ElementsDTO implements Serializable, TypeConverter<ElementsDTO, Elements> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     Integer id;
 
-    @ApiModelProperty(value = "所属steps的id", example = "1")
+    @Schema(description = "所属steps的id", example = "1")
     Integer stepsId;
 
     @NotBlank
-    @ApiModelProperty(value = "控件名称", required = true, example = "首页底部按钮")
+    @Schema(description = "控件名称", required = true, example = "首页底部按钮")
     String eleName;
 
-    @ApiModelProperty(value = "控件类型", required = true, example = "xpath")
+    @Schema(description = "控件类型", required = true, example = "xpath")
     String eleType;
 
-    @ApiModelProperty(value = "控件值", required = true, example = "//@[text()='home']")
+    @Schema(description = "控件值", required = true, example = "//@[text()='home']")
     String eleValue;
 
     @Positive
-    @ApiModelProperty(value = "项目id", required = true, example = "1")
+    @Schema(description = "项目id", required = true, example = "1")
     Integer projectId;
 
-    @ApiModelProperty(value = "模块id", required = false, example = "1")
+    @Schema(description = "模块id", required = false, example = "1")
     Integer moduleId;
 
     @JSONField(serialize = false)

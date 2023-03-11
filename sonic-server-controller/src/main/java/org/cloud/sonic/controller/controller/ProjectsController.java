@@ -17,9 +17,9 @@
  */
 package org.cloud.sonic.controller.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @des
  * @date 2021/9/9 22:46
  */
-@Api(tags = "项目管理相关")
+@Tag(name = "项目管理相关")
 @RestController
 @RequestMapping("/projects")
 public class ProjectsController {
@@ -50,7 +50,7 @@ public class ProjectsController {
     private ProjectsService projectsService;
 
     @WebAspect
-    @ApiOperation(value = "更新项目信息", notes = "新增或更新项目信息")
+    @Operation(summary = "更新项目信息", description = "新增或更新项目信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody ProjectsDTO projects) {
         projectsService.save(projects.convertTo());
@@ -59,7 +59,7 @@ public class ProjectsController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "查找所有项目", notes = "查找所有项目列表")
+    @Operation(summary = "查找所有项目", description = "查找所有项目列表")
     @GetMapping("/list")
     public RespModel<List<ProjectsDTO>> findAll() {
         return new RespModel<>(
@@ -69,8 +69,8 @@ public class ProjectsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询项目信息", notes = "查找对应id下的详细信息")
-    @ApiImplicitParam(name = "id", value = "项目id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询项目信息", description = "查找对应id下的详细信息")
+    @Parameter(name = "id", description = "项目id")
     @GetMapping
     public RespModel<?> findById(@RequestParam(name = "id") int id) {
         Projects projects = projectsService.findById(id);
@@ -82,8 +82,8 @@ public class ProjectsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除", notes = "删除对应id下的详细信息")
-    @ApiImplicitParam(name = "id", value = "项目id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除", description = "删除对应id下的详细信息")
+    @Parameter(name = "id", description = "项目id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) throws SonicException {
         projectsService.delete(id);

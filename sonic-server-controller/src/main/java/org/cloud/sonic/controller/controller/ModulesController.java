@@ -17,9 +17,10 @@
  */
 package org.cloud.sonic.controller.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Api(tags = "模块管理相关")
+@Tag(name = "模块管理相关")
 @RestController
 @RequestMapping("/modules")
 public class ModulesController {
@@ -43,7 +44,7 @@ public class ModulesController {
     private ModulesService modulesService;
 
     @WebAspect
-    @ApiOperation(value = "更新模块信息", notes = "新增或更新对应的模块信息")
+    @Operation(summary = "更新模块信息", description = "新增或更新对应的模块信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody ModulesDTO modules) {
         modulesService.save(modules.convertTo());
@@ -51,8 +52,8 @@ public class ModulesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查找模块列表", notes = "查找对应项目id的模块列表")
-    @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class)
+    @Operation(summary = "查找模块列表", description = "查找对应项目id的模块列表")
+    @Parameter(name = "projectId", description = "项目id")
     @GetMapping("/list")
     public RespModel<List<ModulesDTO>> findByProjectId(@RequestParam(name = "projectId") int projectId) {
         return new RespModel<>(
@@ -63,8 +64,8 @@ public class ModulesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除模块", notes = "删除对应id的模块")
-    @ApiImplicitParam(name = "id", value = "模块id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除模块", description = "删除对应id的模块")
+    @Parameter(name = "id", description = "模块id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (modulesService.delete(id)) {
@@ -75,8 +76,8 @@ public class ModulesController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查看模块信息", notes = "查看对应id的模块信息")
-    @ApiImplicitParam(name = "id", value = "模块id", dataTypeClass = Integer.class)
+    @Operation(summary = "查看模块信息", description = "查看对应id的模块信息")
+    @Parameter(name = "id", description = "模块id")
     @GetMapping
     public RespModel<ModulesDTO> findById(@RequestParam(name = "id") int id) {
         Modules modules = modulesService.findById(id);

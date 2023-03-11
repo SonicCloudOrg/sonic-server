@@ -8,7 +8,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,7 @@ import org.cloud.sonic.controller.models.dto.ScriptsDTO;
 
 import java.io.Serializable;
 
-@ApiModel(value = "Scripts对象", description = "")
+@Schema(name ="Scripts对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder

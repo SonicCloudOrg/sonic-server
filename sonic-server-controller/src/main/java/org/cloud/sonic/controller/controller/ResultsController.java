@@ -20,10 +20,10 @@ package org.cloud.sonic.controller.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -33,7 +33,7 @@ import org.cloud.sonic.controller.services.ResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "测试结果相关")
+@Tag(name = "测试结果相关")
 @RestController
 @RequestMapping("/results")
 public class ResultsController {
@@ -41,11 +41,11 @@ public class ResultsController {
     private ResultsService resultsService;
 
     @WebAspect
-    @ApiOperation(value = "查询测试结果列表", notes = "查找对应项目id下的测试结果列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "pageSize", value = "页数据大小", dataTypeClass = Integer.class)
+    @Operation(summary = "查询测试结果列表", description = "查找对应项目id下的测试结果列表")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "页数据大小")
     })
     @GetMapping("/list")
     public RespModel<CommentPage<Results>> findByProjectId(@RequestParam(name = "projectId") int projectId,
@@ -59,8 +59,8 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "删除测试结果", notes = "删除对应的测试结果id以及测试结果详情")
-    @ApiImplicitParam(name = "id", value = "测试结果id", dataTypeClass = Integer.class)
+    @Operation(summary = "删除测试结果", description = "删除对应的测试结果id以及测试结果详情")
+    @Parameter(name = "id", description = "测试结果id")
     @DeleteMapping
     public RespModel<String> delete(@RequestParam(name = "id") int id) {
         if (resultsService.delete(id)) {
@@ -71,15 +71,15 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询测试结果信息", notes = "查询对应id的测试结果信息")
-    @ApiImplicitParam(name = "id", value = "测试结果id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询测试结果信息", description = "查询对应id的测试结果信息")
+    @Parameter(name = "id", description = "测试结果id")
     @GetMapping
     public RespModel<Results> findById(@RequestParam(name = "id") int id) {
         return new RespModel<>(RespEnum.SEARCH_OK, resultsService.findById(id));
     }
 
     @WebAspect
-    @ApiOperation(value = "清理测试结果", notes = "按照指定天数前的测试结果")
+    @Operation(summary = "清理测试结果", description = "按照指定天数前的测试结果")
     @GetMapping("/clean")
     public RespModel<String> clean(@RequestParam(name = "day") int day) {
         resultsService.clean(day);
@@ -87,7 +87,7 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "统计测试结果", notes = "统计测试结果")
+    @Operation(summary = "统计测试结果", description = "统计测试结果")
     @GetMapping("/subResultCount")
     public RespModel<String> subResultCount(@RequestParam(name = "id") int id) {
         resultsService.subResultCount(id);
@@ -95,8 +95,8 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询测试结果用例状态", notes = "查询对应id的测试结果用例状态")
-    @ApiImplicitParam(name = "id", value = "测试结果id", dataTypeClass = Integer.class)
+    @Operation(summary = "查询测试结果用例状态", description = "查询对应id的测试结果用例状态")
+    @Parameter(name = "id", description = "测试结果id")
     @GetMapping("/findCaseStatus")
     public RespModel<JSONArray> findCaseStatus(@RequestParam(name = "id") int id) {
         JSONArray result = resultsService.findCaseStatus(id);
@@ -108,11 +108,11 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询报表", notes = "查找前端首页报表信息")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "projectId", value = "项目id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "startTime", value = "起始时间", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "endTime", value = "结束时间", dataTypeClass = String.class)
+    @Operation(summary = "查询报表", description = "查找前端首页报表信息")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "startTime", description = "起始时间"),
+            @Parameter(name = "endTime", description = "结束时间")
     })
     @GetMapping("/chart")
     public RespModel<JSONObject> chart(@RequestParam(name = "projectId") int projectId,
@@ -122,7 +122,7 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "发送日报", notes = "发送所有项目日报")
+    @Operation(summary = "发送日报", description = "发送所有项目日报")
     @GetMapping("/sendDayReport")
     public RespModel<String> sendDayReport() {
         resultsService.sendDayReport();
@@ -130,7 +130,7 @@ public class ResultsController {
     }
 
     @WebAspect
-    @ApiOperation(value = "发送周报", notes = "发送所有项目周报")
+    @Operation(summary = "发送周报", description = "发送所有项目周报")
     @GetMapping("/sendWeekReport")
     public RespModel<String> sendWeekReport() {
         resultsService.sendWeekReport();

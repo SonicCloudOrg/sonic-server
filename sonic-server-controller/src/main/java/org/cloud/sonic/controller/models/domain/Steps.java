@@ -8,7 +8,7 @@ import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@ApiModel(value = "Steps对象", description = "")
+@Schema(name ="Steps对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder

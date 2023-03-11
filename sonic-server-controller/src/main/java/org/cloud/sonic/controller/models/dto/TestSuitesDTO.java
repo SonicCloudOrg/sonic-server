@@ -1,7 +1,9 @@
 package org.cloud.sonic.controller.models.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,13 +12,10 @@ import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.TestSuites;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel("测试套件DTO 模型")
+@Schema(name = "测试套件DTO 模型")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -24,36 +23,36 @@ import java.util.List;
 @AllArgsConstructor
 public class TestSuitesDTO implements Serializable, TypeConverter<TestSuitesDTO, TestSuites> {
 
-    @ApiModelProperty(value = "id", example = "1")
+    @Schema(description = "id", example = "1")
     Integer id;
 
     @NotBlank
-    @ApiModelProperty(value = "测试套件名称", required = true, example = "首页测试套件")
+    @Schema(description = "测试套件名称", required = true, example = "首页测试套件")
     String name;
 
     @Positive
-    @ApiModelProperty(value = "测试套件平台类型", required = true, example = "1")
+    @Schema(description = "测试套件平台类型", required = true, example = "1")
     Integer platform;
 
     @Positive
-    @ApiModelProperty(value = "覆盖类型", required = true, example = "1")
+    @Schema(description = "覆盖类型", required = true, example = "1")
     Integer cover;
 
     @Positive
-    @ApiModelProperty(value = "项目id", required = true, example = "1")
+    @Schema(description = "项目id", required = true, example = "1")
     Integer projectId;
 
     @NotNull
-    @ApiModelProperty(value = "是否采集系统性能数据", required = true, example = "1")
+    @Schema(description = "是否采集系统性能数据", required = true, example = "1")
     Integer isOpenPerfmon;
 
     @NotNull
-    @ApiModelProperty(value = "采集性能数据间隔", required = true, example = "1")
+    @Schema(description = "采集性能数据间隔", required = true, example = "1")
     Integer perfmonInterval;
 
-    @ApiModelProperty(value = "包含的测试用例")
+    @Schema(description = "包含的测试用例")
     List<TestCasesDTO> testCases;
 
-    @ApiModelProperty(value = "指定设备列表")
+    @Schema(description = "指定设备列表")
     List<DevicesDTO> devices;
 }

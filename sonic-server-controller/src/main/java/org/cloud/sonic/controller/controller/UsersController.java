@@ -18,10 +18,11 @@
 package org.cloud.sonic.controller.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
@@ -40,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -48,7 +48,7 @@ import java.util.Objects;
  * @des
  * @date 2021/10/13 19:05
  */
-@Api(tags = "用户体系相关")
+@Tag(name = "用户体系相关")
 @RestController
 @RequestMapping("/users")
 public class UsersController {
@@ -63,14 +63,14 @@ public class UsersController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "获取登录配置", notes = "获取登录信息配置")
+    @Operation(summary = "获取登录配置", description = "获取登录信息配置")
     @GetMapping("/loginConfig")
     public RespModel<?> getLoginConfig() {
         return new RespModel(RespEnum.SEARCH_OK, usersService.getLoginConfig());
     }
 
     @WebAspect
-    @ApiOperation(value = "生成用户对外Token", notes = "生成用户对外Token")
+    @Operation(summary = "生成用户对外Token", description = "生成用户对外Token")
     @GetMapping("/generateToken")
     public RespModel<String> generateToken(@RequestParam(name = "day") int day, HttpServletRequest request) {
         String token = request.getHeader("SonicToken");
@@ -83,7 +83,7 @@ public class UsersController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "登录", notes = "用户登录")
+    @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
     public RespModel<String> login(@Validated @RequestBody UserInfo userInfo) {
         String token = usersService.login(userInfo);
@@ -96,7 +96,7 @@ public class UsersController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "注册", notes = "注册用户")
+    @Operation(summary = "注册", description = "注册用户")
     @PostMapping("/register")
     public RespModel<String> register(@Validated @RequestBody UsersDTO users) throws SonicException {
         usersService.register(users.convertTo());
@@ -105,7 +105,7 @@ public class UsersController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "获取用户信息", notes = "获取token的用户信息")
+    @Operation(summary = "获取用户信息", description = "获取token的用户信息")
     @GetMapping
     public RespModel<?> getUserInfo(HttpServletRequest request) {
         if (request.getHeader("SonicToken") != null) {
@@ -127,7 +127,7 @@ public class UsersController {
 
     @WebAspect
     @WhiteUrl
-    @ApiOperation(value = "修改密码", notes = "修改token的用户密码")
+    @Operation(summary = "修改密码", description = "修改token的用户密码")
     @PutMapping
     public RespModel<String> changePwd(HttpServletRequest request, @Validated @RequestBody ChangePwd changePwd) {
         if (request.getHeader("SonicToken") != null) {
@@ -139,11 +139,11 @@ public class UsersController {
     }
 
     @WebAspect
-    @ApiOperation(value = "查询所有用户信息", notes = "查询所有用户信息")
+    @Operation(summary = "查询所有用户信息", description = "查询所有用户信息")
     @GetMapping("/list")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "page", value = "页码", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "userName", value = "角色名称", dataTypeClass = String.class),
+    @Parameters(value = {
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "userName", description = "角色名称"),
 
     })
     public RespModel<CommentPage<UsersDTO>> listResources(@RequestParam(name = "page") int page
@@ -154,11 +154,11 @@ public class UsersController {
     }
 
     @WebAspect
-    @ApiOperation(value = "修改用户角色", notes = "修改用户角色")
+    @Operation(summary = "修改用户角色", description = "修改用户角色")
     @PutMapping("/changeRole")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "roleId", value = "角色 id", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "userId", value = "用户 id", dataTypeClass = Integer.class),
+    @Parameters(value = {
+            @Parameter(name = "roleId", description = "角色 id"),
+            @Parameter(name = "userId", description = "用户 id"),
 
     })
     public RespModel<Boolean> changeRole(@RequestParam(name = "roleId") Integer roleId,
