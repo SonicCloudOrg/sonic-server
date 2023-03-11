@@ -4,4 +4,4 @@ spring:
     name: @project.artifactId@
     des: "Eureka of Sonic Cloud Real Machine Platform"
   profiles:
-    active: @project.artifactId@,actuator,logging
+    active: @project.artifactId@,logging

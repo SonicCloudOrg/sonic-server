@@ -18,13 +18,11 @@
 package org.cloud.sonic.gateway.config;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.Data;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -39,10 +37,8 @@ import java.util.List;
 
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
-
     @Value("${filter.white-list}")
     private List<String> whiteList;
-
     @Autowired
     private JWTTokenTool jwtTokenTool;
 

@@ -21,50 +21,50 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents> {
 
-    @Schema(description = "id")
+    @Schema(description = "id", example = "1")
     Integer id;
 
     @NotBlank
-    @Schema(description = "Agent端名称")
+    @Schema(description = "Agent端名称", example = "name")
     String name;
 
     @NotBlank
-    @Schema(description = "Agent端系统类型")
+    @Schema(description = "Agent端系统类型", example = "Windows 10")
     String systemType;
 
     @NotBlank
-    @Schema(description = "Agent端版本号")
+    @Schema(description = "Agent端版本号", example = "v2.4.0")
     String version;
 
     @NotBlank
-    @Schema(description = "Agent端所在host")
+    @Schema(description = "Agent端所在host", example = "192.168.1.1")
     String host;
 
     @NotNull
-    @Schema(description = "Agent端暴露web端口")
+    @Schema(description = "Agent端暴露web端口", example = "7777")
     int port;
 
-    @Schema(description = "Agent端状态")
+    @Schema(description = "Agent端状态", example = "ONLINE")
     int status;
 
-    @Schema(description = "Agent端密钥")
+    @Schema(description = "Agent端密钥", example = "key")
     String secretKey;
 
-    @Schema(description = "highTemp")
+    @Schema(description = "highTemp", example = "45")
     Integer highTemp;
 
-    @Schema(description = "highTempTime")
+    @Schema(description = "highTempTime", example = "10")
     Integer highTempTime;
 
-    @Schema(description = "机器人类型")
+    @Schema(description = "机器人类型", example = "1")
     Integer robotType;
 
-    @Schema(description = "机器人token")
+    @Schema(description = "机器人token", example = "token")
     String robotToken;
 
-    @Schema(description = "机器人加签密钥")
+    @Schema(description = "机器人加签密钥", example = "key")
     String robotSecret;
 
-    @Schema(description = "是否使用sonic hub")
+    @Schema(description = "是否使用sonic hub", example = "1")
     Integer hasHub;
 }
