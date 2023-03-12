@@ -115,7 +115,7 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
     private void processResource(Resources parentResource, RequestMappingInfo key, HandlerMethod value) {
 
         String path = (String) key.getPatternsCondition().getPatterns().toArray()[0];
-        String method = ((RequestMethod) key.getMethodsCondition().getMethods().toArray()[0]).toString();
+        String method = key.getMethodsCondition().getMethods().toArray()[0].toString();
 
         boolean needInsert = false;
 
@@ -129,13 +129,13 @@ public class ResourcesServiceImpl extends SonicServiceImpl<ResourcesMapper, Reso
             //初始化说有资源不需要鉴权
             resource.setNeedAuth(UrlType.WHITE);
             needInsert = true;
+            if (path.equals("/devices/stopDebug")) {
+                resource.setNeedAuth(UrlType.NORMAL);
+            }
         }
         resource.setParentId(parentResource.getId());
         resource.setMethod(method);
         resource.setPath(path);
-        if (path.equals("/devices/stopDebug")) {
-            resource.setNeedAuth(UrlType.NORMAL);
-        }
         resource.setVersion(version);
 
         Operation apiOperation = value.getMethodAnnotation(Operation.class);

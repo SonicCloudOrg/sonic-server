@@ -5,6 +5,9 @@ springdoc:
   paths-to-exclude: /exchange/send,/agents/hubControl
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   quartz:
     properties:
       org:
