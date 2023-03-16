@@ -17,12 +17,14 @@
  */
 package org.cloud.sonic.controller;
 
+import com.gitee.sunchenbin.mybatis.actable.manager.handler.StartUpHandler;
 import org.cloud.sonic.controller.tools.SpringTool;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
@@ -46,6 +48,8 @@ import org.springframework.context.annotation.Import;
 @Import(SpringTool.class)
 public class ControllerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ControllerApplication.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(ControllerApplication.class, args);
+        StartUpHandler createTable = run.getBean(StartUpHandler.class, args);
+        createTable.startHandler();
     }
 }

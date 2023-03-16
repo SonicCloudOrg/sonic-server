@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author JayWenStar
  * @since 2021-12-17
  */
-@Schema(name ="Steps对象", description = "")
+@Schema(name = "Steps对象", description = "")
 @Data
 @Accessors(chain = true)
 @Builder
@@ -84,4 +84,8 @@ public class Steps implements Serializable, TypeConverter<Steps, StepsDTO> {
     @TableField
     @Column(value = "condition_type", defaultValue = "0", isNull = false, comment = "条件类型")
     private Integer conditionType;
+
+    @TableField
+    @Column(value = "disabled", defaultValue = "0", isNull = false, comment = "是否禁用")
+    private Integer disabled;
 }
