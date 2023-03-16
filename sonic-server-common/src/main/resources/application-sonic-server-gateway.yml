@@ -1,8 +1,8 @@
 server:
-  port: 8094
+  port: 3000
 
 filter:
-  white-list: /projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
+  white-list: /server,/projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
 
 spring:
   cloud:
@@ -28,3 +28,21 @@ spring:
             - Path=/websockets/**
           filters:
             - StripPrefix=1
+
+        - id: dev-controller
+          uri: lb://sonic-server-controller
+          predicates:
+            - Path=/server/api/controller/**, /server/api/transport/**
+          filters:
+            - StripPrefix=3
+        - id: dev-folder
+          uri: lb://sonic-server-folder
+          predicates: Path=/server/api/folder/**
+          filters:
+            - StripPrefix=3
+        - id: dev-transport
+          uri: lb:ws://sonic-server-controller
+          predicates:
+            - Path=/server/websockets/**
+          filters:
+            - StripPrefix=2
