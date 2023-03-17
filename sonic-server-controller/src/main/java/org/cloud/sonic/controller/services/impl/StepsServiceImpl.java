@@ -286,7 +286,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         List<StepsDTO> stepsDTOList = page.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-        handleSteps(stepsDTOList,false);
+        handleSteps(stepsDTOList, false);
 
         return CommentPage.convertFrom(page, stepsDTOList);
     }
@@ -333,7 +333,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         List<StepsDTO> stepsDTOList = steps.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
-        handleSteps(stepsDTOList,false);
+        handleSteps(stepsDTOList, false);
 
         return CommentPage.convertFrom(pageList, stepsDTOList);
     }
@@ -342,7 +342,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Transactional(rollbackFor = Exception.class)
     public Boolean copyStepsIdByCase(Integer stepId) {
         Steps steps = stepsMapper.selectById(stepId);
-        StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo(),false);
+        StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo(), false);
 
         save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
         //关联ele
