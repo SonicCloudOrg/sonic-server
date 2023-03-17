@@ -70,31 +70,32 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Transactional
     @Override
-    public List<StepsDTO> findByCaseIdOrderBySort(int caseId) {
+    public List<StepsDTO> findByCaseIdOrderBySort(int caseId, boolean hiddenDisabled) {
 
         // 取出用例下所有无父级的步骤
         List<StepsDTO> stepsDTOList = lambdaQuery()
                 .eq(Steps::getCaseId, caseId)
                 .eq(Steps::getParentId, 0)
+                .eq(hiddenDisabled, Steps::getDisabled, 0)
                 .orderByAsc(Steps::getSort)
                 .list()
                 // 转换成DTO
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
         // 遍历父级步骤，如果是条件步骤，则取出子步骤集合
-        handleSteps(stepsDTOList);
+        handleSteps(stepsDTOList, hiddenDisabled);
 
         return stepsDTOList;
     }
 
     @Transactional
     @Override
-    public List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS) {
+    public List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS, boolean hiddenDisabled) {
         if (CollectionUtils.isEmpty(stepsDTOS)) {
             return stepsDTOS;
         }
         for (StepsDTO stepsDTO : stepsDTOS) {
-            handleStep(stepsDTO);
+            handleStep(stepsDTO, hiddenDisabled);
         }
         return stepsDTOS;
     }
@@ -140,7 +141,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Transactional
     @Override
-    public StepsDTO handleStep(StepsDTO stepsDTO) {
+    public StepsDTO handleStep(StepsDTO stepsDTO, boolean hiddenDisabled) {
         if (stepsDTO == null) {
             return null;
         }
@@ -161,7 +162,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                     .list()
                     // 转换成DTO
                     .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-            stepsDTO.setChildSteps(handleSteps(childSteps));
+            stepsDTO.setChildSteps(handleSteps(childSteps, hiddenDisabled));
         }
         return stepsDTO;
     }
@@ -242,7 +243,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Override
     public StepsDTO findById(int id) {
         StepsDTO stepsDTO = baseMapper.selectById(id).convertTo();
-        handleStep(stepsDTO);
+        handleStep(stepsDTO, false);
         return stepsDTO;
     }
 
@@ -285,7 +286,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
         List<StepsDTO> stepsDTOList = page.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-        handleSteps(stepsDTOList);
+        handleSteps(stepsDTOList,false);
 
         return CommentPage.convertFrom(page, stepsDTOList);
     }
@@ -332,7 +333,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         List<StepsDTO> stepsDTOList = steps.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
-        handleSteps(stepsDTOList);
+        handleSteps(stepsDTOList,false);
 
         return CommentPage.convertFrom(pageList, stepsDTOList);
     }
@@ -341,7 +342,7 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Transactional(rollbackFor = Exception.class)
     public Boolean copyStepsIdByCase(Integer stepId) {
         Steps steps = stepsMapper.selectById(stepId);
-        StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo());
+        StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo(),false);
 
         save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
         //关联ele
@@ -399,6 +400,18 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             }
         }
         return true;
+    }
+
+    @Override
+    public Boolean switchStep(int id, int type) {
+        Steps steps = baseMapper.selectById(id);
+        if (steps != null) {
+            steps.setDisabled(type);
+            save(steps);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

@@ -283,10 +283,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         }
 
         if (steps.getStepType().equals("publicStep")) {
-            PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(steps.getText()));
+            PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(steps.getText()), true);
             if (publicStepsDTO != null) {
                 JSONArray publicStepsJson = new JSONArray();
                 for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
+                    if (pubStep.getDisabled() == 1) {
+                        continue;
+                    }
                     publicStepsJson.add(getStep(pubStep));
                 }
                 step.put("pubSteps", publicStepsJson);
@@ -300,18 +303,24 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         if (!ConditionEnum.NONE.getValue().equals(steps.getConditionType())) {
             List<StepsDTO> childSteps = steps.getChildSteps();
             for (StepsDTO childStep : childSteps) {
+                if (childStep.getDisabled() == 1) {
+                    continue;
+                }
                 // 如果子步骤是公共步骤，则再递归处理；如果不是，则不用处理
                 if (childStep.getStepType().equals("publicStep")) {
-                    PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(childStep.getText()));
+                    PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(childStep.getText()), true);
                     if (publicStepsDTO != null) {
                         JSONArray publicStepsJson = new JSONArray();
                         for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
+                            if (pubStep.getDisabled() == 1) {
+                                continue;
+                            }
                             publicStepsJson.add(getStep(pubStep));
                         }
                         JSONObject childStepJsonObj = new JSONObject() {
                             {
                                 put("pubSteps", publicStepsJson);
-                                put("step", stepsService.handleStep(childStep));
+                                put("step", stepsService.handleStep(childStep, true));
                             }
                         };
                         // 添加转换后的公共步骤
@@ -435,10 +444,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     private void initCoverHandlerMap() {
         Map<String, CoverHandler> coverHandlerBeans = applicationContext.getBeansOfType(CoverHandler.class);
         coverHandlerMap = new HashMap<>();
-        if (coverHandlerBeans != null) {
-            for (CoverHandler coverHandler : coverHandlerBeans.values()) {
-                coverHandlerMap.put(coverHandler.cover(), coverHandler);
-            }
+        for (CoverHandler coverHandler : coverHandlerBeans.values()) {
+            coverHandlerMap.put(coverHandler.cover(), coverHandler);
         }
     }
 
@@ -446,7 +453,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                                        JSONObject gp, Results results, StepsService stepsService) {
         JSONObject testCase = new JSONObject();
         List<JSONObject> steps = new ArrayList<>();
-        List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId());
+        List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(testCases.getId(), true);
         for (StepsDTO s : stepsList) {
             steps.add(getStep(s));
         }

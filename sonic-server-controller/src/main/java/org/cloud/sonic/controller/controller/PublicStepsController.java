@@ -111,7 +111,7 @@ public class PublicStepsController {
     @Parameter(name = "id", description = "公共步骤id")
     @GetMapping
     public RespModel<?> findById(@RequestParam(name = "id") int id) {
-        PublicStepsDTO publicStepsDTO = publicStepsService.findById(id);
+        PublicStepsDTO publicStepsDTO = publicStepsService.findById(id, false);
         if (publicStepsDTO != null) {
             return new RespModel<>(RespEnum.SEARCH_OK, publicStepsDTO);
         } else {

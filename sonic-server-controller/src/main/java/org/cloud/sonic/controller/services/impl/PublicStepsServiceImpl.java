@@ -86,7 +86,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
 
         // 将step填充到public step
         publicStepsDTOList.forEach(
-                e -> e.setSteps(stepsService.handleSteps(stepsDTOMap.get(e.getId())))
+                e -> e.setSteps(stepsService.handleSteps(stepsDTOMap.get(e.getId()), false))
         );
 
         return CommentPage.convertFrom(page, publicStepsDTOList);
@@ -136,7 +136,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
 
     @Override
     @Transactional
-    public PublicStepsDTO findById(int id) {
+    public PublicStepsDTO findById(int id, boolean hiddenDisabled) {
         PublicSteps publicSteps = lambdaQuery().eq(PublicSteps::getId, id)
                 .orderByDesc(PublicSteps::getId)
                 .one();
@@ -145,7 +145,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         List<StepsDTO> steps = stepsMapper.listByPublicStepsId(publicSteps.getId())
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
-        stepsService.handleSteps(steps);
+        stepsService.handleSteps(steps, hiddenDisabled);
 
         PublicStepsDTO publicStepsDTO = publicSteps.convertTo().setSteps(steps);
         return publicStepsDTO.setSteps(steps);
@@ -195,7 +195,7 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
             oldStepsDtoList.add(steps.convertTo());
         }
         //递归关联所有步骤，然后取出
-        List<StepsDTO> stepsDTOS = stepsService.handleSteps(oldStepsDtoList);
+        List<StepsDTO> stepsDTOS = stepsService.handleSteps(oldStepsDtoList, false);
         List<StepsDTO> needAllCopySteps = stepsService.getChildSteps(stepsDTOS);
 
         List<PublicStepsAndStepsIdDTO> oldStepDto = stepsService.stepAndIndex(needAllCopySteps);

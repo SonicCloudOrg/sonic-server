@@ -16,9 +16,9 @@ import java.util.List;
  * @date 2021/8/20 17:51
  */
 public interface StepsService extends IService<Steps> {
-    List<StepsDTO> findByCaseIdOrderBySort(int caseId);
+    List<StepsDTO> findByCaseIdOrderBySort(int caseId, boolean hiddenDisabled);
 
-    List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS);
+    List<StepsDTO> handleSteps(List<StepsDTO> stepsDTOS, boolean hiddenDisabled);
 
     /**
      * 获取每个step下的childSteps 组装成一个list返回
@@ -29,11 +29,11 @@ public interface StepsService extends IService<Steps> {
     List<StepsDTO> getChildSteps(List<StepsDTO> stepsDTOS);
 
     /**
-     * 如果步骤是条件步骤，且子条件也可能是条件步骤，则递归填充条件步骤的子步骤，且所有步骤都会填充 {@link StepsDTO#elements} 属性
+     * 如果步骤是条件步骤，且子条件也可能是条件步骤，则递归填充条件步骤的子步骤，且所有步骤都会填充
      *
      * @param stepsDTO 步骤对象（不需要填充）
      */
-    StepsDTO handleStep(StepsDTO stepsDTO);
+    StepsDTO handleStep(StepsDTO stepsDTO, boolean hiddenDisabled);
 
     boolean resetCaseId(int id);
 
@@ -70,6 +70,8 @@ public interface StepsService extends IService<Steps> {
                                                            String searchContent);
 
     Boolean copyStepsIdByCase(Integer stepId);
+
+    Boolean switchStep(int id, int type);
 
     List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps);
 }

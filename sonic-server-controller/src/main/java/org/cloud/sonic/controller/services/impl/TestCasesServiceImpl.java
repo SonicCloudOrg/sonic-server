@@ -118,7 +118,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
                             .eq(TestSuitesTestCases::getTestCasesId, id)
             );
 
-            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id);
+            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id, false);
             for (StepsDTO steps : stepsList) {
                 steps.setCaseId(0);
                 stepsService.updateById(steps.convertTo());
@@ -146,7 +146,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             jsonDebug.put("pf", runStepCase.getPlatform());
 
             JSONArray array = new JSONArray();
-            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id);
+            List<StepsDTO> stepsList = stepsService.findByCaseIdOrderBySort(id, true);
             for (StepsDTO steps : stepsList) {
                 array.add(testSuitesService.getStep(steps));
             }
@@ -223,7 +223,7 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             stepsDTO.add(steps.convertTo());
 
         }
-        List<StepsDTO> stepsCopyDTOS = stepsService.handleSteps(stepsDTO);
+        List<StepsDTO> stepsCopyDTOS = stepsService.handleSteps(stepsDTO, false);
 
         //需要插入的步骤记录
         List<PublicStepsAndStepsIdDTO> needCopySteps = stepsService.stepAndIndex(stepsCopyDTOS);

@@ -23,7 +23,7 @@ public interface PublicStepsService extends IService<PublicSteps> {
 
     boolean delete(int id);
 
-    PublicStepsDTO findById(int id);
+    PublicStepsDTO findById(int id, boolean hiddenDisabled);
 
     boolean deleteByProjectId(int projectId);
 

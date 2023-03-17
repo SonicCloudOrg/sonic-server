@@ -74,7 +74,7 @@ public class StepsController {
     @Parameter(name = "caseId", description = "测试用例id")
     @GetMapping("/listAll")
     public RespModel<List<StepsDTO>> findByCaseIdOrderBySort(@RequestParam(name = "caseId") int caseId) {
-        return new RespModel<>(RespEnum.SEARCH_OK, stepsService.findByCaseIdOrderBySort(caseId));
+        return new RespModel<>(RespEnum.SEARCH_OK, stepsService.findByCaseIdOrderBySort(caseId, false));
     }
 
     @WebAspect
@@ -167,6 +167,21 @@ public class StepsController {
         stepsService.copyStepsIdByCase(stepId);
 
         return new RespModel<>(RespEnum.COPY_OK);
+    }
+
+    @WebAspect
+    @Operation(summary = "开关步骤", description = "设置步骤的启用状态")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "用例id"),
+            @Parameter(name = "type", description = "状态"),
+    })
+    @GetMapping("/switchStep")
+    public RespModel switchStep(@RequestParam(name = "id") int id, @RequestParam(name = "type") int type) {
+        if (stepsService.switchStep(id, type)) {
+            return new RespModel(RespEnum.HANDLE_OK);
+        } else {
+            return new RespModel(RespEnum.SEARCH_FAIL);
+        }
     }
 
 }
