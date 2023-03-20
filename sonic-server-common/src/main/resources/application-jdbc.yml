@@ -7,9 +7,11 @@ spring:
     username: ${MYSQL_USERNAME:root}
     # mysql password
     password: ${MYSQL_PASSWORD:Sonic!@#123}
-    initialization-mode: always
     schema:
       - classpath:data.sql
+  sql:
+    init:
+      mode: always
 
 mybatis-plus:
   mapper-locations: classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
