@@ -142,6 +142,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
         if (!ldapEnable) return false;
         String username = userInfo.getUserName();
         String password = userInfo.getPassword();
+        if (password.isEmpty()) return false;
         logger.info("login check content username {}", username);
         AndFilter filter = new AndFilter();
         filter.and(new EqualsFilter("objectclass", objectClass)).and(new EqualsFilter(userId, username));
