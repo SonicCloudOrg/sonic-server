@@ -55,4 +55,7 @@ public class TestSuitesDTO implements Serializable, TypeConverter<TestSuitesDTO,
 
     @Schema(description = "指定设备列表")
     List<DevicesDTO> devices;
+
+    @Schema(description = "测试套件附加全局参数")
+    List<TestSuitesGlobalParamsDTO> testSuitesGlobalParams;
 }

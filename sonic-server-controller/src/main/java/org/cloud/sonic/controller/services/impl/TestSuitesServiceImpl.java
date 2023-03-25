@@ -74,6 +74,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     @Autowired
     private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired
+    private TestSuitesGlobalParamsMapper testSuitesGlobalParamsMapper;
+    @Autowired
     private AgentsService agentsService;
     @Autowired
     private PackagesService packagesService;
@@ -135,6 +137,18 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                 gp.put(g.getParamsKey(), g.getParamsValue());
             }
         }
+
+        //测试套件附加全局参数
+        for (TestSuitesGlobalParamsDTO g : testSuitesDTO.getTestSuitesGlobalParams()) {
+            if (g.getParamsValue().contains("|")) {
+                List<String> shuffle = new ArrayList<>(Arrays.asList(g.getParamsValue().split("\\|")));
+                Collections.shuffle(shuffle);
+                valueMap.put(g.getParamsKey(), shuffle);
+            } else {
+                gp.put(g.getParamsKey(), g.getParamsValue());
+            }
+        }
+
         coverHandlerMap.get(testSuitesDTO.getCover()).handlerSuite(testSuitesDTO, gp, devicesList, valueMap, results);
         return new RespModel<>(RespEnum.HANDLE_OK, results.getId());
     }
@@ -254,6 +268,13 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
             testSuitesDTO.setDevices(devicesDTOList);
 
+            // 填充testSuitesGlobalParams
+            List<TestSuitesGlobalParamsDTO> testSuitesGlobalParams = testSuitesGlobalParamsMapper.selectList(
+                    new LambdaQueryWrapper<TestSuitesGlobalParams>()
+                            .eq(TestSuitesGlobalParams::getTestSuitesId, suiteId)
+            ).stream().map(TypeConverter::convertTo).collect(Collectors.toList());
+            testSuitesDTO.setTestSuitesGlobalParams(testSuitesGlobalParams);
+
             return testSuitesDTO;
         } else {
             return null;
@@ -352,6 +373,16 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean delete(int id) {
+        // 关联删除数据
+        testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
+                .eq(TestSuitesDevices::getTestSuitesId, id)
+        );
+        testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
+                .eq(TestSuitesTestCases::getTestSuitesId, id)
+        );
+        testSuitesGlobalParamsMapper.delete(new LambdaQueryWrapper<TestSuitesGlobalParams>()
+                .eq(TestSuitesGlobalParams::getTestSuitesId, id)
+        );
         return baseMapper.deleteById(id) > 0;
     }
 
@@ -366,6 +397,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
         List<TestCasesDTO> testCases = testSuitesDTO.getTestCases();
         List<DevicesDTO> devices = testSuitesDTO.getDevices();
+        List<TestSuitesGlobalParamsDTO> testSuitesGlobalParams = testSuitesDTO.getTestSuitesGlobalParams();
 
         // 删除旧数据
         testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
@@ -373,6 +405,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         );
         testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
                 .eq(TestSuitesTestCases::getTestSuitesId, suiteId)
+        );
+        testSuitesGlobalParamsMapper.delete(new LambdaQueryWrapper<TestSuitesGlobalParams>()
+                .eq(TestSuitesGlobalParams::getTestSuitesId, suiteId)
         );
 
         // 保存testcase映射
@@ -393,6 +428,18 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                             .setDevicesId(devices.get(i).getId())
                             .setSort(i + 1)
             );
+        }
+
+        // 保存TestSuitesGlobalParams
+        if (testSuitesGlobalParams != null) {
+            for (TestSuitesGlobalParamsDTO param : testSuitesGlobalParams) {
+                testSuitesGlobalParamsMapper.insert(
+                        new TestSuitesGlobalParams()
+                                .setTestSuitesId(suiteId)
+                                .setParamsKey(param.getParamsKey())
+                                .setParamsValue(param.getParamsValue())
+                );
+            }
         }
     }
 
