@@ -3,6 +3,18 @@ server:
 
 springdoc:
   paths-to-exclude: /exchange/send,/agents/hubControl
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    show-extensions: true
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: org.cloud.sonic.controller
+  default-flat-param-object: false
 
 spring:
   mvc:

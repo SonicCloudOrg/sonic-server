@@ -4,6 +4,18 @@ server:
 filter:
   white-list: /server,/projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
 
+knife4j:
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      service-config:
+        sonic-server-controller:
+          group-name: default
+          order: 1
+      enable: true
+      version: openapi3
+
 spring:
   cloud:
     gateway:
