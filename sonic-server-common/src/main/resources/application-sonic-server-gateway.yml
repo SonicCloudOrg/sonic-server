@@ -7,14 +7,16 @@ filter:
 knife4j:
   gateway:
     enabled: true
-    strategy: discover
-    discover:
-      service-config:
-        sonic-server-controller:
-          group-name: default
-          order: 1
-      enable: true
-      version: openapi3
+    strategy: manual
+    routes:
+      - name: sonic-server-controller
+        url: /api/controller/v3/api-docs?group=default
+        service-name: sonic-server-controller
+        order: 1
+      - name: sonic-server-folder
+        url: /api/folder/v3/api-docs?group=default
+        service-name: sonic-server-folder
+        order: 2
 
 spring:
   cloud:

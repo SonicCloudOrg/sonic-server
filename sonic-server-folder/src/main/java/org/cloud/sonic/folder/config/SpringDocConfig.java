@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.folder.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -38,7 +38,7 @@ public class SpringDocConfig {
                         .version(version)
                         .contact(new Contact().name("SonicCloudOrg")
                                 .email("soniccloudorg@163.com"))
-                        .description("Controller of Sonic Cloud Real Machine Platform")
+                        .description("Folder of Sonic Cloud Real Machine Platform")
                         .termsOfService("https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE")
                         .license(new License().name("AGPL v3")
                                 .url("https://github.com/SonicCloudOrg/sonic-server/blob/main/LICENSE")));
