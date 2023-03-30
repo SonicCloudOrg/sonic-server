@@ -2,7 +2,7 @@ server:
   port: 3000
 
 filter:
-  white-list: /server,/projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
+  white-list: /projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
 
 knife4j:
   gateway:
