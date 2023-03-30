@@ -4,6 +4,20 @@ server:
 filter:
   white-list: /server,/projects/list,/websockets,/users/login,/users/register,/users/loginConfig,/swagger,/v3/api-docs,/doc.html,/folder/upload,/keepFiles/,/imageFiles/,/recordFiles/,/logFiles/,/packageFiles/
 
+knife4j:
+  gateway:
+    enabled: true
+    strategy: manual
+    routes:
+      - name: sonic-server-controller
+        url: /api/controller/v3/api-docs?group=default
+        service-name: sonic-server-controller
+        order: 1
+      - name: sonic-server-folder
+        url: /api/folder/v3/api-docs?group=default
+        service-name: sonic-server-folder
+        order: 2
+
 spring:
   cloud:
     gateway:
