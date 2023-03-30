@@ -56,7 +56,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (token == null) {
             return response.writeWith(Mono.just(buffer));
         }
-        // 验证 token
+        // verify token
         if (!jwtTokenTool.verify(token)) {
             return response.writeWith(Mono.just(buffer));
         }

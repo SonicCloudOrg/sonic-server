@@ -31,8 +31,9 @@ import java.net.URISyntaxException;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**
- * 针对 <a href="https://github.com/spring-cloud/spring-cloud-gateway/issues/2065">spring-cloud/spring-cloud-gateway#2065</a>
- * 问题的临时缓解方案，向前兼容url查询参数出现未编码的 [ ] 字符，但url中还同时存在其他已按url编码的字符的情况。
+ * @link https://github.com/spring-cloud/spring-cloud-gateway/issues/2065
+ * A temporary solution to the problem is that the forward compatible url query parameter contains unencoded [] characters,
+ * but there are other characters encoded by the url.
  */
 @Component
 public class UriWithBracketsFilter implements GlobalFilter, Ordered {
