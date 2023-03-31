@@ -151,9 +151,10 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Override
     public Agents auth(String key) {
         Agents agents = findBySecretKey(key);
-        if (agents != null) {
-            resetDevice(agents.getId());
-        }
+        // 此时可能有agent在线没必要下线连接的设备
+//        if (agents != null) {
+//            resetDevice(agents.getId());
+//        }
         return agents;
     }
 

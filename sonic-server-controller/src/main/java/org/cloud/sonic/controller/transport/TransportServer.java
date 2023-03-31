@@ -62,7 +62,8 @@ public class TransportServer {
             return;
         }
         Agents authResult = agentsService.auth(agentKey);
-        if (authResult == null) {
+        // 如果secretKey已经被某个agent使用且在线，则不让使用该key的新agent机器连接进来
+        if (authResult == null || authResult.getStatus() == 1) {
             log.info("Session: {} auth failed...", session.getId());
             JSONObject auth = new JSONObject();
             auth.put("msg", "auth");
