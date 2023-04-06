@@ -185,6 +185,8 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         if (existsById(id)) {
             Steps steps = baseMapper.selectById(id);
             publicStepsStepsMapper.delete(new QueryWrapper<PublicStepsSteps>().eq("steps_id", steps.getId()));
+            stepsElementsMapper.delete(new LambdaQueryWrapper<StepsElements>().eq(StepsElements::getStepsId,
+                    steps.getId()));
             baseMapper.deleteById(id);
             return true;
         } else {
