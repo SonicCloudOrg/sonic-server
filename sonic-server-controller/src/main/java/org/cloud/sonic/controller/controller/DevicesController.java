@@ -60,8 +60,20 @@ public class DevicesController {
     }
 
     @WebAspect
+    @Operation(summary = "通过REST API释放设备", description = "远程释放设备并释放相关端口，只能由占用者释放")
+    @Parameter(name = "udId", description = "设备序列号")
+    @GetMapping("/release")
+    public RespModel release(@RequestParam(name = "udId") String udId, HttpServletRequest request) {
+        String token = request.getHeader("SonicToken");
+        if (token == null) {
+            return new RespModel(RespEnum.UNAUTHORIZED);
+        }
+        return devicesService.release(udId, token);
+    }
+
+    @WebAspect
     @Operation(summary = "强制解除设备占用", description = "强制解除设备占用")
-    @Parameter(name = "udId", description = "平台")
+    @Parameter(name = "udId", description = "设备序列号")
     @GetMapping("/stopDebug")
     public RespModel<List<Devices>> stopDebug(@RequestParam(name = "udId") String udId) {
         Devices devices = devicesService.findByUdId(udId);

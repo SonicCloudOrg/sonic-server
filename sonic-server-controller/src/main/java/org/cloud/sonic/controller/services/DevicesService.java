@@ -38,6 +38,8 @@ public interface DevicesService extends IService<Devices> {
 
     RespModel occupy(OccupyParams occupyParams, String token);
 
+    RespModel release(String udId, String token);
+
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
     void updatePosition(int id, int position);

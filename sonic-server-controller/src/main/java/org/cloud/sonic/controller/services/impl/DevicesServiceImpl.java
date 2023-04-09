@@ -84,9 +84,10 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                     JSONObject jsonObject = (JSONObject) JSONObject.toJSON(occupyParams);
                     jsonObject.put("msg", "occupy");
                     jsonObject.put("token", token);
+                    jsonObject.put("platform", devices.getPlatform());
                     TransportWorker.send(agents.getId(), jsonObject);
                     JSONObject result = new JSONObject();
-                    switch (occupyParams.getPlatform()) {
+                    switch (devices.getPlatform()) {
                         case PlatformType.ANDROID -> {
                             if (occupyParams.getSasRemotePort() != 0) {
                                 result.put("sas", String.format("adb connect %s:%d", agents.getHost(), occupyParams.getSasRemotePort()));
@@ -100,10 +101,10 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                                 result.put("sib", String.format("sib remote connect --host %s -p %d", agents.getHost(), occupyParams.getSibRemotePort()));
                             }
                             if (occupyParams.getWdaServerRemotePort() != 0) {
-                                result.put("wda-server", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaServerRemotePort()));
+                                result.put("wdaServer", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaServerRemotePort()));
                             }
                             if (occupyParams.getWdaMjpegRemotePort() != 0) {
-                                result.put("wda-mjpeg", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaMjpegRemotePort()));
+                                result.put("wdaMjpeg", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaMjpegRemotePort()));
                             }
                         }
                     }
@@ -114,6 +115,25 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             } else {
                 return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
             }
+        } else {
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public RespModel release(String udId, String token) {
+        Users users = usersService.getUserInfo(token);
+        Devices devices = findByUdId(udId);
+        if (devices != null) {
+            if (!devices.getUser().equals(users.getUserName())) {
+                return new RespModel<>(RespEnum.UNAUTHORIZED);
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "release");
+            jsonObject.put("udId", udId);
+            jsonObject.put("platform", devices.getPlatform());
+            TransportWorker.send(devices.getAgentId(), jsonObject);
+            return new RespModel<>(RespEnum.HANDLE_OK);
         } else {
             return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
         }
