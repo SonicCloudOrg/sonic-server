@@ -78,37 +78,41 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     public RespModel occupy(OccupyParams occupyParams, String token) {
         Devices devices = findByUdId(occupyParams.getUdId());
         if (devices != null) {
-            Agents agents = agentsService.findById(devices.getAgentId());
-            if (agents != null) {
-                JSONObject jsonObject = (JSONObject) JSONObject.toJSON(occupyParams);
-                jsonObject.put("msg", "occupy");
-                jsonObject.put("token", token);
-                TransportWorker.send(agents.getId(), jsonObject);
-                JSONObject result = new JSONObject();
-                switch (occupyParams.getPlatform()) {
-                    case PlatformType.ANDROID -> {
-                        if (occupyParams.getSasRemotePort() != 0) {
-                            result.put("sas", String.format("adb connect %s:%d", agents.getHost(), occupyParams.getSasRemotePort()));
+            if (devices.getStatus().equals(DeviceStatus.ONLINE)) {
+                Agents agents = agentsService.findById(devices.getAgentId());
+                if (agents != null) {
+                    JSONObject jsonObject = (JSONObject) JSONObject.toJSON(occupyParams);
+                    jsonObject.put("msg", "occupy");
+                    jsonObject.put("token", token);
+                    TransportWorker.send(agents.getId(), jsonObject);
+                    JSONObject result = new JSONObject();
+                    switch (occupyParams.getPlatform()) {
+                        case PlatformType.ANDROID -> {
+                            if (occupyParams.getSasRemotePort() != 0) {
+                                result.put("sas", String.format("adb connect %s:%d", agents.getHost(), occupyParams.getSasRemotePort()));
+                            }
+                            if (occupyParams.getUia2RemotePort() != 0) {
+                                result.put("uia2", String.format("http://%s:%d", agents.getHost(), occupyParams.getUia2RemotePort()));
+                            }
                         }
-                        if (occupyParams.getUia2RemotePort() != 0) {
-                            result.put("uia2", String.format("http://%s:%d", agents.getHost(), occupyParams.getUia2RemotePort()));
+                        case PlatformType.IOS -> {
+                            if (occupyParams.getSibRemotePort() != 0) {
+                                result.put("sib", String.format("sib remote connect --host %s -p %d", agents.getHost(), occupyParams.getSibRemotePort()));
+                            }
+                            if (occupyParams.getWdaServerRemotePort() != 0) {
+                                result.put("wda-server", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaServerRemotePort()));
+                            }
+                            if (occupyParams.getWdaMjpegRemotePort() != 0) {
+                                result.put("wda-mjpeg", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaMjpegRemotePort()));
+                            }
                         }
                     }
-                    case PlatformType.IOS -> {
-                        if (occupyParams.getSibRemotePort() != 0) {
-                            result.put("sib", String.format("sib remote connect --host %s -p %d", agents.getHost(), occupyParams.getSibRemotePort()));
-                        }
-                        if (occupyParams.getWdaServerRemotePort() != 0) {
-                            result.put("wda-server", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaServerRemotePort()));
-                        }
-                        if (occupyParams.getWdaMjpegRemotePort() != 0) {
-                            result.put("wda-mjpeg", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaMjpegRemotePort()));
-                        }
-                    }
+                    return new RespModel<>(RespEnum.HANDLE_OK, result);
+                } else {
+                    return new RespModel<>(RespEnum.ID_NOT_FOUND);
                 }
-                return new RespModel<>(RespEnum.HANDLE_OK, result);
             } else {
-                return new RespModel<>(RespEnum.ID_NOT_FOUND);
+                return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
             }
         } else {
             return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
@@ -211,7 +215,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             chainWrapper.in(Devices::getStatus, status);
         }
 
-        if (!StringUtils.isEmpty(deviceInfo)) {
+        if (StringUtils.hasText(deviceInfo)) {
             chainWrapper.like(Devices::getUdId, deviceInfo)
                     .or().like(Devices::getModel, deviceInfo)
                     .or().like(Devices::getChiName, deviceInfo);
@@ -228,8 +232,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                 "        status asc,\n" +
                 "        id desc");
 
-        Page<Devices> devicesPage = chainWrapper.page(pageable);
-        return devicesPage;
+        return chainWrapper.page(pageable);
     }
 
     @Override
@@ -391,7 +394,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
 
     @Override
     public Integer findTemper() {
-        OptionalDouble tempers = new LambdaQueryChainWrapper<Devices>(devicesMapper).ne(Devices::getTemperature, 0)
+        OptionalDouble tempers = new LambdaQueryChainWrapper<>(devicesMapper).ne(Devices::getTemperature, 0)
                 .in(Devices::getStatus, Arrays.asList(DeviceStatus.ONLINE, DeviceStatus.DEBUGGING, DeviceStatus.TESTING))
                 .list().stream().mapToInt(Devices::getTemperature).average();
         return tempers.isPresent() ? (int) tempers.getAsDouble() : 0;
