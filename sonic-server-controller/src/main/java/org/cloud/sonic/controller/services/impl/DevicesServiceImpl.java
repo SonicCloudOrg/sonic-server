@@ -27,16 +27,20 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.DevicesMapper;
 import org.cloud.sonic.controller.mapper.TestSuitesDevicesMapper;
+import org.cloud.sonic.controller.models.domain.Agents;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.domain.TestSuitesDevices;
 import org.cloud.sonic.controller.models.domain.Users;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
+import org.cloud.sonic.controller.models.http.OccupyParams;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
+import org.cloud.sonic.controller.models.interfaces.PlatformType;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +73,47 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
     private TestSuitesDevicesMapper testSuitesDevicesMapper;
     @Autowired
     private AgentsService agentsService;
+
+    @Override
+    public RespModel occupy(OccupyParams occupyParams, String token) {
+        Devices devices = findByUdId(occupyParams.getUdId());
+        if (devices != null) {
+            Agents agents = agentsService.findById(devices.getAgentId());
+            if (agents != null) {
+                JSONObject jsonObject = (JSONObject) JSONObject.toJSON(occupyParams);
+                jsonObject.put("msg", "occupy");
+                jsonObject.put("token", token);
+                TransportWorker.send(agents.getId(), jsonObject);
+                JSONObject result = new JSONObject();
+                switch (occupyParams.getPlatform()) {
+                    case PlatformType.ANDROID -> {
+                        if (occupyParams.getSasRemotePort() != 0) {
+                            result.put("sas", String.format("adb connect %s:%d", agents.getHost(), occupyParams.getSasRemotePort()));
+                        }
+                        if (occupyParams.getUia2RemotePort() != 0) {
+                            result.put("uia2", String.format("http://%s:%d", agents.getHost(), occupyParams.getUia2RemotePort()));
+                        }
+                    }
+                    case PlatformType.IOS -> {
+                        if (occupyParams.getSibRemotePort() != 0) {
+                            result.put("sib", String.format("sib remote connect --host %s -p %d", agents.getHost(), occupyParams.getSibRemotePort()));
+                        }
+                        if (occupyParams.getWdaServerRemotePort() != 0) {
+                            result.put("wda-server", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaServerRemotePort()));
+                        }
+                        if (occupyParams.getWdaMjpegRemotePort() != 0) {
+                            result.put("wda-mjpeg", String.format("http://%s:%d", agents.getHost(), occupyParams.getWdaMjpegRemotePort()));
+                        }
+                    }
+                }
+                return new RespModel<>(RespEnum.HANDLE_OK, result);
+            } else {
+                return new RespModel<>(RespEnum.ID_NOT_FOUND);
+            }
+        } else {
+            return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
+        }
+    }
 
     @Override
     public boolean saveDetail(DeviceDetailChange deviceDetailChange) {
