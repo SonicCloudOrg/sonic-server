@@ -23,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.v3.core.util.Json;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.*;
@@ -47,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -301,7 +299,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
         // 如果是条件步骤则遍历子步骤
         if (!ConditionEnum.NONE.getValue().equals(steps.getConditionType())) {
-            JSONObject stepsJsonObj= handleSteps(steps);
+            JSONObject stepsJsonObj = handleSteps(steps);
             step.put("step", stepsJsonObj);
 
             return step;
