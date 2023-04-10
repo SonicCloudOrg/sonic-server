@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.core.util.Json;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.*;
@@ -44,7 +45,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -296,58 +299,62 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
         }
 
-        JSONArray childStepJsonObjs = new JSONArray();
-        JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
-
         // 如果是条件步骤则遍历子步骤
         if (!ConditionEnum.NONE.getValue().equals(steps.getConditionType())) {
-            List<StepsDTO> childSteps = steps.getChildSteps();
-            for (StepsDTO childStep : childSteps) {
-                if (childStep.getDisabled() == 1) {
-                    continue;
-                }
-                // 如果子步骤是公共步骤，则再递归处理；如果不是，则不用处理
-                if (childStep.getStepType().equals("publicStep")) {
-                    PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(childStep.getText()), true);
-                    if (publicStepsDTO != null) {
-                        JSONArray publicStepsJson = new JSONArray();
-                        for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
-                            if (pubStep.getDisabled() == 1) {
-                                continue;
-                            }
-                            publicStepsJson.add(getStep(pubStep));
-                        }
-                        JSONObject childStepJsonObj = new JSONObject() {
-                            {
-                                put("pubSteps", publicStepsJson);
-                                put("step", stepsService.handleStep(childStep, true));
-                            }
-                        };
-                        // 添加转换后的公共步骤
-                        childStepJsonObjs.add(childStepJsonObj);
-                    }
-                } else if (childStep.getStepType().equals("install") && childStep.getContent().equals("2")) {
-                    String plat = "unknown";
-                    if (childStep.getPlatform() == PlatformType.ANDROID) {
-                        plat = "Android";
-                    }
-                    if (childStep.getPlatform() == PlatformType.IOS) {
-                        plat = "iOS";
-                    }
-                    childStep.setText(packagesService.findOne(childStep.getProjectId(), childStep.getText(), plat));
-                    childStepJsonObjs.add(childStep);
-                } else {
-                    // 如果不是公共步骤，则直接添加
-                    childStepJsonObjs.add(childStep);
-                }
-                stepsJsonObj.put("childSteps", childStepJsonObjs);
-            }
+            JSONObject stepsJsonObj= handleSteps(steps);
             step.put("step", stepsJsonObj);
+
             return step;
         }
 
         step.put("step", steps);
         return step;
+    }
+
+    // 获取步骤结构树
+    public JSONObject handleSteps(StepsDTO steps) {
+        JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
+        if (steps == null) {
+            return stepsJsonObj;
+        }
+        if (steps.getDisabled() == 1) {
+            return stepsJsonObj;
+        }
+        if (steps.getStepType().equals("publicStep")) {
+            PublicStepsDTO publicStepsDTO = publicStepsService.findById(Integer.parseInt(steps.getText()), true);
+            if (publicStepsDTO != null) {
+                JSONArray publicStepsJson = new JSONArray();
+                for (StepsDTO pubStep : publicStepsDTO.getSteps()) {
+                    if (pubStep.getDisabled() == 1) {
+                        continue;
+                    }
+                    publicStepsJson.add(getStep(pubStep));
+                }
+                stepsJsonObj.put("pubSteps", publicStepsJson);
+//                stepsJsonObj.put("step", stepsService.handleStep(steps, true));
+            }
+        } else if (steps.getStepType().equals("install") && steps.getContent().equals("2")) {
+            String plat = "unknown";
+            if (steps.getPlatform() == PlatformType.ANDROID) {
+                plat = "Android";
+            }
+            if (steps.getPlatform() == PlatformType.IOS) {
+                plat = "iOS";
+            }
+            stepsJsonObj.put("text", packagesService.findOne(steps.getProjectId(), steps.getText(), plat));
+        }
+        if (CollectionUtils.isEmpty(steps.getChildSteps())) {
+            return stepsJsonObj;
+        }
+        JSONArray childStepJsonObjs = new JSONArray();
+        List<StepsDTO> childSteps = steps.getChildSteps();
+        for (StepsDTO childStep : childSteps) {
+            JSONObject childStepJsonObj = handleSteps(childStep);
+            childStepJsonObjs.add(childStepJsonObj);
+        }
+        stepsJsonObj.put("childSteps", childStepJsonObjs);
+
+        return stepsJsonObj;
     }
 
     @Override
