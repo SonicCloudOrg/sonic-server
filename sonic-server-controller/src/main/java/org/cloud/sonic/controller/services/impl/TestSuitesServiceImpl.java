@@ -295,7 +295,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     }
                     publicStepsJson.add(getStep(pubStep));
                 }
-                step = JSON.parseObject(JSON.toJSONString(steps));
+                step =  (JSONObject) JSONObject.toJSON(steps);
                 step.put("pubSteps", publicStepsJson);
 
                 return step;
@@ -316,7 +316,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     // 获取步骤结构树
     public JSONObject handleSteps(StepsDTO steps) {
-        JSONObject stepsJsonObj = JSON.parseObject(JSON.toJSONString(steps));
+        JSONObject stepsJsonObj =  (JSONObject) JSONObject.toJSON(steps);
         if (steps == null) {
             return stepsJsonObj;
         }
