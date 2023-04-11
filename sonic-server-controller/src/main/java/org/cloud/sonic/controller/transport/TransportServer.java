@@ -78,6 +78,7 @@ public class TransportServer {
             auth.put("highTemp", authResult.getHighTemp());
             auth.put("highTempTime", authResult.getHighTempTime());
             auth.put("remoteTimeout", confListService.searchByKey(ConfType.REMOTE_DEBUG_TIMEOUT).getContent());
+            auth.put("inactiveTimeout", confListService.searchByKey(ConfType.INACTIVE_DEBUG_TIMEOUT).getContent());
             BytesTool.sendText(session, auth.toJSONString());
         }
     }

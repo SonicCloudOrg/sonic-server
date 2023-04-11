@@ -67,4 +67,27 @@ public class ConfListController {
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
+
+    @WebAspect
+    @Operation(summary = "获取不活跃超时时间", description = "获取不活跃超时时间")
+    @GetMapping("/getInactiveTimeout")
+    public RespModel getInactiveTimeout() {
+        return new RespModel<>(RespEnum.SEARCH_OK,
+                Integer.parseInt(confListService.searchByKey(ConfType.INACTIVE_DEBUG_TIMEOUT).getContent()));
+    }
+
+    @WebAspect
+    @Operation(summary = "设置不活跃超时时间", description = "设置不活跃超时时间")
+    @GetMapping("/setInactiveTimeout")
+    public RespModel setInactiveTimeout(@RequestParam(name = "timeout") int timeout) {
+        confListService.save(ConfType.INACTIVE_DEBUG_TIMEOUT, timeout + "", null);
+        List<Agents> agentsList = agentsService.findAgents();
+        for (Agents agents : agentsList) {
+            JSONObject result = new JSONObject();
+            result.put("msg", "settings");
+            result.put("inactiveTimeout", timeout);
+            TransportWorker.send(agents.getId(), result);
+        }
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
 }
