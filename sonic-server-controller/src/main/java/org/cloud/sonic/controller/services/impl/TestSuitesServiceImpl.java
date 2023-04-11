@@ -295,7 +295,10 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     }
                     publicStepsJson.add(getStep(pubStep));
                 }
+                step = JSON.parseObject(JSON.toJSONString(steps));
                 step.put("pubSteps", publicStepsJson);
+
+                return step;
             }
         }
 
