@@ -304,7 +304,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
         // 如果是条件步骤则遍历子步骤
         if (!ConditionEnum.NONE.getValue().equals(steps.getConditionType())) {
-            JSONObject stepsJsonObj= handleSteps(steps);
+            JSONObject stepsJsonObj = handleSteps(steps);
             step.put("step", stepsJsonObj);
 
             return step;
