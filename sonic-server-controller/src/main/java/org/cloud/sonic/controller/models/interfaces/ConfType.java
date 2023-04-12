@@ -5,5 +5,5 @@ public interface ConfType {
 
     String REMOTE_DEBUG_TIMEOUT = "remote-debug-timeout";
 
-    String INACTIVE_DEBUG_TIMEOUT = "inactive-debug-timeout";
+    String IDEL_DEBUG_TIMEOUT = "idle-debug-timeout";
 }

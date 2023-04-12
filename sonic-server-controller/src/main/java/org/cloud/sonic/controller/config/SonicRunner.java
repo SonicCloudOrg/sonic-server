@@ -47,7 +47,7 @@ public class SonicRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         resourceInit();
         remoteInit();
-        inactiveInit();
+        idleInit();
     }
 
     /**
@@ -86,19 +86,19 @@ public class SonicRunner implements ApplicationRunner {
         }
     }
 
-    private void inactiveInit() {
+    private void idleInit() {
         try {
-            ConfList conf = confListService.searchByKey(ConfType.INACTIVE_DEBUG_TIMEOUT);
+            ConfList conf = confListService.searchByKey(ConfType.IDEL_DEBUG_TIMEOUT);
             if (conf != null) {
-                log.info("inactive conf has been init...");
+                log.info("idle conf has been init...");
                 return;
             }
 
-            confListService.save(ConfType.INACTIVE_DEBUG_TIMEOUT, "480", null);
-            log.info("inactive conf init finish!");
+            confListService.save(ConfType.IDEL_DEBUG_TIMEOUT, "480", null);
+            log.info("idle conf init finish!");
 
         } catch (Exception e) {
-            log.error("init inactive conf error", e);
+            log.error("init idle conf error", e);
         }
     }
 
