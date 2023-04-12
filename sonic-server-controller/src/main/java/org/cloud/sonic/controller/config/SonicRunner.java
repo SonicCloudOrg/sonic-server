@@ -94,7 +94,7 @@ public class SonicRunner implements ApplicationRunner {
                 return;
             }
 
-            confListService.save(ConfType.INACTIVE_DEBUG_TIMEOUT, "90", null);
+            confListService.save(ConfType.INACTIVE_DEBUG_TIMEOUT, "480", null);
             log.info("inactive conf init finish!");
 
         } catch (Exception e) {
