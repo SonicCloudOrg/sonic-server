@@ -67,4 +67,20 @@ public class ConfListController {
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
+
+    @WebAspect
+    @Operation(summary = "获取闲置超时时间", description = "获取闲置超时时间")
+    @GetMapping("/getIdleTimeout")
+    public RespModel getIdleTimeout() {
+        return new RespModel<>(RespEnum.SEARCH_OK,
+                Integer.parseInt(confListService.searchByKey(ConfType.IDEL_DEBUG_TIMEOUT).getContent()));
+    }
+
+    @WebAspect
+    @Operation(summary = "设置闲置超时时间", description = "设置闲置超时时间")
+    @GetMapping("/setIdleTimeout")
+    public RespModel setIdleTimeout(@RequestParam(name = "timeout") int timeout) {
+        confListService.save(ConfType.IDEL_DEBUG_TIMEOUT, timeout + "", null);
+        return new RespModel<>(RespEnum.HANDLE_OK);
+    }
 }
