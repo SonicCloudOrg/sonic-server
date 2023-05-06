@@ -169,7 +169,8 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         if (!StringUtils.isEmpty(deviceInfo)) {
             chainWrapper.like(Devices::getUdId, deviceInfo)
                     .or().like(Devices::getModel, deviceInfo)
-                    .or().like(Devices::getChiName, deviceInfo);
+                    .or().like(Devices::getChiName, deviceInfo)
+                    .or().like(Devices::getNickName, deviceInfo);
         }
 
         chainWrapper.last("order by case\n" +
