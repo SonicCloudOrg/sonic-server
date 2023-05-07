@@ -21,5 +21,5 @@ public interface PackagesService extends IService<Packages> {
      *
      * @return
      */
-    CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, Page<Packages> pageable);
+    CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, String packageName, Page<Packages> pageable);
 }
