@@ -93,7 +93,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                                 result.put("sas", String.format("adb connect %s:%d", agents.getHost(), occupyParams.getSasRemotePort()));
                             }
                             if (occupyParams.getUia2RemotePort() != 0) {
-                                result.put("uia2", String.format("http://%s:%d", agents.getHost(), occupyParams.getUia2RemotePort()));
+                                result.put("uia2", String.format("http://%s:%d/uia/%d", agents.getHost(), agents.getPort(), occupyParams.getUia2RemotePort()));
                             }
                         }
                         case PlatformType.IOS -> {
