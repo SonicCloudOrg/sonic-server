@@ -443,8 +443,15 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
     public boolean deleteByProjectId(int projectId) {
         List<TestSuites> testSuitesList = baseMapper.selectList(
                 new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId));
-        testSuitesList.forEach(curTestSuites -> delete(curTestSuites.getId()));
-        return testSuitesList.size() > 0;
+        if (testSuitesList != null && !testSuitesList.isEmpty()) {
+            return testSuitesList.stream()
+                    .map(TestSuites::getId)
+                    .map(this::delete)
+                    .reduce(true, Boolean::logicalAnd);
+        } else {
+            // 如果查询到的list不会null，但是数量为0，说明本身不存在测试套件，直接返回true。
+            return testSuitesList != null;
+        }
     }
 
     @Override
