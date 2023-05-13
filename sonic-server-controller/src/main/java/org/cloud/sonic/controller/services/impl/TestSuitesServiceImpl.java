@@ -360,6 +360,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean delete(int id) {
+        // 先删除 test_suites_test_cases 以及 test_suites_devices 两表中的记录
+        testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
+                .eq(TestSuitesTestCases::getTestSuitesId, id));
+        testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
+                .eq(TestSuitesDevices::getTestSuitesId, id));
         return baseMapper.deleteById(id) > 0;
     }
 
