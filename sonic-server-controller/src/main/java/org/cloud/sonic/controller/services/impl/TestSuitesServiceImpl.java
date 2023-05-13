@@ -436,6 +436,16 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean deleteByProjectId(int projectId) {
+        List<TestSuites> testSuitesList = baseMapper.selectList(
+                new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId));
+        for (TestSuites curTestSuites : testSuitesList) {
+            // 先删除 test_suites_test_cases 以及 test_suites_devices 两表中的记录
+            testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
+                    .eq(TestSuitesTestCases::getTestSuitesId, curTestSuites.getId()));
+            testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
+                    .eq(TestSuitesDevices::getTestSuitesId, curTestSuites.getId()));
+        }
+        // 再删除 test_suites 中的记录
         return baseMapper.delete(new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId)) > 0;
     }
 
