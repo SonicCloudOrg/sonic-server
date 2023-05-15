@@ -66,4 +66,8 @@ public class Projects implements Serializable, TypeConverter<Projects, ProjectsD
     @TableField
     @Column(value = "robot_type", isNull = false, comment = "机器人类型")
     private Integer robotType;
+
+    @TableField
+    @Column(value = "create_by", isNull = true, comment = "创建人")
+    private Integer createBy;
 }

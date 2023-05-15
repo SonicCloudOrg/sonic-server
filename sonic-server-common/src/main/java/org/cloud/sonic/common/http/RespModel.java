@@ -57,8 +57,8 @@ public class RespModel<T> {
         this.data = data;
     }
 
-    public static RespModel result(RespEnum respEnum) {
-        return new RespModel(respEnum);
+    public static RespModel<String> result(RespEnum respEnum) {
+        return new RespModel<>(respEnum);
     }
 
     public static <T> RespModel<T> result(RespEnum respEnum, T data) {

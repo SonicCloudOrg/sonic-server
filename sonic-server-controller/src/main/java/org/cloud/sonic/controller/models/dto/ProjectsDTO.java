@@ -47,4 +47,7 @@ public class ProjectsDTO implements Serializable, TypeConverter<ProjectsDTO, Pro
     @Schema(description = "最后修改日期", example = "2021-08-15 11:23:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date editTime;
+
+    @Schema(description = "创建人", required = true, example = "liulijun")
+    Integer createBy;
 }

@@ -25,6 +25,7 @@ package org.cloud.sonic.common.http;
 public enum RespEnum {
     HANDLE_OK(2000, "ok.handle"),
     SEARCH_OK(2000, "ok.search"),
+    ADD_OK(2000, "ok.add"),
     UPDATE_OK(2000, "ok.update"),
     DELETE_OK(2000, "ok.delete"),
     UPLOAD_OK(2000, "ok.upload"),

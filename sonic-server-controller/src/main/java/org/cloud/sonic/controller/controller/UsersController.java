@@ -31,17 +31,22 @@ import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.cloud.sonic.controller.models.base.CommentPage;
+import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Roles;
 import org.cloud.sonic.controller.models.domain.Users;
+import org.cloud.sonic.controller.models.dto.ProjectsDTO;
 import org.cloud.sonic.controller.models.dto.UsersDTO;
 import org.cloud.sonic.controller.models.http.ChangePwd;
 import org.cloud.sonic.controller.models.http.UserInfo;
+import org.cloud.sonic.controller.services.ProjectsService;
 import org.cloud.sonic.controller.services.RolesServices;
 import org.cloud.sonic.controller.services.UsersService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author ZhouYiXun
@@ -54,12 +59,12 @@ import java.util.Objects;
 public class UsersController {
     @Resource
     private UsersService usersService;
-
     @Resource
     private RolesServices rolesServices;
-
     @Resource
     private JWTTokenTool jwtTokenTool;
+    @Resource
+    private ProjectsService projectsService;
 
     @WebAspect
     @WhiteUrl
@@ -165,5 +170,21 @@ public class UsersController {
                                          @RequestParam(name = "userId") Integer userId) {
 
         return RespModel.result(RespEnum.UPDATE_OK, usersService.updateUserRole(userId, roleId));
+    }
+
+    @WebAspect
+    @WhiteUrl
+    @Operation(summary = "查找用户所有项目", description = "查找用户所有项目列表")
+    @GetMapping("/listProjects")
+    public RespModel<List<ProjectsDTO>> findProjects(HttpServletRequest request) {
+        String token = request.getHeader("SonicToken");
+        if ( token != null) {
+            return new RespModel<>(
+                    RespEnum.SEARCH_OK,
+                    projectsService.findProjectsByToken(token).stream().map(TypeConverter::convertTo).collect(Collectors.toList())
+            );
+        }else {
+            return new RespModel<>(RespEnum.UNAUTHORIZED);
+        }
     }
 }
