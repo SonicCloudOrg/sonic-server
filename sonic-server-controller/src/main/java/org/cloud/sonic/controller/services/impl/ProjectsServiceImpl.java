@@ -17,13 +17,13 @@
  */
 package org.cloud.sonic.controller.services.impl;
 
+import jakarta.annotation.Resource;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.controller.mapper.ProjectsMapper;
 import org.cloud.sonic.controller.models.domain.Projects;
 import org.cloud.sonic.controller.models.domain.Results;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,27 +37,27 @@ import java.util.List;
 @Service
 public class ProjectsServiceImpl extends SonicServiceImpl<ProjectsMapper, Projects> implements ProjectsService {
 
-    @Autowired
+    @Resource
     private ElementsService elementsService;
-    @Autowired
+    @Resource
     private GlobalParamsService globalParamsService;
-    @Autowired
+    @Resource
     private ModulesService modulesService;
-    @Autowired
+    @Resource
     private VersionsService versionsService;
-    @Autowired
+    @Resource
     private PublicStepsService publicStepsService;
-    @Autowired
+    @Resource
     private ResultsService resultsService;
-    @Autowired
+    @Resource
     private ResultDetailService resultDetailService;
-    @Autowired
+    @Resource
     private StepsService stepsService;
-    @Autowired
+    @Resource
     private TestSuitesService testSuitesService;
-    @Autowired
+    @Resource
     private TestCasesService testCasesService;
-    @Autowired
+    @Resource
     private ScriptsService scriptsService;
 
     @Override

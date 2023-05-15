@@ -20,6 +20,7 @@ package org.cloud.sonic.controller.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
@@ -29,7 +30,6 @@ import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.Projects;
 import org.cloud.sonic.controller.models.dto.ProjectsDTO;
 import org.cloud.sonic.controller.services.ProjectsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/projects")
 public class ProjectsController {
 
-    @Autowired
+    @Resource
     private ProjectsService projectsService;
 
     @WebAspect

@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
@@ -37,7 +38,6 @@ import org.cloud.sonic.controller.models.http.ChangePwd;
 import org.cloud.sonic.controller.models.http.UserInfo;
 import org.cloud.sonic.controller.services.RolesServices;
 import org.cloud.sonic.controller.services.UsersService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,13 +52,13 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/users")
 public class UsersController {
-    @Autowired
+    @Resource
     private UsersService usersService;
 
-    @Autowired
+    @Resource
     private RolesServices rolesServices;
 
-    @Autowired
+    @Resource
     private JWTTokenTool jwtTokenTool;
 
     @WebAspect
