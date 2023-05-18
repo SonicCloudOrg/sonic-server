@@ -293,7 +293,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
                     }
                     publicStepsJson.add(getStep(pubStep));
                 }
-                step =  (JSONObject) JSONObject.toJSON(steps);
+                step = (JSONObject) JSONObject.toJSON(steps);
                 step.put("pubSteps", publicStepsJson);
 
                 return step;
@@ -314,7 +314,7 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     // 获取步骤结构树
     public JSONObject handleSteps(StepsDTO steps) {
-        JSONObject stepsJsonObj =  (JSONObject) JSONObject.toJSON(steps);
+        JSONObject stepsJsonObj = (JSONObject) JSONObject.toJSON(steps);
         if (steps == null) {
             return stepsJsonObj;
         }
@@ -344,13 +344,21 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             }
             stepsJsonObj.put("text", packagesService.findOne(steps.getProjectId(), steps.getText(), plat));
         }
+
         if (CollectionUtils.isEmpty(steps.getChildSteps())) {
             return stepsJsonObj;
         }
+
         JSONArray childStepJsonObjs = new JSONArray();
         List<StepsDTO> childSteps = steps.getChildSteps();
+
         for (StepsDTO childStep : childSteps) {
+            if (childStep.getDisabled() == 1) {
+                continue;
+            }
+
             JSONObject childStepJsonObj = handleSteps(childStep);
+
             childStepJsonObjs.add(childStepJsonObj);
         }
         stepsJsonObj.put("childSteps", childStepJsonObjs);

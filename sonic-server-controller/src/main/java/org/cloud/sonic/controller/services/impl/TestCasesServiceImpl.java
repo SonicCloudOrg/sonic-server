@@ -91,6 +91,10 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
 
     @Transactional
     public TestCasesDTO findCaseDetail(TestCases testCases) {
+        if (testCases == null){
+            return new TestCasesDTO().setId(0).setName("unknown");
+        }
+
         if (testCases.getModuleId() != null && testCases.getModuleId() != 0) {
             Modules modules = modulesMapper.selectById(testCases.getModuleId());
             if (modules != null) {
