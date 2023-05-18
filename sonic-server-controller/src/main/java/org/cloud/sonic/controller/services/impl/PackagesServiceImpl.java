@@ -55,10 +55,12 @@ public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packag
     }
 
     @Override
-    public CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, Page<Packages> pageable) {
+    public CommentPage<PackageDTO> findByProjectId(int projectId, String branch, String platform, String packageName,
+                                                   Page<Packages> pageable) {
         Page<Packages> page = lambdaQuery().eq(Packages::getProjectId, projectId)
                 .eq(StringUtils.isNotBlank(platform), Packages::getPlatform, platform)
                 .like(StringUtils.isNotBlank(branch), Packages::getBranch, branch)
+                .like(StringUtils.isNotBlank(packageName), Packages::getPkgName, packageName)
                 .orderByDesc(Packages::getId)
                 .page(pageable);
 
@@ -66,7 +68,5 @@ public class PackagesServiceImpl extends SonicServiceImpl<PackagesMapper, Packag
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
         return CommentPage.convertFrom(page, packageDTOList);
-
-
     }
 }

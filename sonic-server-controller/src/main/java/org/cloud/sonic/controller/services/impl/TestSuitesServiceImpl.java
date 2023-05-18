@@ -23,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.v3.core.util.Json;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.mapper.*;
@@ -47,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -370,6 +368,11 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean delete(int id) {
+        // 先删除 test_suites_test_cases 以及 test_suites_devices 两表中的记录
+        testSuitesTestCasesMapper.delete(new LambdaQueryWrapper<TestSuitesTestCases>()
+                .eq(TestSuitesTestCases::getTestSuitesId, id));
+        testSuitesDevicesMapper.delete(new LambdaQueryWrapper<TestSuitesDevices>()
+                .eq(TestSuitesDevices::getTestSuitesId, id));
         return baseMapper.deleteById(id) > 0;
     }
 
@@ -446,7 +449,17 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
 
     @Override
     public boolean deleteByProjectId(int projectId) {
-        return baseMapper.delete(new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId)) > 0;
+        List<TestSuites> testSuitesList = baseMapper.selectList(
+                new LambdaQueryWrapper<TestSuites>().eq(TestSuites::getProjectId, projectId));
+        if (testSuitesList != null && !testSuitesList.isEmpty()) {
+            return testSuitesList.stream()
+                    .map(TestSuites::getId)
+                    .map(this::delete)
+                    .reduce(true, Boolean::logicalAnd);
+        } else {
+            // 如果查询到的list不会null，但是数量为0，说明本身不存在测试套件，直接返回true。
+            return testSuitesList != null;
+        }
     }
 
     @Override

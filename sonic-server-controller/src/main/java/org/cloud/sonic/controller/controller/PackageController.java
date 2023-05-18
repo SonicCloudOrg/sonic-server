@@ -59,11 +59,13 @@ public class PackageController {
     public RespModel<CommentPage<PackageDTO>> findAll(@RequestParam(name = "projectId") int projectId,
                                                       @RequestParam(name = "branch", required = false) String branch,
                                                       @RequestParam(name = "platform", required = false) String platform,
+                                                      @RequestParam(name = "packageName", required = false) String packageName,
                                                       @RequestParam(name = "page") int page,
                                                       @RequestParam(name = "pageSize") int pageSize) {
 
         Page<Packages> pageable = new Page<>(page, pageSize);
 
-        return new RespModel<>(RespEnum.SEARCH_OK, packagesService.findByProjectId(projectId, branch, platform, pageable));
+        return new RespModel<>(RespEnum.SEARCH_OK, packagesService.findByProjectId(projectId, branch, platform,
+                packageName, pageable));
     }
 }

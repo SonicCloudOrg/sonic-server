@@ -23,12 +23,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
+import org.cloud.sonic.controller.models.http.OccupyParams;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.transport.TransportWorker;
@@ -47,8 +49,31 @@ public class DevicesController {
     private DevicesService devicesService;
 
     @WebAspect
+    @Operation(summary = "通过REST API占用设备", description = "远程占用设备并开启相关端口")
+    @PostMapping("/occupy")
+    public RespModel occupy(@Validated @RequestBody OccupyParams occupyParams, HttpServletRequest request) {
+        String token = request.getHeader("SonicToken");
+        if (token == null) {
+            return new RespModel(RespEnum.UNAUTHORIZED);
+        }
+        return devicesService.occupy(occupyParams, token);
+    }
+
+    @WebAspect
+    @Operation(summary = "通过REST API释放设备", description = "远程释放设备并释放相关端口，只能由占用者释放")
+    @Parameter(name = "udId", description = "设备序列号")
+    @GetMapping("/release")
+    public RespModel release(@RequestParam(name = "udId") String udId, HttpServletRequest request) {
+        String token = request.getHeader("SonicToken");
+        if (token == null) {
+            return new RespModel(RespEnum.UNAUTHORIZED);
+        }
+        return devicesService.release(udId, token);
+    }
+
+    @WebAspect
     @Operation(summary = "强制解除设备占用", description = "强制解除设备占用")
-    @Parameter(name = "udId", description = "平台")
+    @Parameter(name = "udId", description = "设备序列号")
     @GetMapping("/stopDebug")
     public RespModel<List<Devices>> stopDebug(@RequestParam(name = "udId") String udId) {
         Devices devices = devicesService.findByUdId(udId);

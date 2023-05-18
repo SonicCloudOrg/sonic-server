@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.http.RespModel;
 import org.cloud.sonic.controller.models.domain.Devices;
 import org.cloud.sonic.controller.models.http.DeviceDetailChange;
+import org.cloud.sonic.controller.models.http.OccupyParams;
 import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
 
 import java.io.IOException;
@@ -34,6 +35,11 @@ import java.util.List;
  * @date 2021/8/16 22:51
  */
 public interface DevicesService extends IService<Devices> {
+
+    RespModel occupy(OccupyParams occupyParams, String token);
+
+    RespModel release(String udId, String token);
+
     boolean saveDetail(DeviceDetailChange deviceDetailChange);
 
     void updatePosition(int id, int position);

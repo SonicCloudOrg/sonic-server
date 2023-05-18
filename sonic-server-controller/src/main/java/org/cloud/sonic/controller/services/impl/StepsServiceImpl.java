@@ -300,6 +300,12 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Override
     public boolean deleteByProjectId(int projectId) {
+        // 先删除steps_elements表中，属于该projectId下的"步骤-元素"关联记录
+        List<Steps> allSteps = stepsMapper.selectList(new LambdaQueryWrapper<Steps>().eq(Steps::getProjectId, projectId));
+        for (Steps curStep : allSteps) {
+            stepsElementsMapper.delete(new LambdaQueryWrapper<StepsElements>().eq(StepsElements::getStepsId, curStep.getId()));
+        }
+        // 再删除指定projectId的Step
         return baseMapper.delete(new LambdaQueryWrapper<Steps>().eq(Steps::getProjectId, projectId)) > 0;
     }
 

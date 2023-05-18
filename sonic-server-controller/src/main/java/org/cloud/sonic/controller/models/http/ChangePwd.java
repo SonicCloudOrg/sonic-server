@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @des
  * @date 2021/10/13 18:45
  */
+@Schema(name = "更改密码请求模型")
 public class ChangePwd implements Serializable {
     @NotNull
     @Schema(description = "旧密码", required = true, example = "123456")
