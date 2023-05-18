@@ -72,21 +72,12 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         Page<PublicSteps> page = lambdaQuery().eq(PublicSteps::getProjectId, projectId)
                 .orderByDesc(PublicSteps::getId)
                 .page(pageable);
-        // 业务join，java层拼接结果，虽然麻烦一点，但sql性能确实能优化
+
         List<PublicStepsDTO> publicStepsDTOList = page.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
-        Set<Integer> publicStepsIdSet = publicStepsDTOList.stream().map(PublicStepsDTO::getId).collect(Collectors.toSet());
-        if (publicStepsIdSet.isEmpty()) {
-            return CommentPage.emptyPage();
-        }
 
-        // publicStepsId -> StepsDTO
-        Map<Integer, List<StepsDTO>> stepsDTOMap = publicStepsMapper.listStepsByPublicStepsIds(publicStepsIdSet)
-                .stream().collect(Collectors.groupingBy(StepsDTO::getPublicStepsId));
-
-        // 将step填充到public step
         publicStepsDTOList.forEach(
-                e -> e.setSteps(stepsService.handleSteps(stepsDTOMap.get(e.getId()), false))
+                e -> e.setSteps(findById(e.getId(), false).getSteps())
         );
 
         return CommentPage.convertFrom(page, publicStepsDTOList);
