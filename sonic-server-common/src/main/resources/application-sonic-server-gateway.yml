@@ -12,12 +12,10 @@ knife4j:
       - name: sonic-server-controller
         url: /api/controller/v3/api-docs?group=default
         service-name: sonic-server-controller
-        context-path: /api/controller
         order: 1
       - name: sonic-server-folder
         url: /api/folder/v3/api-docs?group=default
         service-name: sonic-server-folder
-        context-path: /api/folder
         order: 2
 
 spring:
