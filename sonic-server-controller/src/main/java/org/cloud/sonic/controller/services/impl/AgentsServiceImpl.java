@@ -28,7 +28,6 @@ import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
 import org.cloud.sonic.controller.services.AgentsService;
 import org.cloud.sonic.controller.services.DevicesService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.RobotMsgTool;
 import org.cloud.sonic.controller.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     @Autowired
     private DevicesService devicesService;
     @Autowired
-    private RobotMsgTool robotMsgTool;
+    private AlertRobotsServiceImpl alertRobotsService;
     @Autowired
     private AgentsMapper agentsMapper;
 
@@ -54,7 +53,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
     }
 
     @Override
-    public void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret) {
+    public void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret, int[] alertRobotIds) {
         if (id == 0) {
             Agents agents = new Agents();
             agents.setName(name);
@@ -70,6 +69,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
             agents.setRobotSecret(robotSecret);
             agents.setSecretKey(UUID.randomUUID().toString());
             agents.setHasHub(0);
+            agents.setAlertRobotIds(alertRobotIds);
             save(agents);
         } else {
             Agents ag = findById(id);
@@ -80,6 +80,7 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 ag.setRobotType(robotType);
                 ag.setRobotToken(robotToken);
                 ag.setRobotSecret(robotSecret);
+                ag.setAlertRobotIds(alertRobotIds);
                 save(ag);
                 JSONObject result = new JSONObject();
                 result.put("msg", "settings");
@@ -169,9 +170,6 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
 
     @Override
     public void errCall(int id, String udId, int tem, int type) {
-        Agents agents = findById(id);
-        if (agents != null && agents.getRobotType() != 0 && agents.getRobotToken().length() > 0 && agents.getRobotSecret().length() > 0) {
-            robotMsgTool.sendErrorDevice(agents.getRobotToken(), agents.getRobotSecret(), agents.getRobotType(), type, tem, udId);
-        }
+        alertRobotsService.sendErrorDevice(id, type, tem, udId);
     }
 }

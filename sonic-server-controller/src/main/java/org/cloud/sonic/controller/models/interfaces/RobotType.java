@@ -8,4 +8,6 @@ public interface RobotType {
     int Telegram = 5;
     int LineNotify = 6;
     int SlackNotify = 7;
+
+    int WebHook = 8;
 }

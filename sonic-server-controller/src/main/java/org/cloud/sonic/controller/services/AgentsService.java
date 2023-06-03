@@ -31,9 +31,7 @@ import java.util.List;
 public interface AgentsService extends IService<Agents> {
     List<Agents> findAgents();
 
-    void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret);
-
-    // todo 删除
+    void update(int id, String name, int highTemp, int highTempTime, int robotType, String robotToken, String robotSecret, int[] alertRobotIds);
 
     boolean offLine(int id);
 

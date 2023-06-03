@@ -17,24 +17,53 @@
  */
 package org.cloud.sonic.controller.tools.robot;
 
+import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
+import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
+import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParserContext;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * @author ayumi760405
- * @des 推送机器人方法介面
- * @date 2022/12/19
- */
+import java.util.WeakHashMap;
+
 public interface RobotMessenger {
+    ExpressionParser defaultParser = new SpelExpressionParser();
+    ParserContext templateParserContext = new TemplateParserContext();
+    WeakHashMap<String, Expression> expressionCache = new WeakHashMap<>();
+    EvaluationContext ctx = SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().build();
 
-    void sendResultFinishReport(RestTemplate restTemplate, String token, String secret, String suiteName, int pass,
-                                int warn, int fail, int projectId, int resultId);
+    static Expression parseTemplate(String template) {
+        return expressionCache.computeIfAbsent(template, it -> defaultParser.parseExpression(it, templateParserContext));
+    }
 
-    void sendDayReportMessage(RestTemplate restTemplate, String token, String secret, int projectId, String projectName,
-                              String yesterday, String today, int passCount, int warnCount, int failCount);
+    default void sendMessage(RestTemplate restTemplate, String token, String secret, String messageTemplate, Message message) {
+        Expression template;
+        if (messageTemplate.isEmpty()) {
+            if (message instanceof TestSuiteMessage) {
+                template = getDefaultTestSuiteTemplate();
+            } else if (message instanceof ProjectSummaryMessage) {
+                template = getDefaultProjectSummaryTemplate();
+            } else if (message instanceof DeviceMessage) {
+                template = getDefaultDeviceMessageTemplate();
+            } else {
+                return;
+            }
+        } else {
+            template = parseTemplate(messageTemplate);
+        }
+        sendMessage(restTemplate, token, secret, template, message);
+    }
 
-    void sendErrorDevice(RestTemplate restTemplate, String token, String secret, int errorType, int tem, String udId);
+    void sendMessage(RestTemplate restTemplate, String token, String secret, Expression messageTemplate, Message message);
 
-    void sendWeekReportMessage(RestTemplate restTemplate, String token, String secret, int projectId, String projectName,
-                               String yesterday, String today, int passCount, int warnCount, int failCount, int count);
+    Expression getDefaultTestSuiteTemplate();
 
+    Expression getDefaultProjectSummaryTemplate();
+
+    Expression getDefaultDeviceMessageTemplate();
 }

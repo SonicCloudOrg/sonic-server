@@ -1,12 +1,10 @@
 package org.cloud.sonic.controller.models.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
+import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.dto.TestSuitesDTO;
+import org.cloud.sonic.controller.tools.NullableIntArrayTypeHandler;
 
 import java.io.Serializable;
 
@@ -28,7 +27,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("test_suites")
+@TableName(value = "test_suites", autoResultMap = true)
 @TableComment("测试套件表")
 @TableCharset(MySqlCharsetConstant.DEFAULT)
 @TableEngine(MySqlEngineConstant.InnoDB)
@@ -62,4 +61,8 @@ public class TestSuites implements Serializable, TypeConverter<TestSuites, TestS
     @Column(value = "project_id", isNull = false, comment = "覆盖类型")
     @Index(value = "IDX_PROJECT_ID", columns = {"project_id"})
     private Integer projectId;
+
+    @TableField(typeHandler = NullableIntArrayTypeHandler.class, updateStrategy = FieldStrategy.IGNORED)
+    @Column(value = "alert_robot_ids", type = MySqlTypeConstant.VARCHAR, length = 1024, comment = "项目内测试套件默认通知配置，为null时取项目配置的默认值")
+    int[] alertRobotIds;
 }
