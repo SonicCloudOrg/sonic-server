@@ -15,17 +15,24 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config.mybatis;
+package org.cloud.sonic.controller.tools.robot.message;
 
-import com.gitee.sunchenbin.mybatis.actable.manager.handler.StartUpHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import lombok.AllArgsConstructor;
+import org.cloud.sonic.controller.tools.robot.Message;
 
-@Configuration
-@Order(1)
-public class ActableConfig {
-    public ActableConfig(@Autowired StartUpHandler startUpHandler) {
-        startUpHandler.startHandler();
-    }
+import java.util.Date;
+
+@AllArgsConstructor
+public class ProjectSummaryMessage extends Message {
+    public int projectId;
+    public String projectName;
+    public Date startDate;
+    public Date endDate;
+    public int pass;
+    public int warn;
+    public int fail;
+    public double rate;
+    public int total;
+    public String url;
+    public boolean isWeekly;
 }

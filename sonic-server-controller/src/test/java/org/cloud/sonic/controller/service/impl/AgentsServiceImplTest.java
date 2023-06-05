@@ -98,7 +98,7 @@ public class AgentsServiceImplTest {
         Mockito.when(agentsMapper.insert(agents))
                 .thenReturn(1);
 
-        agentsService.update(id, name, highTemp, highTempTime, robotType, robotToken, robotSecret);
+        agentsService.update(id, name, highTemp, highTempTime, robotType, robotToken, robotSecret, null);
 
     }
 

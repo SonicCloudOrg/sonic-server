@@ -19,9 +19,6 @@ package org.cloud.sonic.controller.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.http.RespEnum;
@@ -75,11 +72,12 @@ public class AgentsController {
     @WebAspect
     @Operation(summary = "修改agent信息", description = "修改agent信息")
     @PutMapping("/update")
-    public RespModel<String> update(@RequestBody JSONObject jsonObject) {
-        agentsService.update(jsonObject.getInteger("id"),
-                jsonObject.getString("name"), jsonObject.getInteger("highTemp"),
-                jsonObject.getInteger("highTempTime"), jsonObject.getInteger("robotType"),
-                jsonObject.getString("robotToken"), jsonObject.getString("robotSecret"));
+    public RespModel<String> update(@RequestBody AgentsDTO jsonObject) {
+        agentsService.update(jsonObject.getId(),
+                jsonObject.getName(), jsonObject.getHighTemp(),
+                jsonObject.getHighTempTime(), jsonObject.getRobotType(),
+                jsonObject.getRobotToken(), jsonObject.getRobotToken(),
+                jsonObject.getAlertRobotIds());
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 

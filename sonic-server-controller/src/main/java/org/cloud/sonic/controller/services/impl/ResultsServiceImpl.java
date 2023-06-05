@@ -31,7 +31,6 @@ import org.cloud.sonic.controller.models.interfaces.ResultDetailStatus;
 import org.cloud.sonic.controller.models.interfaces.ResultStatus;
 import org.cloud.sonic.controller.services.*;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.RobotMsgTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
     @Autowired
     private ProjectsService projectsService;
     @Autowired
-    private RobotMsgTool robotMsgTool;
+    private AlertRobotsService alertRobotsService;
     @Autowired
     private TestSuitesService testSuitesService;
     @Autowired
@@ -239,10 +238,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                         break;
                 }
             }
-            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0) {
-                robotMsgTool.sendDayReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
-                        , projects.getProjectName(), sf.format(yesterday), sf.format(today), suc, warn, fail, projects.getRobotType());
-            }
+            alertRobotsService.sendProjectReportMessage(projects.getId(), projects.getProjectName(), yesterday, today, false, suc, warn, fail);
         }
     }
 
@@ -273,10 +269,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                         break;
                 }
             }
-            if (projects.getRobotType() != 0 && projects.getRobotToken().length() > 0) {
-                robotMsgTool.sendWeekReportMessage(projects.getRobotToken(), projects.getRobotSecret(), projects.getId()
-                        , projects.getProjectName(), sf.format(lastWeek), sf.format(today), suc, warn, fail, count, projects.getRobotType());
-            }
+            alertRobotsService.sendProjectReportMessage(projects.getId(), projects.getProjectName(), lastWeek, today, true, suc, warn, fail);
         }
     }
 
@@ -336,11 +329,8 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
             if (Objects.equals(results.getReceiveMsgCount(), results.getSendMsgCount())) {
                 results.setEndTime(new Date());
                 save(results);
-                Projects projects = projectsService.findById(results.getProjectId());
-                if (projects != null && projects.getRobotType() != 0 && projects.getRobotToken().length() > 0) {
-                    robotMsgTool.sendResultFinishReport(projects.getRobotToken(), projects.getRobotSecret(),
-                            results.getSuiteName(), sucCount, warnCount, failCount, projects.getId(), results.getId(), projects.getRobotType());
-                }
+                alertRobotsService.sendResultFinishReport(results.getSuiteId(),
+                        results.getSuiteName(), sucCount, warnCount, failCount, results.getProjectId(), results.getId());
             }
         }
     }

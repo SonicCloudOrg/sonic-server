@@ -56,15 +56,33 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     @Schema(description = "highTempTime", example = "10")
     Integer highTempTime;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人类型", example = "1")
     Integer robotType;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人token", example = "token")
     String robotToken;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人加签密钥", example = "key")
     String robotSecret;
 
     @Schema(description = "是否使用sonic hub", example = "1")
     Integer hasHub;
+
+    @Schema(description = "通知机器人id串，为null时自动选取所有可用机器人", example = "[1,2]")
+    int[] alertRobotIds;
 }

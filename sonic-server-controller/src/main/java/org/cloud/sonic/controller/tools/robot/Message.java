@@ -15,17 +15,32 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config.mybatis;
+package org.cloud.sonic.controller.tools.robot;
 
-import com.gitee.sunchenbin.mybatis.actable.manager.handler.StartUpHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-@Configuration
-@Order(1)
-public class ActableConfig {
-    public ActableConfig(@Autowired StartUpHandler startUpHandler) {
-        startUpHandler.startHandler();
+public abstract class Message {
+    public final Calendar now = Calendar.getInstance();
+    public Object ext = null;
+    public SimpleDateFormat format = null;
+
+    public SimpleDateFormat getFormat(String pattern) {
+        if (null == format) {
+            format = new SimpleDateFormat(pattern);
+        } else {
+            format.applyPattern(pattern);
+        }
+        return format;
     }
+
+    public SimpleDateFormat getFormat() {
+        if (null == format) {
+            format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+        return format;
+    }
+
 }
+
+

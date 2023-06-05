@@ -15,17 +15,14 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config.mybatis;
+package org.cloud.sonic.controller.tools.robot.message;
 
-import com.gitee.sunchenbin.mybatis.actable.manager.handler.StartUpHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import lombok.AllArgsConstructor;
+import org.cloud.sonic.controller.tools.robot.Message;
 
-@Configuration
-@Order(1)
-public class ActableConfig {
-    public ActableConfig(@Autowired StartUpHandler startUpHandler) {
-        startUpHandler.startHandler();
-    }
+@AllArgsConstructor
+public class DeviceMessage extends Message {
+    public int errorType;
+    public int tem;
+    public String udId;
 }
