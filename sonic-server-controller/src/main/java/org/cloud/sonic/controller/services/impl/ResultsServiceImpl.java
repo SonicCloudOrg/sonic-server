@@ -143,7 +143,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                     jsonObject.put("case", testCases);
                     int status = 0;
                     for (int j = caseTimes.size() - 1; j >= 0; j--) {
-                        if (caseTimes.get(j).getInteger("case_id") == testCases.getId()) {
+                        if (Objects.equals(caseTimes.get(j).getInteger("case_id"), testCases.getId())) {
                             jsonObject.put("startTime", sf.format(caseTimes.get(j).getDate("startTime")));
                             jsonObject.put("endTime", sf.format(caseTimes.get(j).getDate("endTime")));
                             caseTimes.remove(j);
@@ -333,7 +333,7 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
             delete(results.getId());
         } else {
             //发收相同的话，表明测试结束了
-            if (results.getReceiveMsgCount() == results.getSendMsgCount()) {
+            if (Objects.equals(results.getReceiveMsgCount(), results.getSendMsgCount())) {
                 results.setEndTime(new Date());
                 save(results);
                 Projects projects = projectsService.findById(results.getProjectId());
