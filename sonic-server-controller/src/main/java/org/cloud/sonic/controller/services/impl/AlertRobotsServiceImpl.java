@@ -105,7 +105,7 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
     private void send(List<AlertRobots> robots, Message message) {
         for (var robot : robots) {
             try {
-                var messenger = robotFactory.getRobotMessenger(robot.getRobotType(), robot.getMuteRule());
+                var messenger = robotFactory.getRobotMessenger(robot.getRobotType(), robot.getMuteRule(), message);
                 if (messenger == null) continue;
                 var template = robot.getTemplate();
                 messenger.sendMessage(restTemplate, robot.getRobotToken(), robot.getRobotSecret(), template, message);
