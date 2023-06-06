@@ -21,7 +21,9 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.controller.tools.robot.Message;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.Expression;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,14 +46,19 @@ import java.util.Map;
 @Service("DingTalkImpl")
 public class DingTalkImpl implements RobotMessenger {
 
-    @Value("${robot.img.success}")
-    private String successUrl;
-    //警告时的图片url
-    @Value("${robot.img.warning}")
-    private String warningUrl;
-    //失败时的图片url
-    @Value("${robot.img.error}")
-    private String errorUrl;
+    @Configuration
+    static class DingTalkMsgExt {
+        @Value("${robot.img.success}")
+        public String successUrl;
+        //警告时的图片url
+        @Value("${robot.img.warning}")
+        public String warningUrl;
+        //失败时的图片url
+        @Value("${robot.img.error}")
+        public String errorUrl;
+    }
+    @Autowired
+    private DingTalkMsgExt ext;
 
     Expression templateTestSuiteMessage = RobotMessenger.parseTemplate("""
             #{
@@ -128,7 +135,7 @@ public class DingTalkImpl implements RobotMessenger {
 
     @Override
     public void sendMessage(RestTemplate restTemplate, String token, String secret, Expression messageTemplate, Message msg) {
-        msg.ext = this;
+        msg.ext = ext;
         Map<?, ?> content = messageTemplate.getValue(ctx, msg, Map.class);
         this.signAndSend(restTemplate, token, secret, content);
     }
