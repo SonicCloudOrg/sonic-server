@@ -59,9 +59,9 @@ public class RobotFactory {
         return robotMessenger;
     }
 
-    public RobotMessenger getRobotMessenger(int robotType, String muteRule) {
+    public RobotMessenger getRobotMessenger(int robotType, String muteRule, Message message) {
         if (!muteRule.isEmpty()) {
-            var mute = RobotMessenger.parseTemplate(muteRule).getValue(RobotMessenger.ctx, String.class);
+            var mute = RobotMessenger.parseTemplate(muteRule).getValue(RobotMessenger.ctx, message, String.class);
             if ("true".equals(mute)) {
                 return null;
             }
