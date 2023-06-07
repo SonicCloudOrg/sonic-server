@@ -32,7 +32,6 @@ import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
 import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -85,7 +84,7 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
 
     @Override
     public void sendProjectReportMessage(int projectId, String projectName, Date startDate, Date endDate, boolean isWeekly, int pass, int warn, int fail) {
-        var robots = baseMapper.computeSummaryRobots(projectId);
+        var robots = findRobots(projectId, SCENE_SUMMARY).list();
         if (robots.isEmpty()) return;
         var total = pass + warn + fail;
         var rate = total > 0 ? BigDecimal.valueOf(((float) pass / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0;
