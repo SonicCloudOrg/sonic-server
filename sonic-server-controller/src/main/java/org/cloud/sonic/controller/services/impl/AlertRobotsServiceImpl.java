@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +98,7 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
     public void sendErrorDevice(int agentId, int errorType, int tem, String udId) {
         var robots = baseMapper.computeAgentRobots(agentId);
         if (robots.isEmpty()) return;
-        var msg = new DeviceMessage(errorType, tem, udId);
+        var msg = new DeviceMessage(errorType, new BigDecimal(BigInteger.valueOf(tem), 1), udId);
         send(robots, msg);
     }
 
