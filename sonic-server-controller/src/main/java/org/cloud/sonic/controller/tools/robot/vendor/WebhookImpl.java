@@ -5,9 +5,11 @@ import org.cloud.sonic.controller.tools.robot.Message;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
 import org.springframework.expression.Expression;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
+@Service("WebhookImpl")
 public class WebhookImpl implements RobotMessenger {
     @Override
     public void sendMessage(RestTemplate restTemplate, String token, String secret, Expression messageTemplate, Message message) {
