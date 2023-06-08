@@ -17,6 +17,7 @@
  */
 package org.cloud.sonic.controller.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -93,7 +94,7 @@ public class AlertRobotsController {
             @Parameter(name = "projectId", description = "项目id") int projectId,
             @RequestParam(name = "id") int id
     ) {
-        if (alertRobotsService.removeByMap(Map.of("id", id, "projectId", projectId))) {
+        if (alertRobotsService.remove(Wrappers.lambdaQuery(AlertRobots.class).eq(AlertRobots::getId, id).eq(AlertRobots::getProjectId, projectId))) {
             return new RespModel<>(RespEnum.DELETE_OK);
         } else {
             return new RespModel<>(RespEnum.DELETE_FAIL);
