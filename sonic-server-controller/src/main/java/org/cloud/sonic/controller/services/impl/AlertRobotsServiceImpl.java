@@ -27,16 +27,19 @@ import org.cloud.sonic.controller.services.AlertRobotsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.robot.Message;
 import org.cloud.sonic.controller.tools.robot.RobotFactory;
+import org.cloud.sonic.controller.tools.robot.RobotMessenger;
 import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
 import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
 import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +88,7 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
 
     @Override
     public void sendProjectReportMessage(int projectId, String projectName, Date startDate, Date endDate, boolean isWeekly, int pass, int warn, int fail) {
-        var robots = baseMapper.computeSummaryRobots(projectId);
+        var robots = findRobots(projectId, SCENE_SUMMARY).list();
         if (robots.isEmpty()) return;
         var total = pass + warn + fail;
         var rate = total > 0 ? BigDecimal.valueOf(((float) pass / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0;
@@ -98,7 +101,7 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
     public void sendErrorDevice(int agentId, int errorType, int tem, String udId) {
         var robots = baseMapper.computeAgentRobots(agentId);
         if (robots.isEmpty()) return;
-        var msg = new DeviceMessage(errorType, tem, udId);
+        var msg = new DeviceMessage(errorType, new BigDecimal(BigInteger.valueOf(tem), 1), udId);
         send(robots, msg);
     }
 
@@ -118,11 +121,18 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
     @Override
     public String getDefaultNoticeTemplate(int type, String scene) {
         var messenger = robotFactory.getRobotMessenger(type);
-        return switch (scene) {
-            case SCENE_AGENT -> messenger.getDefaultDeviceMessageTemplate().getExpressionString();
-            case SCENE_SUMMARY -> messenger.getDefaultProjectSummaryTemplate().getExpressionString();
-            case SCENE_TESTSUITE -> messenger.getDefaultTestSuiteTemplate().getExpressionString();
-            default -> "";
+        var template = switch (scene) {
+            case SCENE_AGENT -> messenger.getDefaultDeviceMessageTemplate();
+            case SCENE_SUMMARY -> messenger.getDefaultProjectSummaryTemplate();
+            case SCENE_TESTSUITE -> messenger.getDefaultTestSuiteTemplate();
+            default -> null;
         };
+        if (null == template) {
+            return "";
+        } else if (template instanceof SpelExpression) {
+            return RobotMessenger.templateParserContext.getExpressionPrefix() + template.getExpressionString() + RobotMessenger.templateParserContext.getExpressionSuffix();
+        } else {
+            return template.getExpressionString();
+        }
     }
 }

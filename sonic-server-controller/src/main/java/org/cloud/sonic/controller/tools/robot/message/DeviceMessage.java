@@ -20,9 +20,11 @@ package org.cloud.sonic.controller.tools.robot.message;
 import lombok.AllArgsConstructor;
 import org.cloud.sonic.controller.tools.robot.Message;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 public class DeviceMessage extends Message {
     public int errorType;
-    public int tem;
+    public BigDecimal tem;
     public String udId;
 }

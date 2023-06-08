@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SpringBootTest(classes = ControllerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,7 +38,7 @@ import java.util.Date;
 public class RobotMsgToolTest {
 
     private void testMessage(RobotMessenger bot, String token, String secret) {
-        for (var msg : new Message[]{new DeviceMessage(0, 0, "test"), new ProjectSummaryMessage(0, "test", new Date(System.currentTimeMillis() - 7 * 24 * 3600 * 1000), new Date(), 1, 3, 4, 1.4, 3, "https://sonic/?#=+", true), new ProjectSummaryMessage(0, "test", new Date(System.currentTimeMillis() - 24 * 3600 * 1000), new Date(), 1, 3, 4, 1.4, 3, "https://sonic/?#=+", false), new TestSuiteMessage("asf", 0, 1, 4, 5, 3, "https://sonic/?#=+"),}) {
+        for (var msg : new Message[]{new DeviceMessage(0, new BigDecimal(0), "test"), new ProjectSummaryMessage(0, "test", new Date(System.currentTimeMillis() - 7 * 24 * 3600 * 1000), new Date(), 1, 3, 4, 1.4, 3, "https://sonic/?#=+", true), new ProjectSummaryMessage(0, "test", new Date(System.currentTimeMillis() - 24 * 3600 * 1000), new Date(), 1, 3, 4, 1.4, 3, "https://sonic/?#=+", false), new TestSuiteMessage("asf", 0, 1, 4, 5, 3, "https://sonic/?#=+"),}) {
             bot.sendMessage(new RestTemplate(), token, secret, "", msg);
         }
     }

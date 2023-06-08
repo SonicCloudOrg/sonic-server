@@ -73,12 +73,4 @@ public interface AlertRobotsMapper extends BaseMapper<AlertRobots> {
         return listAgentRobotsFromIds(ids);
     }
 
-    @Select("""
-            select * from alert_robots r where scene = 'summary'
-            and (
-              r.project_id = ${projectId} or
-              (r.project_id is null and 1 = (select global_robot from projects where id = ${projectId})
-            )
-            """)
-    List<AlertRobots> computeSummaryRobots(@Param("projectId") int projectId);
 }
