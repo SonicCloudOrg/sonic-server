@@ -27,11 +27,14 @@ import org.cloud.sonic.controller.services.AlertRobotsService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.cloud.sonic.controller.tools.robot.Message;
 import org.cloud.sonic.controller.tools.robot.RobotFactory;
+import org.cloud.sonic.controller.tools.robot.RobotMessenger;
 import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
 import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
 import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -118,11 +121,18 @@ public class AlertRobotsServiceImpl extends SonicServiceImpl<AlertRobotsMapper, 
     @Override
     public String getDefaultNoticeTemplate(int type, String scene) {
         var messenger = robotFactory.getRobotMessenger(type);
-        return switch (scene) {
-            case SCENE_AGENT -> messenger.getDefaultDeviceMessageTemplate().getExpressionString();
-            case SCENE_SUMMARY -> messenger.getDefaultProjectSummaryTemplate().getExpressionString();
-            case SCENE_TESTSUITE -> messenger.getDefaultTestSuiteTemplate().getExpressionString();
-            default -> "";
+        var template = switch (scene) {
+            case SCENE_AGENT -> messenger.getDefaultDeviceMessageTemplate();
+            case SCENE_SUMMARY -> messenger.getDefaultProjectSummaryTemplate();
+            case SCENE_TESTSUITE -> messenger.getDefaultTestSuiteTemplate();
+            default -> null;
         };
+        if (null == template) {
+            return "";
+        } else if (template instanceof SpelExpression) {
+            return RobotMessenger.templateParserContext.getExpressionPrefix() + template.getExpressionString() + RobotMessenger.templateParserContext.getExpressionSuffix();
+        } else {
+            return template.getExpressionString();
+        }
     }
 }
