@@ -17,7 +17,7 @@ public class WebhookImpl implements RobotMessenger {
             ResponseEntity<Object> responseEntity = restTemplate.getForEntity(token, Object.class);
             log.info("robot result: " + responseEntity.getBody());
         } else {
-            Object content = messageTemplate.getValue(ctx);
+            Object content = messageTemplate.getValue(ctx, message);
             ResponseEntity<Object> responseEntity = restTemplate.postForEntity(token, content, Object.class);
             log.info("robot result: " + responseEntity.getBody());
         }
