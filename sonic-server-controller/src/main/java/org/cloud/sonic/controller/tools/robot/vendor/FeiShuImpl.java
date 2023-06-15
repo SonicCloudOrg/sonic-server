@@ -44,25 +44,25 @@ import java.util.List;
 public class FeiShuImpl implements RobotMessenger {
 
     Expression templateTestSuiteMessage = RobotMessenger.parseTemplate("""
-            **测试套件: ${suiteName} 运行完毕！**
-            通过数：${pass}
-            异常数：${warn}
-            失败数：${fail}
-            测试报告：[点击查看](${url})""");
+            **测试套件: #{suiteName} 运行完毕！**
+            通过数：#{pass}
+            异常数：#{warn}
+            失败数：#{fail}
+            测试报告：[点击查看](#{url})""");
     Expression templateProjectSummaryMessage = RobotMessenger.parseTemplate("""
-            **Sonic云真机测试平台${isWeekly ? '周': '日'}报**
-            项目：${projectName}
-            时间：${getFormat().format(startDate)} ～ ${getFormat().format(endDate)}
-            共测试：${total}次
-            通过数：${pass}
-            异常数：${warn}
-            失败数：${fail}
-            测试通过率：${rate}%
-            详细统计：[点击查看](${url})""");
+            **Sonic云真机测试平台#{isWeekly ? '周': '日'}报**
+            项目：#{projectName}
+            时间：#{getFormat().format(startDate)} ～ #{getFormat().format(endDate)}
+            共测试：#{total}次
+            通过数：#{pass}
+            异常数：#{warn}
+            失败数：#{fail}
+            测试通过率：#{rate}%
+            详细统计：[点击查看](#{url})""");
     Expression templateDeviceMessage = RobotMessenger.parseTemplate("""
-            **Sonic设备高温${errorType == 1 ? '预警' : '超时，已关机！'}**
-            设备序列号：${udId}
-            电池温度：${tem}℃""");
+            **Sonic设备高温#{errorType == 1 ? '预警' : '超时，已关机！'}**
+            设备序列号：#{udId}
+            电池温度：#{tem}℃""");
 
     /**
      * @param restTemplate RestTemplate
