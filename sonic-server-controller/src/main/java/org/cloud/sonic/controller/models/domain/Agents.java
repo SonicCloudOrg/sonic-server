@@ -1,12 +1,10 @@
 package org.cloud.sonic.controller.models.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlCharsetConstant;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlEngineConstant;
+import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.dto.AgentsDTO;
+import org.cloud.sonic.controller.tools.NullableIntArrayTypeHandler;
 
 import java.io.Serializable;
 
@@ -28,7 +27,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("agents")
+@TableName(value = "agents", autoResultMap = true)
 @TableComment("agents表")
 @TableCharset(MySqlCharsetConstant.DEFAULT)
 @TableEngine(MySqlEngineConstant.InnoDB)
@@ -78,14 +77,29 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     @Column(value = "high_temp_time", isNull = false, comment = "highTempTime", defaultValue = "15")
     private Integer highTempTime;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @TableField
     @Column(value = "robot_secret", isNull = false, comment = "机器人秘钥", defaultValue = "")
     private String robotSecret;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @TableField
     @Column(value = "robot_token", isNull = false, comment = "机器人token", defaultValue = "")
     private String robotToken;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @TableField
     @Column(value = "robot_type", isNull = false, comment = "机器人类型", defaultValue = "1")
     private Integer robotType;
@@ -93,4 +107,8 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     @TableField
     @Column(value = "has_hub", isNull = false, comment = "是否使用了Sonic hub", defaultValue = "0")
     private Integer hasHub;
+
+    @TableField(typeHandler = NullableIntArrayTypeHandler.class, updateStrategy = FieldStrategy.IGNORED)
+    @Column(value = "alert_robot_ids", type = MySqlTypeConstant.VARCHAR, length = 1024, comment = "逗号分隔通知机器人id串，为null时自动选取所有可用机器人")
+    private int[] alertRobotIds;
 }

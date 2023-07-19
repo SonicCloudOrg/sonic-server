@@ -53,8 +53,19 @@ public class RobotFactory {
             case RobotType.Telegram -> robotMessenger = context.getBean(TelegramImpl.class);
             case RobotType.LineNotify -> robotMessenger = context.getBean(LineNotifyImpl.class);
             case RobotType.SlackNotify -> robotMessenger = context.getBean(SlackNotifyImpl.class);
+            case RobotType.WebHook -> robotMessenger = context.getBean(WebhookImpl.class);
             default -> throw new SonicException("Unsupported robot type");
         }
         return robotMessenger;
+    }
+
+    public RobotMessenger getRobotMessenger(int robotType, String muteRule, Message message) {
+        if (!muteRule.isEmpty()) {
+            var mute = RobotMessenger.parseTemplate(muteRule).getValue(RobotMessenger.ctx, message, String.class);
+            if ("true".equals(mute)) {
+                return null;
+            }
+        }
+        return getRobotMessenger(robotType);
     }
 }

@@ -32,12 +32,27 @@ public class ProjectsDTO implements Serializable, TypeConverter<ProjectsDTO, Pro
     @Schema(description = "项目描述", required = true, example = "Sonic项目描述")
     String projectDes;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人类型", required = true, example = "1")
     Integer robotType;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人token", required = true, example = "http://dingTalk.com?token=*****")
     String robotToken;
 
+    /**
+     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @deprecated
+     */
+    @Deprecated(forRemoval = true)
     @Schema(description = "机器人加签密钥", required = false, example = "qwe***")
     String robotSecret;
 
@@ -47,6 +62,12 @@ public class ProjectsDTO implements Serializable, TypeConverter<ProjectsDTO, Pro
     @Schema(description = "最后修改日期", example = "2021-08-15 11:23:00")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date editTime;
+
+    @Schema(description = "测试套件默认通知机器人id串，为null时自动选取所有可用机器人", example = "[1,2]")
+    int[] testsuiteAlertRobotIds;
+
+    @Schema(description = "启用全局机器人")
+    Boolean globalRobot;
 
     @Schema(description = "创建人", required = true, example = "liulijun")
     Integer createBy;

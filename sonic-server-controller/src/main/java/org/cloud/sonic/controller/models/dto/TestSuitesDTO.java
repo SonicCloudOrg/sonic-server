@@ -55,4 +55,7 @@ public class TestSuitesDTO implements Serializable, TypeConverter<TestSuitesDTO,
 
     @Schema(description = "指定设备列表")
     List<DevicesDTO> devices;
+
+    @Schema(description = "测试套件默认通知机器人id串，为null时取项目配置的默认值", example = "[1,2]")
+    int[] alertRobotIds;
 }

@@ -17,18 +17,14 @@
  */
 package org.cloud.sonic.controller.tools.robot.vendor;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.sonic.controller.tools.robot.Message;
 import org.cloud.sonic.controller.tools.robot.RobotMessenger;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.expression.Expression;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -41,212 +37,99 @@ import java.util.Map;
 @Service("SlackNotifyImpl")
 public class SlackNotifyImpl implements RobotMessenger {
 
-    //从配置文件获取前端部署的host
-    @Value("${robot.client.host}")
-    private String clientHost;
+    Expression templateTestSuiteMessage = RobotMessenger.parseTemplate("""
+            #{
+            {
+              text: '测试套件:' + suiteName + '运行完毕！',
+              blocks: {
+                { type: 'section',
+                  text: {
+                    type: 'mrkdwn',
+                    text: '*测试套件:' + suiteName + '运行完毕！*
+            通过数：'+pass+'
+            异常数：'+warn+'
+            失败数：'+fail+'
+            测试报告：'+url
+                  }
+                }
+              }
+            }
+            }""");
+    Expression templateProjectSummaryMessage = RobotMessenger.parseTemplate("""
+            #{
+            {
+              text: 'Sonic云真机测试平台'+(isWeekly?'周':'日')+'报',
+              blocks: {
+                { type: 'section',
+                  text: {
+                    type: 'mrkdwn',
+                    text: '*Sonic云真机测试平台'+(isWeekly ? '周': '日')+'报*
+            项目：'+projectName+'
+            时间：'+getFormat().format(startDate)+' ～ '+getFormat().format(endDate)+'
+            共测试：'+total+'次
+            通过数：'+pass+'
+            异常数：'+warn+'
+            失败数：'+fail+'
+            测试通过率：'+rate+'%
+            详细统计：'+url
+                  }
+                }
+              }
+            }
+            }""");
+    Expression templateDeviceMessage = RobotMessenger.parseTemplate("""
+            #{
+            {
+              text: '设备温度异常通知',
+              blocks: {
+                { type: 'section',
+                  text: {
+                    type: 'mrkdwn',
+                    text: '*Sonic设备高温'+(errorType == 1 ? '预警' : '超时，已关机！')+'*
+            设备序列号：'+udId+'
+            电池温度：'+tem+'℃'
+                  }
+                }
+              }
+            }
+            }""");
 
     /**
      * @param restTemplate RestTemplate
      * @param token        机器人token
      * @param secret       机器人密钥
-     * @param jsonObject   通知内容
+     * @param content      通知内容
      * @author young(stephenwang1011)
      * @des SLACK发送测试通知
      * @date 2023/2/14
      */
-    private void signAndSend(RestTemplate restTemplate, String token, String secret, JSONObject jsonObject) {
-        clientHost = clientHost.replace(":80/", "/");
+    private void signAndSend(RestTemplate restTemplate, String token, String secret, Object content) {
         try {
-            ResponseEntity<JSONObject> responseEntity =
-                    restTemplate.postForEntity(token, jsonObject, JSONObject.class);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(token, content, String.class);
             log.info("robot result: " + responseEntity.getBody());
         } catch (Exception e) {
             log.warn("robot send failed, cause: " + e.getMessage());
         }
     }
 
-    /**
-     * @param restTemplate RestTemplate
-     * @param token        机器人token
-     * @param secret       机器人密钥
-     * @param suiteName    套件名称
-     * @param passCount    通过数量
-     * @param warnCount    警告数量
-     * @param failCount    失败数量
-     * @param projectId    项目id
-     * @param resultId     结果id
-     * @return void
-     * @author young(stephenwang1011)
-     * @des 发送每次测试结果到SLACK
-     * @date 2023/2/14
-     */
     @Override
-    public void sendResultFinishReport(RestTemplate restTemplate, String token, String secret, String suiteName, int passCount, int warnCount, int failCount, int projectId, int resultId) {
-        JSONObject slackObjs = new JSONObject(true);
-
-        String reportLink = clientHost + "/Home/" + projectId + "/ResultDetail/" + resultId;
-        SlackMessage slackMessage = new SlackMessage();
-        slackMessage.setType("mrkdwn");
-        slackMessage.setText("*测试套件：" + suiteName + " 运行完毕* \n" +
-                "通过数：" + passCount + "\n" +
-                "异常数：" + warnCount + "\n" +
-                "失败数：" + failCount + "\n" +
-                "测试报告：" + reportLink);
-
-        this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, suiteName);
+    public void sendMessage(RestTemplate restTemplate, String token, String secret, Expression messageTemplate, Message msg) {
+        Map<?, ?> content = messageTemplate.getValue(ctx, msg, Map.class);
+        signAndSend(restTemplate, token, secret, content);
     }
 
-    /**
-     * @param restTemplate RestTemplate
-     * @param token        机器人token
-     * @param secret       机器人密钥
-     * @param projectId    项目id
-     * @param projectName  项目名称
-     * @param yesterday    昨天的起始时间
-     * @param today        今天的起始时间
-     * @return void
-     * @author young(stephenwang1011)
-     * @des 通过slack发送day report
-     * @date 2022/12/20
-     */
     @Override
-    public void sendDayReportMessage(RestTemplate restTemplate, String token, String secret, int projectId, String projectName, String yesterday, String today, int passCount, int warnCount, int failCount) {
-        JSONObject slackObjs = new JSONObject(true);
-
-        int total = passCount + warnCount + failCount;
-        String reportLink = clientHost + "/Home/" + projectId;
-
-        SlackMessage slackMessage = new SlackMessage();
-        slackMessage.setType("mrkdwn");
-        slackMessage.setText("*Sonic云真机测试平台日报* \n" +
-                "项目：" + projectName + "\n" +
-                "时间：" + yesterday + " - " + today + "\n" +
-                "通过数：" + passCount + "\n" +
-                "异常数：" + warnCount + "\n" +
-                "失败数：" + failCount + "\n" +
-                "测试通过率：" + (total > 0 ?
-                new BigDecimal(((float) passCount / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "%\n" +
-                "详细统计：" + reportLink);
-
-        this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, projectName);
-
+    public Expression getDefaultTestSuiteTemplate() {
+        return templateTestSuiteMessage;
     }
 
-
-    /**
-     * @param restTemplate RestTemplate
-     * @param token        机器人token
-     * @param secret       机器人密钥
-     * @param errorType    errorType
-     * @param tem          温度
-     * @param udId         设备Id
-     * @return void
-     * @author young(stephenwang1011)
-     * @des 向slack发送设备错误讯息
-     * @date 2022/12/20
-     */
     @Override
-    public void sendErrorDevice(RestTemplate restTemplate, String token, String secret, int errorType, int tem, String udId) {
-
-        JSONObject slackObjs = new JSONObject(true);
-        SlackMessage slackMessage = new SlackMessage();
-        slackMessage.setType("mrkdwn");
-
-        if (errorType == 1) {
-            slackMessage.setText("*Sonic设备高温预警* \n" +
-                    "设备序列号：" + udId + "\n" +
-                    "电池温度：" + (tem / 10) + "℃");
-
-            //这个是slack消息的通知title
-            slackObjs.put("text", "Sonic设备：" + udId + "温度过高！");
-        } else {
-            slackMessage.setText("*Sonic设备高温超时，已关机* \n" +
-                    "设备序列号：" + udId + "\n" +
-                    "电池温度：" + (tem / 10) + "℃");
-
-            //这个是slack消息的通知title
-            slackObjs.put("text", "Sonic设备：" + udId + "高温超时，已关机");
-        }
-
-        this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, udId);
+    public Expression getDefaultProjectSummaryTemplate() {
+        return templateProjectSummaryMessage;
     }
 
-    /**
-     * @param restTemplate RestTemplate
-     * @param token        机器人token
-     * @param secret       机器人密钥
-     * @param projectId    项目id
-     * @param projectName  项目名称
-     * @param yesterday    昨天的起始时间
-     * @param today        今天的起始时间
-     * @param passCount    通过数量
-     * @param warnCount    警告数量
-     * @param failCount    失败数量
-     * @param count        测试数量
-     * @return void
-     * @author young(stephenwang1011)
-     * @des 发送周报到slack
-     * @date 2022/12/20
-     */
     @Override
-    public void sendWeekReportMessage(RestTemplate restTemplate, String token, String secret, int projectId, String projectName, String yesterday, String today, int passCount, int warnCount, int failCount, int count) {
-        JSONObject slackObjs = new JSONObject(true);
-        int total = passCount + warnCount + failCount;
-        String reportLink = clientHost + "/Home/" + projectId;
-
-        SlackMessage slackMessage = new SlackMessage();
-        slackMessage.setType("mrkdwn");
-        slackMessage.setText("*Sonic云真机测试平台周报* \n" +
-                "项目：" + projectName + "\n" +
-                "时间：" + yesterday + " - " + today + "\n" +
-                "共测试：" + count + "次" + "\n" +
-                "通过数：" + passCount + "\n" +
-                "异常数：" + warnCount + "\n" +
-                "失败数：" + failCount + "\n" +
-                "测试通过率：" + (total > 0 ?
-                new BigDecimal(((float) passCount / total) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue() : 0) + "%\n" +
-                "详细统计：" + reportLink);
-
-        this.slackMessage(slackMessage, restTemplate, token, secret, slackObjs, projectName);
+    public Expression getDefaultDeviceMessageTemplate() {
+        return templateDeviceMessage;
     }
-
-    public void slackMessage(SlackMessage slackMessage, RestTemplate restTemplate, String token, String secret, JSONObject slackObjs, String name) {
-
-        Map<Object, Object> slackMap = new LinkedHashMap<>();
-        slackMap.put("type", "section");
-        slackMap.put("text", slackMessage);
-        JSONArray blocksArray = new JSONArray();
-        blocksArray.add(slackMap);
-
-        //这个是slack消息的通知title
-        slackObjs.put("text", name + "测试完成，请查看!");
-        //这个是slack消息的具体内容
-        slackObjs.put("blocks", blocksArray);
-
-        this.signAndSend(restTemplate, token, secret, slackObjs);
-    }
-
-
-    static class SlackMessage {
-        private String type;
-        private String text;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-    }
-
 }
