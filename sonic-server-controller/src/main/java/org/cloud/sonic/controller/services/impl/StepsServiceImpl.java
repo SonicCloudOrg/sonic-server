@@ -434,6 +434,30 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         }
     }
 
+    @Override
+    public Integer findMaxStepSort(int castId) {
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, castId)
+                .orderByDesc(Steps::getSort)
+                .list();
+        if (stepsList != null && stepsList.size() > 0) {
+            return stepsList.get(0).getSort();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer findNextStepSort(int castId, int targetStepId) {
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, castId)
+                .orderByAsc(Steps::getSort)
+                .list();
+        for (int i = 0; i < stepsList.size(); i++) {
+            if (stepsList.get(i).getId() == targetStepId) {
+                return i == stepsList.size() - 1 ? null : stepsList.get(i + 1).getSort();
+            }
+        }
+        return null;
+    }
 
     /**
      * 记录一组步骤中他们所在的位置；ma
