@@ -161,11 +161,13 @@ public class StepsController {
     @Operation(summary = "复制步骤", description = "测试用例复制其中一个步骤")
     @Parameters(value = {
             @Parameter(name = "id", description = "用例中需要被复制步骤Id"),
+            @Parameter(name = "toLast", description = "是否拷贝用例到最后一行", example = "true"),
     })
     @GetMapping("/copy/steps")
-    public RespModel<String> copyStepsIdByCase(@RequestParam(name = "id") int stepId) {
-        stepsService.copyStepsIdByCase(stepId);
-
+    public RespModel<String> copyStepsIdByCase(@RequestParam(name = "id") int stepId,
+                                               @RequestParam(name = "toLast", defaultValue = "true", required = false)
+                                                       boolean toLast) {
+        stepsService.copyStepsIdByCase(stepId, toLast);
         return new RespModel<>(RespEnum.COPY_OK);
     }
 

@@ -348,8 +348,9 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean copyStepsIdByCase(Integer stepId) {
+    public Boolean copyStepsIdByCase(Integer stepId, boolean toLast) {
         Steps steps = stepsMapper.selectById(stepId);
+        Integer originSortId = steps.getSort();
         StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo(), false);
 
         save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
@@ -406,6 +407,17 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                 //插入的stepId 记录到需要关联步骤的list种
                 n++;
             }
+        }
+        if (!toLast) {
+            // 插入到当前步骤的下一行，需要做特殊的排序逻辑处理
+            StepSort tempStepSort = new StepSort();
+            tempStepSort.setCaseId(steps.getCaseId());
+            tempStepSort.setDirection("up");
+            // 设置start为当前新增的步骤的sort
+            tempStepSort.setStartId(steps.getSort());
+            // 设置end为之前复制出来的步骤的sort
+            tempStepSort.setEndId(originSortId);
+            sortSteps(tempStepSort);
         }
         return true;
     }

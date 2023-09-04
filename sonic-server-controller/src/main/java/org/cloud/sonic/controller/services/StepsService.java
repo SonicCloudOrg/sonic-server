@@ -69,7 +69,7 @@ public interface StepsService extends IService<Steps> {
     CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform, int page, int pageSize,
                                                            String searchContent);
 
-    Boolean copyStepsIdByCase(Integer stepId);
+    Boolean copyStepsIdByCase(Integer stepId, boolean toLast);
 
     Boolean switchStep(int id, int type);
 
