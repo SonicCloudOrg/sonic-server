@@ -348,8 +348,9 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean copyStepsIdByCase(Integer stepId) {
+    public Boolean copyStepsIdByCase(Integer stepId, boolean toLast) {
         Steps steps = stepsMapper.selectById(stepId);
+        Integer originSortId = steps.getSort();
         StepsDTO stepsCopyDTO = stepsService.handleStep(steps.convertTo(), false);
 
         save(steps.setId(null).setSort(stepsMapper.findMaxSort() + 1));
@@ -407,6 +408,17 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                 n++;
             }
         }
+        if (!toLast) {
+            // 插入到当前步骤的下一行，需要做特殊的排序逻辑处理
+            StepSort tempStepSort = new StepSort();
+            tempStepSort.setCaseId(steps.getCaseId());
+            tempStepSort.setDirection("up");
+            // 设置start为当前新增的步骤的sort
+            tempStepSort.setStartId(steps.getSort());
+            // 设置end为之前复制出来的步骤的sort
+            tempStepSort.setEndId(originSortId);
+            sortSteps(tempStepSort);
+        }
         return true;
     }
 
@@ -422,6 +434,30 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         }
     }
 
+    @Override
+    public Integer findMaxStepSort(int castId) {
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, castId)
+                .orderByDesc(Steps::getSort)
+                .list();
+        if (stepsList != null && stepsList.size() > 0) {
+            return stepsList.get(0).getSort();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer findNextStepSort(int castId, int targetStepId) {
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, castId)
+                .orderByAsc(Steps::getSort)
+                .list();
+        for (int i = 0; i < stepsList.size(); i++) {
+            if (stepsList.get(i).getId() == targetStepId) {
+                return i == stepsList.size() - 1 ? null : stepsList.get(i + 1).getSort();
+            }
+        }
+        return null;
+    }
 
     /**
      * 记录一组步骤中他们所在的位置；ma

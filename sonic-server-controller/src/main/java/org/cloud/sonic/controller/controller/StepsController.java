@@ -161,11 +161,13 @@ public class StepsController {
     @Operation(summary = "复制步骤", description = "测试用例复制其中一个步骤")
     @Parameters(value = {
             @Parameter(name = "id", description = "用例中需要被复制步骤Id"),
+            @Parameter(name = "toLast", description = "是否拷贝用例到最后一行", example = "true"),
     })
     @GetMapping("/copy/steps")
-    public RespModel<String> copyStepsIdByCase(@RequestParam(name = "id") int stepId) {
-        stepsService.copyStepsIdByCase(stepId);
-
+    public RespModel<String> copyStepsIdByCase(@RequestParam(name = "id") int stepId,
+                                               @RequestParam(name = "toLast", defaultValue = "true", required = false)
+                                                       boolean toLast) {
+        stepsService.copyStepsIdByCase(stepId, toLast);
         return new RespModel<>(RespEnum.COPY_OK);
     }
 
@@ -182,6 +184,35 @@ public class StepsController {
         } else {
             return new RespModel(RespEnum.SEARCH_FAIL);
         }
+    }
+
+    @WebAspect
+    @Operation(summary = "将新增的步骤排序到指定的步骤之前或之后", description = "将当前用例的最后一个步骤拖拽到指定步骤之前或之后")
+    @GetMapping("/stepSortTarget")
+    public RespModel<String> stepSortTarget(@RequestParam(name = "targetStepId") int targetStepId,
+                                            @RequestParam(name = "addToTargetNext", defaultValue = "false")
+                                                    boolean addToTargetNext) {
+        StepsDTO stepsDTO = stepsService.findById(targetStepId);
+        StepSort stepSort = new StepSort();
+        stepSort.setDirection("up");
+        stepSort.setCaseId(stepsDTO.getCaseId());
+        // startId 要设置为当前用例中最大的sort
+        Integer maxStepSort = stepsService.findMaxStepSort(stepsDTO.getCaseId());
+        stepSort.setStartId(maxStepSort);
+        // endId 取决于添加到目标step的前面，还是目标step的后面
+        if (addToTargetNext) {
+            Integer nextStepSort = stepsService.findNextStepSort(stepsDTO.getCaseId(), targetStepId);
+            if (nextStepSort == null) {
+                // 已经是最后一个step了，直接返回
+                return new RespModel<>(RespEnum.UPDATE_OK);
+            } else {
+                stepSort.setEndId(nextStepSort);
+            }
+        } else {
+            stepSort.setEndId(stepsDTO.getSort());
+        }
+        stepsService.sortSteps(stepSort);
+        return new RespModel<>(RespEnum.UPDATE_OK);
     }
 
 }

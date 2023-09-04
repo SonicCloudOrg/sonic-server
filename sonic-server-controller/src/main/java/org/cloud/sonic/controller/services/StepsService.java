@@ -69,9 +69,27 @@ public interface StepsService extends IService<Steps> {
     CommentPage<StepsDTO> searchFindByProjectIdAndPlatform(int projectId, int platform, int page, int pageSize,
                                                            String searchContent);
 
-    Boolean copyStepsIdByCase(Integer stepId);
+    Boolean copyStepsIdByCase(Integer stepId, boolean toLast);
 
     Boolean switchStep(int id, int type);
 
     List<PublicStepsAndStepsIdDTO> stepAndIndex(List<StepsDTO> needAllCopySteps);
+
+    /**
+     * 找到指定用例中最后一个步骤的sort
+     *
+     * @param castId 用例的id
+     * @return 最后一个步骤的sort
+     */
+    Integer findMaxStepSort(int castId);
+
+    /**
+     * 找到指定用例的指定步骤，下一个step的sort值
+     *
+     * @param castId       目标用例
+     * @param targetStepId 目标步骤id
+     * @return 下一个step的sort值
+     */
+    Integer findNextStepSort(int castId, int targetStepId);
+
 }
