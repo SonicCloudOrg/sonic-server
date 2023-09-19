@@ -61,9 +61,10 @@ public class FileTool {
             folder.mkdirs();
         }
         //防止文件重名
+        final String nombre = file.getOriginalFilename();
+        final int p = nombre.lastIndexOf(".");
         File local = new File(folder.getPath() + File.separator +
-                UUID.randomUUID() + file.getOriginalFilename()
-                .substring(file.getOriginalFilename().lastIndexOf(".")));
+                UUID.randomUUID() + (p>=0 ? nombre.substring(p) : nombre));
         try {
             file.transferTo(local.getAbsoluteFile());
         } catch (FileAlreadyExistsException e) {
@@ -81,9 +82,10 @@ public class FileTool {
             folder.mkdirs();
         }
         //防止文件重名
+        final String nombre = file.getOriginalFilename();
+        final int p = nombre.lastIndexOf(".");
         File local = new File(folder.getPath() + File.separator +
-                UUID.randomUUID() + file.getOriginalFilename()
-                .substring(file.getOriginalFilename().lastIndexOf(".")));
+                UUID.randomUUID() + (p>=0 ? nombre.substring(p) : nombre));
         try {
             file.transferTo(local.getAbsoluteFile());
         } catch (FileAlreadyExistsException e) {
