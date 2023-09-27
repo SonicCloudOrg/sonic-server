@@ -165,6 +165,10 @@ public class ResultsServiceImpl extends SonicServiceImpl<ResultsMapper, Results>
                     jsonObject.put("status", status);
                     jsonObject.put("device", device);
                     result.add(jsonObject);
+                    // 按照执行开始时间排序 - 升序
+                    result.sort(Comparator.comparing(
+                            obj -> ((JSONObject) obj).getDate("startTime"))
+                    );
                 }
                 return result;
             } else {
