@@ -15,8 +15,9 @@ import java.util.List;
  * @date 2021/8/20 17:51
  */
 public interface TestCasesService extends IService<TestCases> {
-    CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
-                                      String idSort, String designerSort, String editTimeSort);
+    CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds,
+                                      List<String> caseAuthorNames, Page<TestCases> pageable,
+                                      String idSort, String editTimeSort);
 
     List<TestCases> findAll(int projectId, int platform);
 

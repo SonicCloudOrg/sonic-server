@@ -59,10 +59,10 @@ public class TestCasesController {
             @Parameter(name = "platform", description = "平台类型"),
             @Parameter(name = "name", description = "用例名称"),
             @Parameter(name = "moduleIds", description = "模块Id"),
+            @Parameter(name = "caseAuthorNames", description = "用例作者列表"),
             @Parameter(name = "page", description = "页码"),
             @Parameter(name = "pageSize", description = "页数据大小"),
             @Parameter(name = "idSort", description = "控制id排序方式"),
-            @Parameter(name = "designerSort", description = "控制designer排序方式"),
             @Parameter(name = "editTimeSort", description = "控制editTime排序方式")
 
     })
@@ -71,15 +71,16 @@ public class TestCasesController {
                                                         @RequestParam(name = "platform") int platform,
                                                         @RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
+                                                        @RequestParam(name = "caseAuthorNames[]", required = false) List<String> caseAuthorNames,
                                                         @RequestParam(name = "page") int page,
                                                         @RequestParam(name = "pageSize") int pageSize,
                                                         @RequestParam(name = "idSort", required = false) String idSort,
-                                                        @RequestParam(value = "designerSort", required = false) String designerSort,
                                                         @RequestParam(value = "editTimeSort", required = false) String editTimeSort) {
         Page<TestCases> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                testCasesService.findAll(projectId, platform, name, moduleIds, pageable, idSort, designerSort, editTimeSort)
+                testCasesService.findAll(projectId, platform, name, moduleIds, caseAuthorNames,
+                        pageable, idSort, editTimeSort)
         );
     }
 
