@@ -167,4 +167,19 @@ public class TestCasesController {
         testCasesService.copyTestById(id);
         return new RespModel<>(RespEnum.COPY_OK);
     }
+
+    @WebAspect
+    @Operation(summary = "查询用例所有的作者列表", description = "查找对应项目id下对应平台的所有作者列表")
+    @Parameters(value = {
+            @Parameter(name = "projectId", description = "项目id"),
+            @Parameter(name = "platform", description = "平台类型"),
+    })
+    @GetMapping("/listAllCaseAuthor")
+    public RespModel<List<String>> findAllCaseAuthor(@RequestParam(name = "projectId") int projectId,
+                                                     @RequestParam(name = "platform") int platform) {
+        return new RespModel<>(
+                RespEnum.SEARCH_OK,
+                testCasesService.findAllCaseAuthor(projectId, platform)
+        );
+    }
 }

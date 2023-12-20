@@ -286,5 +286,10 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
         }
         return true;
     }
+
+    @Override
+    public List<String> findAllCaseAuthor(int projectId, int platform) {
+        return testCasesMapper.listAllTestCaseAuthor(projectId, platform);
+    }
 }
 
