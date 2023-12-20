@@ -66,20 +66,22 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
     private ModulesMapper modulesMapper;
 
     @Override
-    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds, Page<TestCases> pageable,
-                                             String idSort, String designerSort, String editTimeSort) {
+    public CommentPage<TestCasesDTO> findAll(int projectId, int platform, String name, List<Integer> moduleIds,
+                                             List<String> caseAuthorNames,
+                                             Page<TestCases> pageable,
+                                             String idSort, String editTimeSort) {
 
         LambdaQueryChainWrapper<TestCases> lambdaQuery = lambdaQuery();
 
         lambdaQuery.eq(projectId != 0, TestCases::getProjectId, projectId)
                 .eq(platform != 0, TestCases::getPlatform, platform)
                 .in(moduleIds != null && moduleIds.size() > 0, TestCases::getModuleId, moduleIds)
+                .in(caseAuthorNames != null && caseAuthorNames.size() > 0, TestCases::getDesigner, caseAuthorNames)
                 .like(!StringUtils.isEmpty(name), TestCases::getName, name)
-                .orderByDesc(StringUtils.isEmpty(editTimeSort) && StringUtils.isEmpty(idSort) && StringUtils.isEmpty(designerSort),
+                .orderByDesc(StringUtils.isEmpty(editTimeSort) && StringUtils.isEmpty(idSort),
                         TestCases::getEditTime)
                 .orderBy(!StringUtils.isEmpty(editTimeSort), "asc".equals(editTimeSort), TestCases::getEditTime)
-                .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId)
-                .orderBy(!StringUtils.isEmpty(designerSort), "asc".equals(designerSort), TestCases::getDesigner);
+                .orderBy(!StringUtils.isEmpty(idSort), "asc".equals(idSort), TestCases::getId);
 
         //写入对应模块信息
         Page<TestCases> page = lambdaQuery.page(pageable);
@@ -285,6 +287,11 @@ public class TestCasesServiceImpl extends SonicServiceImpl<TestCasesMapper, Test
             save(testCases.setModuleId(0));
         }
         return true;
+    }
+
+    @Override
+    public List<String> findAllCaseAuthor(int projectId, int platform) {
+        return testCasesMapper.listAllTestCaseAuthor(projectId, platform);
     }
 }
 

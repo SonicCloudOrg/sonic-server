@@ -22,4 +22,7 @@ public interface TestCasesMapper extends BaseMapper<TestCases> {
             "where tstc.test_suites_id = #{suiteId} " +
             "order by tstc.sort asc")
     List<TestCases> listByTestSuitesId(@Param("suiteId") int suiteId);
+
+    @Select("select DISTINCT designer from test_cases WHERE project_id= #{projectId} and platform= #{platform}")
+    List<String> listAllTestCaseAuthor(@Param("projectId") int projectId, @Param("platform") int platform);
 }
