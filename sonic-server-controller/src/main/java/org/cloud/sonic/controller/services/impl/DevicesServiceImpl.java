@@ -190,7 +190,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         if (androidVersion != null || iOSVersion != null || hmVersion != null) {
             chainWrapper.and(i -> {
                 if (androidVersion != null) {
-                    i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 0)
+                    i.or().eq(Devices::getPlatform, PlatformType.ANDROID).eq(Devices::getIsHm, 0)
                             .and(j -> {
                                 for (String v : androidVersion) {
                                     j.or().likeRight(Devices::getVersion, v);
@@ -198,14 +198,14 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                             });
                 }
                 if (iOSVersion != null) {
-                    i.or().eq(Devices::getPlatform, 2).and(j -> {
+                    i.or().eq(Devices::getPlatform, PlatformType.IOS).and(j -> {
                         for (String v : iOSVersion) {
                             j.or().likeRight(Devices::getVersion, v);
                         }
                     });
                 }
                 if (hmVersion != null) {
-                    i.or().eq(Devices::getPlatform, 1).eq(Devices::getIsHm, 1)
+                    i.or().eq(Devices::getPlatform, PlatformType.ANDROID).eq(Devices::getIsHm, 1)
                             .and(j -> {
                                 for (String v : hmVersion) {
                                     j.or().likeRight(Devices::getVersion, v);
@@ -236,10 +236,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         }
 
         if (StringUtils.hasText(deviceInfo)) {
-            chainWrapper.like(Devices::getUdId, deviceInfo)
-                    .or().like(Devices::getModel, deviceInfo)
-                    .or().like(Devices::getChiName, deviceInfo)
-                    .or().like(Devices::getNickName, deviceInfo);
+        	chainWrapper.and(q -> {
+        		q.like(Devices::getUdId, deviceInfo).or().like(Devices::getModel, deviceInfo).or().like(Devices::getNickName, deviceInfo).or().like(Devices::getChiName, deviceInfo);
+        	});
         }
 
         chainWrapper.last("order by case\n" +
