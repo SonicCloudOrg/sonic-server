@@ -21,6 +21,7 @@ import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,19 @@ public class BytesTool {
                 session.getBasicRemote().sendText(message);
             } catch (IllegalStateException | IOException e) {
                 log.error("WebSocket send msg failed...");
+            }
+        }
+    }
+
+    public static void sendByte(Session session, ByteBuffer message) {
+        if (session == null || !session.isOpen()) {
+            return;
+        }
+        synchronized (session) {
+            try {
+                session.getBasicRemote().sendBinary(message);
+            } catch (IllegalStateException | IOException e) {
+                log.error("WebSocket send msg error...connection has been closed.");
             }
         }
     }
