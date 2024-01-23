@@ -91,6 +91,9 @@ services:
     environment:
       - SONIC_SERVER_HOST
       - SONIC_SERVER_PORT
+      - SONIC_SERVER_HTTPS
+    volumes:
+      - ./certs:/etc/nginx/certs
     networks:
       - sonic-network
     depends_on:
