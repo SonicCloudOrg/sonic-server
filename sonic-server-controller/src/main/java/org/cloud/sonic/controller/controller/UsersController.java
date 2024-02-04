@@ -143,12 +143,14 @@ public class UsersController {
     @GetMapping("/list")
     @Parameters(value = {
             @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "每页请求数量"),
             @Parameter(name = "userName", description = "角色名称"),
 
     })
-    public RespModel<CommentPage<UsersDTO>> listResources(@RequestParam(name = "page") int page
-            , @RequestParam(name = "userName", required = false) String userName) {
-        Page<Users> pageable = new Page<>(page, 20);
+    public RespModel<CommentPage<UsersDTO>> listResources(@RequestParam(name = "page") int page,
+                                                          @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize,
+                                                          @RequestParam(name = "userName", required = false) String userName) {
+        Page<Users> pageable = new Page<>(page, pageSize);
 
         return RespModel.result(RespEnum.SEARCH_OK, usersService.listUsers(pageable, userName));
     }

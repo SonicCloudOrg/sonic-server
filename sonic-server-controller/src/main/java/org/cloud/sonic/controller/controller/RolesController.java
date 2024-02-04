@@ -31,14 +31,16 @@ public class RolesController {
     @GetMapping("/list")
     @Parameters(value = {
             @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "每页请求数量"),
             @Parameter(name = "isAll", description = "是否全部"),
             @Parameter(name = "roleName", description = "角色名称"),
 
     })
     public RespModel<CommentPage<RolesDTO>> listResources(@RequestParam(name = "page") int page,
+                                                          @RequestParam(name = "pageSize", required = false, defaultValue = "20") int pageSize,
                                                           @RequestParam(name = "isAll", required = false) boolean isAll,
                                                           @RequestParam(name = "roleName", required = false) String roleName) {
-        Page<Roles> pageable = new Page<>(page, 20);
+        Page<Roles> pageable = new Page<>(page, pageSize);
         if (isAll) {
             pageable.setSize(1000L);
         }

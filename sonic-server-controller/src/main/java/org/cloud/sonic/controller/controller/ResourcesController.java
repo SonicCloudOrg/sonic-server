@@ -34,11 +34,13 @@ public class ResourcesController {
     @Operation(summary = "查询所有资源连接", description = "查询所有资源连接")
     @GetMapping("/list")
     @Parameters(value = {
-            @Parameter(name = "page", description = "页码")
+            @Parameter(name = "page", description = "页码"),
+            @Parameter(name = "pageSize", description = "每页请求数量")
     })
     public RespModel<CommentPage<ResourcesDTO>> listResources(@RequestParam(name = "page") int page,
+                                                              @RequestParam(name = "pageSize") int pageSize,
                                                               @RequestParam(name = "path", required = false) String path) {
-        Page<Resources> pageable = new Page<>(page, 20);
+        Page<Resources> pageable = new Page<>(page, pageSize);
 
         return RespModel.result(RespEnum.SEARCH_OK, resourcesService.listResource(pageable, path, false));
     }
@@ -48,7 +50,7 @@ public class ResourcesController {
     @PostMapping("/refresh")
     public RespModel<CommentPage<ResourcesDTO>> refreshResources() {
         resourcesService.init();
-        return listResources(1, null);
+        return listResources(1, 20, null);
     }
 
 
