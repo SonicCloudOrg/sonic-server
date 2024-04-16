@@ -50,4 +50,8 @@ public class GlobalParams implements Serializable, TypeConverter<GlobalParams, G
     @Column(value = "project_id", isNull = false, comment = "所属项目id")
     @Index(value = "IDX_PROJECT_ID", columns = {"project_id"})
     private Integer projectId;
+
+    @TableField
+    @Column(value = "descriptions", isNull = true, comment = "参数描述")
+    private String descriptions;
 }
