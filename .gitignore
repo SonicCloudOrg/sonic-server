@@ -19,6 +19,7 @@
 .gitignore
  /sonic-server-common/src/main/*
 sonic-server-common/src/main/resources/application-jdbc.yml
+/sonic-server-common/src/main/resources/
 
 
 
