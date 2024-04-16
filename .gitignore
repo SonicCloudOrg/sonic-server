@@ -13,3 +13,6 @@
 /recordFiles/
 /packageFiles/
 /sonic-server-controller/logs/
+/node_modules
+*/resources
+
