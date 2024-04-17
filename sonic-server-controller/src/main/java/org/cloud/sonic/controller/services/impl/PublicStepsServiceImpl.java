@@ -75,7 +75,6 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
                 .eq(projectId !=0,PublicSteps::getProjectId, projectId)
                 .eq(!StringUtils.isEmpty(id), PublicSteps::getId,id)
                 .like(!StringUtils.isEmpty(name), PublicSteps::getName, name)
-                //.orderBy(!StringUtils.isEmpty(idSort), "desc".equals(idSort), PublicSteps::getId)
                 .orderByDesc(PublicSteps::getId)
                 .page(pageable);
 
