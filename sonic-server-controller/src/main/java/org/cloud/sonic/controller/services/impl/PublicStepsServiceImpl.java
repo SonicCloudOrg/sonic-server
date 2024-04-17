@@ -25,6 +25,7 @@ import org.cloud.sonic.controller.models.base.TypeConverter;
 import org.cloud.sonic.controller.models.domain.PublicSteps;
 import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
 import org.cloud.sonic.controller.models.domain.Steps;
+import org.cloud.sonic.controller.models.domain.TestCases;
 import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
 import org.cloud.sonic.controller.models.dto.PublicStepsDTO;
 import org.cloud.sonic.controller.models.dto.StepsDTO;
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +70,12 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
 
     @Transactional
     @Override
-    public CommentPage<PublicStepsDTO> findByProjectId(int projectId, Page<PublicSteps> pageable) {
-        Page<PublicSteps> page = lambdaQuery().eq(PublicSteps::getProjectId, projectId)
+    public CommentPage<PublicStepsDTO> findByProjectId(int projectId,String name, String id, Page<PublicSteps> pageable) {
+        Page<PublicSteps> page = lambdaQuery()
+                .eq(projectId !=0,PublicSteps::getProjectId, projectId)
+                .eq(!StringUtils.isEmpty(id), PublicSteps::getId,id)
+                .like(!StringUtils.isEmpty(name), PublicSteps::getName, name)
+                //.orderBy(!StringUtils.isEmpty(idSort), "desc".equals(idSort), PublicSteps::getId)
                 .orderByDesc(PublicSteps::getId)
                 .page(pageable);
 
@@ -84,11 +90,11 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
     }
 
     @Override
-    public List<Map<String, Object>> findByProjectIdAndPlatform(int projectId, int platform) {
+    public List<Map<String, Object>> findByProjectIdAndPlatform(int projectId,int platform) {
         LambdaQueryWrapper<PublicSteps> lqw = new LambdaQueryWrapper<>();
         lqw.eq(PublicSteps::getPlatform, platform)
-             //.eq(PublicSteps::getProjectId, projectId)
-                .select(PublicSteps::getId, PublicSteps::getName);
+                .eq(projectId !=0,PublicSteps::getProjectId, projectId)
+                .eq(platform !=0, PublicSteps::getPlatform,platform);
         return publicStepsMapper.selectMaps(lqw);
     }
 

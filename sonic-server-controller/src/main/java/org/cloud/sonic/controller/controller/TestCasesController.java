@@ -67,8 +67,8 @@ public class TestCasesController {
 
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId") int projectId,
-                                                        @RequestParam(name = "platform") int platform,
+    public RespModel<CommentPage<TestCasesDTO>> findAll(@RequestParam(name = "projectId", required = false) int projectId,
+                                                        @RequestParam(name = "platform", required = false) int platform,
                                                         @RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "moduleIds[]", required = false) List<Integer> moduleIds,
                                                         @RequestParam(name = "caseAuthorNames[]", required = false) List<String> caseAuthorNames,
