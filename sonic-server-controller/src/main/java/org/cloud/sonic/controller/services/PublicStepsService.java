@@ -15,9 +15,9 @@ import java.util.Map;
  * @date 2021/8/20 17:51
  */
 public interface PublicStepsService extends IService<PublicSteps> {
-    CommentPage<PublicStepsDTO> findByProjectId(int projectId, Page<PublicSteps> pageable);
+    CommentPage<PublicStepsDTO> findByProjectId(int projectId,String name, String id,Page<PublicSteps> pageable);
 
-    List<Map<String, Object>> findByProjectIdAndPlatform(int projectId, int platform);
+    List<Map<String, Object>> findByProjectIdAndPlatform(int projectId,int platform);
 
     PublicStepsDTO savePublicSteps(PublicStepsDTO publicStepsDTO);
 

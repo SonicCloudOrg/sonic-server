@@ -56,13 +56,15 @@ public class PublicStepsController {
             @Parameter(name = "pageSize", description = "页数据大小")
     })
     @GetMapping("/list")
-    public RespModel<CommentPage<PublicStepsDTO>> findByProjectId(@RequestParam(name = "projectId") int projectId,
+    public RespModel<CommentPage<PublicStepsDTO>> findByProjectId(@RequestParam(name = "projectId" ,required = false) int projectId,
+                                                                  @RequestParam(name = "name", required = false) String name,
+                                                                  @RequestParam(name = "id", required = false) String id,
                                                                   @RequestParam(name = "page") int page,
                                                                   @RequestParam(name = "pageSize") int pageSize) {
         Page<PublicSteps> pageable = new Page<>(page, pageSize);
         return new RespModel<>(
                 RespEnum.SEARCH_OK,
-                publicStepsService.findByProjectId(projectId, pageable)
+                publicStepsService.findByProjectId(projectId, name,  id,   pageable)
         );
     }
 
@@ -73,8 +75,9 @@ public class PublicStepsController {
             @Parameter(name = "platform", description = "平台"),
     })
     @GetMapping("/findNameByProjectId")
-    public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId") int projectId,
-                                                                @RequestParam(name = "platform") int platform) {
+    public RespModel<List<Map<String, Object>>> findByProjectId(@RequestParam(name = "projectId" ) int projectId,
+                                                                @RequestParam(name = "platform" ) int platform
+                                                            ) {
         return new RespModel<>(RespEnum.SEARCH_OK, publicStepsService.findByProjectIdAndPlatform(projectId, platform));
     }
 

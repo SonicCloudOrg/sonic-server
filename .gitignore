@@ -13,3 +13,13 @@
 /recordFiles/
 /packageFiles/
 /sonic-server-controller/logs/
+/node_modules
+*/resources
+ /sonic-server-common/src/main/resources/application-jdbc.yml
+.gitignore
+ /sonic-server-common/src/main/*
+sonic-server-common/src/main/resources/application-jdbc.yml
+/sonic-server-common/src/main/resources/
+
+
+

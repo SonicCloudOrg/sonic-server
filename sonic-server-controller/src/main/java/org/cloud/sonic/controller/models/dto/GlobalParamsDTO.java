@@ -35,4 +35,8 @@ public class GlobalParamsDTO implements Serializable, TypeConverter<GlobalParams
     @NotBlank
     @Schema(description = "参数值", required = true, example = "123456789")
     String paramsValue;
+
+
+    @Schema(description = "参数描述", required = true, example = "描述")
+    String descriptions;
 }
