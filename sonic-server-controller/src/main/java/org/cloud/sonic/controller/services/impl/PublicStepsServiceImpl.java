@@ -246,4 +246,21 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         }
     }
 
+    @Override
+    public boolean checkPublicStepRecursion(PublicStepsDTO publicStepsDTO) {
+        if (publicStepsDTO.getId() == null) {
+            return false;
+        }
+        if (publicStepsDTO.getSteps() != null && publicStepsDTO.getSteps().size() > 0) {
+            for (StepsDTO curStepsDTO : publicStepsDTO.getSteps()) {
+                if (curStepsDTO.getStepType().equals("publicStep")) {
+                    String curText = curStepsDTO.getText();
+                    if (publicStepsDTO.getId().toString().equals(curText)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

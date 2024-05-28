@@ -82,6 +82,9 @@ public class PublicStepsController {
     @Operation(summary = "更新公共步骤信息", description = "新增或更新公共步骤信息")
     @PutMapping
     public RespModel<String> save(@Validated @RequestBody PublicStepsDTO publicStepsDTO) {
+        if (publicStepsService.checkPublicStepRecursion(publicStepsDTO)) {
+            return new RespModel<>(RespEnum.UPDATE_FAIL, "子步骤中存在对当前公共步骤的引用，请移除掉相关步骤");
+        }
         return new RespModel(RespEnum.UPDATE_OK, publicStepsService.savePublicSteps(publicStepsDTO));
     }
 

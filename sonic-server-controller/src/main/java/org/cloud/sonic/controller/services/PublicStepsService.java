@@ -31,4 +31,12 @@ public interface PublicStepsService extends IService<PublicSteps> {
      * 复制公共用例
      */
     void copyPublicSetpsIds(int id);
+
+    /**
+     * 判断公共步骤的子步骤是否存在递归调用的场景
+     *
+     * @param publicStepsDTO 公共步骤bean
+     * @return true表示出现了递归调用
+     */
+    boolean checkPublicStepRecursion(PublicStepsDTO publicStepsDTO);
 }
