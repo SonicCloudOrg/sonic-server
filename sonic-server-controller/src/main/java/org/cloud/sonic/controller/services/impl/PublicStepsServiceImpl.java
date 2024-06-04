@@ -76,10 +76,6 @@ public class PublicStepsServiceImpl extends SonicServiceImpl<PublicStepsMapper, 
         List<PublicStepsDTO> publicStepsDTOList = page.getRecords()
                 .stream().map(TypeConverter::convertTo).collect(Collectors.toList());
 
-        publicStepsDTOList.forEach(
-                e -> e.setSteps(findById(e.getId(), false).getSteps())
-        );
-
         return CommentPage.convertFrom(page, publicStepsDTOList);
     }
 
