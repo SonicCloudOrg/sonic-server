@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.interfaces.JobType;
 import org.cloud.sonic.controller.services.JobsService;
+import org.cloud.sonic.controller.tools.QuartzJobTools;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class QuartzHandler {
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobs.getId() + "").build();
             jobDetail.getJobDataMap().put("id", jobs.getId());
             jobDetail.getJobDataMap().put("type", JobType.TEST_JOB);
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobs.getCronExpression())
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(QuartzJobTools.validateOrDisableCronExpression(jobs.getCronExpression()))
                     .withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(jobs.getId() + "").withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
@@ -134,7 +135,7 @@ public class QuartzHandler {
         try {
             TriggerKey triggerKey = TriggerKey.triggerKey(jobs.getId() + "");
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(jobs.getCronExpression())
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(QuartzJobTools.validateOrDisableCronExpression(jobs.getCronExpression()))
                     .withMisfireHandlingInstructionDoNothing();
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
             scheduler.rescheduleJob(triggerKey, trigger);
@@ -238,7 +239,7 @@ public class QuartzHandler {
                     }
                     break;
             }
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(QuartzJobTools.validateOrDisableCronExpression(cron))
                     .withMisfireHandlingInstructionDoNothing();
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(type).withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
