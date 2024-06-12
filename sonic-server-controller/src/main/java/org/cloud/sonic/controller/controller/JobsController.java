@@ -31,6 +31,8 @@ import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.domain.Jobs;
 import org.cloud.sonic.controller.models.dto.JobsDTO;
 import org.cloud.sonic.controller.services.JobsService;
+import org.cloud.sonic.controller.tools.QuartzJobTools;
+import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -120,9 +122,14 @@ public class JobsController {
             @Parameter(name = "type", description = "类型"),
             @Parameter(name = "cron", description = "cron表达式")
     })
+    
     @PutMapping("/updateSysJob")
     public RespModel updateSysJob(@RequestBody JSONObject jsonObject) {
-        jobsService.updateSysJob(jsonObject.getString("type"), jsonObject.getString("cron"));
+    	final String cron = QuartzJobTools.validateOrDisableCronExpression(jsonObject.getString("cron"));
+    	if (!CronExpression.isValidExpression(cron)) { // https://stackoverflow.com/a/2363119/12857692
+    		return new RespModel<>(RespEnum.PARAMS_NOT_VALID);
+    	}
+        jobsService.updateSysJob(jsonObject.getString("type"), cron);
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 }
