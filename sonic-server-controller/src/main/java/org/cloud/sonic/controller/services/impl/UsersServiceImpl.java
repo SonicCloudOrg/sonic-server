@@ -19,6 +19,7 @@ package org.cloud.sonic.controller.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.annotation.Resource;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.common.http.RespEnum;
 import org.cloud.sonic.common.http.RespModel;
@@ -36,7 +37,6 @@ import org.cloud.sonic.controller.services.UsersService;
 import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.ldap.core.LdapTemplate;
@@ -61,13 +61,13 @@ import java.util.stream.Collectors;
 public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> implements UsersService {
     private final Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
 
-    @Autowired
+    @Resource
     private JWTTokenTool jwtTokenTool;
 
-    @Autowired
+    @Resource
     private UsersMapper usersMapper;
 
-    @Autowired
+    @Resource
     private RolesServices rolesServices;
 
     @Value("${sonic.user.ldap.enable}")
@@ -88,7 +88,7 @@ public class UsersServiceImpl extends SonicServiceImpl<UsersMapper, Users> imple
     @Value("${sonic.user.ldap.objectClass}")
     private String objectClass;
 
-    @Autowired
+    @Resource
     @Lazy
     private LdapTemplate ldapTemplate;
 

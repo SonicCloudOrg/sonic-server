@@ -3,6 +3,7 @@ package org.cloud.sonic.controller.services;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.controller.models.domain.Projects;
+import org.cloud.sonic.controller.models.domain.Users;
 
 import java.util.List;
 
@@ -18,4 +19,8 @@ public interface ProjectsService extends IService<Projects> {
     List<Projects> findAll();
 
     void delete(int id) throws SonicException;
+
+    List<Projects> findProjectsByToken(String token);
+
+    void saveProject(Projects projects, Users users) throws SonicException;
 }
