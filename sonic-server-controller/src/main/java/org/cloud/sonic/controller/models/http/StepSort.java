@@ -20,6 +20,36 @@ public class StepSort implements Serializable {
     @Positive
     @Schema(description = "移动后被影响的最后一个步骤sort序号", required = true, example = "9")
     private int endId;
+    @Schema(description = "移动步骤发生分组更改的新parentId", required = false, example = "1")
+    private Integer newParentId;
+    @Schema(description = "更换分组后在新分组中新的index", required = false, example = "1")
+    private Integer newIndex;
+    @Schema(description = "移动步骤的sort序号", required = false, example = "1")
+    private Integer thisSort;
+
+    public Integer getThisSort() {
+        return thisSort;
+    }
+
+    public void setThisSort(Integer thisSort) {
+        this.thisSort = thisSort;
+    }
+
+    public Integer getNewIndex() {
+        return newIndex;
+    }
+
+    public void setNewIndex(Integer newIndex) {
+        this.newIndex = newIndex;
+    }
+
+    public Integer getNewParentId() {
+        return newParentId;
+    }
+
+    public void setNewParentId(Integer newParentId) {
+        this.newParentId = newParentId;
+    }
 
     public int getCaseId() {
         return caseId;
@@ -60,6 +90,9 @@ public class StepSort implements Serializable {
                 ", direction='" + direction + '\'' +
                 ", startId=" + startId +
                 ", endId=" + endId +
+                ", newParentId=" + newParentId +
+                ", newIndex=" + newIndex +
+                ", thisSort=" + thisSort +
                 '}';
     }
 }
