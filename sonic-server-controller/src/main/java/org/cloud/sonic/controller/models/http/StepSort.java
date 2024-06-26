@@ -24,15 +24,15 @@ public class StepSort implements Serializable {
     private Integer newParentId;
     @Schema(description = "更换分组后在新分组中新的index", required = false, example = "1")
     private Integer newIndex;
-    @Schema(description = "移动步骤的sort序号", required = false, example = "1")
-    private Integer thisSort;
+    @Schema(description = "被移动步骤的主键id", required = false, example = "1")
+    private Integer stepsId;
 
-    public Integer getThisSort() {
-        return thisSort;
+    public Integer getStepsId() {
+        return stepsId;
     }
 
-    public void setThisSort(Integer thisSort) {
-        this.thisSort = thisSort;
+    public void setStepsId(Integer stepsId) {
+        this.stepsId = stepsId;
     }
 
     public Integer getNewIndex() {
@@ -92,7 +92,7 @@ public class StepSort implements Serializable {
                 ", endId=" + endId +
                 ", newParentId=" + newParentId +
                 ", newIndex=" + newIndex +
-                ", thisSort=" + thisSort +
+                ", stepsId=" + stepsId +
                 '}';
     }
 }

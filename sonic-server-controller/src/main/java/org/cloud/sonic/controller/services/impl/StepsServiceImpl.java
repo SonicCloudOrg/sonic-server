@@ -281,32 +281,37 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
         saveOrUpdateBatch(stepsList);
     }
 
+    /**
+     *  拖拽步骤顺序，步骤所在分组发生变化时，仅对新分组以及移动步骤的sort进行重新排序
+     * @param stepSort
+     * @return
+     */
     private List<Steps> exchangeAddedStepSort(StepSort stepSort) {
-        // 获取case全部步骤
-        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, stepSort.getCaseId()).orderByAsc(Steps::getSort).list();
-        // 移动新分组内的原本存在的子步骤
-        List<Steps> groupStepList = stepsList.stream().filter(steps -> Objects.equals(steps.getParentId(), stepSort.getNewParentId())).collect(Collectors.toList());
+        // 获取新分组的case步骤
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, stepSort.getCaseId()).eq(Steps::getParentId, stepSort.getNewParentId()).list();
         // 被移动的步骤实例
-        Steps movedStep = stepsList.stream().filter(steps -> Objects.equals(steps.getSort(), stepSort.getThisSort())).findFirst().orElse(null);
+        Steps movedStep = lambdaQuery().eq(Steps::getId, stepSort.getStepsId()).eq(Steps::getCaseId, stepSort.getCaseId()).one();
         if(movedStep == null){
-            throw new SonicException("case中未能获取到该Sort: %s", stepSort.getThisSort());
+            throw new SonicException("case中未能获取到该id的数据: %s", stepSort.getStepsId());
         }
         movedStep.setParentId(stepSort.getNewParentId()); // 更新父步骤id
-        groupStepList.add(movedStep); // 添加到组内列表
-        if (groupStepList.size() == 1){
-            // 原本没有子步骤，直接更改父id就好了，不用重新排序
-            stepSort.setEndId(stepSort.getThisSort()) ;
-            stepSort.setStartId(stepSort.getThisSort());
+        stepsList.add(movedStep); // 添加到组内列表
+        if (stepsList.size() == 1){
+            // 原本没有子步骤，直接更改父id就好了，没必要重新排序
+            stepSort.setEndId(movedStep.getSort()) ;
+            stepSort.setStartId(movedStep.getSort());
             stepSort.setDirection("down");
+            return stepsList;
         }else {
-            groupStepList = groupStepList.stream().sorted(Comparator.comparingInt(Steps::getSort)).collect(Collectors.toList()); // 将所有子步骤包含新加入的步骤重新排序
-            if (groupStepList.get(stepSort.getNewIndex()).getSort() >= stepSort.getThisSort()){
+            // 将所有子步骤包含新加入的步骤重新排序，这样就相当于在同一个分组内拖拽排序
+            List<Steps> groupStepList = stepsList.stream().sorted(Comparator.comparingInt(Steps::getSort)).collect(Collectors.toList());
+            if (groupStepList.get(stepSort.getNewIndex()).getSort() >= movedStep.getSort()){
                 stepSort.setDirection("down");
                 stepSort.setStartId(groupStepList.get(stepSort.getNewIndex()).getSort());
-                stepSort.setEndId(stepSort.getThisSort());
+                stepSort.setEndId(movedStep.getSort());
             }else {
                 stepSort.setDirection("up");
-                stepSort.setStartId(stepSort.getThisSort());
+                stepSort.setStartId(movedStep.getSort());
                 stepSort.setEndId(groupStepList.get(stepSort.getNewIndex()).getSort());
             }
             // 取出需要重新排序的步骤
@@ -314,8 +319,8 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
                         steps -> steps.getSort() >= stepSort.getEndId()
                                 && steps.getSort() <= stepSort.getStartId())
                         .collect(Collectors.toList());
+            return groupStepList;
         }
-        return groupStepList;
     }
 
     @Override
