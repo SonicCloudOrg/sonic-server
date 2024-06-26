@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.cloud.sonic.common.exception.SonicException;
 import org.cloud.sonic.controller.mapper.*;
 import org.cloud.sonic.controller.models.base.CommentPage;
 import org.cloud.sonic.controller.models.base.TypeConverter;
@@ -40,9 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -252,15 +251,20 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void sortSteps(StepSort stepSort) {
-
-        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, stepSort.getCaseId())
-                // <=
-                .le(Steps::getSort, stepSort.getStartId())
-                // >=
-                .ge(Steps::getSort, stepSort.getEndId())
-                .orderByAsc(Steps::getSort)
-                .list();
-
+        List<Steps> stepsList;
+        if (stepSort.getNewParentId() != null && stepSort.getNewIndex() != null) {
+            // 分组拖拽
+            stepsList = exchangeAddedStepSort(stepSort);
+        } else {
+            // 同组内拖拽排序
+            stepsList = lambdaQuery().eq(Steps::getCaseId, stepSort.getCaseId())
+                    // <=
+                    .le(Steps::getSort, stepSort.getStartId())
+                    // >=
+                    .ge(Steps::getSort, stepSort.getEndId())
+                    .orderByAsc(Steps::getSort)
+                    .list();
+        }
         if (stepSort.getDirection().equals("down")) {
             for (int i = 0; i < stepsList.size() - 1; i++) {
                 int temp = stepsList.get(stepsList.size() - 1).getSort();
@@ -275,6 +279,48 @@ public class StepsServiceImpl extends SonicServiceImpl<StepsMapper, Steps> imple
             }
         }
         saveOrUpdateBatch(stepsList);
+    }
+
+    /**
+     *  拖拽步骤顺序，步骤所在分组发生变化时，仅对新分组以及移动步骤的sort进行重新排序
+     * @param stepSort
+     * @return
+     */
+    private List<Steps> exchangeAddedStepSort(StepSort stepSort) {
+        // 获取新分组的case步骤
+        List<Steps> stepsList = lambdaQuery().eq(Steps::getCaseId, stepSort.getCaseId()).eq(Steps::getParentId, stepSort.getNewParentId()).list();
+        // 被移动的步骤实例
+        Steps movedStep = lambdaQuery().eq(Steps::getId, stepSort.getStepsId()).eq(Steps::getCaseId, stepSort.getCaseId()).one();
+        if(movedStep == null){
+            throw new SonicException("case中未能获取到该id的数据: %s", stepSort.getStepsId());
+        }
+        movedStep.setParentId(stepSort.getNewParentId()); // 更新父步骤id
+        stepsList.add(movedStep); // 添加到组内列表
+        if (stepsList.size() == 1){
+            // 原本没有子步骤，直接更改父id就好了，没必要重新排序
+            stepSort.setEndId(movedStep.getSort()) ;
+            stepSort.setStartId(movedStep.getSort());
+            stepSort.setDirection("down");
+            return stepsList;
+        }else {
+            // 将所有子步骤包含新加入的步骤重新排序，这样就相当于在同一个分组内拖拽排序
+            List<Steps> groupStepList = stepsList.stream().sorted(Comparator.comparingInt(Steps::getSort)).collect(Collectors.toList());
+            if (groupStepList.get(stepSort.getNewIndex()).getSort() >= movedStep.getSort()){
+                stepSort.setDirection("down");
+                stepSort.setStartId(groupStepList.get(stepSort.getNewIndex()).getSort());
+                stepSort.setEndId(movedStep.getSort());
+            }else {
+                stepSort.setDirection("up");
+                stepSort.setStartId(movedStep.getSort());
+                stepSort.setEndId(groupStepList.get(stepSort.getNewIndex()).getSort());
+            }
+            // 取出需要重新排序的步骤
+            groupStepList = groupStepList.stream().filter(
+                        steps -> steps.getSort() >= stepSort.getEndId()
+                                && steps.getSort() <= stepSort.getStartId())
+                        .collect(Collectors.toList());
+            return groupStepList;
+        }
     }
 
     @Override
