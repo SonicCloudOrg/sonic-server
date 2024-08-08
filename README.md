@@ -23,7 +23,7 @@
 
 ### Official Website
 
-[Sonic Official Website](https://sonic-cloud.cn)
+[Sonic Official Website](https://soniccloudorg.github.io/)
 
 ## Background
 
@@ -38,7 +38,7 @@
 
 ## Deploy & Document
 
-➡️See [Here](https://sonic-cloud.cn/deploy/back-end-deploy.html)
+➡️See [Here](https://soniccloudorg.github.io/deploy/back-end-deploy.html)
 
 ## Package
 
