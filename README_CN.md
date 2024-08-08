@@ -23,7 +23,7 @@
 
 ### 官方网站
 
-[Sonic Official Website](https://sonic-cloud.cn)
+[Sonic Official Website](https://soniccloudorg.github.io/)
 
 ## 背景
 
@@ -37,7 +37,7 @@
 
 ## 部署 & 文档
 
-看 [这里](https://sonic-cloud.cn/deploy/back-end-deploy.html)
+看 [这里](https://soniccloudorg.github.io/deploy/back-end-deploy.html)
 
 ## 打包
 
