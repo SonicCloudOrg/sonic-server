@@ -88,9 +88,6 @@ services:
     restart: on-failure
   sonic-client-web:
     image: "dockerproxy.com/sonicorg/sonic-client-web:SONIC_VERSION"
-    environment:
-      - SONIC_SERVER_HOST
-      - SONIC_SERVER_PORT
     networks:
       - sonic-network
     depends_on:
