@@ -183,7 +183,7 @@ public class TransportServer {
     }
 
     /**
-     * 用作调试元素定位是否准确时，生成点击事件的测试步骤
+     * 增加元素定位时，为了方便验证定位是否有效，此时可能还没有入库，所以先生成一个临时的步骤
      *
      * @param jsonMsg
      * @param msg
