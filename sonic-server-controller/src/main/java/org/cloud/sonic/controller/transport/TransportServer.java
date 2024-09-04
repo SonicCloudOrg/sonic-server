@@ -152,7 +152,7 @@ public class TransportServer {
             case "errCall":
                 agentsService.errCall(jsonMsg.getInteger("agentId"), jsonMsg.getString("udId"), jsonMsg.getInteger("tem"), jsonMsg.getInteger("type"));
                 break;
-            case "checkLocation":
+            case "generateStep":
                 JSONObject step = generateStep(jsonMsg, "runStep");
                 Session agentSession2 = BytesTool.agentSessionMap.get(jsonMsg.getInteger("agentId"));
                 if (agentSession2 != null) {
@@ -196,7 +196,9 @@ public class TransportServer {
                 .setEleValue(jsonMsg.getString("element"));
         List<ElementsDTO> elements = new ArrayList<>();
         elements.add(elementsDTO);
-        stepsDTO.setStepType("click")
+        String stepType = jsonMsg.getString("eleType").equals("point") ? "tap" : "click";
+        stepsDTO.setStepType(stepType)
+                .setConditionType(0)
                 .setElements(elements)
                 .setPlatform(jsonMsg.getInteger("pf"));
         JSONArray step = new JSONArray();
