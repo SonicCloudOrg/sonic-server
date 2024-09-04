@@ -193,7 +193,8 @@ public class TransportServer {
         StepsDTO stepsDTO = new StepsDTO();
         ElementsDTO elementsDTO = new ElementsDTO();
         elementsDTO.setEleType(jsonMsg.getString("eleType"))
-                .setEleValue(jsonMsg.getString("element"));
+                .setEleValue(jsonMsg.getString("element"))
+                .setEleName("定位控件测试");
         List<ElementsDTO> elements = new ArrayList<>();
         elements.add(elementsDTO);
         String stepType = jsonMsg.getString("eleType").equals("point") ? "tap" : "click";
