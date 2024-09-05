@@ -68,4 +68,7 @@ public class ProjectsDTO implements Serializable, TypeConverter<ProjectsDTO, Pro
 
     @Schema(description = "启用全局机器人")
     Boolean globalRobot;
+
+    @Schema(description = "创建人", required = true, example = "liulijun")
+    Integer createBy;
 }

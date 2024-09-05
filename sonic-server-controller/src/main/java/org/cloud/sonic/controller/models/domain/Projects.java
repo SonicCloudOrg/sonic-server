@@ -90,4 +90,8 @@ public class Projects implements Serializable, TypeConverter<Projects, ProjectsD
     @TableField
     @Column(value = "global_robot", isNull = false, defaultValue = "1", comment = "启用全局机器人")
     private Boolean globalRobot;
+
+    @TableField
+    @Column(value = "create_by", isNull = true, comment = "创建人")
+    private Integer createBy;
 }
