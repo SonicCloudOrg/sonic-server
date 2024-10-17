@@ -6,7 +6,7 @@ spring:
     # mysql username
     username: ${MYSQL_USERNAME:root}
     # mysql password
-    password: ${MYSQL_PASSWORD:Sonic!@#123}
+    password: ${MYSQL_PASSWORD:HRDJLM412715}
     schema:
       - classpath:data.sql
   sql:

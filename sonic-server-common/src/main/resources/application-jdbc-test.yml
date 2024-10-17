@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #  jdbc:mysql://{mysql host}:{mysql port}/{database}
+#    url: jdbc:mysql://${MYSQL_HOST:10.83.136.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:sonic}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+#    username: ${MYSQL_USERNAME:sonic}
+#    password: ${MYSQL_PASSWORD:sonic@#123}
+
+    url: jdbc:mysql://${MYSQL_HOST:bss-uat-autotest-mysql-m.kyeapi.com}:${MYSQL_PORT:13300}/${MYSQL_DATABASE:sonic}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&autoReconnect=true&serverTimezone=GMT%2b8
+    username: ${MYSQL_USERNAME:autotest}
+    password: ${MYSQL_PASSWORD:autotest@2022}
+    schema:
+      - classpath:data.sql
+    hikari:
+      maximum-pool-size: 50  # 最大连接数
+      minimum-idle: 10        # 最小空闲连接数
+      connection-timeout: 30000  # 连接超时时间，单位毫秒
+      idle-timeout: 600000       # 连接最大空闲时间，单位毫秒
+      max-lifetime: 1800000      # 连接最大存活时间，单位毫秒
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: 10.83.32.33     # Redis 服务器地址
+      port: 6379          # Redis 服务器端口
+      password: redis          # Redis 访问密码（如果有的话）
+      database: 8         # Redis 数据库索引
+
+      jedis: # 如果使用 Jedis 连接池
+        pool:
+          max-active: 8    # 最大连接数
+          max-idle: 8      # 最大空闲连接数
+          min-idle: 0      # 最小空闲连接数
+          max-wait: -1ms   # 最大等待时间
+
+mybatis-plus:
+  mapper-locations: classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+  global-config:
+    banner: false
+  configuration:
+    cache-enabled: false
+    localCacheScope: STATEMENT
+    # sql log
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+actable:
+  model:
+    pack: org.cloud.sonic.controller.models.domain
+  table:
+    auto: false
+  database:
+    type: mysql
