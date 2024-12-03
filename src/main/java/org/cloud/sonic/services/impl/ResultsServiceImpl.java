@@ -15,22 +15,22 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.cloud.sonic.controller.mapper.ResultsMapper;
-import org.cloud.sonic.controller.models.domain.Projects;
-import org.cloud.sonic.controller.models.domain.ResultDetail;
-import org.cloud.sonic.controller.models.domain.Results;
-import org.cloud.sonic.controller.models.domain.TestCases;
-import org.cloud.sonic.controller.models.dto.TestSuitesDTO;
-import org.cloud.sonic.controller.models.interfaces.ResultDetailStatus;
-import org.cloud.sonic.controller.models.interfaces.ResultStatus;
-import org.cloud.sonic.controller.services.*;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.mapper.ResultsMapper;
+import org.cloud.sonic.models.domain.Projects;
+import org.cloud.sonic.models.domain.ResultDetail;
+import org.cloud.sonic.models.domain.Results;
+import org.cloud.sonic.models.domain.TestCases;
+import org.cloud.sonic.models.dto.TestSuitesDTO;
+import org.cloud.sonic.models.interfaces.ResultDetailStatus;
+import org.cloud.sonic.models.interfaces.ResultStatus;
+import org.cloud.sonic.services.*;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

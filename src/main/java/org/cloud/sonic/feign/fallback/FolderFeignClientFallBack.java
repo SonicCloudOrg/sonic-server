@@ -1,8 +1,8 @@
-package org.cloud.sonic.controller.feign.fallback;
+package org.cloud.sonic.feign.fallback;
 
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.feign.FolderFeignClient;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.feign.FolderFeignClient;
 import org.springframework.stereotype.Component;
 
 @Component

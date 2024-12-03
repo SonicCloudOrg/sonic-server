@@ -19,8 +19,8 @@ package org.cloud.sonic.common.config;
 
 import jakarta.validation.ConstraintViolationException;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;

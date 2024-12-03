@@ -1,15 +1,15 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Users;
-import org.cloud.sonic.controller.models.dto.UsersDTO;
-import org.cloud.sonic.controller.models.http.ChangePwd;
-import org.cloud.sonic.controller.models.http.UserInfo;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Users;
+import org.cloud.sonic.models.dto.UsersDTO;
+import org.cloud.sonic.models.http.ChangePwd;
+import org.cloud.sonic.models.http.UserInfo;
 
 public interface UsersService extends IService<Users> {
     JSONObject getLoginConfig();

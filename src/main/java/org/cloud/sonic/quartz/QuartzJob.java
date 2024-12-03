@@ -15,16 +15,16 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.quartz;
+package org.cloud.sonic.quartz;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.feign.FolderFeignClient;
-import org.cloud.sonic.controller.models.domain.Jobs;
-import org.cloud.sonic.controller.models.interfaces.JobType;
-import org.cloud.sonic.controller.services.JobsService;
-import org.cloud.sonic.controller.services.ResultsService;
-import org.cloud.sonic.controller.services.TestSuitesService;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.feign.FolderFeignClient;
+import org.cloud.sonic.models.domain.Jobs;
+import org.cloud.sonic.models.interfaces.JobType;
+import org.cloud.sonic.services.JobsService;
+import org.cloud.sonic.services.ResultsService;
+import org.cloud.sonic.services.TestSuitesService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

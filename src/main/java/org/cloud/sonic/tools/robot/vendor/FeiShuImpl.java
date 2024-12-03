@@ -15,12 +15,12 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools.robot.vendor;
+package org.cloud.sonic.tools.robot.vendor;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.tools.robot.Message;
-import org.cloud.sonic.controller.tools.robot.RobotMessenger;
+import org.cloud.sonic.tools.robot.Message;
+import org.cloud.sonic.tools.robot.RobotMessenger;
 import org.springframework.expression.Expression;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

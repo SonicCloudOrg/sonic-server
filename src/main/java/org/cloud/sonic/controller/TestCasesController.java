@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,15 +24,15 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.TestCases;
-import org.cloud.sonic.controller.models.domain.TestSuites;
-import org.cloud.sonic.controller.models.dto.TestCasesDTO;
-import org.cloud.sonic.controller.services.TestCasesService;
-import org.cloud.sonic.controller.services.TestSuitesService;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.TestCases;
+import org.cloud.sonic.models.domain.TestSuites;
+import org.cloud.sonic.models.dto.TestCasesDTO;
+import org.cloud.sonic.services.TestCasesService;
+import org.cloud.sonic.services.TestSuitesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;

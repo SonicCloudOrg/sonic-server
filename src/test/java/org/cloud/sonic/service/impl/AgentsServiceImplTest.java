@@ -17,11 +17,11 @@
  */
 package org.cloud.sonic.service.impl;
 
-import org.cloud.sonic.controller.mapper.AgentsMapper;
-import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.models.interfaces.RobotType;
-import org.cloud.sonic.controller.services.impl.AgentsServiceImpl;
+import org.cloud.sonic.mapper.AgentsMapper;
+import org.cloud.sonic.models.domain.Agents;
+import org.cloud.sonic.models.interfaces.AgentStatus;
+import org.cloud.sonic.models.interfaces.RobotType;
+import org.cloud.sonic.services.impl.AgentsServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

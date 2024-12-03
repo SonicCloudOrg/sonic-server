@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.config.mybatis;
+package org.cloud.sonic.config.mybatis;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

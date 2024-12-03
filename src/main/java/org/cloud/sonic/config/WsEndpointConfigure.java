@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.config;
 
 import jakarta.websocket.server.ServerEndpointConfig;
 import org.springframework.beans.BeansException;

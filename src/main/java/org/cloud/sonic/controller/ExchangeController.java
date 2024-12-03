@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,15 +24,15 @@ import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.services.AgentsService;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.tools.BytesTool;
-import org.cloud.sonic.controller.transport.TransportWorker;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.domain.Agents;
+import org.cloud.sonic.models.domain.Devices;
+import org.cloud.sonic.models.interfaces.AgentStatus;
+import org.cloud.sonic.services.AgentsService;
+import org.cloud.sonic.services.DevicesService;
+import org.cloud.sonic.tools.BytesTool;
+import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;

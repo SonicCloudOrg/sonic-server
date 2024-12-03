@@ -1,7 +1,7 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.domain.ConfList;
+import org.cloud.sonic.models.domain.ConfList;
 
 public interface ConfListService extends IService<ConfList> {
 

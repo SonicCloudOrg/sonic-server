@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.http;
+package org.cloud.sonic.models.http;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

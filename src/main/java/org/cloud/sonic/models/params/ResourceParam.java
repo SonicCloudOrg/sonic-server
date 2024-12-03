@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.params;
+package org.cloud.sonic.models.params;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

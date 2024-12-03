@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.dto;
+package org.cloud.sonic.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.PublicStepsSteps;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.domain.PublicStepsSteps;
 
 import java.io.Serializable;
 

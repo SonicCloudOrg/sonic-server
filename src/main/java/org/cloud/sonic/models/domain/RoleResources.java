@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.domain;
+package org.cloud.sonic.models.domain;
 
 
 import com.baomidou.mybatisplus.annotation.*;

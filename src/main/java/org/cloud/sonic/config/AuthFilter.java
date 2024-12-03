@@ -18,8 +18,8 @@
 package org.cloud.sonic.gateway.config;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

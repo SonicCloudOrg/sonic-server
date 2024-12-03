@@ -19,9 +19,9 @@ package org.cloud.sonic.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import org.cloud.sonic.controller.mapper.GlobalParamsMapper;
-import org.cloud.sonic.controller.models.domain.GlobalParams;
-import org.cloud.sonic.controller.services.impl.GlobalParamsServiceImpl;
+import org.cloud.sonic.mapper.GlobalParamsMapper;
+import org.cloud.sonic.models.domain.GlobalParams;
+import org.cloud.sonic.services.impl.GlobalParamsServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

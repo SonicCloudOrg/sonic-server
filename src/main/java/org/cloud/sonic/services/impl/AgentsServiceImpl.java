@@ -15,20 +15,20 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.mapper.AgentsMapper;
-import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.models.interfaces.DeviceStatus;
-import org.cloud.sonic.controller.services.AgentsService;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.transport.TransportWorker;
+import org.cloud.sonic.mapper.AgentsMapper;
+import org.cloud.sonic.models.domain.Agents;
+import org.cloud.sonic.models.domain.Devices;
+import org.cloud.sonic.models.interfaces.AgentStatus;
+import org.cloud.sonic.models.interfaces.DeviceStatus;
+import org.cloud.sonic.services.AgentsService;
+import org.cloud.sonic.services.DevicesService;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools.robot;
+package org.cloud.sonic.tools.robot;
 
-import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
-import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
-import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
+import org.cloud.sonic.tools.robot.message.DeviceMessage;
+import org.cloud.sonic.tools.robot.message.ProjectSummaryMessage;
+import org.cloud.sonic.tools.robot.message.TestSuiteMessage;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;

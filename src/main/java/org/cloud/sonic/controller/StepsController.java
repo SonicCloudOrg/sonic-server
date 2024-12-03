@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,15 +23,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.mapper.PublicStepsMapper;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.PublicSteps;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.http.StepSort;
-import org.cloud.sonic.controller.services.StepsService;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.mapper.PublicStepsMapper;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.PublicSteps;
+import org.cloud.sonic.models.domain.Steps;
+import org.cloud.sonic.models.dto.StepsDTO;
+import org.cloud.sonic.models.http.StepSort;
+import org.cloud.sonic.services.StepsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

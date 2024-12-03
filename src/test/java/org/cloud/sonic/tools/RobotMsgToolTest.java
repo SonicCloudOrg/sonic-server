@@ -17,13 +17,13 @@
  */
 package org.cloud.sonic.tools;
 
-import org.cloud.sonic.controller.ControllerApplication;
-import org.cloud.sonic.controller.tools.robot.Message;
-import org.cloud.sonic.controller.tools.robot.RobotMessenger;
-import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
-import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
-import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
-import org.cloud.sonic.controller.tools.robot.vendor.*;
+import org.cloud.sonic.ControllerApplication;
+import org.cloud.sonic.tools.robot.Message;
+import org.cloud.sonic.tools.robot.RobotMessenger;
+import org.cloud.sonic.tools.robot.message.DeviceMessage;
+import org.cloud.sonic.tools.robot.message.ProjectSummaryMessage;
+import org.cloud.sonic.tools.robot.message.TestSuiteMessage;
+import org.cloud.sonic.tools.robot.vendor.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

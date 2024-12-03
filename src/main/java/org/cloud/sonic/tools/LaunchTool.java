@@ -15,9 +15,9 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools;
+package org.cloud.sonic.tools;
 
-import org.cloud.sonic.controller.quartz.QuartzHandler;
+import org.cloud.sonic.quartz.QuartzHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

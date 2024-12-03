@@ -1,11 +1,11 @@
-package org.cloud.sonic.controller.mapper;
+package org.cloud.sonic.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.cloud.sonic.controller.models.domain.PublicSteps;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
+import org.cloud.sonic.models.domain.PublicSteps;
+import org.cloud.sonic.models.dto.StepsDTO;
 
 import java.util.Collection;
 import java.util.List;

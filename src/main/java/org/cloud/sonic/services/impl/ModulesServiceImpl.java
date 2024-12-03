@@ -15,15 +15,15 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.cloud.sonic.controller.mapper.ModulesMapper;
-import org.cloud.sonic.controller.models.domain.Modules;
-import org.cloud.sonic.controller.services.ElementsService;
-import org.cloud.sonic.controller.services.ModulesService;
-import org.cloud.sonic.controller.services.TestCasesService;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.mapper.ModulesMapper;
+import org.cloud.sonic.models.domain.Modules;
+import org.cloud.sonic.services.ElementsService;
+import org.cloud.sonic.services.ModulesService;
+import org.cloud.sonic.services.TestCasesService;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

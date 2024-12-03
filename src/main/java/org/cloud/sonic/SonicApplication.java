@@ -15,14 +15,12 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller;
+package org.cloud.sonic;
 
-import org.cloud.sonic.controller.tools.SpringTool;
+import org.cloud.sonic.tools.SpringTool;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
@@ -39,10 +37,7 @@ import org.springframework.context.annotation.Import;
 @ComponentScan(basePackages = {
         "org.cloud.sonic.*",
         "com.gitee.sunchenbin.mybatis.actable.manager.*",
-        "org.cloud.sonic.common.*"
 })
-@EnableFeignClients
-@EnableDiscoveryClient
 @Import(SpringTool.class)
 public class SonicApplication {
     public static void main(String[] args) {

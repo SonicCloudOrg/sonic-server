@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.enums;
+package org.cloud.sonic.models.enums;
 
 import org.springframework.util.Assert;
 

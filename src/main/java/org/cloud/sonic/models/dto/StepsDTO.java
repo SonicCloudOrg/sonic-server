@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.dto;
+package org.cloud.sonic.models.dto;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -8,9 +8,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.enums.ConditionEnum;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.domain.Steps;
+import org.cloud.sonic.models.enums.ConditionEnum;
 
 import java.io.Serializable;
 import java.util.List;

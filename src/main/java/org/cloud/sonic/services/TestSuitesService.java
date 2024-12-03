@@ -1,13 +1,13 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.TestSuites;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.dto.TestSuitesDTO;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.TestSuites;
+import org.cloud.sonic.models.dto.StepsDTO;
+import org.cloud.sonic.models.dto.TestSuitesDTO;
 
 import java.util.List;
 

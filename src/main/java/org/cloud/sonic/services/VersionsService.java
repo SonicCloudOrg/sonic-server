@@ -1,8 +1,8 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.domain.Versions;
+import org.cloud.sonic.models.domain.Versions;
 
 import java.util.List;
 

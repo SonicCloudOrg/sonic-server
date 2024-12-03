@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,17 +26,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.config.WhiteUrl;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Roles;
-import org.cloud.sonic.controller.models.domain.Users;
-import org.cloud.sonic.controller.models.dto.UsersDTO;
-import org.cloud.sonic.controller.models.http.ChangePwd;
-import org.cloud.sonic.controller.models.http.UserInfo;
-import org.cloud.sonic.controller.services.RolesServices;
-import org.cloud.sonic.controller.services.UsersService;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Roles;
+import org.cloud.sonic.models.domain.Users;
+import org.cloud.sonic.models.dto.UsersDTO;
+import org.cloud.sonic.models.http.ChangePwd;
+import org.cloud.sonic.models.http.UserInfo;
+import org.cloud.sonic.services.RolesServices;
+import org.cloud.sonic.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

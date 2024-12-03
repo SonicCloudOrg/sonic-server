@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.tools;
+package org.cloud.sonic.tools;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

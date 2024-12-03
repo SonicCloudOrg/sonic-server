@@ -15,14 +15,14 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.controller.mapper.ProjectsMapper;
-import org.cloud.sonic.controller.models.domain.Projects;
-import org.cloud.sonic.controller.models.domain.Results;
-import org.cloud.sonic.controller.services.*;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.mapper.ProjectsMapper;
+import org.cloud.sonic.models.domain.Projects;
+import org.cloud.sonic.models.domain.Results;
+import org.cloud.sonic.services.*;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

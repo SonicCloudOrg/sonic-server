@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.dto;
+package org.cloud.sonic.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.domain.Agents;
 
 import java.io.Serializable;
 
@@ -57,7 +57,7 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     Integer highTempTime;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)
@@ -65,7 +65,7 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     Integer robotType;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)
@@ -73,7 +73,7 @@ public class AgentsDTO implements Serializable, TypeConverter<AgentsDTO, Agents>
     String robotToken;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)

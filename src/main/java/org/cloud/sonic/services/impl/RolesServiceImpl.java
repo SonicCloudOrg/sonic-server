@@ -15,20 +15,20 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import org.cloud.sonic.controller.mapper.RoleResourcesMapper;
-import org.cloud.sonic.controller.mapper.RolesMapper;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.RoleResources;
-import org.cloud.sonic.controller.models.domain.Roles;
-import org.cloud.sonic.controller.models.dto.RolesDTO;
-import org.cloud.sonic.controller.services.RolesServices;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.mapper.RoleResourcesMapper;
+import org.cloud.sonic.mapper.RolesMapper;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.domain.RoleResources;
+import org.cloud.sonic.models.domain.Roles;
+import org.cloud.sonic.models.dto.RolesDTO;
+import org.cloud.sonic.services.RolesServices;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

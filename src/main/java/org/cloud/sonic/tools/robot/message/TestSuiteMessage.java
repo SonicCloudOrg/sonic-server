@@ -15,10 +15,10 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools.robot.message;
+package org.cloud.sonic.tools.robot.message;
 
 import lombok.AllArgsConstructor;
-import org.cloud.sonic.controller.tools.robot.Message;
+import org.cloud.sonic.tools.robot.Message;
 
 @AllArgsConstructor
 public class TestSuiteMessage extends Message {

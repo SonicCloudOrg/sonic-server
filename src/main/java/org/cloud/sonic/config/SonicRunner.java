@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.models.domain.ConfList;
-import org.cloud.sonic.controller.models.interfaces.ConfType;
-import org.cloud.sonic.controller.services.ConfListService;
-import org.cloud.sonic.controller.services.ResourcesService;
+import org.cloud.sonic.models.domain.ConfList;
+import org.cloud.sonic.models.interfaces.ConfType;
+import org.cloud.sonic.services.ConfListService;
+import org.cloud.sonic.services.ResourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;

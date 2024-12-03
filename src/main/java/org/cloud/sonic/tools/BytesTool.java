@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools;
+package org.cloud.sonic.tools;
 
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;

@@ -18,7 +18,7 @@
 package org.cloud.sonic.common.config;
 
 import jakarta.annotation.Resource;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespModel;
 import org.springframework.context.MessageSource;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;

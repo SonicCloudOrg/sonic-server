@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.transport;
+package org.cloud.sonic.transport;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -24,14 +24,14 @@ import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.config.WsEndpointConfigure;
-import org.cloud.sonic.controller.models.domain.Agents;
-import org.cloud.sonic.controller.models.dto.ElementsDTO;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.interfaces.AgentStatus;
-import org.cloud.sonic.controller.models.interfaces.ConfType;
-import org.cloud.sonic.controller.services.*;
-import org.cloud.sonic.controller.tools.BytesTool;
+import org.cloud.sonic.config.WsEndpointConfigure;
+import org.cloud.sonic.models.domain.Agents;
+import org.cloud.sonic.models.dto.ElementsDTO;
+import org.cloud.sonic.models.dto.StepsDTO;
+import org.cloud.sonic.models.interfaces.AgentStatus;
+import org.cloud.sonic.models.interfaces.ConfType;
+import org.cloud.sonic.services.*;
+import org.cloud.sonic.tools.BytesTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

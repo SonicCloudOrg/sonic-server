@@ -15,12 +15,12 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.AlertRobots;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.AlertRobots;
 
 import java.util.Date;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.domain;
+package org.cloud.sonic.models.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
@@ -11,9 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.dto.AgentsDTO;
-import org.cloud.sonic.controller.tools.NullableIntArrayTypeHandler;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.dto.AgentsDTO;
+import org.cloud.sonic.tools.NullableIntArrayTypeHandler;
 
 import java.io.Serializable;
 
@@ -78,7 +78,7 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     private Integer highTempTime;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)
@@ -87,7 +87,7 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     private String robotSecret;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)
@@ -96,7 +96,7 @@ public class Agents implements Serializable, TypeConverter<Agents, AgentsDTO> {
     private String robotToken;
 
     /**
-     * @see org.cloud.sonic.controller.config.mybatis.RobotConfigMigrate
+     * @see org.cloud.sonic.config.mybatis.RobotConfigMigrate
      * @deprecated
      */
     @Deprecated(forRemoval = true)

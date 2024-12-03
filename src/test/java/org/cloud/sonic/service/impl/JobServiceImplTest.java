@@ -1,10 +1,10 @@
 package org.cloud.sonic.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.controller.ControllerApplication;
-import org.cloud.sonic.controller.models.domain.Jobs;
-import org.cloud.sonic.controller.models.interfaces.JobStatus;
-import org.cloud.sonic.controller.services.JobsService;
+import org.cloud.sonic.ControllerApplication;
+import org.cloud.sonic.models.domain.Jobs;
+import org.cloud.sonic.models.interfaces.JobStatus;
+import org.cloud.sonic.services.JobsService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

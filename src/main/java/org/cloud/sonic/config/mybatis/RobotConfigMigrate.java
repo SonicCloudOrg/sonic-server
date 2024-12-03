@@ -15,10 +15,10 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config.mybatis;
+package org.cloud.sonic.config.mybatis;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.mapper.AlertRobotsMigrateMapper;
+import org.cloud.sonic.mapper.AlertRobotsMigrateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 

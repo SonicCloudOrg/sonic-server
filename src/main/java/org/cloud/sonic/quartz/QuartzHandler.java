@@ -15,13 +15,13 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.quartz;
+package org.cloud.sonic.quartz;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.controller.models.domain.Jobs;
-import org.cloud.sonic.controller.models.interfaces.JobType;
-import org.cloud.sonic.controller.services.JobsService;
-import org.cloud.sonic.controller.tools.QuartzJobTools;
+import org.cloud.sonic.models.domain.Jobs;
+import org.cloud.sonic.models.interfaces.JobType;
+import org.cloud.sonic.services.JobsService;
+import org.cloud.sonic.tools.QuartzJobTools;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

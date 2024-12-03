@@ -15,10 +15,10 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.transport;
+package org.cloud.sonic.transport;
 
 import com.alibaba.fastjson.JSONObject;
-import org.cloud.sonic.controller.tools.SpringTool;
+import org.cloud.sonic.tools.SpringTool;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.client.RestTemplate;

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,13 +25,13 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Jobs;
-import org.cloud.sonic.controller.models.dto.JobsDTO;
-import org.cloud.sonic.controller.services.JobsService;
-import org.cloud.sonic.controller.tools.QuartzJobTools;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Jobs;
+import org.cloud.sonic.models.dto.JobsDTO;
+import org.cloud.sonic.services.JobsService;
+import org.cloud.sonic.tools.QuartzJobTools;
 import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

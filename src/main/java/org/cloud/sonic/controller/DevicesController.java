@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -25,15 +25,15 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.cloud.sonic.common.config.WebAspect;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Devices;
-import org.cloud.sonic.controller.models.http.DeviceDetailChange;
-import org.cloud.sonic.controller.models.http.OccupyParams;
-import org.cloud.sonic.controller.models.http.UpdateDeviceImg;
-import org.cloud.sonic.controller.services.DevicesService;
-import org.cloud.sonic.controller.transport.TransportWorker;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Devices;
+import org.cloud.sonic.models.http.DeviceDetailChange;
+import org.cloud.sonic.models.http.OccupyParams;
+import org.cloud.sonic.models.http.UpdateDeviceImg;
+import org.cloud.sonic.services.DevicesService;
+import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

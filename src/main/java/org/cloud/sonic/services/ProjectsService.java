@@ -1,8 +1,8 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.controller.models.domain.Projects;
+import org.cloud.sonic.models.domain.Projects;
 
 import java.util.List;
 

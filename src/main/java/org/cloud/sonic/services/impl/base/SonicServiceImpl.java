@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.services.impl.base;
+package org.cloud.sonic.services.impl.base;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

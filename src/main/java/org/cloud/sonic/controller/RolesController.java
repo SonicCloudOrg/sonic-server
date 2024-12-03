@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.controller;
+package org.cloud.sonic.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Roles;
-import org.cloud.sonic.controller.models.dto.RolesDTO;
-import org.cloud.sonic.controller.services.RolesServices;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Roles;
+import org.cloud.sonic.models.dto.RolesDTO;
+import org.cloud.sonic.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

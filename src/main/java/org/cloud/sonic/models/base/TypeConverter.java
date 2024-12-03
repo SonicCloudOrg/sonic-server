@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.base;
+package org.cloud.sonic.models.base;
 
 import org.cloud.sonic.common.tools.BeanTool;
 import org.cloud.sonic.common.tools.ReflectionTool;

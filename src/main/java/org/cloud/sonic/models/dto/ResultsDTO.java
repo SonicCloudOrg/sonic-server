@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.dto;
+package org.cloud.sonic.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cloud.sonic.controller.models.base.TypeConverter;
-import org.cloud.sonic.controller.models.domain.Results;
+import org.cloud.sonic.models.base.TypeConverter;
+import org.cloud.sonic.models.domain.Results;
 
 import java.io.Serializable;
 import java.util.Date;

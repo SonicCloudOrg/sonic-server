@@ -1,8 +1,8 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.domain.Scripts;
+import org.cloud.sonic.models.domain.Scripts;
 
 public interface ScriptsService extends IService<Scripts> {
     boolean delete(int id);

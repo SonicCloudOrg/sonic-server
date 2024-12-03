@@ -15,12 +15,12 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.mapper;
+package org.cloud.sonic.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.cloud.sonic.controller.models.domain.AlertRobots;
+import org.cloud.sonic.models.domain.AlertRobots;
 import org.springframework.lang.Nullable;
 
 import java.util.List;

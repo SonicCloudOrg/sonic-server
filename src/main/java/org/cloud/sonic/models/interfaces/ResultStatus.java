@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.interfaces;
+package org.cloud.sonic.models.interfaces;
 
 /**
  * @author ZhouYiXun

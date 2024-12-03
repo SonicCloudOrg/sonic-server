@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.config;
 
 import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
@@ -25,13 +25,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.CommonResultControllerAdvice;
-import org.cloud.sonic.common.http.RespEnum;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespEnum;
+import org.cloud.sonic.http.RespModel;
 import org.cloud.sonic.common.tools.JWTTokenTool;
-import org.cloud.sonic.controller.models.domain.Resources;
-import org.cloud.sonic.controller.models.interfaces.UrlType;
-import org.cloud.sonic.controller.services.ResourcesService;
-import org.cloud.sonic.controller.services.RolesServices;
+import org.cloud.sonic.models.domain.Resources;
+import org.cloud.sonic.models.interfaces.UrlType;
+import org.cloud.sonic.services.ResourcesService;
+import org.cloud.sonic.services.RolesServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

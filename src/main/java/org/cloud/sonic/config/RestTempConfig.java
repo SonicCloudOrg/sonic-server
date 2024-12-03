@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.config;
+package org.cloud.sonic.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

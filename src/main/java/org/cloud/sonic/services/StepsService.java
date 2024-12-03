@@ -1,12 +1,12 @@
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.Steps;
-import org.cloud.sonic.controller.models.dto.PublicStepsAndStepsIdDTO;
-import org.cloud.sonic.controller.models.dto.StepsDTO;
-import org.cloud.sonic.controller.models.http.StepSort;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.Steps;
+import org.cloud.sonic.models.dto.PublicStepsAndStepsIdDTO;
+import org.cloud.sonic.models.dto.StepsDTO;
+import org.cloud.sonic.models.http.StepSort;
 
 import java.util.List;
 

@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services;
+package org.cloud.sonic.services;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.cloud.sonic.controller.models.domain.Agents;
+import org.cloud.sonic.models.domain.Agents;
 
 import java.util.List;
 

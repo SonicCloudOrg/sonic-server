@@ -15,12 +15,12 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
-import org.cloud.sonic.controller.mapper.ConfListMapper;
-import org.cloud.sonic.controller.models.domain.ConfList;
-import org.cloud.sonic.controller.services.ConfListService;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.mapper.ConfListMapper;
+import org.cloud.sonic.models.domain.ConfList;
+import org.cloud.sonic.services.ConfListService;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
 import org.springframework.stereotype.Service;
 
 @Service

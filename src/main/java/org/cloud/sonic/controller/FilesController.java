@@ -2,7 +2,7 @@ package org.cloud.sonic.folder.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
-import org.cloud.sonic.common.http.RespModel;
+import org.cloud.sonic.http.RespModel;
 import org.cloud.sonic.folder.tools.FileTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

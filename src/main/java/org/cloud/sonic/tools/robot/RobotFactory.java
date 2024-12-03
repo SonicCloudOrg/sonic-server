@@ -15,11 +15,11 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.tools.robot;
+package org.cloud.sonic.tools.robot;
 
 import org.cloud.sonic.common.exception.SonicException;
-import org.cloud.sonic.controller.models.interfaces.RobotType;
-import org.cloud.sonic.controller.tools.robot.vendor.*;
+import org.cloud.sonic.models.interfaces.RobotType;
+import org.cloud.sonic.tools.robot.vendor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

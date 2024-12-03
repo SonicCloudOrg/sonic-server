@@ -15,22 +15,22 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.controller.services.impl;
+package org.cloud.sonic.services.impl;
 
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.sonic.controller.mapper.AlertRobotsMapper;
-import org.cloud.sonic.controller.models.base.CommentPage;
-import org.cloud.sonic.controller.models.domain.AlertRobots;
-import org.cloud.sonic.controller.services.AlertRobotsService;
-import org.cloud.sonic.controller.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.controller.tools.robot.Message;
-import org.cloud.sonic.controller.tools.robot.RobotFactory;
-import org.cloud.sonic.controller.tools.robot.RobotMessenger;
-import org.cloud.sonic.controller.tools.robot.message.DeviceMessage;
-import org.cloud.sonic.controller.tools.robot.message.ProjectSummaryMessage;
-import org.cloud.sonic.controller.tools.robot.message.TestSuiteMessage;
+import org.cloud.sonic.mapper.AlertRobotsMapper;
+import org.cloud.sonic.models.base.CommentPage;
+import org.cloud.sonic.models.domain.AlertRobots;
+import org.cloud.sonic.services.AlertRobotsService;
+import org.cloud.sonic.services.impl.base.SonicServiceImpl;
+import org.cloud.sonic.tools.robot.Message;
+import org.cloud.sonic.tools.robot.RobotFactory;
+import org.cloud.sonic.tools.robot.RobotMessenger;
+import org.cloud.sonic.tools.robot.message.DeviceMessage;
+import org.cloud.sonic.tools.robot.message.ProjectSummaryMessage;
+import org.cloud.sonic.tools.robot.message.TestSuiteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.Expression;

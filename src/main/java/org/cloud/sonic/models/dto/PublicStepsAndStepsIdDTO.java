@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.models.dto;
+package org.cloud.sonic.models.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
