@@ -1,7 +1,0 @@
-spring:
-  version: @project.version@
-  application:
-    name: @project.artifactId@
-    des: "Folder of Sonic Cloud Real Machine Platform"
-  profiles:
-    active: @project.artifactId@,eureka,feign,logging,user
