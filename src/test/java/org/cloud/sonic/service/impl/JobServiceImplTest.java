@@ -1,4 +1,4 @@
-package org.cloud.sonic.controller.service.impl;
+package org.cloud.sonic.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import org.cloud.sonic.controller.ControllerApplication;
