@@ -33,19 +33,19 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 @MapperScan(basePackages = {
-        "org.cloud.sonic.controller.mapper",
+        "org.cloud.sonic.mapper",
         "com.gitee.sunchenbin.mybatis.actable.dao.*"
 })
 @ComponentScan(basePackages = {
-        "org.cloud.sonic.controller.*",
+        "org.cloud.sonic.*",
         "com.gitee.sunchenbin.mybatis.actable.manager.*",
         "org.cloud.sonic.common.*"
 })
 @EnableFeignClients
 @EnableDiscoveryClient
 @Import(SpringTool.class)
-public class ControllerApplication {
+public class SonicApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ControllerApplication.class, args);
+        SpringApplication.run(SonicApplication.class, args);
     }
 }
