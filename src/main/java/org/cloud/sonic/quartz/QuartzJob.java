@@ -19,7 +19,6 @@ package org.cloud.sonic.quartz;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.http.RespModel;
-import org.cloud.sonic.feign.FolderFeignClient;
 import org.cloud.sonic.models.domain.Jobs;
 import org.cloud.sonic.models.interfaces.JobType;
 import org.cloud.sonic.services.JobsService;
@@ -48,8 +47,6 @@ public class QuartzJob extends QuartzJobBean implements Job {
     private TestSuitesService testSuitesService;
     @Autowired
     private ResultsService resultsService;
-    @Autowired
-    private FolderFeignClient folderFeignClient;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
@@ -79,8 +76,10 @@ public class QuartzJob extends QuartzJobBean implements Job {
             case JobType.CLEAN_FILE_JOB -> {
                 int day = Math.abs((int) ((jobExecutionContext.getNextFireTime().getTime() -
                         new Date().getTime()) / (1000 * 3600 * 24))) + 1;
-                RespModel<String> r = folderFeignClient.delete(day);
-                log.info("Clear file job..." + r);
+
+                //todo fix
+//                RespModel<String> r = folderFeignClient.delete(day);
+//                log.info("Clear file job..." + r);
             }
             case JobType.CLEAN_RESULT_JOB -> {
                 int day = Math.abs((int) ((jobExecutionContext.getNextFireTime().getTime() -

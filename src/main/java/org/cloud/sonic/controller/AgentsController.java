@@ -27,7 +27,6 @@ import org.cloud.sonic.models.base.TypeConverter;
 import org.cloud.sonic.models.domain.Agents;
 import org.cloud.sonic.models.dto.AgentsDTO;
 import org.cloud.sonic.services.AgentsService;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +54,9 @@ public class AgentsController {
         result.put("msg", "hub");
         result.put("position", position);
         result.put("type", type);
-        TransportWorker.send(id, result);
+
+        //todo fix
+//        TransportWorker.send(id, result);
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 

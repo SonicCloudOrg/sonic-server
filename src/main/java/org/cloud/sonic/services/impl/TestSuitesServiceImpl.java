@@ -37,7 +37,6 @@ import org.cloud.sonic.models.interfaces.PlatformType;
 import org.cloud.sonic.models.interfaces.ResultStatus;
 import org.cloud.sonic.services.*;
 import org.cloud.sonic.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -210,7 +209,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                TransportWorker.send(id, result);
+
+                //todo fix
+//                TransportWorker.send(id, result);
             }
         }
         if (testSuitesDTO.getCover() == CoverType.DEVICE) {
@@ -231,7 +232,9 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
             result.put("pf", testSuitesDTO.getPlatform());
             result.put("cases", suiteDetail);
             for (Integer id : agentIds) {
-                TransportWorker.send(id, result);
+
+                //todo fix
+//                TransportWorker.send(id, result);
             }
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
@@ -617,6 +620,8 @@ public class TestSuitesServiceImpl extends SonicServiceImpl<TestSuitesMapper, Te
         result.put("msg", "suite");
         result.put("pf", platform);
         result.put("cases", suiteDetailList);
-        TransportWorker.send(agentId, result);
+
+        //todo fix
+//        TransportWorker.send(agentId, result);
     }
 }

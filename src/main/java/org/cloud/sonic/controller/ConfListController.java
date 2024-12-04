@@ -27,7 +27,6 @@ import org.cloud.sonic.models.domain.Agents;
 import org.cloud.sonic.models.interfaces.ConfType;
 import org.cloud.sonic.services.AgentsService;
 import org.cloud.sonic.services.ConfListService;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,7 +62,9 @@ public class ConfListController {
             JSONObject result = new JSONObject();
             result.put("msg", "settings");
             result.put("remoteTimeout", timeout);
-            TransportWorker.send(agents.getId(), result);
+
+            //todo fix
+//            TransportWorker.send(agents.getId(), result);
         }
         return new RespModel<>(RespEnum.HANDLE_OK);
     }

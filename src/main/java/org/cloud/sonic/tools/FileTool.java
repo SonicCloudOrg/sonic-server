@@ -15,12 +15,11 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic.folder.tools;
+package org.cloud.sonic.tools;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +38,6 @@ import java.util.UUID;
  * @date 2021/8/18 20:36
  */
 @Component
-@RefreshScope
 public class FileTool {
     private final Logger logger = LoggerFactory.getLogger(FileTool.class);
     @Value("${gateway.host}")

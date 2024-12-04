@@ -28,7 +28,6 @@ import org.cloud.sonic.models.interfaces.DeviceStatus;
 import org.cloud.sonic.services.AgentsService;
 import org.cloud.sonic.services.DevicesService;
 import org.cloud.sonic.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +85,9 @@ public class AgentsServiceImpl extends SonicServiceImpl<AgentsMapper, Agents> im
                 result.put("msg", "settings");
                 result.put("highTemp", highTemp);
                 result.put("highTempTime", highTempTime);
-                TransportWorker.send(id, result);
+
+                //todo fix
+//                TransportWorker.send(id, result);
             }
         }
     }

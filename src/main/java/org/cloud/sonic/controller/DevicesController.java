@@ -33,7 +33,6 @@ import org.cloud.sonic.models.http.DeviceDetailChange;
 import org.cloud.sonic.models.http.OccupyParams;
 import org.cloud.sonic.models.http.UpdateDeviceImg;
 import org.cloud.sonic.services.DevicesService;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,7 +80,9 @@ public class DevicesController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg", "stopDebug");
             jsonObject.put("udId", udId);
-            TransportWorker.send(devices.getAgentId(), jsonObject);
+
+            //todo fix
+//            TransportWorker.send(devices.getAgentId(), jsonObject);
             return new RespModel<>(RespEnum.HANDLE_OK);
         } else {
             return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);

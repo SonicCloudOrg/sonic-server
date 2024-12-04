@@ -40,7 +40,6 @@ import org.cloud.sonic.services.AgentsService;
 import org.cloud.sonic.services.DevicesService;
 import org.cloud.sonic.services.UsersService;
 import org.cloud.sonic.services.impl.base.SonicServiceImpl;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +52,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalDouble;
-
-import static org.cloud.sonic.common.http.RespEnum.DELETE_OK;
 
 /**
  * @author ZhouYiXun
@@ -85,7 +82,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
                     jsonObject.put("msg", "occupy");
                     jsonObject.put("token", token);
                     jsonObject.put("platform", devices.getPlatform());
-                    TransportWorker.send(agents.getId(), jsonObject);
+
+                    // todo fix
+//                    TransportWorker.send(agents.getId(), jsonObject);
                     JSONObject result = new JSONObject();
                     switch (devices.getPlatform()) {
                         case PlatformType.ANDROID -> {
@@ -132,7 +131,9 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
             jsonObject.put("msg", "release");
             jsonObject.put("udId", udId);
             jsonObject.put("platform", devices.getPlatform());
-            TransportWorker.send(devices.getAgentId(), jsonObject);
+
+            //todo fix
+//            TransportWorker.send(devices.getAgentId(), jsonObject);
             return new RespModel<>(RespEnum.HANDLE_OK);
         } else {
             return new RespModel<>(RespEnum.DEVICE_NOT_FOUND);
@@ -435,7 +436,7 @@ public class DevicesServiceImpl extends SonicServiceImpl<DevicesMapper, Devices>
         } else {
             return new RespModel<>(3005, "device.not.offline");
         }
-        return new RespModel<>(DELETE_OK);
+        return new RespModel<>(RespEnum.DELETE_OK);
     }
 
 }

@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.cloud.sonic;
+package org.cloud.sonic.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +32,6 @@ import org.cloud.sonic.models.interfaces.AgentStatus;
 import org.cloud.sonic.services.AgentsService;
 import org.cloud.sonic.services.DevicesService;
 import org.cloud.sonic.tools.BytesTool;
-import org.cloud.sonic.transport.TransportWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,9 @@ public class ExchangeController {
         jsonObject.put("msg", "reboot");
         jsonObject.put("udId", devices.getUdId());
         jsonObject.put("platform", devices.getPlatform());
-        TransportWorker.send(agents.getId(), jsonObject);
+
+        //todo fix
+//        TransportWorker.send(agents.getId(), jsonObject);
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 
@@ -79,7 +80,9 @@ public class ExchangeController {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("msg", "shutdown");
-        TransportWorker.send(agents.getId(), jsonObject);
+
+        //todo fix
+//        TransportWorker.send(agents.getId(), jsonObject);
         return new RespModel<>(RespEnum.HANDLE_OK);
     }
 

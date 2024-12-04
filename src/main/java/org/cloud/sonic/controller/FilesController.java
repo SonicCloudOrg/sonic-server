@@ -1,11 +1,9 @@
-package org.cloud.sonic.folder.controller;
+package org.cloud.sonic.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.sonic.common.config.WebAspect;
 import org.cloud.sonic.http.RespModel;
-import org.cloud.sonic.folder.tools.FileTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cloud.sonic.tools.FileTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
