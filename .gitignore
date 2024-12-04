@@ -7,7 +7,7 @@
 /logs/
 /log/
 /record/
-*/target
+./target
 /imageFiles/
 /keepFiles/
 /recordFiles/
