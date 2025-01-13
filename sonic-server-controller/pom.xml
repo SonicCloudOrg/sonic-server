@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.5</version>
+            <version>3.5.10.1</version>
         </dependency>
         <dependency>
             <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
